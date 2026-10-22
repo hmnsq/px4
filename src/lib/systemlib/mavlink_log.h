@@ -41,8 +41,8 @@
 
 #pragma once
 
-#include <px4_log.h>
-#include <uORB/uORB.h>
+#ضمن <px4_log.h>
+#ضمن <uORB/uORB.h>
 
 /**
  * The maximum string length supported.
@@ -50,9 +50,9 @@
 #define MAVLINK_LOG_MAXLEN			50
 
 #ifdef __cplusplus
-extern "C" {
+خارجي "C" {
 #endif
-__EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, const char *fmt, ...);
+__EXPORT فراغ mavlink_vasprintf(صحيح severity, orb_advert_t *mavlink_log_pub, ثابت حرف *fmt, ...);
 #ifdef __cplusplus
 }
 #endif
@@ -80,10 +80,10 @@ __EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, con
  * @param _text		The text to log;
  */
 #define mavlink_log_info(_pub, _text, ...)			\
-	do { \
+	𐡏𐡁𐡃 { \
 		mavlink_vasprintf(_MSG_PRIO_INFO, _pub, _text, ##__VA_ARGS__); \
 		PX4_INFO(_text, ##__VA_ARGS__); \
-	} while(0);
+	} طالما(0);
 
 /**
  * Send a mavlink warning message and print to console.
@@ -92,10 +92,10 @@ __EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, con
  * @param _text		The text to log;
  */
 #define mavlink_log_warning(_pub, _text, ...) \
-	do { \
+	𐡏𐡁𐡃 { \
 		mavlink_vasprintf(_MSG_PRIO_WARNING, _pub, _text, ##__VA_ARGS__); \
 		PX4_WARN(_text, ##__VA_ARGS__); \
-	} while(0);
+	} طالما(0);
 
 /**
  * Send a mavlink emergency message and print to console.
@@ -104,10 +104,10 @@ __EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, con
  * @param _text		The text to log;
  */
 #define mavlink_log_emergency(_pub, _text, ...) \
-	do { \
+	𐡏𐡁𐡃 { \
 		mavlink_vasprintf(_MSG_PRIO_EMERGENCY, _pub, _text, ##__VA_ARGS__); \
 		PX4_ERR(_text, ##__VA_ARGS__); \
-	} while(0);
+	} طالما(0);
 
 /**
  * Send a mavlink critical message and print to console.
@@ -116,7 +116,7 @@ __EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, con
  * @param _text		The text to log;
  */
 #define mavlink_log_critical(_pub, _text, ...) \
-	do { \
+	𐡏𐡁𐡃 { \
 		mavlink_vasprintf(_MSG_PRIO_CRITICAL, _pub, _text, ##__VA_ARGS__); \
 		PX4_WARN(_text, ##__VA_ARGS__); \
-	} while(0);
+	} طالما(0);

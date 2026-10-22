@@ -33,37 +33,37 @@
 
 #pragma once
 
-#include <cmath>
+#ضمن <cmath>
 
-class PID
+صنف PID
 {
-public:
-	PID() = default;
-	virtual ~PID() = default;
-	void setOutputLimit(const float limit) {setOutputLimit(-limit, limit);}
-	void setOutputLimit(const float lower_limit, const float upper_limit);
-	void setIntegralLimit(const float limit) { _limit_integral = limit; }
-	void setGains(const float P, const float I, const float D);
-	void setSetpoint(const float setpoint) { _setpoint = setpoint; }
-	void setFeedForwardGain(const float feedforward_gain) { _gain_feedforward = feedforward_gain; }
-	float update(const float feedback, const float dt, const bool update_integral = true);
-	float getIntegral() { return _integral; }
-	void resetIntegral() { _integral = 0.f; }
-	void resetDerivative() { _last_feedback = NAN; }
-private:
-	void updateIntegral(float error, const float saturation, const float dt);
-	float updateDerivative(float feedback, const float dt);
+عام:
+	PID() = افتراضي;
+	virtual ~PID() = افتراضي;
+	فراغ setOutputLimit(ثابت عائم limit) {setOutputLimit(-limit, limit);}
+	فراغ setOutputLimit(ثابت عائم lower_limit, ثابت عائم upper_limit);
+	فراغ setIntegralLimit(ثابت عائم limit) { _limit_integral = limit; }
+	فراغ setGains(ثابت عائم P, ثابت عائم I, ثابت عائم D);
+	فراغ setSetpoint(ثابت عائم setpoint) { _setpoint = setpoint; }
+	فراغ setFeedForwardGain(ثابت عائم feedforward_gain) { _gain_feedforward = feedforward_gain; }
+	عائم update(ثابت عائم feedback, ثابت عائم dt, ثابت منطقي update_integral = 𐡒𐡔𐡈);
+	عائم getIntegral() { أرجع _integral; }
+	فراغ resetIntegral() { _integral = 0.f; }
+	فراغ resetDerivative() { _last_feedback = NAN; }
+خاص:
+	فراغ updateIntegral(عائم error, ثابت عائم saturation, ثابت عائم dt);
+	عائم updateDerivative(عائم feedback, ثابت عائم dt);
 
-	float _setpoint{0.f}; ///< current setpoint to track
-	float _integral{0.f}; ///< integral state
-	float _last_feedback{NAN};
+	عائم _setpoint{0.f}; ///< current setpoint to track
+	عائم _integral{0.f}; ///< integral state
+	عائم _last_feedback{NAN};
 
 	// Gains, Limits
-	float _gain_feedforward{0.f};
-	float _gain_proportional{0.f};
-	float _gain_integral{0.f};
-	float _gain_derivative{0.f};
-	float _limit_integral{0.f};
-	float _lower_limit_output{0.f};
-	float _upper_limit_output{0.f};
+	عائم _gain_feedforward{0.f};
+	عائم _gain_proportional{0.f};
+	عائم _gain_integral{0.f};
+	عائم _gain_derivative{0.f};
+	عائم _limit_integral{0.f};
+	عائم _lower_limit_output{0.f};
+	عائم _upper_limit_output{0.f};
 };

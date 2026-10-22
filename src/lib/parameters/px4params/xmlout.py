@@ -1,22 +1,22 @@
-import xml.etree.ElementTree as ET
-import codecs
+استورد xml.etree.ElementTree كـ ET
+استورد codecs
 
 def indent(elem, level=0):
     i = "\n" + level*"  "
-    if len(elem):
-        if not elem.text or not elem.text.strip():
+    𐡄𐡍 len(elem):
+        𐡄𐡍 𐡋𐡀 elem.text 𐡀𐡅 𐡋𐡀 elem.text.strip():
             elem.text = i + "  "
-        if not elem.tail or not elem.tail.strip():
+        𐡄𐡍 𐡋𐡀 elem.tail 𐡀𐡅 𐡋𐡀 elem.tail.strip():
             elem.tail = i
-        for elem in elem:
+        لكل elem في elem:
             indent(elem, level+1)
-        if not elem.tail or not elem.tail.strip():
+        𐡄𐡍 𐡋𐡀 elem.tail 𐡀𐡅 𐡋𐡀 elem.tail.strip():
             elem.tail = i
-    else:
-        if level and (not elem.tail or not elem.tail.strip()):
+    وإلا:
+        𐡄𐡍 level 𐡅 (𐡋𐡀 elem.tail 𐡀𐡅 𐡋𐡀 elem.tail.strip()):
             elem.tail = i
 
-class XMLOutput():
+صنف XMLOutput():
 
     def __init__(self, groups, board):
         xml_parameters = ET.Element("parameters")
@@ -27,52 +27,52 @@ class XMLOutput():
         xml_version = ET.SubElement(xml_parameters, "parameter_version_minor")
         xml_version.text = "15"
         last_param_name = ""
-        board_specific_param_set = False
-        for group in groups:
+        board_specific_param_set = خطأ
+        لكل group في groups:
             xml_group = ET.SubElement(xml_parameters, "group")
             xml_group.attrib["name"] = group.GetName()
-            if group.no_code_generation:
+            𐡄𐡍 group.no_code_generation:
                 xml_group.attrib["no_code_generation"] = group.no_code_generation
-            for param in group.GetParams():
-                if (last_param_name == param.GetName() and not board_specific_param_set) or last_param_name != param.GetName():
+            لكل param في group.GetParams():
+                𐡄𐡍 (last_param_name == param.GetName() 𐡅 𐡋𐡀 board_specific_param_set) 𐡀𐡅 last_param_name != param.GetName():
                     xml_param = ET.SubElement(xml_group, "parameter")
                     xml_param.attrib["name"] = param.GetName()
                     xml_param.attrib["default"] = param.GetDefault()
                     xml_param.attrib["type"] = param.GetType()
-                    if param.GetVolatile():
+                    𐡄𐡍 param.GetVolatile():
                         xml_param.attrib["volatile"] = "true"
-                    if param.GetBoolean():
+                    𐡄𐡍 param.GetBoolean():
                         xml_param.attrib["boolean"] = "true"
-                    if param.GetReadonly():
+                    𐡄𐡍 param.GetReadonly():
                         xml_param.attrib["readonly"] = "true"
-                    if (param.GetCategory()):
+                    𐡄𐡍 (param.GetCategory()):
                         xml_param.attrib["category"] = param.GetCategory()
                     last_param_name = param.GetName()
-                    for code in param.GetFieldCodes():
+                    لكل code في param.GetFieldCodes():
                         value = param.GetFieldValue(code)
-                        if code == "board":
-                            if value == board:
-                                board_specific_param_set = True
+                        𐡄𐡍 code == "board":
+                            𐡄𐡍 value == board:
+                                board_specific_param_set = 𐡒𐡔𐡈
                                 xml_field = ET.SubElement(xml_param, code)
                                 xml_field.text = value
-                            else:
+                            وإلا:
                                 xml_group.remove(xml_param)
-                        else:
+                        وإلا:
                             xml_field = ET.SubElement(xml_param, code)
                             xml_field.text = value
-                if last_param_name != param.GetName():
-                    board_specific_param_set = False
+                𐡄𐡍 last_param_name != param.GetName():
+                    board_specific_param_set = خطأ
                 
-                if len(param.GetEnumCodes()) > 0:
+                𐡄𐡍 len(param.GetEnumCodes()) > 0:
                     xml_values = ET.SubElement(xml_param, "values")
-                    for code in param.GetEnumCodes():
+                    لكل code في param.GetEnumCodes():
                         xml_value = ET.SubElement(xml_values, "value")
                         xml_value.attrib["code"] = code;
                         xml_value.text = param.GetEnumValue(code)
 
-                if len(param.GetBitmaskList()) > 0:
+                𐡄𐡍 len(param.GetBitmaskList()) > 0:
                     xml_values = ET.SubElement(xml_param, "bitmask")
-                    for index in param.GetBitmaskList():
+                    لكل index في param.GetBitmaskList():
                         xml_value = ET.SubElement(xml_values, "bit")
                         xml_value.attrib["index"] = index;
                         xml_value.text = param.GetBitmaskBit(index)
@@ -81,4 +81,4 @@ class XMLOutput():
         self.xml_document = ET.ElementTree(xml_parameters)
 
     def Save(self, filename):
-        self.xml_document.write(filename, encoding="UTF-8")
+        self.xml_document.اكتب(filename, encoding="UTF-8")

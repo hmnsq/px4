@@ -31,12 +31,12 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/Dcm.hpp>
-#include <matrix/Dcm2.hpp>
-#include <matrix/Euler.hpp>
+#ضمن <gtest/gtest.h>
+#ضمن <matrix/Dcm.hpp>
+#ضمن <matrix/Dcm2.hpp>
+#ضمن <matrix/Euler.hpp>
 
-using namespace matrix;
+using نطاق matrix;
 
 TEST(MatrixDcm2Test, CompareToDcm)
 {

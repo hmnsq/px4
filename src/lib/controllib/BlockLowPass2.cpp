@@ -37,26 +37,26 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#ضمن <math.h>
+#ضمن <float.h>
 
-#include "blocks.hpp"
+#ضمن "blocks.hpp"
 
-namespace control
+نطاق control
 {
 
-float BlockLowPass2::update(float input)
+عائم BlockLowPass2::update(عائم input)
 {
-	if (!PX4_ISFINITE(getState())) {
+	𐡄𐡍 (!PX4_ISFINITE(getState())) {
 		setState(input);
 	}
 
-	if (fabsf(_lp.get_cutoff_freq() - getFCutParam()) > FLT_EPSILON) {
+	𐡄𐡍 (fabsf(_lp.get_cutoff_freq() - getFCutParam()) > FLT_EPSILON) {
 		_lp.set_cutoff_frequency(_fs, getFCutParam());
 	}
 
 	_state = _lp.apply(input);
-	return _state;
+	أرجع _state;
 }
 
 } // namespace control

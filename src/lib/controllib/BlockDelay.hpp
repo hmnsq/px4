@@ -39,35 +39,35 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <assert.h>
+#ضمن <time.h>
+#ضمن <stdlib.h>
+#ضمن <math.h>
+#ضمن <mathlib/math/test/test.hpp>
+#ضمن <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ضمن "block/Block.hpp"
+#ضمن "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ضمن "matrix/math.hpp"
 
-namespace control
+نطاق control
 {
 
-template<class Type, size_t M, size_t N, size_t LEN>
-class __EXPORT BlockDelay: public Block
+template<صنف Type, size_t M, size_t N, size_t LEN>
+صنف __EXPORT BlockDelay: عام Block
 {
-public:
+عام:
 // methods
-	BlockDelay(SuperBlock *parent, const char *name) :
+	BlockDelay(SuperBlock *parent, ثابت حرف *name) :
 		Block(parent, name),
 		_h(),
 		_index(0),
 		_delay(-1)
 	{}
-	virtual ~BlockDelay() = default;
-	matrix::Matrix<Type, M, N> update(const matrix::Matrix<Type, M, N> &u)
+	virtual ~BlockDelay() = افتراضي;
+	matrix::Matrix<Type, M, N> update(ثابت matrix::Matrix<Type, M, N> &u)
 	{
 		// store current value
 		_h[_index] = u;
@@ -75,40 +75,40 @@ public:
 		// delay starts at zero, then increases to LEN
 		_delay += 1;
 
-		if (_delay > (int)(LEN - 1)) {
+		𐡄𐡍 (_delay > (صحيح)(LEN - 1)) {
 			_delay = LEN - 1;
 		}
 
 		// compute position of delayed value
-		int j = _index - _delay;
+		صحيح j = _index - _delay;
 
-		if (j < 0) {
+		𐡄𐡍 (j < 0) {
 			j += LEN;
 		}
 
 		// increment storage position
 		_index += 1;
 
-		if (_index > (LEN - 1)) {
+		𐡄𐡍 (_index > (LEN - 1)) {
 			_index  = 0;
 		}
 
 		// get delayed value
-		return _h[j];
+		أرجع _h[j];
 	}
 	matrix::Matrix<Type, M, N> get(size_t delay)
 	{
-		int j = _index - delay;
+		صحيح j = _index - delay;
 
-		if (j < 0) { j += LEN; }
+		𐡄𐡍 (j < 0) { j += LEN; }
 
-		return _h[j];
+		أرجع _h[j];
 	}
-private:
+خاص:
 // attributes
 	matrix::Matrix<Type, M, N> _h[LEN];
 	size_t _index;
-	int _delay;
+	صحيح _delay;
 };
 
 } // namespace control

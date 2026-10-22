@@ -31,20 +31,20 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <stdint.h>
-#include <string.h>
+#ضمن <gtest/gtest.h>
+#ضمن <stdint.h>
+#ضمن <string.h>
 
 
-#include "Ringbuffer.hpp"
+#ضمن "Ringbuffer.hpp"
 
-class TempData
+صنف TempData
 {
-public:
+عام:
 	TempData(size_t len)
 	{
 		_size = len;
-		_buf = new uint8_t[_size];
+		_buf = جديد uint8_t[_size];
 	}
 
 	~TempData()
@@ -53,36 +53,36 @@ public:
 		_buf = nullptr;
 	}
 
-	uint8_t *buf() const
+	uint8_t *buf() ثابت
 	{
-		return _buf;
+		أرجع _buf;
 	}
 
-	size_t size() const
+	size_t size() ثابت
 	{
-		return _size;
+		أرجع _size;
 	}
 
-	void paint(unsigned offset = 0)
+	فراغ paint(unsigned offset = 0)
 	{
-		for (size_t i = 0; i < _size; ++i) {
+		لكل (size_t i = 0; i < _size; ++i) {
 			_buf[i] = (uint8_t)((i + offset) % UINT8_MAX);
 		}
 	}
 
-private:
+خاص:
 	uint8_t *_buf {nullptr};
 	size_t _size{0};
 
 };
 
-bool operator==(const TempData &lhs, const TempData &rhs)
+منطقي operator==(ثابت TempData &lhs, ثابت TempData &rhs)
 {
-	if (lhs.size() != rhs.size()) {
-		return false;
+	𐡄𐡍 (lhs.size() != rhs.size()) {
+		أرجع خطأ;
 	}
 
-	return memcmp(lhs.buf(), rhs.buf(), lhs.size()) == 0;
+	أرجع memcmp(lhs.buf(), rhs.buf(), lhs.size()) == 0;
 }
 
 
@@ -96,12 +96,12 @@ TEST(Ringbuffer, AllocateAndDeallocate)
 	// The second time we forget to clean up, but we expect no leak.
 }
 
-class RingbufferReallocation : public ::testing::TestWithParam<size_t>
+صنف RingbufferReallocation : عام ::testing::TestWithParam<size_t>
 {
-protected:
-	void check_reallocated(Ringbuffer &buf)
+محمي:
+	فراغ check_reallocated(Ringbuffer &buf)
 	{
-		const size_t capacity = GetParam();
+		ثابت size_t capacity = GetParam();
 		buf.deallocate();
 		ASSERT_TRUE(buf.allocate(capacity));
 		// Keep these non-fatal so stale indices still reach the sanitizer-backed
@@ -110,21 +110,21 @@ protected:
 		EXPECT_EQ(buf.space_available(), capacity - 1);
 
 		uint8_t byte = 0;
-		EXPECT_EQ(buf.pop_front(&byte, sizeof(byte)), 0u);
+		EXPECT_EQ(buf.pop_front(&byte, حجم(byte)), 0u);
 
 		TempData data{capacity - 1};
 		data.paint(41);
 		ASSERT_TRUE(buf.push_back(data.buf(), data.size()));
 		EXPECT_EQ(buf.space_used(), data.size());
 		EXPECT_EQ(buf.space_available(), 0u);
-		EXPECT_FALSE(buf.push_back(&byte, sizeof(byte)));
+		EXPECT_FALSE(buf.push_back(&byte, حجم(byte)));
 
 		TempData out{data.size()};
 		ASSERT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
 		EXPECT_EQ(data, out);
 		EXPECT_EQ(buf.space_used(), 0u);
 		EXPECT_EQ(buf.space_available(), capacity - 1);
-		EXPECT_EQ(buf.pop_front(&byte, sizeof(byte)), 0u);
+		EXPECT_EQ(buf.pop_front(&byte, حجم(byte)), 0u);
 	}
 };
 
@@ -220,7 +220,7 @@ TEST(Ringbuffer, PushAndPopSeveral)
 	data.paint();
 
 	// 9 little chunks in
-	for (unsigned i = 0; i < 9; ++i) {
+	لكل (unsigned i = 0; i < 9; ++i) {
 		EXPECT_TRUE(buf.push_back(data.buf() + i * 10, 10));
 	}
 

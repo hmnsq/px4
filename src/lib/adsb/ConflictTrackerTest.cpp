@@ -37,17 +37,17 @@
  * @author Jonas Perolini <jonspero@me.com>
  */
 
-#include <gtest/gtest.h>
+#ضمن <gtest/gtest.h>
 
-#include <limits>
+#ضمن <limits>
 
-#include <lib/adsb/ConflictTracker.h>
+#ضمن <lib/adsb/ConflictTracker.h>
 
-namespace
+نطاق
 {
 
-conflict_info_s make_conflict(const uint64_t icao_id, const uint8_t conflict_level, const float aircraft_dist,
-			      const hrt_abstime timestamp = 1000000)
+conflict_info_s make_conflict(ثابت uint64_t icao_id, ثابت uint8_t conflict_level, ثابت عائم aircraft_dist,
+			      ثابت hrt_abstime timestamp = 1000000)
 {
 	conflict_info_s conflict{};
 	conflict.encoded_id.id = icao_id;
@@ -55,7 +55,7 @@ conflict_info_s make_conflict(const uint64_t icao_id, const uint8_t conflict_lev
 	conflict.conflict_level = conflict_level;
 	conflict.aircraft_dist = aircraft_dist;
 	conflict.latest_update_timestamp = timestamp;
-	return conflict;
+	أرجع conflict;
 }
 
 } // namespace
@@ -69,7 +69,7 @@ TEST(ConflictTrackerTest, AddsNewConflictAndRefreshesMostUrgent)
 	EXPECT_EQ(tracker.most_urgent().conflict_level, detect_and_avoid_s::DAA_CONFLICT_LVL_NONE);
 	EXPECT_EQ(tracker.most_urgent().encoded_id.id, 0u);
 
-	const conflict_info_s conflict = make_conflict(0x6E9F7B, detect_and_avoid_s::DAA_CONFLICT_LVL_MEDIUM, 800.f);
+	ثابت conflict_info_s conflict = make_conflict(0x6E9F7B, detect_and_avoid_s::DAA_CONFLICT_LVL_MEDIUM, 800.f);
 	conflict_tracker_changes_s changes{};
 
 	EXPECT_TRUE(tracker.apply_conflict(conflict, changes));
@@ -80,7 +80,7 @@ TEST(ConflictTrackerTest, AddsNewConflictAndRefreshesMostUrgent)
 	EXPECT_EQ(tracker.size(), 1u);
 	EXPECT_TRUE(tracker.contains(conflict.encoded_id));
 
-	const conflict_info_s tracked = tracker.get_conflict(conflict.encoded_id);
+	ثابت conflict_info_s tracked = tracker.get_conflict(conflict.encoded_id);
 	ASSERT_NE(tracked.encoded_id.id, 0u);
 	EXPECT_EQ(tracked.conflict_level, detect_and_avoid_s::DAA_CONFLICT_LVL_MEDIUM);
 
@@ -95,7 +95,7 @@ TEST(ConflictTrackerTest, IgnoresUntrackedTrafficWithoutConflict)
 {
 	ConflictTracker tracker;
 
-	const conflict_info_s no_conflict = make_conflict(0x6E9F7B, detect_and_avoid_s::DAA_CONFLICT_LVL_NONE, 5000.f);
+	ثابت conflict_info_s no_conflict = make_conflict(0x6E9F7B, detect_and_avoid_s::DAA_CONFLICT_LVL_NONE, 5000.f);
 	conflict_tracker_changes_s changes{};
 
 	EXPECT_FALSE(tracker.apply_conflict(no_conflict, changes));
@@ -114,7 +114,7 @@ TEST(ConflictTrackerTest, RejectsInvalidConflictData)
 			     make_conflict(1, detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL + 1, 100.f), changes));
 	EXPECT_FALSE(tracker.apply_conflict(
 			     make_conflict(1, detect_and_avoid_s::DAA_CONFLICT_LVL_HIGH,
-					   std::numeric_limits<float>::quiet_NaN()), changes));
+					   std::numeric_limits<عائم>::quiet_NaN()), changes));
 	EXPECT_TRUE(tracker.empty());
 	EXPECT_TRUE(changes.empty());
 }
@@ -133,7 +133,7 @@ TEST(ConflictTrackerTest, EmitsLevelChangedOnlyWhenLevelDiffers)
 					   changes));
 
 	EXPECT_EQ(changes.size(), 0u);
-	const conflict_info_s tracked = tracker.get_conflict(make_conflict(0x6E9F7B, 0, 0.f).encoded_id);
+	ثابت conflict_info_s tracked = tracker.get_conflict(make_conflict(0x6E9F7B, 0, 0.f).encoded_id);
 	ASSERT_NE(tracked.encoded_id.id, 0u);
 	EXPECT_EQ(tracked.latest_update_timestamp, 2000000u);
 	EXPECT_FLOAT_EQ(tracked.aircraft_dist, 1900.f);
@@ -230,15 +230,15 @@ TEST(ConflictTrackerTest, EvictsLeastUrgentWhenFull)
 	conflict_tracker_changes_s changes{};
 
 	// fill so that 0x100 is least urgent (lowest level, largest distance)
-	for (uint64_t i = 0; i < kDaaMaxTraffic; ++i) {
+	لكل (uint64_t i = 0; i < kDaaMaxTraffic; ++i) {
 		changes = {};
 		ASSERT_TRUE(tracker.apply_conflict(make_conflict(0x100 + i, detect_and_avoid_s::DAA_CONFLICT_LVL_LOW + (i > 0),
-						   2000.f - static_cast<float>(i) * 100.f), changes));
+						   2000.f - static_cast<عائم>(i) * 100.f), changes));
 	}
 
 	ASSERT_EQ(tracker.size(), static_cast<size_t>(kDaaMaxTraffic));
 
-	const conflict_info_s critical = make_conflict(0xBEEF, detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL, 100.f);
+	ثابت conflict_info_s critical = make_conflict(0xBEEF, detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL, 100.f);
 	changes = {};
 	EXPECT_TRUE(tracker.apply_conflict(critical, changes));
 
@@ -263,10 +263,10 @@ TEST(ConflictTrackerTest, RejectsLessImportantWhenFull)
 	ConflictTracker tracker;
 	conflict_tracker_changes_s changes{};
 
-	for (uint64_t i = 0; i < kDaaMaxTraffic; ++i) {
+	لكل (uint64_t i = 0; i < kDaaMaxTraffic; ++i) {
 		changes = {};
 		ASSERT_TRUE(tracker.apply_conflict(make_conflict(0x200 + i, detect_and_avoid_s::DAA_CONFLICT_LVL_HIGH,
-						   600.f + static_cast<float>(i)), changes));
+						   600.f + static_cast<عائم>(i)), changes));
 	}
 
 	changes = {};
@@ -284,10 +284,10 @@ TEST(ConflictTrackerTest, RejectsLessImportantWhenFull)
 // Priority: level dominates, distance only breaks ties.
 TEST(ConflictTrackerTest, PriorityIsLevelFirstThenDistance)
 {
-	const conflict_info_s far_critical = make_conflict(1, detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL, 3000.f);
-	const conflict_info_s close_low = make_conflict(2, detect_and_avoid_s::DAA_CONFLICT_LVL_LOW, 10.f);
-	const conflict_info_s close_critical = make_conflict(3, detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL, 100.f);
-	const conflict_info_s same_as_close_critical =
+	ثابت conflict_info_s far_critical = make_conflict(1, detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL, 3000.f);
+	ثابت conflict_info_s close_low = make_conflict(2, detect_and_avoid_s::DAA_CONFLICT_LVL_LOW, 10.f);
+	ثابت conflict_info_s close_critical = make_conflict(3, detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL, 100.f);
+	ثابت conflict_info_s same_as_close_critical =
 		make_conflict(4, detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL, 100.f);
 
 	// level dominates distance
@@ -308,7 +308,7 @@ TEST(ConflictTrackerTest, PriorityIsLevelFirstThenDistance)
 	tracker.apply_conflict(far_critical, changes);
 	tracker.apply_conflict(close_critical, changes);
 
-	const conflict_info_s most_urgent = tracker.find_most_urgent();
+	ثابت conflict_info_s most_urgent = tracker.find_most_urgent();
 	ASSERT_NE(most_urgent.encoded_id.id, 0u);
 	EXPECT_EQ(most_urgent.encoded_id.id, 3u);
 }
@@ -319,8 +319,8 @@ TEST(ConflictTrackerTest, RemovesOnlyStaleConflicts)
 	ConflictTracker tracker;
 	conflict_tracker_changes_s changes{};
 
-	static constexpr hrt_abstime kTimeout{10000000};	// 10 s
-	static constexpr hrt_abstime kNow{20000000};		// 20 s
+	ساكن constexpr hrt_abstime kTimeout{10000000};	// 10 s
+	ساكن constexpr hrt_abstime kNow{20000000};		// 20 s
 
 	tracker.apply_conflict(make_conflict(1, detect_and_avoid_s::DAA_CONFLICT_LVL_LOW, 2000.f, kNow - 1000000), changes);
 	tracker.apply_conflict(make_conflict(2, detect_and_avoid_s::DAA_CONFLICT_LVL_HIGH, 600.f, kNow - kTimeout - 1),
@@ -334,7 +334,7 @@ TEST(ConflictTrackerTest, RemovesOnlyStaleConflicts)
 	// Timed-out, missing, and future timestamps are invalid; the fresh entry survives.
 	ASSERT_EQ(changes.size(), 3u);
 
-	for (size_t i = 0; i < changes.size(); ++i) {
+	لكل (size_t i = 0; i < changes.size(); ++i) {
 		EXPECT_EQ(changes[i].type, ConflictTrackerChangeType::kConflictRemoved);
 		EXPECT_EQ(changes[i].remove_cause, RemoveBufferCause::kStaleConflict);
 	}

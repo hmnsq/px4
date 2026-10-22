@@ -37,59 +37,59 @@
  * Controller library code
  */
 
-#include "Block.hpp"
-#include "BlockParam.hpp"
+#ضمن "Block.hpp"
+#ضمن "BlockParam.hpp"
 
-#include <cstdio>
-#include <cstring>
+#ضمن <cstdio>
+#ضمن <cstring>
 
-#include <containers/List.hpp>
+#ضمن <containers/List.hpp>
 
-#include <px4_platform_common/log.h>
+#ضمن <px4_platform_common/log.h>
 
-namespace control
+نطاق control
 {
 
-BlockParamBase::BlockParamBase(Block *parent, const char *name, bool parent_prefix)
+BlockParamBase::BlockParamBase(Block *parent, ثابت حرف *name, منطقي parent_prefix)
 {
-	char fullname[blockNameLengthMax];
+	حرف fullname[blockNameLengthMax];
 
-	if (parent == nullptr) {
+	𐡄𐡍 (parent == nullptr) {
 		strncpy(fullname, name, blockNameLengthMax - 1);
-		fullname[sizeof(fullname) - 1] = '\0';
+		fullname[حجم(fullname) - 1] = '\0';
 
-	} else {
-		char parentName[blockNameLengthMax];
+	} وإلا {
+		حرف parentName[blockNameLengthMax];
 		parent->getName(parentName, blockNameLengthMax);
 
-		if (strcmp(name, "") == 0) {
+		𐡄𐡍 (strcmp(name, "") == 0) {
 			strncpy(fullname, parentName, blockNameLengthMax);
 			// ensure string is terminated
-			fullname[sizeof(fullname) - 1] = '\0';
+			fullname[حجم(fullname) - 1] = '\0';
 
-		} else if (parent_prefix) {
-			if (snprintf(fullname, blockNameLengthMax, "%s_%s", parentName, name) >= blockNameLengthMax) {
+		} وإلا 𐡄𐡍 (parent_prefix) {
+			𐡄𐡍 (snprintf(fullname, blockNameLengthMax, "%s_%s", parentName, name) >= blockNameLengthMax) {
 				PX4_ERR("param too long: %s", name);
 			}
 
-		} else {
+		} وإلا {
 			strncpy(fullname, name, blockNameLengthMax);
 			// ensure string is terminated
-			fullname[sizeof(fullname) - 1] = '\0';
+			fullname[حجم(fullname) - 1] = '\0';
 		}
 
-		parent->getParams().add(this);
+		parent->getParams().add(هذا);
 	}
 
 	_handle = param_find(fullname);
 
-	if (_handle == PARAM_INVALID) {
+	𐡄𐡍 (_handle == PARAM_INVALID) {
 		PX4_ERR("error finding param: %s", fullname);
 	}
 };
 
 template <>
-BlockParam<bool>::BlockParam(Block *block, const char *name, bool parent_prefix) :
+BlockParam<منطقي>::BlockParam(Block *block, ثابت حرف *name, منطقي parent_prefix) :
 	BlockParamBase(block, name, parent_prefix),
 	_val()
 {
@@ -97,23 +97,23 @@ BlockParam<bool>::BlockParam(Block *block, const char *name, bool parent_prefix)
 }
 
 template <>
-bool BlockParam<bool>::update()
+منطقي BlockParam<منطقي>::update()
 {
 	int32_t tmp = 0;
-	int ret = param_get(_handle, &tmp);
+	صحيح ret = param_get(_handle, &tmp);
 
-	if (tmp == 1) {
-		_val = true;
+	𐡄𐡍 (tmp == 1) {
+		_val = 𐡒𐡔𐡈;
 
-	} else {
-		_val = false;
+	} وإلا {
+		_val = خطأ;
 	}
 
-	return (ret == PX4_OK);
+	أرجع (ret == PX4_OK);
 }
 
 template <>
-BlockParam<int32_t>::BlockParam(Block *block, const char *name, bool parent_prefix) :
+BlockParam<int32_t>::BlockParam(Block *block, ثابت حرف *name, منطقي parent_prefix) :
 	BlockParamBase(block, name, parent_prefix),
 	_val()
 {
@@ -121,7 +121,7 @@ BlockParam<int32_t>::BlockParam(Block *block, const char *name, bool parent_pref
 }
 
 template <>
-BlockParam<float>::BlockParam(Block *block, const char *name, bool parent_prefix) :
+BlockParam<عائم>::BlockParam(Block *block, ثابت حرف *name, منطقي parent_prefix) :
 	BlockParamBase(block, name, parent_prefix),
 	_val()
 {
@@ -129,7 +129,7 @@ BlockParam<float>::BlockParam(Block *block, const char *name, bool parent_prefix
 }
 
 template <>
-BlockParam<int32_t &>::BlockParam(Block *block, const char *name, bool parent_prefix, int32_t &extern_val) :
+BlockParam<int32_t &>::BlockParam(Block *block, ثابت حرف *name, منطقي parent_prefix, int32_t &extern_val) :
 	BlockParamBase(block, name, parent_prefix),
 	_val(extern_val)
 {
@@ -137,7 +137,7 @@ BlockParam<int32_t &>::BlockParam(Block *block, const char *name, bool parent_pr
 }
 
 template <>
-BlockParam<float &>::BlockParam(Block *block, const char *name, bool parent_prefix, float &extern_val) :
+BlockParam<عائم &>::BlockParam(Block *block, ثابت حرف *name, منطقي parent_prefix, عائم &extern_val) :
 	BlockParamBase(block, name, parent_prefix),
 	_val(extern_val)
 {

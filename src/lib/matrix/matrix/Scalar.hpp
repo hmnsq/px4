@@ -8,18 +8,18 @@
 
 #pragma once
 
-#include "Matrix.hpp"
+#ضمن "Matrix.hpp"
 
-namespace matrix
+نطاق matrix
 {
 
 template<typename Type>
-class Scalar
+صنف Scalar
 {
-public:
+عام:
 	Scalar() = delete;
 
-	Scalar(const Matrix<Type, 1, 1> &other) :
+	Scalar(ثابت Matrix<Type, 1, 1> &other) :
 		_value{other(0, 0)}
 	{
 	}
@@ -28,36 +28,36 @@ public:
 	{
 	}
 
-	operator const Type &()
+	operator ثابت Type &()
 	{
-		return _value;
+		أرجع _value;
 	}
 
-	operator Matrix<Type, 1, 1>() const
+	operator Matrix<Type, 1, 1>() ثابت
 	{
 		Matrix<Type, 1, 1> m;
 		m(0, 0) = _value;
-		return m;
+		أرجع m;
 	}
 
-	operator Vector<Type, 1>() const
+	operator Vector<Type, 1>() ثابت
 	{
 		Vector<Type, 1> m;
 		m(0) = _value;
-		return m;
+		أرجع m;
 	}
 
-	bool operator==(const float other) const
+	منطقي operator==(ثابت عائم other) ثابت
 	{
-		return isEqualF(_value, other);
+		أرجع isEqualF(_value, other);
 	}
 
-private:
-	const Type _value;
+خاص:
+	ثابت Type _value;
 
 };
 
-using Scalarf = Scalar<float>;
-using Scalard = Scalar<double>;
+using Scalarf = Scalar<عائم>;
+using Scalard = Scalar<مزدوج>;
 
 } // namespace matrix
