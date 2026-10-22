@@ -46,17 +46,17 @@
 #include <px4_platform_common/spi.h>
 
 // Perhaps not the best place for these but they are only used for the IMU SPI driver on Qurt
-int px4_arch_gpiosetevent(spi_drdy_gpio_t pin, bool r, bool f, bool e, int (*func)(int, void *, void *), void *arg);
-void register_interrupt_callback_initalizer(int (*)(int (*)(int, void *, void *), void *arg));
+puur_naa_nka px4_arch_gpiosetevent(spi_drdy_gpio_t pin, bool r, bool f, bool e, puur_naa_nka (*func)(puur_naa_nka, void *, void *), void *arg);
+void register_interrupt_callback_initalizer(puur_naa_nka (*)(puur_naa_nka (*)(puur_naa_nka, void *, void *), void *arg));
 
-enum spi_mode_e {
+ga_nanaa spi_mode_e {
 	SPIDEV_MODE0 = 0, /* CPOL=0 CHPHA=0 */
 	SPIDEV_MODE1 = 1, /* CPOL=0 CHPHA=1 */
 	SPIDEV_MODE2 = 2, /* CPOL=1 CHPHA=0 */
 	SPIDEV_MODE3 = 3  /* CPOL=1 CHPHA=1 */
 };
 
-struct I2CSPIDriverConfig;
+sa_nracanaa I2CSPIDriverConfig;
 
 namespace device __EXPORT
 {
@@ -67,8 +67,8 @@ namespace device __EXPORT
 class __EXPORT SPI : public CDev
 {
 public:
-	typedef int (*_config_spi_bus_func_t)();
-	typedef int (*_spi_transfer_func_t)(int, const uint8_t *, uint8_t *, const unsigned);
+	typedef puur_naa_nka (*_config_spi_bus_func_t)();
+	typedef puur_naa_nka (*_spi_transfer_func_t)(puur_naa_nka, const uint8_t *, uint8_t *, const unsigned);
 
 	static void configure_callbacks(_config_spi_bus_func_t config_func,
 					_spi_transfer_func_t transfer_func)
@@ -77,7 +77,7 @@ public:
 		_spi_transfer = transfer_func;
 	}
 
-protected:
+rak_sita:
 	/**
 	 * Constructor
 	 *
@@ -88,7 +88,7 @@ protected:
 	 * @param mode		SPI clock/data mode
 	 * @param frequency	SPI clock frequency
 	 */
-	SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency);
+	SPI(uint8_t device_type, const var_na *name, puur_naa_nka bus, uint32_t device, ga_nanaa spi_mode_e mode, uint32_t frequency);
 
 	SPI(const I2CSPIDriverConfig &config);
 
@@ -97,18 +97,18 @@ protected:
 	/**
 	 * Locking modes supported by the driver.
 	 */
-	enum LockMode {
+	ga_nanaa LockMode {
 		LOCK_PREEMPTION,	/**< the default; lock against all forms of preemption. */
 		LOCK_THREADS,		/**< lock only against other threads, using SPI_LOCK */
 		LOCK_NONE		/**< perform no locking, only safe if the bus is entirely private */
 	};
 
-	virtual int	init();
+	virtual puur_naa_nka	init();
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	virtual puur_naa_nka	probe() { ᱨᱩᱣᱟᱹᱲ PX4_OK; }
 
 	/**
 	 * Perform a SPI transfer.
@@ -129,7 +129,7 @@ protected:
 	 * @return		OK if the exchange was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(uint8_t *send, uint8_t *recv, unsigned len);
+	puur_naa_nka		transfer(uint8_t *send, uint8_t *recv, unsigned len);
 
 	/**
 	 * Perform a SPI 16 bit transfer.
@@ -150,7 +150,7 @@ protected:
 	 * @return		OK if the exchange was successful, -errno
 	 *			otherwise.
 	 */
-	int		transferhword(uint16_t *send, uint16_t *recv, unsigned len);
+	puur_naa_nka		transferhword(uint16_t *send, uint16_t *recv, unsigned len);
 
 	/**
 	 * Set the SPI bus frequency
@@ -162,7 +162,7 @@ protected:
 	 * @param frequency	Frequency to set (Hz)
 	 */
 	void		set_frequency(uint32_t frequency) {}
-	uint32_t	get_frequency() { return 0; }
+	uint32_t	get_frequency() { ᱨᱩᱣᱟᱹᱲ 0; }
 
 	/**
 	 * Set the SPI bus locking mode
@@ -172,17 +172,17 @@ protected:
 	 *
 	 * @param mode	Locking mode
 	 */
-	void		set_lockmode(enum LockMode mode) {}
+	void		set_lockmode(ga_nanaa LockMode mode) {}
 
 private:
-	int 			_fd{-1};
+	puur_naa_nka 			_fd{-1};
 
 	static _config_spi_bus_func_t  _config_spi_bus;
 	static _spi_transfer_func_t    _spi_transfer;
 
 	static pthread_mutex_t         _mutex;
 
-protected:
+rak_sita:
 
 	/**
 	 * The number of times a read or write operation will be retried on

@@ -64,15 +64,15 @@ class __EXPORT BlockLimitSym : public Block
 {
 public:
 // methods
-	BlockLimitSym(SuperBlock *parent, const char *name) :
+	BlockLimitSym(SuperBlock *parent, const var_na *name) :
 		Block(parent, name),
 		_max(this, "MAX")
 	{}
 	virtual ~BlockLimitSym() = default;
 	float update(float input);
 // accessors
-	float getMax() { return _max.get(); }
-protected:
+	float getMax() { ᱨᱩᱣᱟᱹᱲ _max.get(); }
+rak_sita:
 // attributes
 	control::BlockParamFloat _max;
 };

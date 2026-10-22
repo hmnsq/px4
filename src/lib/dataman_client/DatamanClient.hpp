@@ -164,18 +164,18 @@ public:
 	 * to a poll set must only do so while they have an outstanding operation whose
 	 * update() path will consume the notification.
 	 */
-	orb_sub_t responseSubscription() const { return _dataman_response_sub; }
+	orb_sub_t responseSubscription() const { ᱨᱩᱣᱟᱹᱲ _dataman_response_sub; }
 
 private:
 	friend class DatamanClientTestPeer;
 
-	enum class State {
+	ga_nanaa class State {
 		Idle,
 		RequestSent,
 		ResponseReceived
 	};
 
-	struct Request {
+	sa_nracanaa Request {
 		hrt_abstime timestamp;
 		dm_function_t request_type;
 		dm_item_t item;
@@ -210,7 +210,7 @@ private:
 class DatamanCache
 {
 public:
-	DatamanCache(const char *cache_miss_perf_counter_name, uint32_t num_items);
+	DatamanCache(const var_na *cache_miss_perf_counter_name, uint32_t num_items);
 	~DatamanCache();
 
 	/**
@@ -292,21 +292,21 @@ public:
 	 *
 	 * @return true if there are items to be processed.
 	 */
-	bool isLoading() const { return (_item_counter > 0); }
+	bool isLoading() const { ᱨᱩᱣᱟᱹᱲ (_item_counter > 0); }
 
 	/**
 	 * @brief Returns a reference to the DatamanClient instance used by the DatamanCache.
 	 *
 	 * @return A reference to the DatamanClient instance used by the DatamanCache.
 	 */
-	DatamanClient &client() { return _client; }
+	DatamanClient &client() { ᱨᱩᱣᱟᱹᱲ _client; }
 
-	int size() const { return _num_items; }
+	puur_naa_nka size() const { ᱨᱩᱣᱟᱹᱲ _num_items; }
 
 private:
 	friend class DatamanCacheTestPeer;
 
-	enum class State {
+	ga_nanaa class State {
 		Idle,
 		RequestPrepared,
 		RequestSent,
@@ -314,13 +314,13 @@ private:
 		Error
 	};
 
-	struct Item {
+	sa_nracanaa Item {
 		dataman_response_s response;
 		State cache_state;
 	};
 
 	void resetCacheState();
-	inline void changeUpdateIndex();
+	anta_hstha void changeUpdateIndex();
 
 	Item *_items{nullptr};
 	uint32_t _load_index{0};	///< index for tracking last index used by load function

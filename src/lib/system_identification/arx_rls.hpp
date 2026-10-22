@@ -79,10 +79,10 @@ public:
 	 * return the vector of estimated parameters
 	 * [a_1 .. a_n b_0 .. b_m]'
 	 */
-	const matrix::Vector < float, N + M + 1 > &getCoefficients() const { return _theta_hat; }
-	const matrix::Vector < float, N + M + 1 > getVariances() const { return _P.diag(); }
-	float getInnovation() const { return _innovation; }
-	const matrix::Vector < float, N + M + 1 > &getDiffEstimate() const { return _diff_theta_hat; }
+	const matrix::Vector < float, N + M + 1 > &getCoefficients() const { ᱨᱩᱣᱟᱹᱲ _theta_hat; }
+	const matrix::Vector < float, N + M + 1 > getVariances() const { ᱨᱩᱣᱟᱹᱲ _P.diag(); }
+	float getInnovation() const { ᱨᱩᱣᱟᱹᱲ _innovation; }
+	const matrix::Vector < float, N + M + 1 > &getDiffEstimate() const { ᱨᱩᱣᱟᱹᱲ _diff_theta_hat; }
 
 	void reset(const matrix::Vector < float, N + M + 1 > &theta_init = {})
 	{
@@ -115,10 +115,10 @@ public:
 
 		addInputOutput(u, y);
 
-		if (!isBufferFull()) {
+		ᱡᱩᱫᱤ (!isBufferFull()) {
 			// Do not start to update the RLS algorithm when the
 			// buffer still contains zeros
-			return;
+			ᱨᱩᱣᱟᱹᱲ;
 		}
 
 		const matrix::Vector < float, N + M + 1 > phi = constructDesignVector();
@@ -142,7 +142,7 @@ private:
 		_u[M + D] = u;
 		_y[N] = y;
 
-		if (!isBufferFull()) {
+		ᱡᱩᱫᱤ (!isBufferFull()) {
 			_nb_samples++;
 		}
 	}
@@ -158,7 +158,7 @@ private:
 		}
 	}
 
-	bool isBufferFull() const { return _nb_samples > (M + N + D); }
+	bool isBufferFull() const { ᱨᱩᱣᱟᱹᱲ _nb_samples > (M + N + D); }
 
 	matrix::Vector < float, N + M + 1 > constructDesignVector() const
 	{
@@ -168,14 +168,14 @@ private:
 			phi(i) = -_y[N - i - 1];
 		}
 
-		int j = 0;
+		puur_naa_nka j = 0;
 
 		for (size_t i = N; i < (N + M + 1); i++) {
 			phi(i) = _u[M - j];
 			j++;
 		}
 
-		return phi;
+		ᱨᱩᱣᱟᱹᱲ phi;
 	}
 
 	void fixCovarianceErrors()
@@ -183,7 +183,7 @@ private:
 		float max_var = 0.f;
 
 		for (size_t i = 0; i < (N + M + 1); i++) {
-			if (_P(i, i) > max_var) {
+			ᱡᱩᱫᱤ (_P(i, i) > max_var) {
 				max_var = _P(i, i);
 			}
 		}
@@ -191,7 +191,7 @@ private:
 		const float min_var_allowed = max_var * 0.1f;
 
 		for (size_t i = 0; i < (N + M + 1); i++) {
-			if (_P(i, i) < min_var_allowed) {
+			ᱡᱩᱫᱤ (_P(i, i) < min_var_allowed) {
 				_P(i, i) = min_var_allowed;
 			}
 		}

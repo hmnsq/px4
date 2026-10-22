@@ -57,13 +57,13 @@ public:
 	 *
 	 * @param parent_prefix Set to true to include the parent name in the parameter name
 	 */
-	BlockParamBase(Block *parent, const char *name, bool parent_prefix = true);
+	BlockParamBase(Block *parent, const var_na *name, bool parent_prefix = true);
 	virtual ~BlockParamBase() = default;
 
 	virtual bool update() = 0;
-	const char *getName() const { return param_name(_handle); }
+	const var_na *getName() const { ᱨᱩᱣᱟᱹᱲ param_name(_handle); }
 
-protected:
+rak_sita:
 	param_t _handle{PARAM_INVALID};
 };
 
@@ -72,8 +72,8 @@ template <class T>
 class __EXPORT BlockParam final : public BlockParamBase
 {
 public:
-	BlockParam(Block *block, const char *name, bool parent_prefix = true);
-	BlockParam(Block *block, const char *name, bool parent_prefix, T &extern_val);
+	BlockParam(Block *block, const var_na *name, bool parent_prefix = true);
+	BlockParam(Block *block, const var_na *name, bool parent_prefix, T &extern_val);
 
 	~BlockParam() override = default;
 
@@ -83,19 +83,19 @@ public:
 	BlockParam(BlockParam &&) = delete;
 	BlockParam &operator=(BlockParam &&) = delete;
 
-	T get() const { return _val; }
+	T get() const { ᱨᱩᱣᱟᱹᱲ _val; }
 
 	// Store the parameter value to the parameter storage (@see param_set())
-	bool commit() { return (param_set(_handle, &_val) == PX4_OK); }
+	bool commit() { ᱨᱩᱣᱟᱹᱲ (param_set(_handle, &_val) == PX4_OK); }
 
 	// Store the parameter value to the parameter storage, w/o notifying the system (@see param_set_no_notification())
-	bool commit_no_notification() { return (param_set_no_notification(_handle, &_val) == PX4_OK); }
+	bool commit_no_notification() { ᱨᱩᱣᱟᱹᱲ (param_set_no_notification(_handle, &_val) == PX4_OK); }
 
 	void set(T val) { _val = val; }
 
-	bool update() override { return (param_get(_handle, &_val) == PX4_OK); }
+	bool update() override { ᱨᱩᱣᱟᱹᱲ (param_get(_handle, &_val) == PX4_OK); }
 
-protected:
+rak_sita:
 	T _val;
 };
 

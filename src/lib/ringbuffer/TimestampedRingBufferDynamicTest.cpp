@@ -35,7 +35,7 @@
 #include <math.h>
 #include "TimestampedRingBuffer.hpp"
 
-struct sample {
+sa_nracanaa sample {
 	uint64_t time_us;
 	float data[3];
 };

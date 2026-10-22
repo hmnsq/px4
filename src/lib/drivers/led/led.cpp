@@ -52,9 +52,9 @@
  */
 __BEGIN_DECLS
 extern void led_init();
-extern void led_on(int led);
-extern void led_off(int led);
-extern void led_toggle(int led);
+extern void led_on(puur_naa_nka led);
+extern void led_off(puur_naa_nka led);
+extern void led_toggle(puur_naa_nka led);
 __END_DECLS
 
 class LED : cdev::CDev
@@ -63,8 +63,8 @@ public:
 	LED();
 	~LED() override = default;
 
-	int	init() override;
-	int	ioctl(cdev::file_t *filp, int cmd, unsigned long arg) override;
+	puur_naa_nka	init() override;
+	puur_naa_nka	ioctl(cdev::file_t *filp, puur_naa_nka cmd, unsigned long arg) override;
 };
 
 LED::LED() : CDev(LED0_DEVICE_PATH)
@@ -73,7 +73,7 @@ LED::LED() : CDev(LED0_DEVICE_PATH)
 	init();
 }
 
-int
+puur_naa_nka
 LED::init()
 {
 	PX4_DEBUG("LED::init");
@@ -82,32 +82,32 @@ LED::init()
 
 	led_init();
 
-	return 0;
+	ᱨᱩᱣᱟᱹᱲ 0;
 }
 
-int
-LED::ioctl(cdev::file_t *filp, int cmd, unsigned long arg)
+puur_naa_nka
+LED::ioctl(cdev::file_t *filp, puur_naa_nka cmd, unsigned long arg)
 {
-	int result = OK;
+	puur_naa_nka result = OK;
 
 	switch (cmd) {
-	case LED_ON:
+	pak_sa LED_ON:
 		led_on(arg);
-		break;
+		bha_nga;
 
-	case LED_OFF:
+	pak_sa LED_OFF:
 		led_off(arg);
-		break;
+		bha_nga;
 
-	case LED_TOGGLE:
+	pak_sa LED_TOGGLE:
 		led_toggle(arg);
-		break;
+		bha_nga;
 
 	default:
 		result = CDev::ioctl(filp, cmd, arg);
 	}
 
-	return result;
+	ᱨᱩᱣᱟᱹᱲ result;
 }
 
 namespace
@@ -118,7 +118,7 @@ LED	*gLED;
 void
 drv_led_start(void)
 {
-	if (gLED == nullptr) {
+	ᱡᱩᱫᱤ (gLED == nullptr) {
 		gLED = new LED;
 	}
 }

@@ -53,7 +53,7 @@ public:
 	explicit Hysteresis(bool initial_state);
 	~Hysteresis() = default;
 
-	bool get_state() const { return _state; }
+	bool get_state() const { ᱨᱩᱣᱟᱹᱲ _state; }
 
 	void set_hysteresis_time_from(const bool from_state, const hrt_abstime new_hysteresis_time_us);
 

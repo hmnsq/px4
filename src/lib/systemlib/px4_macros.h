@@ -57,59 +57,59 @@
 #define _PX4_MACROS_H
 
 
-#if !defined(arraySize)
-#define arraySize(a) (sizeof((a))/sizeof((a[0])))
+#ᱡᱩᱫᱤ !defined(arraySize)
+#define arraySize(a) (parimaa_na((a))/parimaa_na((a[0])))
 #endif
 
-#if !defined(NO_BLOAT)
-#if defined(__BASE_FILE__)
+#ᱡᱩᱫᱤ !defined(NO_BLOAT)
+#ᱡᱩᱫᱤ defined(__BASE_FILE__)
 #define _FILE_NAME_ __BASE_FILE__
-#else
+#ᱵᱟᱝ
 #define _FILE_NAME_ __FILE__
 #endif
-#else
+#ᱵᱟᱝ
 #define _FILE_NAME_ ""
 #endif
 
-#if !defined(INVALID_CASE)
+#ᱡᱩᱫᱤ !defined(INVALID_CASE)
 #define INVALID_CASE(c) printf("Invalid Case %d, %s:%d",(c),__BASE_FILE__,__LINE__) /* todo use PANIC */
 #endif
 
-#if !defined(UNUSED)
+#ᱡᱩᱫᱤ !defined(UNUSED)
 #define UNUSED(var) (void)(var)
 #endif
 
-#if !defined(CAT)
-#if !defined(_CAT)
+#ᱡᱩᱫᱤ !defined(CAT)
+#ᱡᱩᱫᱤ !defined(_CAT)
 #define _CAT(a, b) a ## b
 #endif
 #define CAT(a, b) _CAT(a, b)
 #endif
 
-#if !defined(FREEZE_STR)
+#ᱡᱩᱫᱤ !defined(FREEZE_STR)
 #  define FREEZE_STR(s) #s
 #endif
 
-#if !defined(STRINGIFY)
+#ᱡᱩᱫᱤ !defined(STRINGIFY)
 #define STRINGIFY(s) FREEZE_STR(s)
 #endif
 
-#if !defined(CCASSERT)
-#if defined(static_assert)
+#ᱡᱩᱫᱤ !defined(CCASSERT)
+#ᱡᱩᱫᱤ defined(static_assert)
 #		define CCASSERT(predicate) static_assert(predicate, STRINGIFY(predicate))
-#	else
+#	ᱵᱟᱝ
 #		define CCASSERT(predicate) _x_CCASSERT_LINE(predicate, __LINE__)
-#		if !defined(_x_CCASSERT_LINE)
-#			define _x_CCASSERT_LINE(predicate, line) typedef char CAT(constraint_violated_on_line_,line)[2*((predicate)!=0)-1] __attribute__ ((unused)) ;
+#		ᱡᱩᱫᱤ !defined(_x_CCASSERT_LINE)
+#			define _x_CCASSERT_LINE(predicate, line) typedef var_na CAT(constraint_violated_on_line_,line)[2*((predicate)!=0)-1] __attribute__ ((unused)) ;
 #		endif
 #	endif
 #endif
 
-#if !defined(DO_PRAGMA)
+#ᱡᱩᱫᱤ !defined(DO_PRAGMA)
 #  define DO_PRAGMA(x) _Pragma (#x)
 #endif
 
-#if !defined(TODO)
+#ᱡᱩᱫᱤ !defined(TODO)
 #  define TODO(x) DO_PRAGMA(message ("TODO - " #x))
 #endif
 

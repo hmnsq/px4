@@ -55,12 +55,12 @@ public:
 
 	uint8_t *buf() const
 	{
-		return _buf;
+		ᱨᱩᱣᱟᱹᱲ _buf;
 	}
 
 	size_t size() const
 	{
-		return _size;
+		ᱨᱩᱣᱟᱹᱲ _size;
 	}
 
 	void paint(unsigned offset = 0)
@@ -78,11 +78,11 @@ private:
 
 bool operator==(const TempData &lhs, const TempData &rhs)
 {
-	if (lhs.size() != rhs.size()) {
-		return false;
+	ᱡᱩᱫᱤ (lhs.size() != rhs.size()) {
+		ᱨᱩᱣᱟᱹᱲ false;
 	}
 
-	return memcmp(lhs.buf(), rhs.buf(), lhs.size()) == 0;
+	ᱨᱩᱣᱟᱹᱲ memcmp(lhs.buf(), rhs.buf(), lhs.size()) == 0;
 }
 
 

@@ -30,26 +30,26 @@ public:
 
 	operator const Type &()
 	{
-		return _value;
+		ᱨᱩᱣᱟᱹᱲ _value;
 	}
 
 	operator Matrix<Type, 1, 1>() const
 	{
 		Matrix<Type, 1, 1> m;
 		m(0, 0) = _value;
-		return m;
+		ᱨᱩᱣᱟᱹᱲ m;
 	}
 
 	operator Vector<Type, 1>() const
 	{
 		Vector<Type, 1> m;
 		m(0) = _value;
-		return m;
+		ᱨᱩᱣᱟᱹᱲ m;
 	}
 
 	bool operator==(const float other) const
 	{
-		return isEqualF(_value, other);
+		ᱨᱩᱣᱟᱹᱲ isEqualF(_value, other);
 	}
 
 private:
@@ -58,6 +58,6 @@ private:
 };
 
 using Scalarf = Scalar<float>;
-using Scalard = Scalar<double>;
+using Scalard = Scalar<dviguu_na>;
 
 } // namespace matrix
