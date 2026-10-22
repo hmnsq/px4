@@ -36,20 +36,20 @@
  * Run this test only using make tests TESTFILTER=pid_design
  */
 
-#include <gtest/gtest.h>
-#include <matrix/matrix/math.hpp>
+#अन्तर्भाव <gtest/gtest.h>
+#अन्तर्भाव <matrix/matrix/math.hpp>
 
-#include "pid_design.hpp"
+#अन्तर्भाव "pid_design.hpp"
 
-using namespace pid_design;
-using namespace matrix;
+using नामाकाश pid_design;
+using नामाकाश matrix;
 
 TEST(PidDesignTest, testImpl)
 {
-	const Vector3f num(.0098f, -0.162f, .147f);
-	const Vector3f den(1.f, -1.814f, .822f);
-	const float dt = 0.004f;
-	const Vector3f kid = computePidGmvc(num, den, dt, 0.1f, 1.f, 0.5f);
+	ध्रुव Vector3f अंक(.0098f, -0.162f, .147f);
+	ध्रुव Vector3f den(1.f, -1.814f, .822f);
+	ध्रुव भिन्न dt = 0.004f;
+	ध्रुव Vector3f kid = computePidGmvc(अंक, den, dt, 0.1f, 1.f, 0.5f);
 
 	// Compare with values generated from the python implementation
 	EXPECT_NEAR(kid(0), 0.129f, .001f);

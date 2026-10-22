@@ -37,19 +37,19 @@
  *
  */
 
-#include "WeatherVane.hpp"
-#include <mathlib/mathlib.h>
+#अन्तर्भाव "WeatherVane.hpp"
+#अन्तर्भाव <mathlib/mathlib.h>
 
 
 WeatherVane::WeatherVane(ModuleParams *parent) :
 	ModuleParams(parent)
 { }
 
-void WeatherVane::update()
+शून्य WeatherVane::update()
 {
 	vehicle_control_mode_s vehicle_control_mode;
 
-	if (_vehicle_control_mode_sub.update(&vehicle_control_mode)) {
+	यदि (_vehicle_control_mode_sub.update(&vehicle_control_mode)) {
 		_flag_control_manual_enabled = vehicle_control_mode.flag_control_manual_enabled;
 		_flag_control_position_enabled = vehicle_control_mode.flag_control_position_enabled;
 	}
@@ -62,7 +62,7 @@ void WeatherVane::update()
 			 || (!_flag_control_manual_enabled && !_navigator_force_disabled));
 }
 
-float WeatherVane::getWeathervaneYawrate()
+भिन्न WeatherVane::getWeathervaneYawrate()
 {
 	// direction of desired body z axis represented in earth frame
 	vehicle_attitude_setpoint_s vehicle_attitude_setpoint;
@@ -77,18 +77,18 @@ float WeatherVane::getWeathervaneYawrate()
 	body_z_sp = R_yaw * body_z_sp;
 	body_z_sp.normalize();
 
-	float roll_sp = -asinf(body_z_sp(1));
+	भिन्न roll_sp = -asinf(body_z_sp(1));
 
-	float roll_exceeding_treshold = 0.0f;
-	float min_roll_rad = math::radians(_param_wv_roll_min.get());
+	भिन्न roll_exceeding_treshold = 0.0f;
+	भिन्न min_roll_rad = math::radians(_param_wv_roll_min.get());
 
-	if (roll_sp > min_roll_rad) {
+	यदि (roll_sp > min_roll_rad) {
 		roll_exceeding_treshold = roll_sp - min_roll_rad;
 
-	} else if (roll_sp < -min_roll_rad) {
+	} अन्यथा यदि (roll_sp < -min_roll_rad) {
 		roll_exceeding_treshold = roll_sp + min_roll_rad;
 	}
 
-	return math::constrain(roll_exceeding_treshold * _param_wv_gain.get(), -math::radians(_param_wv_yrate_max.get()),
+	प्रत्यागम math::constrain(roll_exceeding_treshold * _param_wv_gain.get(), -math::radians(_param_wv_yrate_max.get()),
 			       math::radians(_param_wv_yrate_max.get()));
 }
