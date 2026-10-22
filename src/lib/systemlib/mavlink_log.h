@@ -39,32 +39,32 @@
  * @author Julian Oes <julian@oes.ch>
  */
 
-#pragma once
+#ہدایت once
 
-#include <px4_log.h>
-#include <uORB/uORB.h>
+#ضمن <px4_log.h>
+#ضمن <uORB/uORB.h>
 
 /**
  * The maximum string length supported.
  */
-#define MAVLINK_LOG_MAXLEN			50
+#تعریف_کرو MAVLINK_LOG_MAXLEN			50
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-__EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, const char *fmt, ...);
-#ifdef __cplusplus
+#جے_تعریف_شدہ __cplusplus
+خارجي "C" {
+#جے_انت
+__EXPORT فراغ mavlink_vasprintf(صحيح severity, orb_advert_t *mavlink_log_pub, ثابت حرف *fmt, ...);
+#جے_تعریف_شدہ __cplusplus
 }
-#endif
+#جے_انت
 
-#define _MSG_PRIO_DEBUG		7
-#define _MSG_PRIO_INFO		6
-#define _MSG_PRIO_NOTICE	5
-#define _MSG_PRIO_WARNING	4
-#define _MSG_PRIO_ERROR		3
-#define _MSG_PRIO_CRITICAL	2
-#define _MSG_PRIO_ALERT		1
-#define _MSG_PRIO_EMERGENCY	0
+#تعریف_کرو پیغام_PRIO_DEBUG		7
+#تعریف_کرو پیغام_PRIO_INFO		6
+#تعریف_کرو پیغام_PRIO_NOTICE	5
+#تعریف_کرو پیغام_PRIO_WARNING	4
+#تعریف_کرو پیغام_PRIO_ERROR		3
+#تعریف_کرو پیغام_PRIO_CRITICAL	2
+#تعریف_کرو پیغام_PRIO_ALERT		1
+#تعریف_کرو پیغام_PRIO_EMERGENCY	0
 
 /*
  * The va_args implementation here is not beautiful, but obviously we run into the same issues
@@ -79,11 +79,11 @@ __EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, con
  * @param _pub		Pointer to the uORB advert;
  * @param _text		The text to log;
  */
-#define mavlink_log_info(_pub, _text, ...)			\
-	do { \
-		mavlink_vasprintf(_MSG_PRIO_INFO, _pub, _text, ##__VA_ARGS__); \
-		PX4_INFO(_text, ##__VA_ARGS__); \
-	} while(0);
+#تعریف_کرو mavlink_log_info(_pub, متن_2, ...)			\
+	افعل { \
+		mavlink_vasprintf(پیغام_PRIO_INFO, _pub, متن_2, ##__VA_ARGS__); \
+		PX4_INFO(متن_2, ##__VA_ARGS__); \
+	} طالما(0);
 
 /**
  * Send a mavlink warning message and print to console.
@@ -91,11 +91,11 @@ __EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, con
  * @param _pub		Pointer to the uORB advert;
  * @param _text		The text to log;
  */
-#define mavlink_log_warning(_pub, _text, ...) \
-	do { \
-		mavlink_vasprintf(_MSG_PRIO_WARNING, _pub, _text, ##__VA_ARGS__); \
-		PX4_WARN(_text, ##__VA_ARGS__); \
-	} while(0);
+#تعریف_کرو mavlink_log_warning(_pub, متن_2, ...) \
+	افعل { \
+		mavlink_vasprintf(پیغام_PRIO_WARNING, _pub, متن_2, ##__VA_ARGS__); \
+		PX4_WARN(متن_2, ##__VA_ARGS__); \
+	} طالما(0);
 
 /**
  * Send a mavlink emergency message and print to console.
@@ -103,11 +103,11 @@ __EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, con
  * @param _pub		Pointer to the uORB advert;
  * @param _text		The text to log;
  */
-#define mavlink_log_emergency(_pub, _text, ...) \
-	do { \
-		mavlink_vasprintf(_MSG_PRIO_EMERGENCY, _pub, _text, ##__VA_ARGS__); \
-		PX4_ERR(_text, ##__VA_ARGS__); \
-	} while(0);
+#تعریف_کرو mavlink_log_emergency(_pub, متن_2, ...) \
+	افعل { \
+		mavlink_vasprintf(پیغام_PRIO_EMERGENCY, _pub, متن_2, ##__VA_ARGS__); \
+		PX4_ERR(متن_2, ##__VA_ARGS__); \
+	} طالما(0);
 
 /**
  * Send a mavlink critical message and print to console.
@@ -115,8 +115,8 @@ __EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, con
  * @param _pub		Pointer to the uORB advert;
  * @param _text		The text to log;
  */
-#define mavlink_log_critical(_pub, _text, ...) \
-	do { \
-		mavlink_vasprintf(_MSG_PRIO_CRITICAL, _pub, _text, ##__VA_ARGS__); \
-		PX4_WARN(_text, ##__VA_ARGS__); \
-	} while(0);
+#تعریف_کرو mavlink_log_critical(_pub, متن_2, ...) \
+	افعل { \
+		mavlink_vasprintf(پیغام_PRIO_CRITICAL, _pub, متن_2, ##__VA_ARGS__); \
+		PX4_WARN(متن_2, ##__VA_ARGS__); \
+	} طالما(0);

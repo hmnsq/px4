@@ -31,25 +31,25 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/integration.hpp>
+#ضمن <gtest/gtest.h>
+#ضمن <matrix/integration.hpp>
 
-using namespace matrix;
+ورتوں نطاق میٹرکس;
 
-Vector<float, 6> f(float t, const Matrix<float, 6, 1> &  /*y*/, const Matrix<float, 3, 1> &  /*u*/)
+سمتیہ<عائم, 6> f(عائم t, ثابت میٹرکس_2<عائم, 6, 1> &  /*y*/, ثابت میٹرکس_2<عائم, 3, 1> &  /*u*/)
 {
-	float v = -sin(t);
-	return v * ones<float, 6, 1>();
+	عائم v = -جیب(t);
+	أرجع v * ones<عائم, 6, 1>();
 }
 
-TEST(MatrixIntegralTest, Integral)
+TEST(میٹرکس_Integral_Test, Integral)
 {
-	Vector<float, 6> y = ones<float, 6, 1>();
-	Vector<float, 3> u = ones<float, 3, 1>();
-	float t0 = 0;
-	float tf = 2;
-	float h = 0.001f;
+	سمتیہ<عائم, 6> y = ones<عائم, 6, 1>();
+	سمتیہ<عائم, 3> u = ones<عائم, 3, 1>();
+	عائم t0 = 0;
+	عائم tf = 2;
+	عائم h = 0.001f;
 	integrate_rk4(f, y, u, t0, tf, h, y);
-	float v = 1 + std::cos(tf) - std::cos(t0);
-	EXPECT_EQ(y, (ones<float, 6, 1>()*v));
+	عائم v = 1 + std::جیب_تمام(tf) - std::جیب_تمام(t0);
+	EXPECT_EQ(y, (ones<عائم, 6, 1>()*v));
 }

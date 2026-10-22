@@ -37,52 +37,52 @@
  * Controller library code
  */
 
-#pragma once
+#ہدایت once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <assert.h>
+#ضمن <time.h>
+#ضمن <stdlib.h>
+#ضمن <math.h>
+#ضمن <mathlib/math/test/test.hpp>
+#ضمن <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ضمن "block/Block.hpp"
+#ضمن "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ضمن "matrix/math.hpp"
 
-namespace control
+نطاق control
 {
 
 /**
  * A proportional-derivative controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockPD: public SuperBlock
+صنف __EXPORT بلاک_PD: عام Super_بلاک
 {
-public:
+عام:
 // methods
-	BlockPD(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
-		_derivative(this, "D"),
-		_kP(this, "P"),
-		_kD(this, "D")
+	بلاک_PD(Super_بلاک *ماپا, ثابت حرف *name) :
+		Super_بلاک(ماپا, name),
+		_derivative(هذا, "D"),
+		_kP(هذا, "P"),
+		_kD(هذا, "D")
 	{}
-	virtual ~BlockPD() = default;
-	float update(float input)
+	مجازی ~بلاک_PD() = افتراضي;
+	عائم update(عائم داخلہ)
 	{
-		return getKP() * input +
-		       getKD() * getDerivative().update(input);
+		أرجع getKP() * داخلہ +
+		       getKD() * getDerivative().update(داخلہ);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKD() { return _kD.get(); }
-	BlockDerivative &getDerivative() { return _derivative; }
-private:
-	BlockDerivative _derivative;
-	control::BlockParamFloat _kP;
-	control::BlockParamFloat _kD;
+	عائم getKP() { أرجع _kP.get(); }
+	عائم getKD() { أرجع _kD.get(); }
+	بلاک_Derivative &getDerivative() { أرجع _derivative; }
+خاص:
+	بلاک_Derivative _derivative;
+	control::بلاک_Param_Float _kP;
+	control::بلاک_Param_Float _kD;
 };
 
 } // namespace control

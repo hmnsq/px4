@@ -46,20 +46,20 @@
  * http://www.roboticsproceedings.org/rss09/p50.pdf
  */
 
-#pragma once
+#ہدایت once
 
-#include <matrix/matrix/math.hpp>
+#ضمن <matrix/matrix/math.hpp>
 
-class FieldSensorBiasEstimator
+صنف میدان_Sensor_Bias_Estimator
 {
-public:
-	FieldSensorBiasEstimator() = default;
-	~FieldSensorBiasEstimator() = default;
+عام:
+	میدان_Sensor_Bias_Estimator() = افتراضي;
+	~میدان_Sensor_Bias_Estimator() = افتراضي;
 
 	// Set initial states
-	void setField(const matrix::Vector3f &field) { _field_prev = field; }
-	void setBias(const matrix::Vector3f &bias) { _state_bias = bias; }
-	void setLearningGain(float learning_gain) { _learning_gain = learning_gain; }
+	فراغ سیٹ_میدان(ثابت میٹرکس::Vector3f &میدان) { میدان_prev = میدان; }
+	فراغ سیٹ_Bias(ثابت میٹرکس::Vector3f &bias) { _state_bias = bias; }
+	فراغ سیٹ_Learning_Gain(عائم learning_gain) { _learning_gain = learning_gain; }
 
 	/**
 	 * Update the estimator and extract updated biases.
@@ -67,20 +67,20 @@ public:
 	 * @param field biased field sensor data
 	 * @param dt time in seconds since the last update
 	 */
-	void updateEstimate(const matrix::Vector3f &gyro, const matrix::Vector3f &field, const float dt)
+	فراغ updateEstimate(ثابت میٹرکس::Vector3f &gyro, ثابت میٹرکس::Vector3f &میدان, ثابت عائم dt)
 	{
-		const matrix::Vector3f field_pred = _field_prev + (-gyro % (_field_prev - _state_bias)) * dt;
-		const matrix::Vector3f field_innov = field - field_pred;
-		_state_bias += _learning_gain * (-gyro % field_innov) * dt;
-		_field_prev = field;
+		ثابت میٹرکس::Vector3f میدان_pred = میدان_prev + (-gyro % (میدان_prev - _state_bias)) * dt;
+		ثابت میٹرکس::Vector3f میدان_innov = میدان - میدان_pred;
+		_state_bias += _learning_gain * (-gyro % میدان_innov) * dt;
+		میدان_prev = میدان;
 	}
 
-	const matrix::Vector3f &getField() { return _field_prev; }
-	const matrix::Vector3f &getBias() { return _state_bias; }
+	ثابت میٹرکس::Vector3f &get_میدان() { أرجع میدان_prev; }
+	ثابت میٹرکس::Vector3f &getBias() { أرجع _state_bias; }
 
-private:
-	// states
-	matrix::Vector3f _field_prev{};
-	matrix::Vector3f _state_bias{};
-	float _learning_gain{20.f};
+خاص:
+	//حالتاں
+	میٹرکس::Vector3f میدان_prev{};
+	میٹرکس::Vector3f _state_bias{};
+	عائم _learning_gain{20.f};
 };

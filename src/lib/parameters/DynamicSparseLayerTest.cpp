@@ -41,48 +41,48 @@
  * to catch use-after-free or data races.
  */
 
-#include <gtest/gtest.h>
+#ضمن <gtest/gtest.h>
 
-#include <parameters/px4_parameters.hpp>
-#include "DynamicSparseLayer.h"
+#ضمن <parameters/px4_parameters.hpp>
+#ضمن "DynamicSparseLayer.h"
 
-#include <atomic>
-#include <thread>
-#include <vector>
+#ضمن <atomic>
+#ضمن <thread>
+#ضمن <vector>
 
 /**
  * Minimal ParamLayer parent that returns a default zero value for all params.
  */
-class StubParamLayer : public ParamLayer
+صنف StubParamLayer : عام ParamLayer
 {
-public:
-	StubParamLayer() : ParamLayer(nullptr) {}
-	virtual ~StubParamLayer() = default;
+عام:
+	StubParamLayer() : ParamLayer(خالی_سوچک) {}
+	مجازی ~StubParamLayer() = افتراضي;
 
-	bool store(param_t, param_value_u) override { return false; }
-	bool contains(param_t) const override { return false; }
+	منطقي store(param_t, param_قدر_u) override { أرجع خطأ; }
+	منطقي شامل_اے(param_t) ثابت override { أرجع خطأ; }
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_گنتی> containedAsBitset() ثابت override
 	{
-		return px4::AtomicBitset<PARAM_COUNT>();
+		أرجع px4::AtomicBitset<PARAM_گنتی>();
 	}
 
-	param_value_u get(param_t) const override
+	param_قدر_u get(param_t) ثابت override
 	{
-		param_value_u v{};
+		param_قدر_u v{};
 		v.i = 0;
-		return v;
+		أرجع v;
 	}
 
-	void reset(param_t) override {}
-	void refresh(param_t) override {}
-	int size() const override { return 0; }
-	int byteSize() const override { return 0; }
+	فراغ reset(param_t) override {}
+	فراغ refresh(param_t) override {}
+	صحيح ناپ() ثابت override { أرجع 0; }
+	صحيح byte_ناپ() ثابت override { أرجع 0; }
 };
 
-class DynamicSparseLayerConcurrentTest : public ::testing::Test
+صنف DynamicSparseLayerConcurrentTest : عام ::testing::Test
 {
-protected:
+محمي:
 	StubParamLayer stub;
 };
 
@@ -91,31 +91,31 @@ protected:
 // this safely stresses the read-side during buffer reallocation.
 TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentStoreGetRace)
 {
-	for (int rep = 0; rep < 50; rep++) {
+	لكل (صحيح rep = 0; rep < 50; rep++) {
 		DynamicSparseLayer layer(&stub, /*n_prealloc=*/2, /*n_grow=*/1);
 
-		constexpr int NUM_PARAMS = 100;
-		std::atomic<bool> stop{false};
+		constexpr صحيح عدد_PARAMS = 100;
+		std::atomic<منطقي> stop{خطأ};
 
 		std::thread writer([&]() {
-			for (int i = 0; i < NUM_PARAMS; i++) {
-				param_value_u v{};
+			لكل (صحيح i = 0; i < عدد_PARAMS; i++) {
+				param_قدر_u v{};
 				v.i = i * 10;
 				layer.store(static_cast<param_t>(i), v);
 			}
 
-			stop.store(true, std::memory_order_release);
+			stop.store(سچ, std::حافظہ_ترتیب_release);
 		});
 
-		std::vector<std::thread> readers;
+		std::سمتیہ_2<std::thread> readers;
 
-		for (int r = 0; r < 4; r++) {
-			readers.emplace_back([&]() {
-				while (!stop.load(std::memory_order_acquire)) {
-					int current_size = layer.size();
+		لكل (صحيح r = 0; r < 4; r++) {
+			readers.emplace_پٹھ([&]() {
+				طالما (!stop.لدو(std::حافظہ_ترتیب_acquire)) {
+					صحيح current_ناپ = layer.ناپ();
 
-					for (int i = 0; i < current_size && i < NUM_PARAMS; i++) {
-						layer.contains(static_cast<param_t>(i));
+					لكل (صحيح i = 0; i < current_ناپ && i < عدد_PARAMS; i++) {
+						layer.شامل_اے(static_cast<param_t>(i));
 						layer.get(static_cast<param_t>(i));
 					}
 				}
@@ -124,19 +124,19 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentStoreGetRace)
 
 		writer.join();
 
-		for (auto &t : readers) {
+		لكل (خودکار &t : readers) {
 			t.join();
 		}
 
-		for (int i = 0; i < NUM_PARAMS; i++) {
-			ASSERT_TRUE(layer.contains(static_cast<param_t>(i)))
+		لكل (صحيح i = 0; i < عدد_PARAMS; i++) {
+			ASSERT_TRUE(layer.شامل_اے(static_cast<param_t>(i)))
 					<< "rep=" << rep << " param=" << i;
-			param_value_u v = layer.get(static_cast<param_t>(i));
+			param_قدر_u v = layer.get(static_cast<param_t>(i));
 			ASSERT_EQ(v.i, i * 10)
 					<< "rep=" << rep << " param=" << i;
 		}
 
-		ASSERT_EQ(layer.size(), NUM_PARAMS);
+		ASSERT_EQ(layer.ناپ(), عدد_PARAMS);
 	}
 }
 
@@ -144,39 +144,39 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentStoreGetRace)
 // Pre-allocated to avoid concurrent _grow() which has a known ABA
 // limitation in the CAS retry loop (see _grow() implementation).
 // This test validates concurrent store correctness.
-TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentMultipleWriters)
+TEST_F(DynamicSparseLayerConcurrentTest, Concurrent_مضرب_Writers)
 {
-	constexpr int PARAMS_PER_WRITER = 50;
-	constexpr int NUM_WRITERS = 4;
-	constexpr int TOTAL = NUM_WRITERS * PARAMS_PER_WRITER;
+	constexpr صحيح PARAMS_فی_WRITER = 50;
+	constexpr صحيح عدد_WRITERS = 4;
+	constexpr صحيح کل = عدد_WRITERS * PARAMS_فی_WRITER;
 
-	for (int rep = 0; rep < 20; rep++) {
-		DynamicSparseLayer layer(&stub, /*n_prealloc=*/TOTAL, /*n_grow=*/1);
+	لكل (صحيح rep = 0; rep < 20; rep++) {
+		DynamicSparseLayer layer(&stub, /*n_prealloc=*/کل, /*n_grow=*/1);
 
-		std::vector<std::thread> writers;
+		std::سمتیہ_2<std::thread> writers;
 
-		for (int w = 0; w < NUM_WRITERS; w++) {
-			writers.emplace_back([&layer, w]() {
-				int base = w * PARAMS_PER_WRITER;
+		لكل (صحيح w = 0; w < عدد_WRITERS; w++) {
+			writers.emplace_پٹھ([&layer, w]() {
+				صحيح base = w * PARAMS_فی_WRITER;
 
-				for (int i = 0; i < PARAMS_PER_WRITER; i++) {
-					param_value_u v{};
+				لكل (صحيح i = 0; i < PARAMS_فی_WRITER; i++) {
+					param_قدر_u v{};
 					v.i = (base + i) * 10;
 					layer.store(static_cast<param_t>(base + i), v);
 				}
 			});
 		}
 
-		for (auto &t : writers) {
+		لكل (خودکار &t : writers) {
 			t.join();
 		}
 
-		ASSERT_EQ(layer.size(), TOTAL) << "rep=" << rep;
+		ASSERT_EQ(layer.ناپ(), کل) << "rep=" << rep;
 
-		for (int i = 0; i < TOTAL; i++) {
-			ASSERT_TRUE(layer.contains(static_cast<param_t>(i)))
+		لكل (صحيح i = 0; i < کل; i++) {
+			ASSERT_TRUE(layer.شامل_اے(static_cast<param_t>(i)))
 					<< "rep=" << rep << " param=" << i;
-			param_value_u v = layer.get(static_cast<param_t>(i));
+			param_قدر_u v = layer.get(static_cast<param_t>(i));
 			ASSERT_EQ(v.i, i * 10)
 					<< "rep=" << rep << " param=" << i;
 		}
@@ -186,59 +186,59 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentMultipleWriters)
 // Combined stress: writers store while readers access concurrently.
 TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentWritersAndReaders)
 {
-	constexpr int PARAMS_PER_WRITER = 50;
-	constexpr int NUM_WRITERS = 2;
-	constexpr int TOTAL = NUM_WRITERS * PARAMS_PER_WRITER;
+	constexpr صحيح PARAMS_فی_WRITER = 50;
+	constexpr صحيح عدد_WRITERS = 2;
+	constexpr صحيح کل = عدد_WRITERS * PARAMS_فی_WRITER;
 
-	for (int rep = 0; rep < 20; rep++) {
+	لكل (صحيح rep = 0; rep < 20; rep++) {
 		DynamicSparseLayer layer(&stub, /*n_prealloc=*/2, /*n_grow=*/1);
-		std::atomic<bool> stop{false};
+		std::atomic<منطقي> stop{خطأ};
 
-		std::vector<std::thread> writers;
+		std::سمتیہ_2<std::thread> writers;
 
-		for (int w = 0; w < NUM_WRITERS; w++) {
-			writers.emplace_back([&layer, w]() {
-				int base = w * PARAMS_PER_WRITER;
+		لكل (صحيح w = 0; w < عدد_WRITERS; w++) {
+			writers.emplace_پٹھ([&layer, w]() {
+				صحيح base = w * PARAMS_فی_WRITER;
 
-				for (int i = 0; i < PARAMS_PER_WRITER; i++) {
-					param_value_u v{};
+				لكل (صحيح i = 0; i < PARAMS_فی_WRITER; i++) {
+					param_قدر_u v{};
 					v.i = (base + i) * 10;
 					layer.store(static_cast<param_t>(base + i), v);
 				}
 			});
 		}
 
-		std::vector<std::thread> readers;
+		std::سمتیہ_2<std::thread> readers;
 
-		for (int r = 0; r < 4; r++) {
-			readers.emplace_back([&]() {
-				while (!stop.load(std::memory_order_acquire)) {
-					int current_size = layer.size();
+		لكل (صحيح r = 0; r < 4; r++) {
+			readers.emplace_پٹھ([&]() {
+				طالما (!stop.لدو(std::حافظہ_ترتیب_acquire)) {
+					صحيح current_ناپ = layer.ناپ();
 
-					for (int i = 0; i < current_size && i < TOTAL; i++) {
-						layer.contains(static_cast<param_t>(i));
+					لكل (صحيح i = 0; i < current_ناپ && i < کل; i++) {
+						layer.شامل_اے(static_cast<param_t>(i));
 						layer.get(static_cast<param_t>(i));
 					}
 				}
 			});
 		}
 
-		for (auto &t : writers) {
+		لكل (خودکار &t : writers) {
 			t.join();
 		}
 
-		stop.store(true, std::memory_order_release);
+		stop.store(سچ, std::حافظہ_ترتیب_release);
 
-		for (auto &t : readers) {
+		لكل (خودکار &t : readers) {
 			t.join();
 		}
 
-		ASSERT_EQ(layer.size(), TOTAL) << "rep=" << rep;
+		ASSERT_EQ(layer.ناپ(), کل) << "rep=" << rep;
 
-		for (int i = 0; i < TOTAL; i++) {
-			ASSERT_TRUE(layer.contains(static_cast<param_t>(i)))
+		لكل (صحيح i = 0; i < کل; i++) {
+			ASSERT_TRUE(layer.شامل_اے(static_cast<param_t>(i)))
 					<< "rep=" << rep << " param=" << i;
-			param_value_u v = layer.get(static_cast<param_t>(i));
+			param_قدر_u v = layer.get(static_cast<param_t>(i));
 			ASSERT_EQ(v.i, i * 10)
 					<< "rep=" << rep << " param=" << i;
 		}

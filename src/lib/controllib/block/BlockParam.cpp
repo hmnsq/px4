@@ -37,108 +37,108 @@
  * Controller library code
  */
 
-#include "Block.hpp"
-#include "BlockParam.hpp"
+#ضمن "Block.hpp"
+#ضمن "BlockParam.hpp"
 
-#include <cstdio>
-#include <cstring>
+#ضمن <cstdio>
+#ضمن <cstring>
 
-#include <containers/List.hpp>
+#ضمن <containers/List.hpp>
 
-#include <px4_platform_common/log.h>
+#ضمن <px4_platform_common/log.h>
 
-namespace control
+نطاق control
 {
 
-BlockParamBase::BlockParamBase(Block *parent, const char *name, bool parent_prefix)
+بلاک_Param_ادھار::بلاک_Param_ادھار(بلاک *ماپا, ثابت حرف *name, منطقي ماپا_اگیتر)
 {
-	char fullname[blockNameLengthMax];
+	حرف fullname[بلاک_Name_لمائی_Max];
 
-	if (parent == nullptr) {
-		strncpy(fullname, name, blockNameLengthMax - 1);
-		fullname[sizeof(fullname) - 1] = '\0';
+	إذا (ماپا == خالی_سوچک) {
+		strncpy(fullname, name, بلاک_Name_لمائی_Max - 1);
+		fullname[حجم(fullname) - 1] = '\0';
 
-	} else {
-		char parentName[blockNameLengthMax];
-		parent->getName(parentName, blockNameLengthMax);
+	} وإلا {
+		حرف ماپا_Name[بلاک_Name_لمائی_Max];
+		ماپا->getName(ماپا_Name, بلاک_Name_لمائی_Max);
 
-		if (strcmp(name, "") == 0) {
-			strncpy(fullname, parentName, blockNameLengthMax);
+		إذا (strcmp(name, "") == 0) {
+			strncpy(fullname, ماپا_Name, بلاک_Name_لمائی_Max);
 			// ensure string is terminated
-			fullname[sizeof(fullname) - 1] = '\0';
+			fullname[حجم(fullname) - 1] = '\0';
 
-		} else if (parent_prefix) {
-			if (snprintf(fullname, blockNameLengthMax, "%s_%s", parentName, name) >= blockNameLengthMax) {
+		} وإلا إذا (ماپا_اگیتر) {
+			إذا (snprintf(fullname, بلاک_Name_لمائی_Max, "%s_%s", ماپا_Name, name) >= بلاک_Name_لمائی_Max) {
 				PX4_ERR("param too long: %s", name);
 			}
 
-		} else {
-			strncpy(fullname, name, blockNameLengthMax);
+		} وإلا {
+			strncpy(fullname, name, بلاک_Name_لمائی_Max);
 			// ensure string is terminated
-			fullname[sizeof(fullname) - 1] = '\0';
+			fullname[حجم(fullname) - 1] = '\0';
 		}
 
-		parent->getParams().add(this);
+		ماپا->getParams().جوڑو(هذا);
 	}
 
-	_handle = param_find(fullname);
+	_handle = param_لبھو(fullname);
 
-	if (_handle == PARAM_INVALID) {
+	إذا (_handle == PARAM_INVALID) {
 		PX4_ERR("error finding param: %s", fullname);
 	}
 };
 
-template <>
-BlockParam<bool>::BlockParam(Block *block, const char *name, bool parent_prefix) :
-	BlockParamBase(block, name, parent_prefix),
+سانچا <>
+بلاک_Param<منطقي>::بلاک_Param(بلاک *بلاک_2, ثابت حرف *name, منطقي ماپا_اگیتر) :
+	بلاک_Param_ادھار(بلاک_2, name, ماپا_اگیتر),
 	_val()
 {
 	update();
 }
 
-template <>
-bool BlockParam<bool>::update()
+سانچا <>
+منطقي بلاک_Param<منطقي>::update()
 {
 	int32_t tmp = 0;
-	int ret = param_get(_handle, &tmp);
+	صحيح ret = param_get(_handle, &tmp);
 
-	if (tmp == 1) {
-		_val = true;
+	إذا (tmp == 1) {
+		_val = سچ;
 
-	} else {
-		_val = false;
+	} وإلا {
+		_val = خطأ;
 	}
 
-	return (ret == PX4_OK);
+	أرجع (ret == PX4_OK);
 }
 
-template <>
-BlockParam<int32_t>::BlockParam(Block *block, const char *name, bool parent_prefix) :
-	BlockParamBase(block, name, parent_prefix),
+سانچا <>
+بلاک_Param<int32_t>::بلاک_Param(بلاک *بلاک_2, ثابت حرف *name, منطقي ماپا_اگیتر) :
+	بلاک_Param_ادھار(بلاک_2, name, ماپا_اگیتر),
 	_val()
 {
 	update();
 }
 
-template <>
-BlockParam<float>::BlockParam(Block *block, const char *name, bool parent_prefix) :
-	BlockParamBase(block, name, parent_prefix),
+سانچا <>
+بلاک_Param<عائم>::بلاک_Param(بلاک *بلاک_2, ثابت حرف *name, منطقي ماپا_اگیتر) :
+	بلاک_Param_ادھار(بلاک_2, name, ماپا_اگیتر),
 	_val()
 {
 	update();
 }
 
-template <>
-BlockParam<int32_t &>::BlockParam(Block *block, const char *name, bool parent_prefix, int32_t &extern_val) :
-	BlockParamBase(block, name, parent_prefix),
+سانچا <>
+بلاک_Param<int32_t &>::بلاک_Param(بلاک *بلاک_2, ثابت حرف *name, منطقي ماپا_اگیتر, int32_t &extern_val) :
+	بلاک_Param_ادھار(بلاک_2, name, ماپا_اگیتر),
 	_val(extern_val)
 {
 	update();
 }
 
-template <>
-BlockParam<float &>::BlockParam(Block *block, const char *name, bool parent_prefix, float &extern_val) :
-	BlockParamBase(block, name, parent_prefix),
+سانچا <>
+بلاک_Param<عائم &>::بلاک_Param(بلاک *بلاک_2, ثابت حرف *name, منطقي ماپا_اگیتر, عائم &extern_val) :
+	بلاک_Param_ادھار(بلاک_2, name, ماپا_اگیتر),
 	_val(extern_val)
 {
 	update();

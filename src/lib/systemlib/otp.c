@@ -43,80 +43,80 @@
  *
  */
 
-#include <px4_platform_common/px4_config.h>
-#include <board_config.h>
-#include <stdio.h>
-#include <math.h>
-#include <unistd.h>
-#include <string.h>  // memset
-#include "otp.h"
-#include "err.h"   // warnx
-#include <assert.h>
+#ضمن <px4_platform_common/px4_config.h>
+#ضمن <board_config.h>
+#ضمن <stdio.h>
+#ضمن <math.h>
+#ضمن <unistd.h>
+#ضمن <string.h>  // memset
+#ضمن "otp.h"
+#ضمن "err.h"   // warnx
+#ضمن <assert.h>
 
-int val_read(void *dest, volatile const void *src, int bytes)
+صحيح val_read(فراغ *dest, متطاير ثابت فراغ *src, صحيح بائٹاں)
 {
 
-	int i;
+	صحيح i;
 
-	for (i = 0; i < bytes / 4; i++) {
-		*(((volatile unsigned *)dest) + i) = *(((volatile unsigned *)src) + i);
+	لكل (i = 0; i < بائٹاں / 4; i++) {
+		*(((متطاير بنانشانی *)dest) + i) = *(((متطاير بنانشانی *)src) + i);
 	}
 
-	return i * 4;
+	أرجع i * 4;
 }
 
 
-int write_otp(uint8_t id_type, uint32_t vid, uint32_t pid, char *signature)
+صحيح write_otp(uint8_t id_type, uint32_t vid, uint32_t pid, حرف *signature)
 {
 
-	warnx("write_otp: PX4 / %02X / %02lX / %02lX  / ... etc  \n", id_type, (unsigned long)vid, (unsigned long)pid);
+	warnx("write_otp: PX4 / %02X / %02lX / %02lX  / ... etc  \n", id_type, (بنانشانی لما)vid, (بنانشانی لما)pid);
 
-	int errors = 0;
+	صحيح errors = 0;
 
 	// descriptor
-	if (F_write_byte(ADDR_OTP_START, 'P')) {
+	إذا (F_write_byte(ADDR_OTP_شروع, 'P')) {
 		errors++;
 	}
 
 	//  write the 'P' from PX4. to first byte in OTP
-	if (F_write_byte(ADDR_OTP_START + 1, 'X')) {
+	إذا (F_write_byte(ADDR_OTP_شروع + 1, 'X')) {
 		errors++;        //  write the 'P' from PX4. to first byte in OTP
 	}
 
-	if (F_write_byte(ADDR_OTP_START + 2, '4')) {
+	إذا (F_write_byte(ADDR_OTP_شروع + 2, '4')) {
 		errors++;
 	}
 
-	if (F_write_byte(ADDR_OTP_START + 3, '\0')) {
+	إذا (F_write_byte(ADDR_OTP_شروع + 3, '\0')) {
 		errors++;
 	}
 
 	//id_type
-	if (F_write_byte(ADDR_OTP_START + 4, id_type)) {
+	إذا (F_write_byte(ADDR_OTP_شروع + 4, id_type)) {
 		errors++;
 	}
 
 	// vid and pid are 4 bytes each
-	if (F_write_word(ADDR_OTP_START + 5, vid)) {
+	إذا (F_write_لفظ(ADDR_OTP_شروع + 5, vid)) {
 		errors++;
 	}
 
-	if (F_write_word(ADDR_OTP_START + 9, pid)) {
+	إذا (F_write_لفظ(ADDR_OTP_شروع + 9, pid)) {
 		errors++;
 	}
 
 	// leave some 19 bytes of space, and go to the next block...
 	// then the auth sig starts
-	for (int i = 0 ; i < 128 ; i++) {
-		if (F_write_byte(ADDR_OTP_START + 32 + i, signature[i])) {
+	لكل (صحيح i = 0 ; i < 128 ; i++) {
+		إذا (F_write_byte(ADDR_OTP_شروع + 32 + i, signature[i])) {
 			errors++;
 		}
 	}
 
-	return errors;
+	أرجع errors;
 }
 
-int lock_otp(void)
+صحيح جندرا_otp(فراغ)
 {
 	//determine the required locking size - can only write full lock bytes */
 //	int size = sizeof(struct otp) / 32;
@@ -129,104 +129,104 @@ int lock_otp(void)
 	//XXX add the actual call here to write the OTP_LOCK bytes only at final stage
 	// val_copy(lock_ptr, &otp_lock_mem, sizeof(otp_lock_mem));
 
-	int locksize = 5;
+	صحيح locksize = 5;
 
-	int errors = 0;
+	صحيح errors = 0;
 
 	// or just realise it's exctly 5x 32byte blocks we need to lock.  1 block for ID,type,vid,pid, and 4 blocks for certificate, which is 128 bytes.
-	for (int i = 0 ; i < locksize ; i++) {
-		if (F_write_byte(ADDR_OTP_LOCK_START + i, OTP_LOCK_LOCKED)) {
+	لكل (صحيح i = 0 ; i < locksize ; i++) {
+		إذا (F_write_byte(ADDR_OTP_جندرا_شروع + i, OTP_جندرا_LOCKED)) {
 			errors++;
 		}
 	}
 
-	return errors;
+	أرجع errors;
 }
 
 // COMPLETE, BUSY, or other flash error?
-static int F_GetStatus(void)
+ساكن صحيح F_Get_حالت(فراغ)
 {
-	int fs = F_COMPLETE;
+	صحيح fs = F_COMPLETE;
 
-	if ((FLASH->status & F_BSY) == F_BSY) { fs = F_BUSY; } else {
+	إذا ((FLASH->حالت & F_BSY) == F_BSY) { fs = F_BUSY; } وإلا {
 
-		if ((FLASH->status & F_WRPERR) != (uint32_t)0x00) { fs = F_ERROR_WRP; } else {
+		إذا ((FLASH->حالت & F_WRPERR) != (uint32_t)0x00) { fs = F_ERROR_WRP; } وإلا {
 
-			if ((FLASH->status & (uint32_t)0xEF) != (uint32_t)0x00) { fs = F_ERROR_PROGRAM; } else {
+			إذا ((FLASH->حالت & (uint32_t)0xEF) != (uint32_t)0x00) { fs = F_ERROR_پروگرام; } وإلا {
 
-				if ((FLASH->status & F_OPERR) != (uint32_t)0x00) { fs = F_ERROR_OPERATION; } else {
+				إذا ((FLASH->حالت & F_OPERR) != (uint32_t)0x00) { fs = F_ERROR_OPERATION; } وإلا {
 					fs = F_COMPLETE;
 				}
 			}
 		}
 	}
 
-	return fs;
+	أرجع fs;
 }
 
 
 // enable FLASH Registers
-void F_unlock(void)
+فراغ F_unlock(فراغ)
 {
-	if ((FLASH->control & F_CR_LOCK) != 0) {
-		FLASH->key = F_KEY1;
-		FLASH->key = F_KEY2;
+	إذا ((FLASH->control & F_CR_جندرا) != 0) {
+		FLASH->کلید = F_KEY1;
+		FLASH->کلید = F_KEY2;
 	}
 }
 
 // lock the FLASH Registers
-void F_lock(void)
+فراغ F_جندرا(فراغ)
 {
-	FLASH->control |= F_CR_LOCK;
+	FLASH->control |= F_CR_جندرا;
 }
 
 // flash write word.
-int F_write_word(unsigned long Address, uint32_t Data)
+صحيح F_write_لفظ(بنانشانی لما پتہ_2, uint32_t انکڑے_4)
 {
-	unsigned char octet[4] = {0, 0, 0, 0};
+	بنانشانی حرف octet[4] = {0, 0, 0, 0};
 
-	int ret = 0;
+	صحيح ret = 0;
 
-	for (int i = 0; i < 4; i++) {
-		octet[i] = (Data >> (i * 8)) & 0xFF;
-		ret = F_write_byte(Address + i, octet[i]);
+	لكل (صحيح i = 0; i < 4; i++) {
+		octet[i] = (انکڑے_4 >> (i * 8)) & 0xFF;
+		ret = F_write_byte(پتہ_2 + i, octet[i]);
 	}
 
-	return ret;
+	أرجع ret;
 }
 
 // flash write byte
-int F_write_byte(unsigned long Address, uint8_t Data)
+صحيح F_write_byte(بنانشانی لما پتہ_2, uint8_t انکڑے_4)
 {
-	volatile int status = F_COMPLETE;
+	متطاير صحيح حالت = F_COMPLETE;
 
 	//warnx("F_write_byte: %08X %02d", Address , Data ) ;
 
 	//Check the parameters
-	assert(IS_F_ADDRESS(Address));
+	أكد(IS_F_پتہ(پتہ_2));
 
 	//Wait for FLASH operation to complete by polling on BUSY flag.
-	status = F_GetStatus();
+	حالت = F_Get_حالت();
 
-	while (status == F_BUSY) { status = F_GetStatus();}
+	طالما (حالت == F_BUSY) { حالت = F_Get_حالت();}
 
-	if (status == F_COMPLETE) {
+	إذا (حالت == F_COMPLETE) {
 		//if the previous operation is completed, proceed to program the new data
-		FLASH->control &= CR_PSIZE_MASK;
+		FLASH->control &= CR_PSIZE_نقاب;
 		FLASH->control |= F_PSIZE_BYTE;
 		FLASH->control |= F_CR_PG;
 
-		*(volatile uint8_t *)Address = Data;
+		*(متطاير uint8_t *)پتہ_2 = انکڑے_4;
 
 		//Wait for FLASH operation to complete by polling on BUSY flag.
-		status = F_GetStatus();
+		حالت = F_Get_حالت();
 
-		while (status == F_BUSY) { status = F_GetStatus();}
+		طالما (حالت == F_BUSY) { حالت = F_Get_حالت();}
 
 		//if the program operation is completed, disable the PG Bit
 		FLASH->control &= (~F_CR_PG);
 	}
 
 	//Return the Program Status
-	return !(status == F_COMPLETE);
+	أرجع !(حالت == F_COMPLETE);
 }

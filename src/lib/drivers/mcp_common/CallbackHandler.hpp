@@ -30,31 +30,31 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  ****************************************************************************/
-#pragma once
+#ہدایت once
 
-#include <stdint.h>
-#include <uORB/topics/gpio_in.h>
-#include <uORB/SubscriptionCallback.hpp>
+#ضمن <stdint.h>
+#ضمن <uORB/topics/gpio_in.h>
+#ضمن <uORB/SubscriptionCallback.hpp>
 
-class CallbackHandler : public uORB::SubscriptionCallback
+صنف CallbackHandler : عام uORB::SubscriptionCallback
 {
-public:
+عام:
 	uint32_t dev_id;
-	uint16_t input{0};
+	uint16_t داخلہ{0};
 
 	CallbackHandler(orb_id_t id) : uORB::SubscriptionCallback(id) {}
-	virtual ~CallbackHandler() {}
+	مجازی ~CallbackHandler() {}
 
-	void call(unsigned generation) override
+	فراغ call(بنانشانی generation) override
 	{
-		px4::msg::GpioIn new_input;
+		px4::پیغام::Gpio_وچ new_داخلہ;
 
-		for (int i = 0; i < new_input.MAX_INSTANCES; i++) {
+		لكل (صحيح i = 0; i < new_داخلہ.MAX_INSTANCES; i++) {
 			ChangeInstance(i);
 
-			if (update(&new_input) && new_input.device_id == dev_id) {
-				input = new_input.state;
-				break;
+			إذا (update(&new_داخلہ) && new_داخلہ.device_id == dev_id) {
+				داخلہ = new_داخلہ.state;
+				اكسر;
 			}
 		}
 	}

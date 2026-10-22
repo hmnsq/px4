@@ -31,54 +31,54 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ہدایت once
 
-#include "FunctionProviderBase.hpp"
+#ضمن "FunctionProviderBase.hpp"
 
-#include <uORB/topics/internal_combustion_engine_control.h>
+#ضمن <uORB/topics/internal_combustion_engine_control.h>
 
 /**
  * Functions: ICE...
  */
-class FunctionICEControl : public FunctionProviderBase
+صنف FunctionICEControl : عام Function_Provider_ادھار
 {
-public:
+عام:
 	FunctionICEControl()
 	{
-		resetAllToDisarmedValue();
+		reset_All_منزل_Disarmed_قدر();
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionICEControl(); }
+	ساكن Function_Provider_ادھار *allocate(ثابت Context &context) { أرجع جديد FunctionICEControl(); }
 
-	void update() override
+	فراغ update() override
 	{
-		internal_combustion_engine_control_s internal_combustion_engine_control;
+		اندرونی_combustion_engine_control_s اندرونی_combustion_engine_control;
 
 		// map [0, 1] to [-1, 1] which is the interface for non-motor PWM channels
 		// NAN is mapped to disarmed
-		if (_internal_combustion_engine_control_sub.update(&internal_combustion_engine_control)) {
-			_data[0] = internal_combustion_engine_control.ignition_on * 2.f - 1.f;
-			_data[1] = internal_combustion_engine_control.throttle_control * 2.f - 1.f;
-			_data[2] = internal_combustion_engine_control.choke_control * 2.f - 1.f;
-			_data[3] = internal_combustion_engine_control.starter_engine_control * 2.f - 1.f;
+		إذا (اندرونی_combustion_engine_control_sub.update(&اندرونی_combustion_engine_control)) {
+			انکڑے_3[0] = اندرونی_combustion_engine_control.ignition_on * 2.f - 1.f;
+			انکڑے_3[1] = اندرونی_combustion_engine_control.throttle_control * 2.f - 1.f;
+			انکڑے_3[2] = اندرونی_combustion_engine_control.choke_control * 2.f - 1.f;
+			انکڑے_3[3] = اندرونی_combustion_engine_control.starter_engine_control * 2.f - 1.f;
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::IC_Engine_Ignition]; }
+	عائم value(OutputFunction func) override { أرجع انکڑے_3[(صحيح)func - (صحيح)OutputFunction::IC_Engine_Ignition]; }
 
-private:
-	static constexpr int num_data_points = 4;
+خاص:
+	ساكن constexpr صحيح عدد_انکڑے_points = 4;
 
-	void resetAllToDisarmedValue()
+	فراغ reset_All_منزل_Disarmed_قدر()
 	{
-		for (int i = 0; i < num_data_points; ++i) {
-			_data[i] = NAN;
+		لكل (صحيح i = 0; i < عدد_انکڑے_points; ++i) {
+			انکڑے_3[i] = NAN;
 		}
 	}
 
-	static_assert(num_data_points == (int)OutputFunction::IC_Engine_Starter - (int)OutputFunction::IC_Engine_Ignition + 1,
+	static_assert(عدد_انکڑے_points == (صحيح)OutputFunction::IC_Engine_Starter - (صحيح)OutputFunction::IC_Engine_Ignition + 1,
 		      "number of functions mismatch");
 
-	uORB::Subscription _internal_combustion_engine_control_sub{ORB_ID(internal_combustion_engine_control)};
-	float _data[num_data_points] {};
+	uORB::Subscription اندرونی_combustion_engine_control_sub{ORB_ID(اندرونی_combustion_engine_control)};
+	عائم انکڑے_3[عدد_انکڑے_points] {};
 };

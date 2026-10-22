@@ -32,192 +32,192 @@
  ****************************************************************************/
 
 
-#include "correction_injector.h"
+#ضمن "correction_injector.h"
 
-#include <errno.h>
-#include <fcntl.h>
-#include <string.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
+#ضمن <errno.h>
+#ضمن <fcntl.h>
+#ضمن <string.h>
+#ضمن <sys/ioctl.h>
+#ضمن <unistd.h>
 
-#include <mathlib/mathlib.h>
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/posix.h>
-#include <px4_platform_common/time.h>
+#ضمن <mathlib/mathlib.h>
+#ضمن <px4_platform_common/log.h>
+#ضمن <px4_platform_common/posix.h>
+#ضمن <px4_platform_common/time.h>
 
-using namespace time_literals;
+ورتوں نطاق ویلا_literals;
 
-namespace gnss
+نطاق gnss
 {
 
 // Without a chunk from the selected source for this long, another source may be taken
-static constexpr hrt_abstime kSourceTimeout = 5_s;
+ساكن constexpr hrt_abstime k_سروت_Timeout = 5_s;
 // The injection rate is frames per second over windows this long
-static constexpr hrt_abstime kRateWindow = 5_s;
+ساكن constexpr hrt_abstime k_شرح_کھڑکی = 5_s;
 // Start bit, eight data bits, stop bit
-static constexpr uint32_t kBitsPerByteOnTheWire = 10;
+ساكن constexpr uint32_t k_بٹ_فی_Byte_On_The_Wire = 10;
 // A full TX buffer is retried no sooner than this, and this late when the baudrate is unknown
-static constexpr uint32_t kMinRetryDelayUs = 1_ms;
-static constexpr uint32_t kFallbackRetryDelayUs = 10_ms;
+ساكن constexpr uint32_t kMinRetryDelayUs = 1_ms;
+ساكن constexpr uint32_t kFallbackRetryDelayUs = 10_ms;
 
-CorrectionInjector::CorrectionInjector(const char *name, const char *port) :
-	ScheduledWorkItem(name, px4::serial_port_to_wq(port))
+CorrectionInjector::CorrectionInjector(ثابت حرف *name, ثابت حرف *پورٹ) :
+	Scheduled_Work_شے(name, px4::serial_پورٹ_منزل_wq(پورٹ))
 {
-	strncpy(_port, port, sizeof(_port) - 1);
+	strncpy(پورٹ_2, پورٹ, حجم(پورٹ_2) - 1);
 }
 
 CorrectionInjector::~CorrectionInjector()
 {
 	_moving_baseline_sub.unregisterCallback();
 
-	for (auto &sub : _corrections_sub) {
+	لكل (خودکار &sub : _corrections_sub) {
 		sub.unregisterCallback();
 	}
 
 	// Cancels a pending retry, then waits for a Run() in progress, which uses the members destroyed after this body
-	ScheduleClear();
+	ویلا_سارنی_Clear();
 	Deinit();
 
 	perf_free(_injected);
-	perf_free(_tx_buffer_full);
-	perf_free(_framer_full);
+	perf_free(tx_بفر_بھریا);
+	perf_free(framer_بھریا);
 	perf_free(_unsupported);
 	perf_free(_short_write);
 }
 
-void CorrectionInjector::start(const Config &config)
+فراغ CorrectionInjector::شروع(ثابت Config &config)
 {
-	_rate_window_start = hrt_absolute_time();
-	_rate_window_count = perf_event_count(_injected);
-	_injection_rate_hz = 0.f;
+	شرح_کھڑکی_شروع = hrt_absolute_ویلا();
+	شرح_کھڑکی_گنتی = perf_event_گنتی(_injected);
+	injection_شرح_hz = 0.f;
 
 	// Only the stream in use schedules runs: a base would otherwise wake for each moving-baseline chunk it publishes
-	if (config.stream == Stream::MovingBaseline) {
-		_moving_baseline_sub.registerCallback();
+	إذا (config.دھارا == دھارا_2::MovingBaseline) {
+		_moving_baseline_sub.رجسٹر_Callback();
 
-	} else {
-		for (auto &sub : _corrections_sub) {
-			sub.registerCallback();
+	} وإلا {
+		لكل (خودکار &sub : _corrections_sub) {
+			sub.رجسٹر_Callback();
 		}
 	}
 
 	pthread_mutex_lock(&_mutex);
 	_config = config;
-	_active = true;
-	_write_error_reported = false;
+	سرگرم = سچ;
+	_write_error_reported = خطأ;
 	pthread_mutex_unlock(&_mutex);
 
 	// What queued up during configuration still goes out: a base sends its position (1005/1006) only every few seconds
-	ScheduleNow();
+	ویلا_سارنی_Now();
 }
 
-void CorrectionInjector::stop()
+فراغ CorrectionInjector::stop()
 {
 	// Returns only after a write in progress, so the owner's next command can't land inside an RTCM frame
 	pthread_mutex_lock(&_mutex);
-	_active = false;
+	سرگرم = خطأ;
 	pthread_mutex_unlock(&_mutex);
 
 	// Chunks still queue up until start(), which drains them
 	_moving_baseline_sub.unregisterCallback();
 
-	for (auto &sub : _corrections_sub) {
+	لكل (خودکار &sub : _corrections_sub) {
 		sub.unregisterCallback();
 	}
 
 	// The descriptor is closed where it was opened. Bounded: a starved work queue leaks it rather than blocking the owner.
-	ScheduleNow();
+	ویلا_سارنی_Now();
 
-	for (int i = 0; i < 20; i++) {
+	لكل (صحيح i = 0; i < 20; i++) {
 		pthread_mutex_lock(&_mutex);
-		const bool closed = (_fd < 0);
+		ثابت منطقي closed = (_fd < 0);
 		pthread_mutex_unlock(&_mutex);
 
-		if (closed) {
-			break;
+		إذا (closed) {
+			اكسر;
 		}
 
 		px4_usleep(5_ms);
 	}
 }
 
-float CorrectionInjector::injection_rate_hz()
+عائم CorrectionInjector::injection_شرح_hz_2()
 {
-	const hrt_abstime now = hrt_absolute_time();
+	ثابت hrt_abstime now = hrt_absolute_ویلا();
 
-	if (now - _rate_window_start >= kRateWindow) {
-		const uint64_t count = perf_event_count(_injected);
-		_injection_rate_hz = (float)(count - _rate_window_count) * 1e6f / (float)(now - _rate_window_start);
-		_rate_window_count = count;
-		_rate_window_start = now;
+	إذا (now - شرح_کھڑکی_شروع >= k_شرح_کھڑکی) {
+		ثابت uint64_t گنتی = perf_event_گنتی(_injected);
+		injection_شرح_hz = (عائم)(گنتی - شرح_کھڑکی_گنتی) * 1e6f / (عائم)(now - شرح_کھڑکی_شروع);
+		شرح_کھڑکی_گنتی = گنتی;
+		شرح_کھڑکی_شروع = now;
 	}
 
-	return _injection_rate_hz;
+	أرجع injection_شرح_hz;
 }
 
-void CorrectionInjector::Run()
+فراغ CorrectionInjector::لگاتار()
 {
 	pthread_mutex_lock(&_mutex);
 
-	if (!_active) {
-		if (_fd >= 0) {
+	إذا (!سرگرم) {
+		إذا (_fd >= 0) {
 			::close(_fd);
 			_fd = -1;
 		}
 
-	} else {
-		if (_fd < 0) {
-			_fd = ::open(_port, O_WRONLY | O_NONBLOCK | O_NOCTTY);
+	} وإلا {
+		إذا (_fd < 0) {
+			_fd = ::open(پورٹ_2, O_WRONLY | O_NONBLOCK | O_NOCTTY);
 
-			if (_fd < 0 && !_write_error_reported) {
-				PX4_ERR("%s open for injection failed: %d", _port, errno);
-				_write_error_reported = true;
+			إذا (_fd < 0 && !_write_error_reported) {
+				PX4_ERR("%s open for injection failed: %d", پورٹ_2, errno);
+				_write_error_reported = سچ;
 			}
 		}
 
-		if (_fd >= 0) {
-			if (_config.stream == Stream::MovingBaseline) {
+		إذا (_fd >= 0) {
+			إذا (_config.دھارا == دھارا_2::MovingBaseline) {
 				drain_moving_baseline();
 
-			} else {
+			} وإلا {
 				drain_corrections();
 			}
 
-			inject_frames();
+			inject_چوکھٹے();
 		}
 	}
 
 	pthread_mutex_unlock(&_mutex);
 }
 
-void CorrectionInjector::drain_corrections()
+فراغ CorrectionInjector::drain_corrections()
 {
-	rtcm_data_s chunk;
+	rtcm_انکڑے_s chunk;
 
-	if (select_corrections_instance(chunk)) {
-		add_chunk(chunk);
+	إذا (select_corrections_instance(chunk)) {
+		جوڑو_chunk(chunk);
 	}
 
-	const int8_t selected = _selected_instance.load();
+	ثابت int8_t selected = _selected_instance.لدو();
 
-	if (selected < 0) {
-		return;
+	إذا (selected < 0) {
+		أرجع;
 	}
 
-	for (unsigned n = 0; n < rtcm_data_s::ORB_QUEUE_LENGTH && _corrections_sub[selected].update(&chunk); n++) {
-		if (chunk.device_id != _config.own_device_id) {
-			add_chunk(chunk);
+	لكل (بنانشانی n = 0; n < rtcm_انکڑے_s::ORB_قطار_لمائی && _corrections_sub[selected].update(&chunk); n++) {
+		إذا (chunk.device_id != _config.own_device_id) {
+			جوڑو_chunk(chunk);
 		}
 	}
 }
 
-void CorrectionInjector::drain_moving_baseline()
+فراغ CorrectionInjector::drain_moving_baseline()
 {
-	rtcm_data_s chunk;
+	rtcm_انکڑے_s chunk;
 
-	for (unsigned n = 0; n < rtcm_data_s::ORB_QUEUE_LENGTH && _moving_baseline_sub.update(&chunk); n++) {
-		if (chunk.device_id != _config.own_device_id) {
-			add_chunk(chunk);
+	لكل (بنانشانی n = 0; n < rtcm_انکڑے_s::ORB_قطار_لمائی && _moving_baseline_sub.update(&chunk); n++) {
+		إذا (chunk.device_id != _config.own_device_id) {
+			جوڑو_chunk(chunk);
 		}
 	}
 }
@@ -225,123 +225,123 @@ void CorrectionInjector::drain_moving_baseline()
 // Once the selected source has gone quiet, takes the first instance with a fresh chunk from another device. update()
 // hands out the oldest queued chunk, so a backlog from before start() is walked through here in one go rather than
 // one chunk per publication. Returns true with the chunk that selected the source, which goes out like any other.
-bool CorrectionInjector::select_corrections_instance(rtcm_data_s &chunk)
+منطقي CorrectionInjector::select_corrections_instance(rtcm_انکڑے_s &chunk)
 {
-	if (_selected_instance.load() >= 0 && hrt_elapsed_time(&_last_chunk_time) < kSourceTimeout) {
-		return false;
+	إذا (_selected_instance.لدو() >= 0 && hrt_elapsed_ویلا(&آخری_chunk_ویلا) < k_سروت_Timeout) {
+		أرجع خطأ;
 	}
 
 	_selected_instance.store(-1);
 
-	for (int8_t instance = 0; instance < rtcm_data_s::MAX_INSTANCES; instance++) {
-		for (unsigned n = 0; n < rtcm_data_s::ORB_QUEUE_LENGTH && _corrections_sub[instance].update(&chunk); n++) {
-			if (chunk.device_id != _config.own_device_id && hrt_elapsed_time(&chunk.timestamp) < kSourceTimeout) {
+	لكل (int8_t instance = 0; instance < rtcm_انکڑے_s::MAX_INSTANCES; instance++) {
+		لكل (بنانشانی n = 0; n < rtcm_انکڑے_s::ORB_قطار_لمائی && _corrections_sub[instance].update(&chunk); n++) {
+			إذا (chunk.device_id != _config.own_device_id && hrt_elapsed_ویلا(&chunk.timestamp) < k_سروت_Timeout) {
 				_selected_instance.store(instance);
-				return true;
+				أرجع سچ;
 			}
 		}
 	}
 
-	return false;
+	أرجع خطأ;
 }
 
-void CorrectionInjector::add_chunk(const rtcm_data_s &chunk)
+فراغ CorrectionInjector::جوڑو_chunk(ثابت rtcm_انکڑے_s &chunk)
 {
-	const size_t len = math::min<size_t>(chunk.len, sizeof(chunk.data));
+	ثابت size_t len = math::min<size_t>(chunk.len, حجم(chunk.انکڑے));
 
-	if (_framer.addData(chunk.data, len) < len) {
-		perf_count(_framer_full);
+	إذا (_framer.جوڑو_انکڑے(chunk.انکڑے, len) < len) {
+		perf_گنتی(framer_بھریا);
 	}
 
-	_last_chunk_time = hrt_absolute_time();
+	آخری_chunk_ویلا = hrt_absolute_ویلا();
 }
 
-void CorrectionInjector::inject_frames()
+فراغ CorrectionInjector::inject_چوکھٹے()
 {
-	size_t frame_len = 0;
+	size_t چوکھٹا_len = 0;
 	CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
-	const uint8_t *frame = nullptr;
+	ثابت uint8_t *چوکھٹا = خالی_سوچک;
 
-	while ((frame = _framer.getNextMessage(&frame_len, &protocol)) != nullptr) {
-		if ((_config.protocols & protocol_bit(protocol)) == 0) {
-			_framer.consumeMessage(frame_len);
-			perf_count(_unsupported);
-			continue;
+	طالما ((چوکھٹا = _framer.get_اگلا_سنیہا(&چوکھٹا_len, &protocol)) != خالی_سوچک) {
+		إذا ((_config.protocols & protocol_ثنائی_ہندسہ(protocol)) == 0) {
+			_framer.consume_سنیہا(چوکھٹا_len);
+			perf_گنتی(_unsupported);
+			استمر;
 		}
 
-		const ssize_t tx_space = tx_space_available();
+		ثابت ssize_t tx_space = tx_space_دستیاب();
 
 		// Unknown on POSIX, where the write itself is the check
-		if (tx_space >= 0 && tx_space < (ssize_t)frame_len) {
-			perf_count(_tx_buffer_full);
-			ScheduleDelayed(drain_time_us(frame_len - tx_space));
-			break;
+		إذا (tx_space >= 0 && tx_space < (ssize_t)چوکھٹا_len) {
+			perf_گنتی(tx_بفر_بھریا);
+			ویلا_سارنی_Delayed(drain_ویلا_us(چوکھٹا_len - tx_space));
+			اكسر;
 		}
 
-		const ssize_t written = ::write(_fd, frame, frame_len);
+		ثابت ssize_t written = ::اكتب(_fd, چوکھٹا, چوکھٹا_len);
 
-		if (written < 0 && errno == EAGAIN) {
+		إذا (written < 0 && errno == EAGAIN) {
 			// The buffer filled between the check and the write: the frame stays for the retry
-			perf_count(_tx_buffer_full);
-			ScheduleDelayed(drain_time_us(frame_len));
-			break;
+			perf_گنتی(tx_بفر_بھریا);
+			ویلا_سارنی_Delayed(drain_ویلا_us(چوکھٹا_len));
+			اكسر;
 		}
 
-		if (written != (ssize_t)frame_len) {
-			perf_count(_short_write);
+		إذا (written != (ssize_t)چوکھٹا_len) {
+			perf_گنتی(_short_write);
 
-			if (written < 0 && !_write_error_reported) {
-				PX4_ERR("%s injection write failed: %d", _port, errno);
-				_write_error_reported = true;
+			إذا (written < 0 && !_write_error_reported) {
+				PX4_ERR("%s injection write failed: %d", پورٹ_2, errno);
+				_write_error_reported = سچ;
 			}
 		}
 
-		_framer.consumeMessage(frame_len);
-		perf_count(_injected);
+		_framer.consume_سنیہا(چوکھٹا_len);
+		perf_گنتی(_injected);
 	}
 }
 
-ssize_t CorrectionInjector::tx_space_available() const
+ssize_t CorrectionInjector::tx_space_دستیاب() ثابت
 {
-#if defined(FIONSPACE)
-	int space = 0;
+#إذا defined(FIONSPACE)
+	صحيح space = 0;
 
-	if (::ioctl(_fd, FIONSPACE, &space) == 0) {
-		return space;
+	إذا (::ioctl(_fd, FIONSPACE, &space) == 0) {
+		أرجع space;
 	}
 
-#endif
-	return -1;
+#جے_انت
+	أرجع -1;
 }
 
-uint32_t CorrectionInjector::drain_time_us(size_t bytes) const
+uint32_t CorrectionInjector::drain_ویلا_us(size_t بائٹاں) ثابت
 {
-	const uint32_t baudrate = _config.baudrate;
+	ثابت uint32_t baudrate = _config.baudrate;
 
-	if (baudrate == 0) {
-		return kFallbackRetryDelayUs;
+	إذا (baudrate == 0) {
+		أرجع kFallbackRetryDelayUs;
 	}
 
-	return math::max<uint32_t>(kMinRetryDelayUs, (uint64_t)bytes * kBitsPerByteOnTheWire * 1_s / baudrate);
+	أرجع math::max<uint32_t>(kMinRetryDelayUs, (uint64_t)بائٹاں * k_بٹ_فی_Byte_On_The_Wire * 1_s / baudrate);
 }
 
-void CorrectionInjector::print_status() const
+فراغ CorrectionInjector::print_حالت() ثابت
 {
 	PX4_INFO("injecting %s: %6.2f Hz, source instance %d",
-		 _config.stream == Stream::MovingBaseline ? "moving baseline" : "corrections", (double)_injection_rate_hz,
-		 (int)_selected_instance.load());
+		 _config.دھارا == دھارا_2::MovingBaseline ? "moving baseline" : "corrections", (مزدوج)injection_شرح_hz,
+		 (صحيح)_selected_instance.لدو());
 	perf_print_counter(_injected);
-	perf_print_counter(_tx_buffer_full);
-	perf_print_counter(_framer_full);
+	perf_print_counter(tx_بفر_بھریا);
+	perf_print_counter(framer_بھریا);
 	perf_print_counter(_unsupported);
 	perf_print_counter(_short_write);
 
-	const CorrectionFramerStats stats = _framer.getStats();
+	ثابت CorrectionFramerStats stats = _framer.getStats();
 
-	if (stats.messages_parsed > 0 || stats.crc_errors > 0 || stats.bytes_discarded > 0) {
+	إذا (stats.messages_parsed > 0 || stats.چکری_جانچ_errors_2 > 0 || stats.بائٹاں_discarded_2 > 0) {
 		PX4_INFO("framed: %u RTCM3, %u SPARTN, %u UBX, %u CRC errors, %u bytes discarded",
-			 (unsigned)stats.rtcm3_messages, (unsigned)stats.spartn_messages, (unsigned)stats.ubx_messages,
-			 (unsigned)stats.crc_errors, (unsigned)stats.bytes_discarded);
+			 (بنانشانی)stats.rtcm3_messages, (بنانشانی)stats.spartn_messages, (بنانشانی)stats.ubx_messages,
+			 (بنانشانی)stats.چکری_جانچ_errors_2, (بنانشانی)stats.بائٹاں_discarded_2);
 	}
 }
 

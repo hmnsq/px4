@@ -38,25 +38,25 @@
  *
  */
 
-#include "SPI.hpp"
+#ضمن "SPI.hpp"
 
-#if defined(CONFIG_SPI)
+#إذا defined(CONFIG_SPI)
 
-#include <px4_platform_common/i2c_spi_buses.h>
-#include <px4_platform_common/px4_config.h>
-#include <nuttx/arch.h>
+#ضمن <px4_platform_common/i2c_spi_buses.h>
+#ضمن <px4_platform_common/px4_config.h>
+#ضمن <nuttx/arch.h>
 
-#ifndef CONFIG_SPI_EXCHANGE
+#جے_بنا_تعریف CONFIG_SPI_EXCHANGE
 # error This driver requires CONFIG_SPI_EXCHANGE
-#endif
+#جے_انت
 
-namespace device
+نطاق device
 {
 
-SPI::SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency) :
-	CDev(name, nullptr),
+SPI::SPI(uint8_t device_type, ثابت حرف *name, صحيح bus, uint32_t device, تعداد spi_منوال_e منوال, uint32_t frequency) :
+	CDev(name, خالی_سوچک),
 	_device(device),
-	_mode(mode),
+	_mode(منوال),
 	_frequency(frequency)
 {
 	_device_id.devid_s.devtype = device_type;
@@ -64,18 +64,18 @@ SPI::SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum s
 	_device_id.devid_s.bus_type = DeviceBusType_SPI;
 	_device_id.devid_s.bus = bus;
 	// Use the 2. LSB byte as SPI address, which is non-zero for multiple instances of the same device on a bus
-	_device_id.devid_s.address = (uint8_t)(device >> 8);
+	_device_id.devid_s.پتہ = (uint8_t)(device >> 8);
 
-	if (!px4_spi_bus_requires_locking(bus)) {
-		_locking_mode = LOCK_NONE;
+	إذا (!px4_spi_bus_requires_locking(bus)) {
+		locking_منوال = جندرا_NONE;
 	}
 }
 
-SPI::SPI(const I2CSPIDriverConfig &config)
-	: SPI(config.devid_driver_index, config.module_name, config.bus, config.spi_devid, config.spi_mode,
+SPI::SPI(ثابت I2CSPIDriverConfig &config)
+	: SPI(config.devid_driver_اشاریہ, config.module_name, config.bus, config.spi_devid, config.spi_منوال,
 	      config.bus_frequency)
 {
-	set_external(config.external);
+	سیٹ_external(config.external);
 }
 
 SPI::~SPI()
@@ -83,154 +83,154 @@ SPI::~SPI()
 	// XXX no way to let go of the bus...
 }
 
-int
+صحيح
 SPI::init()
 {
 	/* attach to the spi bus */
-	if (_dev == nullptr) {
-		int bus = get_device_bus();
+	إذا (_dev == خالی_سوچک) {
+		صحيح bus = get_device_bus();
 
-		if (!board_has_bus(BOARD_SPI_BUS, bus)) {
-			return -ENOENT;
+		إذا (!board_has_bus(BOARD_SPI_BUS, bus)) {
+			أرجع -ENOENT;
 		}
 
 		_dev = px4_spibus_initialize(bus);
 	}
 
-	if (_dev == nullptr) {
+	إذا (_dev == خالی_سوچک) {
 		DEVICE_DEBUG("failed to init SPI");
-		return -ENOENT;
+		أرجع -ENOENT;
 	}
 
 	/* deselect device to ensure high to low transition of pin select */
-	SPI_SELECT(_dev, _device, false);
+	SPI_SELECT(_dev, _device, خطأ);
 
 	/* call the probe function to check whether the device is present */
-	int ret = probe();
+	صحيح ret = probe();
 
-	if (ret != OK) {
+	إذا (ret != OK) {
 		DEVICE_DEBUG("probe failed");
-		return ret;
+		أرجع ret;
 	}
 
 	/* do base class init, which will create the device node, etc. */
 	ret = CDev::init();
 
-	if (ret != OK) {
+	إذا (ret != OK) {
 		DEVICE_DEBUG("cdev init failed");
-		return ret;
+		أرجع ret;
 	}
 
 	/* tell the world where we are */
 	DEVICE_DEBUG("on SPI bus %d at %"  PRId32 " (%"  PRId32 " KHz)", get_device_bus(), PX4_SPI_DEV_ID(_device),
 		     _frequency / 1000);
 
-	return PX4_OK;
+	أرجع PX4_OK;
 }
 
-int
-SPI::transfer(uint8_t *send, uint8_t *recv, unsigned len)
+صحيح
+SPI::transfer(uint8_t *send, uint8_t *recv, بنانشانی len)
 {
-	int result;
+	صحيح نتیجہ;
 
-	if ((send == nullptr) && (recv == nullptr)) {
-		return -EINVAL;
+	إذا ((send == خالی_سوچک) && (recv == خالی_سوچک)) {
+		أرجع -EINVAL;
 	}
 
-	LockMode mode = up_interrupt_context() ? LOCK_NONE : _locking_mode;
+	جندرا_منوال منوال = اتے_رکاوٹ_context() ? جندرا_NONE : locking_منوال;
 
 	/* lock the bus as required */
-	switch (mode) {
-	default:
-	case LOCK_PREEMPTION: {
+	بدل (منوال) {
+	افتراضي:
+	حالة جندرا_PREEMPTION: {
 			irqstate_t state = px4_enter_critical_section();
-			result = _transfer(send, recv, len);
+			نتیجہ = _transfer(send, recv, len);
 			px4_leave_critical_section(state);
 		}
-		break;
+		اكسر;
 
-	case LOCK_THREADS:
-		SPI_LOCK(_dev, true);
-		result = _transfer(send, recv, len);
-		SPI_LOCK(_dev, false);
-		break;
+	حالة جندرا_دھاگے:
+		SPI_جندرا(_dev, سچ);
+		نتیجہ = _transfer(send, recv, len);
+		SPI_جندرا(_dev, خطأ);
+		اكسر;
 
-	case LOCK_NONE:
-		result = _transfer(send, recv, len);
-		break;
+	حالة جندرا_NONE:
+		نتیجہ = _transfer(send, recv, len);
+		اكسر;
 	}
 
-	return result;
+	أرجع نتیجہ;
 }
 
-int
-SPI::_transfer(uint8_t *send, uint8_t *recv, unsigned len)
+صحيح
+SPI::_transfer(uint8_t *send, uint8_t *recv, بنانشانی len)
 {
 	SPI_SETFREQUENCY(_dev, _frequency);
 	SPI_SETMODE(_dev, _mode);
 	SPI_SETBITS(_dev, 8);
-	SPI_SELECT(_dev, _device, true);
+	SPI_SELECT(_dev, _device, سچ);
 
 	/* do the transfer */
 	SPI_EXCHANGE(_dev, send, recv, len);
 
 	/* and clean up */
-	SPI_SELECT(_dev, _device, false);
+	SPI_SELECT(_dev, _device, خطأ);
 
-	return PX4_OK;
+	أرجع PX4_OK;
 }
 
-int
-SPI::transferhword(uint16_t *send, uint16_t *recv, unsigned len)
+صحيح
+SPI::transferhword(uint16_t *send, uint16_t *recv, بنانشانی len)
 {
-	int result;
+	صحيح نتیجہ;
 
-	if ((send == nullptr) && (recv == nullptr)) {
-		return -EINVAL;
+	إذا ((send == خالی_سوچک) && (recv == خالی_سوچک)) {
+		أرجع -EINVAL;
 	}
 
-	LockMode mode = up_interrupt_context() ? LOCK_NONE : _locking_mode;
+	جندرا_منوال منوال = اتے_رکاوٹ_context() ? جندرا_NONE : locking_منوال;
 
 	/* lock the bus as required */
-	switch (mode) {
-	default:
-	case LOCK_PREEMPTION: {
+	بدل (منوال) {
+	افتراضي:
+	حالة جندرا_PREEMPTION: {
 			irqstate_t state = px4_enter_critical_section();
-			result = _transferhword(send, recv, len);
+			نتیجہ = _transferhword(send, recv, len);
 			px4_leave_critical_section(state);
 		}
-		break;
+		اكسر;
 
-	case LOCK_THREADS:
-		SPI_LOCK(_dev, true);
-		result = _transferhword(send, recv, len);
-		SPI_LOCK(_dev, false);
-		break;
+	حالة جندرا_دھاگے:
+		SPI_جندرا(_dev, سچ);
+		نتیجہ = _transferhword(send, recv, len);
+		SPI_جندرا(_dev, خطأ);
+		اكسر;
 
-	case LOCK_NONE:
-		result = _transferhword(send, recv, len);
-		break;
+	حالة جندرا_NONE:
+		نتیجہ = _transferhword(send, recv, len);
+		اكسر;
 	}
 
-	return result;
+	أرجع نتیجہ;
 }
 
-int
-SPI::_transferhword(uint16_t *send, uint16_t *recv, unsigned len)
+صحيح
+SPI::_transferhword(uint16_t *send, uint16_t *recv, بنانشانی len)
 {
 	SPI_SETFREQUENCY(_dev, _frequency);
 	SPI_SETMODE(_dev, _mode);
 	SPI_SETBITS(_dev, 16);			/* 16 bit transfer */
-	SPI_SELECT(_dev, _device, true);
+	SPI_SELECT(_dev, _device, سچ);
 
 	/* do the transfer */
 	SPI_EXCHANGE(_dev, send, recv, len);
 
 	/* and clean up */
-	SPI_SELECT(_dev, _device, false);
+	SPI_SELECT(_dev, _device, خطأ);
 
-	return PX4_OK;
+	أرجع PX4_OK;
 }
 
 } // namespace device
-#endif // CONFIG_SPI
+#جے_انت // CONFIG_SPI

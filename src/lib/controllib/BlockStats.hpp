@@ -37,65 +37,65 @@
  * Controller library code
  */
 
-#pragma once
+#ہدایت once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <assert.h>
+#ضمن <time.h>
+#ضمن <stdlib.h>
+#ضمن <math.h>
+#ضمن <mathlib/math/test/test.hpp>
+#ضمن <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ضمن "block/Block.hpp"
+#ضمن "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ضمن "matrix/math.hpp"
 
-namespace control
+نطاق control
 {
-template<class Type, size_t M>
-class __EXPORT BlockStats: public Block
+سانچا<صنف Type, size_t M>
+صنف __EXPORT بلاک_Stats: عام بلاک
 {
 
-public:
+عام:
 // methods
-	BlockStats(SuperBlock *parent,
-		   const char *name) :
-		Block(parent, name),
-		_sum(),
-		_sumSq(),
-		_count(0)
+	بلاک_Stats(Super_بلاک *ماپا,
+		   ثابت حرف *name) :
+		بلاک(ماپا, name),
+		جوڑ_2(),
+		جوڑ_Sq(),
+		گنتی_3(0)
 	{}
-	virtual ~BlockStats() = default;
-	void update(const matrix::Vector<Type, M> &u)
+	مجازی ~بلاک_Stats() = افتراضي;
+	فراغ update(ثابت میٹرکس::سمتیہ<Type, M> &u)
 	{
-		_sum += u;
-		_sumSq += u.emult(u);
-		_count += 1;
+		جوڑ_2 += u;
+		جوڑ_Sq += u.emult(u);
+		گنتی_3 += 1;
 	}
-	void reset()
+	فراغ reset()
 	{
-		_sum.setZero();
-		_sumSq.setZero();
-		_count = 0;
+		جوڑ_2.سیٹ_Zero();
+		جوڑ_Sq.سیٹ_Zero();
+		گنتی_3 = 0;
 	}
 // accessors
-	size_t getCount() { return _count; }
-	matrix::Vector<Type, M> getMean() { return _sum / _count; }
-	matrix::Vector<Type, M> getVar()
+	size_t get_گنتی() { أرجع گنتی_3; }
+	میٹرکس::سمتیہ<Type, M> get_اوسط() { أرجع جوڑ_2 / گنتی_3; }
+	میٹرکس::سمتیہ<Type, M> getVar()
 	{
-		return (_sumSq - _sum.emult(_sum) / _count) / _count;
+		أرجع (جوڑ_Sq - جوڑ_2.emult(جوڑ_2) / گنتی_3) / گنتی_3;
 	}
-	matrix::Vector<Type, M> getStdDev()
+	میٹرکس::سمتیہ<Type, M> getStdDev()
 	{
-		return getVar().sqrt();
+		أرجع getVar().جذر();
 	}
-private:
-// attributes
-	matrix::Vector<Type, M> _sum;
-	matrix::Vector<Type, M> _sumSq;
-	size_t _count;
+خاص:
+//گن
+	میٹرکس::سمتیہ<Type, M> جوڑ_2;
+	میٹرکس::سمتیہ<Type, M> جوڑ_Sq;
+	size_t گنتی_3;
 };
 
 } // namespace control

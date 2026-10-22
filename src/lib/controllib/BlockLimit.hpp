@@ -37,22 +37,22 @@
  * Controller library code
  */
 
-#pragma once
+#ہدایت once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <assert.h>
+#ضمن <time.h>
+#ضمن <stdlib.h>
+#ضمن <math.h>
+#ضمن <mathlib/math/test/test.hpp>
+#ضمن <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ضمن "block/Block.hpp"
+#ضمن "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ضمن "matrix/math.hpp"
 
-namespace control
+نطاق control
 {
 
 /**
@@ -60,24 +60,24 @@ namespace control
  * The output of update is the input, bounded
  * by min/max.
  */
-class __EXPORT BlockLimit : public Block
+صنف __EXPORT بلاک_حد_بندی : عام بلاک
 {
-public:
+عام:
 // methods
-	BlockLimit(SuperBlock *parent, const char *name) :
-		Block(parent, name),
-		_min(this, "MIN"),
-		_max(this, "MAX")
+	بلاک_حد_بندی(Super_بلاک *ماپا, ثابت حرف *name) :
+		بلاک(ماپا, name),
+		_min(هذا, "MIN"),
+		_max(هذا, "MAX")
 	{}
-	virtual ~BlockLimit() = default;
-	float update(float input);
+	مجازی ~بلاک_حد_بندی() = افتراضي;
+	عائم update(عائم داخلہ);
 // accessors
-	float getMin() { return _min.get(); }
-	float getMax() { return _max.get(); }
-protected:
-// attributes
-	control::BlockParamFloat _min;
-	control::BlockParamFloat _max;
+	عائم getMin() { أرجع _min.get(); }
+	عائم getMax() { أرجع _max.get(); }
+محمي:
+//گن
+	control::بلاک_Param_Float _min;
+	control::بلاک_Param_Float _max;
 };
 
 } // namespace control

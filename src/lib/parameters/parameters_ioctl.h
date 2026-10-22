@@ -37,128 +37,128 @@
  * User space - kernel space interface to global parameter store.
  */
 
-#pragma once
+#ہدایت once
 
-#define PARAM_IMPLEMENTATION
-#include "param.h"
-#include <px4_platform/board_ctrl.h>
-#include <px4_platform_common/defines.h>
+#تعریف_کرو PARAM_IMPLEMENTATION
+#ضمن "param.h"
+#ضمن <px4_platform/board_ctrl.h>
+#ضمن <px4_platform_common/defines.h>
 
-#define _PARAMIOC(_n) (_PX4_IOC(_PARAMIOCBASE, _n))
+#تعریف_کرو _PARAMIOC(_n) (_PX4_IOC(_PARAMIOCBASE, _n))
 
-#define PARAMIOCNOTIFY	_PARAMIOC(1)
+#تعریف_کرو PARAMIOCNOTIFY	_PARAMIOC(1)
 
-#define PARAMIOCFIND	_PARAMIOC(2)
-typedef struct paramiocfind {
-	const char *name;
-	const bool notification;
+#تعریف_کرو PARAMIOCFIND	_PARAMIOC(2)
+تعريفنوع بنية paramiocfind {
+	ثابت حرف *name;
+	ثابت bool notification;
 	param_t ret;
 } paramiocfind_t;
 
 
-#define PARAMIOCCOUNTUSED	_PARAMIOC(3)
-typedef struct paramioccountused {
-	unsigned ret;
+#تعریف_کرو PARAMIOCCOUNTUSED	_PARAMIOC(3)
+تعريفنوع بنية paramioccountused {
+	بنانشانی ret;
 } paramioccountused_t;
 
-#define PARAMIOCFORUSEDINDEX	_PARAMIOC(4)
-typedef struct paramiocforusedindex {
-	const unsigned index;
+#تعریف_کرو PARAMIOCFORUSEDINDEX	_PARAMIOC(4)
+تعريفنوع بنية paramiocforusedindex {
+	ثابت بنانشانی اشاریہ;
 	param_t ret;
 } paramiocforusedindex_t;
 
-#define PARAMIOCGETUSEDINDEX	_PARAMIOC(5)
-typedef struct paramiocgetusedindex {
-	const param_t param;
-	unsigned ret;
+#تعریف_کرو PARAMIOCGETUSEDINDEX	_PARAMIOC(5)
+تعريفنوع بنية paramiocgetusedindex {
+	ثابت param_t param;
+	بنانشانی ret;
 } paramiocgetusedindex_t;
 
-#define PARAMIOCUNSAVED	_PARAMIOC(6)
-typedef struct paramiocunsaved {
-	const param_t param;
+#تعریف_کرو PARAMIOCUNSAVED	_PARAMIOC(6)
+تعريفنوع بنية paramiocunsaved {
+	ثابت param_t param;
 	bool ret;
 } paramiocunsaved_t;
 
-#define PARAMIOCGET	_PARAMIOC(7)
-typedef struct paramiocget {
-	const param_t param;
-	const bool deflt;
-	void *const val;
-	int ret;
+#تعریف_کرو PARAMIOCGET	_PARAMIOC(7)
+تعريفنوع بنية paramiocget {
+	ثابت param_t param;
+	ثابت bool deflt;
+	فراغ *ثابت val;
+	صحيح ret;
 } paramiocget_t;
 
-#define PARAMIOCAUTOSAVE	_PARAMIOC(8)
-typedef struct paramiocautosave {
-	const bool enable;
+#تعریف_کرو PARAMIOCAUTOSAVE	_PARAMIOC(8)
+تعريفنوع بنية paramiocautosave {
+	ثابت bool enable;
 } paramiocautosave_t;
 
-#define PARAMIOCSET	_PARAMIOC(9)
-typedef struct paramiocset {
-	const param_t param;
-	const bool notification;
-	const void *val;
-	int ret;
+#تعریف_کرو PARAMIOCSET	_PARAMIOC(9)
+تعريفنوع بنية paramiocset {
+	ثابت param_t param;
+	ثابت bool notification;
+	ثابت فراغ *val;
+	صحيح ret;
 } paramiocset_t;
 
-#define PARAMIOCUSED	_PARAMIOC(10)
-typedef struct paramiocused {
-	const param_t param;
+#تعریف_کرو PARAMIOCUSED	_PARAMIOC(10)
+تعريفنوع بنية paramiocused {
+	ثابت param_t param;
 	bool ret;
 } paramiocused_t;
 
-#define PARAMIOCSETUSED	_PARAMIOC(11)
-typedef struct paramiocsetused {
-	const param_t param;
+#تعریف_کرو PARAMIOCSETUSED	_PARAMIOC(11)
+تعريفنوع بنية paramiocsetused {
+	ثابت param_t param;
 } paramiocsetused_t;
 
-#define PARAMIOCSETDEFAULT	_PARAMIOC(12)
-typedef struct paramiocsetdefault {
-	const param_t param;
-	const void *val;
-	int ret;
+#تعریف_کرو PARAMIOCSETDEFAULT	_PARAMIOC(12)
+تعريفنوع بنية paramiocsetdefault {
+	ثابت param_t param;
+	ثابت فراغ *val;
+	صحيح ret;
 } paramiocsetdefault_t;
 
-#define PARAMIOCRESET	_PARAMIOC(13)
-typedef struct paramiocreset {
-	const param_t param;
-	const bool notification;
-	int ret;
+#تعریف_کرو PARAMIOCRESET	_PARAMIOC(13)
+تعريفنوع بنية paramiocreset {
+	ثابت param_t param;
+	ثابت bool notification;
+	صحيح ret;
 } paramiocreset_t;
 
-#define PARAMIOCRESETGROUP	_PARAMIOC(14)
-typedef enum {
+#تعریف_کرو PARAMIOCRESETGROUP	_PARAMIOC(14)
+تعريفنوع تعداد {
 	PARAM_RESET_ALL,
 	PARAM_RESET_EXCLUDES,
 	PARAM_RESET_SPECIFIC
 } param_reset_type_t;
 
-typedef struct paramiocresetgroup {
+تعريفنوع بنية paramiocresetgroup {
 	param_reset_type_t type;
-	const char **group;
-	const int num_in_group;
+	ثابت حرف **گروہ;
+	ثابت صحيح عدد_وچ_گروہ;
 } paramiocresetgroup_t;
 
-#define PARAMIOCSAVEDEFAULT	_PARAMIOC(15)
-typedef struct paramiocsavedefault {
+#تعریف_کرو PARAMIOCSAVEDEFAULT	_PARAMIOC(15)
+تعريفنوع بنية paramiocsavedefault {
 	bool blocking;
-	int ret;
+	صحيح ret;
 } paramiocsavedefault_t;
 
-#define PARAMIOCLOADDEFAULT	_PARAMIOC(16)
-typedef struct paramiocloaddefault {
-	int ret;
+#تعریف_کرو PARAMIOCLOADDEFAULT	_PARAMIOC(16)
+تعريفنوع بنية paramiocloaddefault {
+	صحيح ret;
 } paramiocloaddefault_t;
 
 
-#define PARAMIOCEXPORT	_PARAMIOC(17)
-typedef struct paramiocexport {
-	const char *filename;
-	int ret;
+#تعریف_کرو PARAMIOCEXPORT	_PARAMIOC(17)
+تعريفنوع بنية paramiocexport {
+	ثابت حرف *filename;
+	صحيح ret;
 } paramiocexport_t;
 
-#define PARAMIOCHASH	_PARAMIOC(18)
-typedef struct paramiochash {
+#تعریف_کرو PARAMIOCHASH	_PARAMIOC(18)
+تعريفنوع بنية paramiochash {
 	uint32_t ret;
 } paramiochash_t;
 
-int param_ioctl(unsigned int cmd, unsigned long arg);
+صحيح param_ioctl(بنانشانی صحيح cmd, بنانشانی لما arg);

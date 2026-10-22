@@ -31,22 +31,22 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ضمن <gtest/gtest.h>
+#ضمن <matrix/math.hpp>
 
-using namespace matrix;
+ورتوں نطاق میٹرکس;
 
-TEST(MatrixUpperRightTriangleTest, UpperRightTriangle)
+TEST(میٹرکس_اتلا_دایاں_Triangle_Test, اتلا_دایاں_Triangle)
 {
-	float data[9] = {1, 2, 3,
+	عائم انکڑے[9] = {1, 2, 3,
 			 4, 5, 6,
 			 7, 8, 10
 			};
-	float urt[6] = {1, 2, 3, 5, 6, 10};
+	عائم urt[6] = {1, 2, 3, 5, 6, 10};
 
-	SquareMatrix<float, 3> A(data);
+	مربع_میٹرکس<عائم, 3> A(انکڑے);
 
-	for (size_t i = 0; i < 6; i++) {
-		EXPECT_FLOAT_EQ(urt[i], A.upper_right_triangle()(i));
+	لكل (size_t i = 0; i < 6; i++) {
+		EXPECT_FLOAT_EQ(urt[i], A.اتلا_دایاں_triangle()(i));
 	}
 }

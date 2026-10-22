@@ -37,47 +37,47 @@
  * Controller library code
  */
 
-#pragma once
+#ہدایت once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <float.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <assert.h>
+#ضمن <time.h>
+#ضمن <stdlib.h>
+#ضمن <math.h>
+#ضمن <float.h>
+#ضمن <mathlib/math/test/test.hpp>
+#ضمن <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ضمن "block/Block.hpp"
+#ضمن "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ضمن "matrix/math.hpp"
 
-namespace control
+نطاق control
 {
 
 /**
  * A low pass filter as described here:
  * http://en.wikipedia.org/wiki/Low-pass_filter.
  */
-class __EXPORT BlockLowPass : public Block
+صنف __EXPORT بلاک_کم_Pass : عام بلاک
 {
-public:
+عام:
 // methods
-	BlockLowPass(SuperBlock *parent, const char *name) :
-		Block(parent, name),
-		_fCut(this, "") // only one parameter, no need to name
+	بلاک_کم_Pass(Super_بلاک *ماپا, ثابت حرف *name) :
+		بلاک(ماپا, name),
+		_fCut(هذا, "") // only one parameter, no need to name
 	{}
-	virtual ~BlockLowPass() = default;
-	float update(float input);
+	مجازی ~بلاک_کم_Pass() = افتراضي;
+	عائم update(عائم داخلہ);
 // accessors
-	float getState() { return _state; }
-	float getFCut() { return _fCut.get(); }
-	void setState(float state) { _state = state; }
-protected:
-// attributes
-	float _state{NAN}; // initialize to invalid val, force into is_finite() check on first call
-	control::BlockParamFloat _fCut;
+	عائم getState() { أرجع _state; }
+	عائم getFCut() { أرجع _fCut.get(); }
+	فراغ سیٹ_State(عائم state) { _state = state; }
+محمي:
+//گن
+	عائم _state{NAN}; // initialize to invalid val, force into is_finite() check on first call
+	control::بلاک_Param_Float _fCut;
 };
 
 } // namespace control

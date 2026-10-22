@@ -31,94 +31,94 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ہدایت once
 
-#include <px4_platform_common/atomic_bitset.h>
-#include "ParamLayer.h"
+#ضمن <px4_platform_common/atomic_bitset.h>
+#ضمن "ParamLayer.h"
 
-class ExhaustiveLayer : public ParamLayer
+class ExhaustiveLayer : عام ParamLayer
 {
-public:
-	ExhaustiveLayer(ParamLayer *parent) : ParamLayer(parent)
+عام:
+	ExhaustiveLayer(ParamLayer *ماپا) : ParamLayer(ماپا)
 	{
 		// refresh all values
-		for (param_t i = 0; i < PARAM_COUNT; i++) {
-			_values[i] = parent->get(i);
+		لكل (param_t i = 0; i < PARAM_گنتی; i++) {
+			اقدار_3[i] = ماپا->get(i);
 		}
 	}
 
-	bool store(param_t param, param_value_u value) override
+	bool store(param_t param, param_قدر_u قدر) override
 	{
-		if (param >= PARAM_COUNT) {
-			return false;
+		إذا (param >= PARAM_گنتی) {
+			أرجع false;
 		}
 
 		{
-			const AtomicTransaction transaction;
-			_values[param] = value;
-			_ownership_set.set(param);
+			ثابت AtomicTransaction transaction;
+			اقدار_3[param] = قدر;
+			ownership_سیٹ.سیٹ(param);
 		}
 
-		return true;
+		أرجع true;
 	}
 
-	bool contains(param_t param) const override
+	bool شامل_اے(param_t param) ثابت override
 	{
-		return param < PARAM_COUNT && _ownership_set[param];
+		أرجع param < PARAM_گنتی && ownership_سیٹ[param];
 	}
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_گنتی> containedAsBitset() ثابت override
 	{
-		return _ownership_set;
+		أرجع ownership_سیٹ;
 	}
 
-	param_value_u get(param_t param) const override
+	param_قدر_u get(param_t param) ثابت override
 	{
-		if (param >= PARAM_COUNT) {
-			return {0};
+		إذا (param >= PARAM_گنتی) {
+			أرجع {0};
 		}
 
-		const AtomicTransaction transaction;
+		ثابت AtomicTransaction transaction;
 		// We assume to have the correct values for all params, even without ownership.
 		// We expect that refresh was called when underlying defaults changed
-		return _values[param];
+		أرجع اقدار_3[param];
 	}
 
-	void reset(param_t param) override
+	فراغ reset(param_t param) override
 	{
-		if (param >= PARAM_COUNT) {
-			return;
+		إذا (param >= PARAM_گنتی) {
+			أرجع;
 		}
 
-		const AtomicTransaction transaction;
-		_values[param] = _parent->get(param);
-		_ownership_set.set(param, false);
+		ثابت AtomicTransaction transaction;
+		اقدار_3[param] = ماپا_2->get(param);
+		ownership_سیٹ.سیٹ(param, false);
 	}
 
-	void refresh(param_t param) override
+	فراغ refresh(param_t param) override
 	{
-		_parent->refresh(param);
+		ماپا_2->refresh(param);
 		// in case we don't have ownership, and it changed below, we have to refresh our cache.
 		{
-			const AtomicTransaction transaction;
+			ثابت AtomicTransaction transaction;
 
-			if (!contains(param)) {
-				_values[param] = _parent->get(param);
+			إذا (!شامل_اے(param)) {
+				اقدار_3[param] = ماپا_2->get(param);
 			}
 		}
 	}
 
-	int size() const override
+	صحيح ناپ() ثابت override
 	{
-		return _ownership_set.count();
+		أرجع ownership_سیٹ.گنتی();
 	}
 
-	int byteSize() const override
+	صحيح byte_ناپ() ثابت override
 	{
-		return PARAM_COUNT * sizeof(param_value_u);
+		أرجع PARAM_گنتی * حجم(param_قدر_u);
 	}
 
-private:
-	param_value_u _values[PARAM_COUNT];
-	px4::AtomicBitset<PARAM_COUNT> _ownership_set;
+خاص:
+	param_قدر_u اقدار_3[PARAM_گنتی];
+	px4::AtomicBitset<PARAM_گنتی> ownership_سیٹ;
 };

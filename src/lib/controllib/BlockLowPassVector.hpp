@@ -37,61 +37,61 @@
  * Controller library code
  */
 
-#pragma once
+#ہدایت once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <assert.h>
+#ضمن <time.h>
+#ضمن <stdlib.h>
+#ضمن <math.h>
+#ضمن <mathlib/math/test/test.hpp>
+#ضمن <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#ضمن "block/Block.hpp"
+#ضمن "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#ضمن "matrix/math.hpp"
 
-namespace control
+نطاق control
 {
 
-template<class Type, size_t M>
-class __EXPORT BlockLowPassVector: public Block
+سانچا<صنف Type, size_t M>
+صنف __EXPORT بلاک_کم_Pass_سمتیہ: عام بلاک
 {
-public:
+عام:
 // methods
-	BlockLowPassVector(SuperBlock *parent,
-			   const char *name) :
-		Block(parent, name),
+	بلاک_کم_Pass_سمتیہ(Super_بلاک *ماپا,
+			   ثابت حرف *name) :
+		بلاک(ماپا, name),
 		_state(),
-		_fCut(this, "") // only one parameter, no need to name
+		_fCut(هذا, "") // only one parameter, no need to name
 	{
-		for (size_t i = 0; i < M; i++) {
+		لكل (size_t i = 0; i < M; i++) {
 			_state(i) = 0.0f / 0.0f;
 		}
 	}
-	virtual ~BlockLowPassVector() = default;
-	matrix::Vector<Type, M> update(const matrix::Matrix<Type, M, 1> &input)
+	مجازی ~بلاک_کم_Pass_سمتیہ() = افتراضي;
+	میٹرکس::سمتیہ<Type, M> update(ثابت میٹرکس::میٹرکس_2<Type, M, 1> &داخلہ)
 	{
-		for (size_t i = 0; i < M; i++) {
-			if (!PX4_ISFINITE(getState()(i))) {
-				setState(input);
+		لكل (size_t i = 0; i < M; i++) {
+			إذا (!PX4_ISFINITE(getState()(i))) {
+				سیٹ_State(داخلہ);
 			}
 		}
 
-		float b = 2 * M_PI_F * getFCut() * getDt();
-		float a = b / (1 + b);
-		setState(input * a + getState() * (1 - a));
-		return getState();
+		عائم b = 2 * M_PI_F * getFCut() * getDt();
+		عائم a = b / (1 + b);
+		سیٹ_State(داخلہ * a + getState() * (1 - a));
+		أرجع getState();
 	}
 // accessors
-	matrix::Vector<Type, M> getState() { return _state; }
-	float getFCut() { return _fCut.get(); }
-	void setState(const matrix::Vector<Type, M> &state) { _state = state; }
-private:
-// attributes
-	matrix::Vector<Type, M> _state;
-	control::BlockParamFloat _fCut;
+	میٹرکس::سمتیہ<Type, M> getState() { أرجع _state; }
+	عائم getFCut() { أرجع _fCut.get(); }
+	فراغ سیٹ_State(ثابت میٹرکس::سمتیہ<Type, M> &state) { _state = state; }
+خاص:
+//گن
+	میٹرکس::سمتیہ<Type, M> _state;
+	control::بلاک_Param_Float _fCut;
 };
 
 } // namespace control

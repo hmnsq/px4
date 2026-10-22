@@ -37,18 +37,18 @@
  * @brief Performance measuring tools.
  */
 
-#include <inttypes.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <drivers/drv_hrt.h>
-#include <math.h>
-#include <pthread.h>
-#include <systemlib/err.h>
+#ضمن <inttypes.h>
+#ضمن <stdlib.h>
+#ضمن <stdio.h>
+#ضمن <string.h>
+#ضمن <drivers/drv_hrt.h>
+#ضمن <math.h>
+#ضمن <pthread.h>
+#ضمن <systemlib/err.h>
 
-#include "perf_counter.h"
+#ضمن "perf_counter.h"
 
-#include <px4_platform_common/atomic.h>
+#ضمن <px4_platform_common/atomic.h>
 
 // perf counters are written on the hot path (perf_begin/perf_end/perf_count)
 // and read concurrently by the 'perf' command and the logger.
@@ -64,70 +64,70 @@
 // PerfVar mirrors the subset of the px4::atomic API used below so the call
 // sites are identical in both configurations; on embedded the accessors are
 // trivial and inline to bare loads/stores.
-#if defined(__PX4_POSIX) || defined(__SANITIZE_THREAD__)
-template <typename T> using PerfVar = px4::atomic<T>;
-#else
-template <typename T>
-class PerfVar
+#إذا defined(__PX4_POSIX) || defined(__SANITIZE_THREAD__)
+سانچا <قسم_ناں T> ورتوں PerfVar = px4::atomic<T>;
+#وإلا
+سانچا <قسم_ناں T>
+صنف PerfVar
 {
-public:
-	PerfVar() = default;
-	T load() const { return _value; }
-	void store(T value) { _value = value; }
-	T fetch_add(T value) { const T previous = _value; _value += value; return previous; }
-private:
-	T _value {};
+عام:
+	PerfVar() = افتراضي;
+	T لدو() ثابت { أرجع قدر_2; }
+	فراغ store(T value) { قدر_2 = value; }
+	T fetch_جوڑو(T value) { ثابت T پچھلا = قدر_2; قدر_2 += value; أرجع پچھلا; }
+خاص:
+	T قدر_2 {};
 };
-#endif
+#جے_انت
 
 /**
  * Header common to all counters.
  */
-struct perf_ctr_header {
-	sq_entry_t		link;	/**< list linkage */
-	enum perf_counter_type	type;	/**< counter type */
-	bool			pending_free;	/**< freed during iteration, deleted after the last iteration ends */
-	const char		*name;	/**< counter name */
+بنية perf_ctr_سرخی {
+	sq_اندراج_t		link;	/**< list linkage */
+	تعداد perf_counter_type	type;	/**< counter type */
+	منطقي			pending_free;	/**< freed during iteration, deleted after the last iteration ends */
+	ثابت حرف		*name;	/**< counter name */
 };
 
 /**
  * PC_EVENT counter.
  */
-struct perf_ctr_count : public perf_ctr_header {
-	PerfVar<uint64_t>	event_count;
+بنية perf_ctr_گنتی : عام perf_ctr_سرخی {
+	PerfVar<uint64_t>	event_گنتی;
 };
 
 /**
  * PC_ELAPSED counter.
  */
-struct perf_ctr_elapsed : public perf_ctr_header {
-	PerfVar<uint64_t>	event_count;
-	PerfVar<uint64_t>	time_start;
-	PerfVar<uint64_t>	time_total;
-	PerfVar<uint32_t>	time_least;
-	PerfVar<uint32_t>	time_most;
-	PerfVar<float>	mean;
-	PerfVar<float>	M2;
+بنية perf_ctr_elapsed : عام perf_ctr_سرخی {
+	PerfVar<uint64_t>	event_گنتی;
+	PerfVar<uint64_t>	ویلا_شروع;
+	PerfVar<uint64_t>	ویلا_کل;
+	PerfVar<uint32_t>	ویلا_گھٹ_توں_گھٹ;
+	PerfVar<uint32_t>	ویلا_most;
+	PerfVar<عائم>	اوسط;
+	PerfVar<عائم>	M2;
 };
 
 /**
  * PC_INTERVAL counter.
  */
-struct perf_ctr_interval : public perf_ctr_header {
-	PerfVar<uint64_t>	event_count;
-	PerfVar<uint64_t>	time_event;
-	PerfVar<uint64_t>	time_first;
-	PerfVar<uint64_t>	time_last;
-	PerfVar<uint32_t>	time_least;
-	PerfVar<uint32_t>	time_most;
-	PerfVar<float>	mean;
-	PerfVar<float>	M2;
+بنية perf_ctr_interval : عام perf_ctr_سرخی {
+	PerfVar<uint64_t>	event_گنتی;
+	PerfVar<uint64_t>	ویلا_event;
+	PerfVar<uint64_t>	ویلا_پہلا;
+	PerfVar<uint64_t>	ویلا_آخری;
+	PerfVar<uint32_t>	ویلا_گھٹ_توں_گھٹ;
+	PerfVar<uint32_t>	ویلا_most;
+	PerfVar<عائم>	اوسط;
+	PerfVar<عائم>	M2;
 };
 
 /**
  * List of all known counters.
  */
-static sq_queue_t	perf_counters = { nullptr, nullptr };
+ساكن sq_قطار_t	perf_counters = { خالی_سوچک, خالی_سوچک };
 
 /**
  * mutex protecting access to the perf_counters linked list (which is read from & written to by different threads)
@@ -141,26 +141,26 @@ pthread_mutex_t perf_counters_mutex = PTHREAD_MUTEX_INITIALIZER;
  * While non-zero, perf_free() only marks entries as pending_free; the last
  * iteration to finish deletes them.
  */
-static int perf_iterate_active = 0;
+ساكن صحيح perf_iterate_سرگرم = 0;
 
-static void
+ساكن فراغ
 perf_delete(perf_counter_t handle)
 {
-	switch (handle->type) {
-	case PC_COUNT:
-		delete (struct perf_ctr_count *)handle;
-		break;
+	بدل (handle->type) {
+	حالة PC_گنتی:
+		مٹاؤ (بنية perf_ctr_گنتی *)handle;
+		اكسر;
 
-	case PC_ELAPSED:
-		delete (struct perf_ctr_elapsed *)handle;
-		break;
+	حالة PC_ELAPSED:
+		مٹاؤ (بنية perf_ctr_elapsed *)handle;
+		اكسر;
 
-	case PC_INTERVAL:
-		delete (struct perf_ctr_interval *)handle;
-		break;
+	حالة PC_INTERVAL:
+		مٹاؤ (بنية perf_ctr_interval *)handle;
+		اكسر;
 
-	default:
-		break;
+	افتراضي:
+		اكسر;
 	}
 }
 
@@ -168,101 +168,101 @@ perf_delete(perf_counter_t handle)
  * Delete all entries marked pending_free. Call with perf_counters_mutex held
  * and no iteration active.
  */
-static void
+ساكن فراغ
 perf_free_pending_locked()
 {
 	perf_counter_t handle = (perf_counter_t)sq_peek(&perf_counters);
 
-	while (handle != nullptr) {
-		perf_counter_t next = (perf_counter_t)sq_next(&handle->link);
+	طالما (handle != خالی_سوچک) {
+		perf_counter_t اگلا = (perf_counter_t)sq_اگلا(&handle->link);
 
-		if (handle->pending_free) {
+		إذا (handle->pending_free) {
 			sq_rem(&handle->link, &perf_counters);
 			perf_delete(handle);
 		}
 
-		handle = next;
+		handle = اگلا;
 	}
 }
 
 perf_counter_t
-perf_alloc(enum perf_counter_type type, const char *name)
+perf_alloc(تعداد perf_counter_type type, ثابت حرف *name)
 {
-	perf_counter_t ctr = nullptr;
+	perf_counter_t ctr = خالی_سوچک;
 
-	switch (type) {
-	case PC_COUNT:
-		ctr = new perf_ctr_count();
-		break;
+	بدل (type) {
+	حالة PC_گنتی:
+		ctr = جديد perf_ctr_گنتی();
+		اكسر;
 
-	case PC_ELAPSED:
-		ctr = new perf_ctr_elapsed();
-		break;
+	حالة PC_ELAPSED:
+		ctr = جديد perf_ctr_elapsed();
+		اكسر;
 
-	case PC_INTERVAL:
-		ctr = new perf_ctr_interval();
-		break;
+	حالة PC_INTERVAL:
+		ctr = جديد perf_ctr_interval();
+		اكسر;
 
-	default:
-		break;
+	افتراضي:
+		اكسر;
 	}
 
-	if (ctr != nullptr) {
+	إذا (ctr != خالی_سوچک) {
 		ctr->type = type;
 		ctr->name = name;
-		ctr->pending_free = false;
+		ctr->pending_free = خطأ;
 		pthread_mutex_lock(&perf_counters_mutex);
 		sq_addfirst(&ctr->link, &perf_counters);
 		pthread_mutex_unlock(&perf_counters_mutex);
 	}
 
-	return ctr;
+	أرجع ctr;
 }
 
 perf_counter_t
-perf_alloc_once(enum perf_counter_type type, const char *name)
+perf_alloc_once(تعداد perf_counter_type type, ثابت حرف *name)
 {
 	pthread_mutex_lock(&perf_counters_mutex);
 	perf_counter_t handle = (perf_counter_t)sq_peek(&perf_counters);
 
-	while (handle != nullptr) {
-		if (!handle->pending_free && !strcmp(handle->name, name)) {
-			if (type == handle->type) {
+	طالما (handle != خالی_سوچک) {
+		إذا (!handle->pending_free && !strcmp(handle->name, name)) {
+			إذا (type == handle->type) {
 				/* they are the same counter */
 				pthread_mutex_unlock(&perf_counters_mutex);
-				return handle;
+				أرجع handle;
 
-			} else {
+			} وإلا {
 				/* same name but different type, assuming this is an error and not intended */
 				pthread_mutex_unlock(&perf_counters_mutex);
-				return nullptr;
+				أرجع خالی_سوچک;
 			}
 		}
 
-		handle = (perf_counter_t)sq_next(&handle->link);
+		handle = (perf_counter_t)sq_اگلا(&handle->link);
 	}
 
 	pthread_mutex_unlock(&perf_counters_mutex);
 
 	/* if the execution reaches here, no existing counter of that name was found */
-	return perf_alloc(type, name);
+	أرجع perf_alloc(type, name);
 }
 
-void
+فراغ
 perf_free(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	إذا (handle == خالی_سوچک) {
+		أرجع;
 	}
 
 	pthread_mutex_lock(&perf_counters_mutex);
 
-	if (perf_iterate_active > 0) {
+	إذا (perf_iterate_سرگرم > 0) {
 		// an iteration may be positioned on this entry: keep it linked
 		// and let the last active iteration delete it
-		handle->pending_free = true;
+		handle->pending_free = سچ;
 		pthread_mutex_unlock(&perf_counters_mutex);
-		return;
+		أرجع;
 	}
 
 	sq_rem(&handle->link, &perf_counters);
@@ -271,511 +271,511 @@ perf_free(perf_counter_t handle)
 	perf_delete(handle);
 }
 
-void
-perf_count(perf_counter_t handle)
+فراغ
+perf_گنتی(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	إذا (handle == خالی_سوچک) {
+		أرجع;
 	}
 
-	switch (handle->type) {
-	case PC_COUNT:
-		((struct perf_ctr_count *)handle)->event_count.fetch_add(1);
-		break;
+	بدل (handle->type) {
+	حالة PC_گنتی:
+		((بنية perf_ctr_گنتی *)handle)->event_گنتی.fetch_جوڑو(1);
+		اكسر;
 
-	case PC_INTERVAL:
-		perf_count_interval(handle, hrt_absolute_time());
-		break;
+	حالة PC_INTERVAL:
+		perf_گنتی_interval(handle, hrt_absolute_ویلا());
+		اكسر;
 
-	default:
-		break;
+	افتراضي:
+		اكسر;
 	}
 }
 
-void
+فراغ
 perf_begin(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	إذا (handle == خالی_سوچک) {
+		أرجع;
 	}
 
-	switch (handle->type) {
-	case PC_ELAPSED:
-		((struct perf_ctr_elapsed *)handle)->time_start.store(hrt_absolute_time());
-		break;
+	بدل (handle->type) {
+	حالة PC_ELAPSED:
+		((بنية perf_ctr_elapsed *)handle)->ویلا_شروع.store(hrt_absolute_ویلا());
+		اكسر;
 
-	default:
-		break;
+	افتراضي:
+		اكسر;
 	}
 }
 
-void
-perf_end(perf_counter_t handle)
+فراغ
+perf_سرا(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	إذا (handle == خالی_سوچک) {
+		أرجع;
 	}
 
-	switch (handle->type) {
-	case PC_ELAPSED: {
-			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
-			hrt_abstime ts = pce->time_start.load();
+	بدل (handle->type) {
+	حالة PC_ELAPSED: {
+			بنية perf_ctr_elapsed *pce = (بنية perf_ctr_elapsed *)handle;
+			hrt_abstime ts = pce->ویلا_شروع.لدو();
 
-			if (ts != 0) {
-				perf_set_elapsed(handle, hrt_absolute_time() - ts);
+			إذا (ts != 0) {
+				perf_سیٹ_elapsed(handle, hrt_absolute_ویلا() - ts);
 			}
 		}
-		break;
+		اكسر;
 
-	default:
-		break;
+	افتراضي:
+		اكسر;
 	}
 }
 
-void
-perf_set_elapsed(perf_counter_t handle, int64_t elapsed)
+فراغ
+perf_سیٹ_elapsed(perf_counter_t handle, int64_t elapsed)
 {
-	if (handle == nullptr) {
-		return;
+	إذا (handle == خالی_سوچک) {
+		أرجع;
 	}
 
-	switch (handle->type) {
-	case PC_ELAPSED: {
-			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
+	بدل (handle->type) {
+	حالة PC_ELAPSED: {
+			بنية perf_ctr_elapsed *pce = (بنية perf_ctr_elapsed *)handle;
 
-			if (elapsed >= 0) {
-				uint64_t ec = pce->event_count.fetch_add(1) + 1;
-				pce->time_total.fetch_add((uint64_t)elapsed);
+			إذا (elapsed >= 0) {
+				uint64_t ec = pce->event_گنتی.fetch_جوڑو(1) + 1;
+				pce->ویلا_کل.fetch_جوڑو((uint64_t)elapsed);
 
-				uint32_t tl = pce->time_least.load();
+				uint32_t tl = pce->ویلا_گھٹ_توں_گھٹ.لدو();
 
-				if ((tl > (uint32_t)elapsed) || (tl == 0)) {
-					pce->time_least.store((uint32_t)elapsed);
+				إذا ((tl > (uint32_t)elapsed) || (tl == 0)) {
+					pce->ویلا_گھٹ_توں_گھٹ.store((uint32_t)elapsed);
 				}
 
-				uint32_t tm = pce->time_most.load();
+				uint32_t tm = pce->ویلا_most.لدو();
 
-				if (tm < (uint32_t)elapsed) {
-					pce->time_most.store((uint32_t)elapsed);
+				إذا (tm < (uint32_t)elapsed) {
+					pce->ویلا_most.store((uint32_t)elapsed);
 				}
 
 				// maintain mean and variance of the elapsed time in seconds
 				// Knuth/Welford recursive mean and variance of update intervals (via Wikipedia)
-				float dt = elapsed / 1e6f;
-				float mean_val = pce->mean.load();
-				float delta_intvl = dt - mean_val;
-				mean_val += delta_intvl / ec;
-				pce->mean.store(mean_val);
-				float m2_val = pce->M2.load();
-				m2_val += delta_intvl * (dt - mean_val);
+				عائم dt = elapsed / 1e6f;
+				عائم اوسط_val = pce->اوسط.لدو();
+				عائم delta_intvl = dt - اوسط_val;
+				اوسط_val += delta_intvl / ec;
+				pce->اوسط.store(اوسط_val);
+				عائم m2_val = pce->M2.لدو();
+				m2_val += delta_intvl * (dt - اوسط_val);
 				pce->M2.store(m2_val);
 
-				pce->time_start.store((uint64_t)0);
+				pce->ویلا_شروع.store((uint64_t)0);
 			}
 		}
-		break;
+		اكسر;
 
-	default:
-		break;
+	افتراضي:
+		اكسر;
 	}
 }
 
-void
-perf_count_interval(perf_counter_t handle, hrt_abstime now)
+فراغ
+perf_گنتی_interval(perf_counter_t handle, hrt_abstime now)
 {
-	if (handle == nullptr) {
-		return;
+	إذا (handle == خالی_سوچک) {
+		أرجع;
 	}
 
-	switch (handle->type) {
-	case PC_INTERVAL: {
-			struct perf_ctr_interval *pci = (struct perf_ctr_interval *)handle;
-			uint64_t ec = pci->event_count.load();
+	بدل (handle->type) {
+	حالة PC_INTERVAL: {
+			بنية perf_ctr_interval *pci = (بنية perf_ctr_interval *)handle;
+			uint64_t ec = pci->event_گنتی.لدو();
 
-			switch (ec) {
-			case 0:
-				pci->time_first.store(now);
-				break;
+			بدل (ec) {
+			حالة 0:
+				pci->ویلا_پہلا.store(now);
+				اكسر;
 
-			case 1: {
-					uint64_t tl = pci->time_last.load();
+			حالة 1: {
+					uint64_t tl = pci->ویلا_آخری.لدو();
 					uint32_t interval = (uint32_t)(now - tl);
-					pci->time_least.store(interval);
-					pci->time_most.store(interval);
-					pci->mean.store(interval / 1e6f);
+					pci->ویلا_گھٹ_توں_گھٹ.store(interval);
+					pci->ویلا_most.store(interval);
+					pci->اوسط.store(interval / 1e6f);
 					pci->M2.store(0.0f);
-					break;
+					اكسر;
 				}
 
-			default: {
-					uint64_t tl = pci->time_last.load();
+			افتراضي: {
+					uint64_t tl = pci->ویلا_آخری.لدو();
 					hrt_abstime interval = now - tl;
 
-					uint32_t least = pci->time_least.load();
+					uint32_t least = pci->ویلا_گھٹ_توں_گھٹ.لدو();
 
-					if ((uint32_t)interval < least) {
-						pci->time_least.store((uint32_t)interval);
+					إذا ((uint32_t)interval < least) {
+						pci->ویلا_گھٹ_توں_گھٹ.store((uint32_t)interval);
 					}
 
-					uint32_t most = pci->time_most.load();
+					uint32_t most = pci->ویلا_most.لدو();
 
-					if ((uint32_t)interval > most) {
-						pci->time_most.store((uint32_t)interval);
+					إذا ((uint32_t)interval > most) {
+						pci->ویلا_most.store((uint32_t)interval);
 					}
 
 					// maintain mean and variance of interval in seconds
 					// Knuth/Welford recursive mean and variance of update intervals (via Wikipedia)
-					float dt = interval / 1e6f;
-					float mean_val = pci->mean.load();
-					float delta_intvl = dt - mean_val;
-					mean_val += delta_intvl / ec;
-					pci->mean.store(mean_val);
-					float m2_val = pci->M2.load();
-					m2_val += delta_intvl * (dt - mean_val);
+					عائم dt = interval / 1e6f;
+					عائم اوسط_val = pci->اوسط.لدو();
+					عائم delta_intvl = dt - اوسط_val;
+					اوسط_val += delta_intvl / ec;
+					pci->اوسط.store(اوسط_val);
+					عائم m2_val = pci->M2.لدو();
+					m2_val += delta_intvl * (dt - اوسط_val);
 					pci->M2.store(m2_val);
-					break;
+					اكسر;
 				}
 			}
 
-			pci->time_last.store(now);
-			pci->event_count.fetch_add(1);
-			break;
+			pci->ویلا_آخری.store(now);
+			pci->event_گنتی.fetch_جوڑو(1);
+			اكسر;
 		}
 
-	default:
-		break;
+	افتراضي:
+		اكسر;
 	}
 }
 
-void
-perf_set_count(perf_counter_t handle, uint64_t count)
+فراغ
+perf_سیٹ_گنتی(perf_counter_t handle, uint64_t گنتی)
 {
-	if (handle == nullptr) {
-		return;
+	إذا (handle == خالی_سوچک) {
+		أرجع;
 	}
 
-	switch (handle->type) {
-	case PC_COUNT: {
-			((struct perf_ctr_count *)handle)->event_count.store(count);
+	بدل (handle->type) {
+	حالة PC_گنتی: {
+			((بنية perf_ctr_گنتی *)handle)->event_گنتی.store(گنتی);
 		}
-		break;
+		اكسر;
 
-	default:
-		break;
+	افتراضي:
+		اكسر;
 	}
 
 }
 
-void
+فراغ
 perf_cancel(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	إذا (handle == خالی_سوچک) {
+		أرجع;
 	}
 
-	switch (handle->type) {
-	case PC_ELAPSED: {
-			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
-			pce->time_start.store((uint64_t)0);
+	بدل (handle->type) {
+	حالة PC_ELAPSED: {
+			بنية perf_ctr_elapsed *pce = (بنية perf_ctr_elapsed *)handle;
+			pce->ویلا_شروع.store((uint64_t)0);
 		}
-		break;
+		اكسر;
 
-	default:
-		break;
+	افتراضي:
+		اكسر;
 	}
 }
 
-void
+فراغ
 perf_reset(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	إذا (handle == خالی_سوچک) {
+		أرجع;
 	}
 
-	switch (handle->type) {
-	case PC_COUNT:
-		((struct perf_ctr_count *)handle)->event_count.store((uint64_t)0);
-		break;
+	بدل (handle->type) {
+	حالة PC_گنتی:
+		((بنية perf_ctr_گنتی *)handle)->event_گنتی.store((uint64_t)0);
+		اكسر;
 
-	case PC_ELAPSED: {
-			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
-			pce->event_count.store((uint64_t)0);
-			pce->time_start.store((uint64_t)0);
-			pce->time_total.store((uint64_t)0);
-			pce->time_least.store((uint32_t)0);
-			pce->time_most.store((uint32_t)0);
-			pce->mean.store(0.0f);
+	حالة PC_ELAPSED: {
+			بنية perf_ctr_elapsed *pce = (بنية perf_ctr_elapsed *)handle;
+			pce->event_گنتی.store((uint64_t)0);
+			pce->ویلا_شروع.store((uint64_t)0);
+			pce->ویلا_کل.store((uint64_t)0);
+			pce->ویلا_گھٹ_توں_گھٹ.store((uint32_t)0);
+			pce->ویلا_most.store((uint32_t)0);
+			pce->اوسط.store(0.0f);
 			pce->M2.store(0.0f);
-			break;
+			اكسر;
 		}
 
-	case PC_INTERVAL: {
-			struct perf_ctr_interval *pci = (struct perf_ctr_interval *)handle;
-			pci->event_count.store((uint64_t)0);
-			pci->time_event.store((uint64_t)0);
-			pci->time_first.store((uint64_t)0);
-			pci->time_last.store((uint64_t)0);
-			pci->time_least.store((uint32_t)0);
-			pci->time_most.store((uint32_t)0);
-			pci->mean.store(0.0f);
+	حالة PC_INTERVAL: {
+			بنية perf_ctr_interval *pci = (بنية perf_ctr_interval *)handle;
+			pci->event_گنتی.store((uint64_t)0);
+			pci->ویلا_event.store((uint64_t)0);
+			pci->ویلا_پہلا.store((uint64_t)0);
+			pci->ویلا_آخری.store((uint64_t)0);
+			pci->ویلا_گھٹ_توں_گھٹ.store((uint32_t)0);
+			pci->ویلا_most.store((uint32_t)0);
+			pci->اوسط.store(0.0f);
 			pci->M2.store(0.0f);
-			break;
+			اكسر;
 		}
 	}
 }
 
-void
+فراغ
 perf_print_counter(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return;
+	إذا (handle == خالی_سوچک) {
+		أرجع;
 	}
 
-	switch (handle->type) {
-	case PC_COUNT: {
-			uint64_t ec = ((struct perf_ctr_count *)handle)->event_count.load();
+	بدل (handle->type) {
+	حالة PC_گنتی: {
+			uint64_t ec = ((بنية perf_ctr_گنتی *)handle)->event_گنتی.لدو();
 			PX4_INFO_RAW("%s: %" PRIu64 " events\n",
 				     handle->name, ec);
-			break;
+			اكسر;
 		}
 
-	case PC_ELAPSED: {
-			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
-			uint64_t ec = pce->event_count.load();
-			uint64_t tt = pce->time_total.load();
-			uint32_t tl = pce->time_least.load();
-			uint32_t tm = pce->time_most.load();
-			float m2 = pce->M2.load();
-			float rms = (ec > 1) ? sqrtf(m2 / (ec - 1)) : 0.f;
+	حالة PC_ELAPSED: {
+			بنية perf_ctr_elapsed *pce = (بنية perf_ctr_elapsed *)handle;
+			uint64_t ec = pce->event_گنتی.لدو();
+			uint64_t tt = pce->ویلا_کل.لدو();
+			uint32_t tl = pce->ویلا_گھٹ_توں_گھٹ.لدو();
+			uint32_t tm = pce->ویلا_most.لدو();
+			عائم m2 = pce->M2.لدو();
+			عائم rms = (ec > 1) ? sqrtf(m2 / (ec - 1)) : 0.f;
 			PX4_INFO_RAW("%s: %" PRIu64 " events, %" PRIu64 "us elapsed, %.2fus avg, min %" PRIu32 "us max %" PRIu32
 				     "us %5.3fus rms\n",
 				     handle->name, ec, tt,
-				     (ec == 0) ? 0 : (double)tt / (double)ec,
-				     tl, tm, (double)(1e6f * rms));
-			break;
+				     (ec == 0) ? 0 : (مزدوج)tt / (مزدوج)ec,
+				     tl, tm, (مزدوج)(1e6f * rms));
+			اكسر;
 		}
 
-	case PC_INTERVAL: {
-			struct perf_ctr_interval *pci = (struct perf_ctr_interval *)handle;
-			uint64_t ec = pci->event_count.load();
-			uint64_t tf = pci->time_first.load();
-			uint64_t tla = pci->time_last.load();
-			uint32_t tl = pci->time_least.load();
-			uint32_t tm = pci->time_most.load();
-			float m2 = pci->M2.load();
-			float rms = (ec > 1) ? sqrtf(m2 / (ec - 1)) : 0.f;
+	حالة PC_INTERVAL: {
+			بنية perf_ctr_interval *pci = (بنية perf_ctr_interval *)handle;
+			uint64_t ec = pci->event_گنتی.لدو();
+			uint64_t tf = pci->ویلا_پہلا.لدو();
+			uint64_t tla = pci->ویلا_آخری.لدو();
+			uint32_t tl = pci->ویلا_گھٹ_توں_گھٹ.لدو();
+			uint32_t tm = pci->ویلا_most.لدو();
+			عائم m2 = pci->M2.لدو();
+			عائم rms = (ec > 1) ? sqrtf(m2 / (ec - 1)) : 0.f;
 
 			PX4_INFO_RAW("%s: %" PRIu64 " events, %.2fus avg, min %" PRIu32 "us max %" PRIu32 "us %5.3fus rms\n",
 				     handle->name, ec,
-				     (ec == 0) ? 0 : (double)(tla - tf) / (double)ec,
-				     tl, tm, (double)(1e6f * rms));
-			break;
+				     (ec == 0) ? 0 : (مزدوج)(tla - tf) / (مزدوج)ec,
+				     tl, tm, (مزدوج)(1e6f * rms));
+			اكسر;
 		}
 
-	default:
-		break;
+	افتراضي:
+		اكسر;
 	}
 }
 
 
-int
-perf_print_counter_buffer(char *buffer, int length, perf_counter_t handle)
+صحيح
+perf_print_counter_بفر(حرف *بفر_2, صحيح لمائی, perf_counter_t handle)
 {
-	int num_written = 0;
+	صحيح عدد_written = 0;
 
-	if (handle == nullptr) {
-		return 0;
+	إذا (handle == خالی_سوچک) {
+		أرجع 0;
 	}
 
-	switch (handle->type) {
-	case PC_COUNT:
-		num_written = snprintf(buffer, length, "%s: %" PRIu64 " events",
+	بدل (handle->type) {
+	حالة PC_گنتی:
+		عدد_written = snprintf(بفر_2, لمائی, "%s: %" PRIu64 " events",
 				       handle->name,
-				       ((struct perf_ctr_count *)handle)->event_count.load());
-		break;
+				       ((بنية perf_ctr_گنتی *)handle)->event_گنتی.لدو());
+		اكسر;
 
-	case PC_ELAPSED: {
-			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
-			uint64_t ec = pce->event_count.load();
-			uint64_t tt = pce->time_total.load();
-			uint32_t tl = pce->time_least.load();
-			uint32_t tm = pce->time_most.load();
-			float m2 = pce->M2.load();
-			float rms = (ec > 1) ? sqrtf(m2 / (ec - 1)) : 0.f;
-			num_written = snprintf(buffer, length,
+	حالة PC_ELAPSED: {
+			بنية perf_ctr_elapsed *pce = (بنية perf_ctr_elapsed *)handle;
+			uint64_t ec = pce->event_گنتی.لدو();
+			uint64_t tt = pce->ویلا_کل.لدو();
+			uint32_t tl = pce->ویلا_گھٹ_توں_گھٹ.لدو();
+			uint32_t tm = pce->ویلا_most.لدو();
+			عائم m2 = pce->M2.لدو();
+			عائم rms = (ec > 1) ? sqrtf(m2 / (ec - 1)) : 0.f;
+			عدد_written = snprintf(بفر_2, لمائی,
 					       "%s: %" PRIu64 " events, %" PRIu64 "us elapsed, %.2fus avg, min %" PRIu32 "us max %" PRIu32 "us %5.3fus rms",
 					       handle->name,
 					       ec,
 					       tt,
-					       (ec == 0) ? 0 : (double)tt / (double)ec,
+					       (ec == 0) ? 0 : (مزدوج)tt / (مزدوج)ec,
 					       tl,
 					       tm,
-					       (double)(1e6f * rms));
-			break;
+					       (مزدوج)(1e6f * rms));
+			اكسر;
 		}
 
-	case PC_INTERVAL: {
-			struct perf_ctr_interval *pci = (struct perf_ctr_interval *)handle;
-			uint64_t ec = pci->event_count.load();
-			uint32_t tl = pci->time_least.load();
-			uint32_t tm = pci->time_most.load();
-			float m2 = pci->M2.load();
-			float rms = (ec > 1) ? sqrtf(m2 / (ec - 1)) : 0.f;
+	حالة PC_INTERVAL: {
+			بنية perf_ctr_interval *pci = (بنية perf_ctr_interval *)handle;
+			uint64_t ec = pci->event_گنتی.لدو();
+			uint32_t tl = pci->ویلا_گھٹ_توں_گھٹ.لدو();
+			uint32_t tm = pci->ویلا_most.لدو();
+			عائم m2 = pci->M2.لدو();
+			عائم rms = (ec > 1) ? sqrtf(m2 / (ec - 1)) : 0.f;
 
-			num_written = snprintf(buffer, length,
+			عدد_written = snprintf(بفر_2, لمائی,
 					       "%s: %" PRIu64 " events, %.2f avg, min %" PRIu32 "us max %" PRIu32 "us %5.3fus rms",
 					       handle->name,
 					       ec,
-					       (ec == 0) ? 0 : (double)(pci->time_last.load() - pci->time_first.load()) / (double)ec,
+					       (ec == 0) ? 0 : (مزدوج)(pci->ویلا_آخری.لدو() - pci->ویلا_پہلا.لدو()) / (مزدوج)ec,
 					       tl,
 					       tm,
-					       (double)(1e6f * rms));
-			break;
+					       (مزدوج)(1e6f * rms));
+			اكسر;
 		}
 
-	default:
-		break;
+	افتراضي:
+		اكسر;
 	}
 
-	buffer[length - 1] = 0; // ensure 0-termination
-	return num_written;
+	بفر_2[لمائی - 1] = 0; // ensure 0-termination
+	أرجع عدد_written;
 }
 
 uint64_t
-perf_event_count(perf_counter_t handle)
+perf_event_گنتی(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return 0;
+	إذا (handle == خالی_سوچک) {
+		أرجع 0;
 	}
 
-	switch (handle->type) {
-	case PC_COUNT:
-		return ((struct perf_ctr_count *)handle)->event_count.load();
+	بدل (handle->type) {
+	حالة PC_گنتی:
+		أرجع ((بنية perf_ctr_گنتی *)handle)->event_گنتی.لدو();
 
-	case PC_ELAPSED: {
-			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
-			return pce->event_count.load();
+	حالة PC_ELAPSED: {
+			بنية perf_ctr_elapsed *pce = (بنية perf_ctr_elapsed *)handle;
+			أرجع pce->event_گنتی.لدو();
 		}
 
-	case PC_INTERVAL: {
-			struct perf_ctr_interval *pci = (struct perf_ctr_interval *)handle;
-			return pci->event_count.load();
+	حالة PC_INTERVAL: {
+			بنية perf_ctr_interval *pci = (بنية perf_ctr_interval *)handle;
+			أرجع pci->event_گنتی.لدو();
 		}
 
-	default:
-		break;
+	افتراضي:
+		اكسر;
 	}
 
-	return 0;
+	أرجع 0;
 }
 
-float
-perf_mean(perf_counter_t handle)
+عائم
+perf_اوسط(perf_counter_t handle)
 {
-	if (handle == nullptr) {
-		return 0;
+	إذا (handle == خالی_سوچک) {
+		أرجع 0;
 	}
 
-	switch (handle->type) {
-	case PC_ELAPSED: {
-			struct perf_ctr_elapsed *pce = (struct perf_ctr_elapsed *)handle;
-			return pce->mean.load();
+	بدل (handle->type) {
+	حالة PC_ELAPSED: {
+			بنية perf_ctr_elapsed *pce = (بنية perf_ctr_elapsed *)handle;
+			أرجع pce->اوسط.لدو();
 		}
 
-	case PC_INTERVAL: {
-			struct perf_ctr_interval *pci = (struct perf_ctr_interval *)handle;
-			return pci->mean.load();
+	حالة PC_INTERVAL: {
+			بنية perf_ctr_interval *pci = (بنية perf_ctr_interval *)handle;
+			أرجع pci->اوسط.لدو();
 		}
 
-	default:
-		break;
+	افتراضي:
+		اكسر;
 	}
 
-	return 0.0f;
+	أرجع 0.0f;
 }
 
-void
-perf_iterate_all(perf_callback cb, void *user)
+فراغ
+perf_iterate_all(perf_callback cb, فراغ *user)
 {
-	static constexpr size_t PERF_COUNTER_LINE_BUFFER_SIZE = 220;
-	char buffer[PERF_COUNTER_LINE_BUFFER_SIZE];
+	ساكن constexpr size_t PERF_COUNTER_سطر_بفر_ناپ = 220;
+	حرف بفر_2[PERF_COUNTER_سطر_بفر_ناپ];
 
 	pthread_mutex_lock(&perf_counters_mutex);
-	++perf_iterate_active;
+	++perf_iterate_سرگرم;
 
 	perf_counter_t handle = (perf_counter_t)sq_peek(&perf_counters);
 
-	while (handle != nullptr) {
+	طالما (handle != خالی_سوچک) {
 		// advance while locked; entries stay linked until all active iterations end
-		perf_counter_t next = (perf_counter_t)sq_next(&handle->link);
+		perf_counter_t اگلا = (perf_counter_t)sq_اگلا(&handle->link);
 
-		if (!handle->pending_free) {
-			perf_print_counter_buffer(buffer, sizeof(buffer), handle);
+		إذا (!handle->pending_free) {
+			perf_print_counter_بفر(بفر_2, حجم(بفر_2), handle);
 
 			// the callback may block (the logger waits for MAVLink acks here), so run
 			// it without the global mutex: perf_alloc()/perf_free() on other threads
 			// keep working, and 'next' stays valid because perf_free() defers deletion
 			// while perf_iterate_active > 0
 			pthread_mutex_unlock(&perf_counters_mutex);
-			cb(buffer, user);
+			cb(بفر_2, user);
 			pthread_mutex_lock(&perf_counters_mutex);
 		}
 
-		handle = next;
+		handle = اگلا;
 	}
 
-	if (--perf_iterate_active == 0) {
+	إذا (--perf_iterate_سرگرم == 0) {
 		perf_free_pending_locked();
 	}
 
 	pthread_mutex_unlock(&perf_counters_mutex);
 }
 
-void
-perf_print_all(void)
+فراغ
+perf_print_all(فراغ)
 {
 	pthread_mutex_lock(&perf_counters_mutex);
 	perf_counter_t handle = (perf_counter_t)sq_peek(&perf_counters);
 
-	while (handle != nullptr) {
-		if (!handle->pending_free) {
+	طالما (handle != خالی_سوچک) {
+		إذا (!handle->pending_free) {
 			perf_print_counter(handle);
 		}
 
-		handle = (perf_counter_t)sq_next(&handle->link);
+		handle = (perf_counter_t)sq_اگلا(&handle->link);
 	}
 
 	pthread_mutex_unlock(&perf_counters_mutex);
 }
 
-void
-perf_print_latency(void)
+فراغ
+perf_print_latency(فراغ)
 {
 	latency_info_t latency;
 	PX4_INFO_RAW("bucket [us] : events\n");
 
-	for (int i = 0; i < get_latency_bucket_count(); i++) {
+	لكل (صحيح i = 0; i < get_latency_بالٹی_گنتی(); i++) {
 		latency = get_latency(i, i);
-		PX4_INFO_RAW("       %4i : %li\n", latency.bucket, (long int)latency.counter);
+		PX4_INFO_RAW("       %4i : %li\n", latency.بالٹی, (لما صحيح)latency.counter);
 	}
 
 	// print the overflow bucket value
-	latency = get_latency(get_latency_bucket_count() - 1, get_latency_bucket_count());
-	PX4_INFO_RAW(" >%4" PRIu16 " : %" PRIu32 "\n", latency.bucket, latency.counter);
+	latency = get_latency(get_latency_بالٹی_گنتی() - 1, get_latency_بالٹی_گنتی());
+	PX4_INFO_RAW(" >%4" PRIu16 " : %" PRIu32 "\n", latency.بالٹی, latency.counter);
 }
 
-void
-perf_reset_all(void)
+فراغ
+perf_reset_all(فراغ)
 {
 	pthread_mutex_lock(&perf_counters_mutex);
 	perf_counter_t handle = (perf_counter_t)sq_peek(&perf_counters);
 
-	while (handle != nullptr) {
-		if (!handle->pending_free) {
+	طالما (handle != خالی_سوچک) {
+		إذا (!handle->pending_free) {
 			perf_reset(handle);
 		}
 
-		handle = (perf_counter_t)sq_next(&handle->link);
+		handle = (perf_counter_t)sq_اگلا(&handle->link);
 	}
 
 	pthread_mutex_unlock(&perf_counters_mutex);

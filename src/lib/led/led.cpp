@@ -36,246 +36,246 @@
  */
 
 
-#include "led.h"
+#ضمن "led.h"
 
-int LedController::update(LedControlData &control_data)
+صحيح LedController::update(Led_Control_انکڑے &control_انکڑے)
 {
-	bool had_changes = false; // did one of the outputs change?
+	منطقي had_changes = خطأ; // did one of the outputs change?
 
 	// check for parameter updates
-	if (_parameter_update_sub.updated()) {
+	إذا (_parameter_update_sub.updated()) {
 		// clear update
 		parameter_update_s pupdate;
 		_parameter_update_sub.copy(&pupdate);
 
 		updateParams();
 
-		const uint8_t max_brightness_prev = _max_brightness;
+		ثابت uint8_t max_brightness_prev = _max_brightness;
 
 		// set maximum brightness (0-255) from percentage
 		_max_brightness = roundf(math::constrain(_param_sys_rgb_maxbrt.get(), 0.f, 1.f) * UINT8_MAX);
 
 		// update existing
-		for (int i = 0; i < BOARD_MAX_LEDS; ++i) {
-			control_data.leds[i].brightness = math::min(_max_brightness, control_data.leds[i].brightness);
+		لكل (صحيح i = 0; i < BOARD_MAX_LEDS; ++i) {
+			control_انکڑے.leds[i].brightness = math::min(_max_brightness, control_انکڑے.leds[i].brightness);
 		}
 
-		if (_max_brightness != max_brightness_prev) {
-			had_changes = true;
+		إذا (_max_brightness != max_brightness_prev) {
+			had_changes = سچ;
 		}
 	}
 
-	while (_led_control_sub.updated() || _force_update) {
-		const unsigned last_generation = _led_control_sub.get_last_generation();
+	طالما (_led_control_sub.updated() || _force_update) {
+		ثابت بنانشانی آخری_generation = _led_control_sub.get_آخری_generation();
 
 		// handle new state
 		led_control_s led_control;
 
-		if (_led_control_sub.copy(&led_control)) {
+		إذا (_led_control_sub.copy(&led_control)) {
 
-			if ((_led_control_sub.get_last_generation() != last_generation + 1)
-			    && (_led_control_sub.get_last_generation() != last_generation)) {
-				perf_count(_led_control_sub_lost_perf);
-				PX4_DEBUG("led_control lost, generation %d -> %d", last_generation, _led_control_sub.get_last_generation());
+			إذا ((_led_control_sub.get_آخری_generation() != آخری_generation + 1)
+			    && (_led_control_sub.get_آخری_generation() != آخری_generation)) {
+				perf_گنتی(led_control_sub_گواچا_perf);
+				PX4_DEBUG("led_control lost, generation %d -> %d", آخری_generation, _led_control_sub.get_آخری_generation());
 			}
 
 			// don't apply the new state just yet to avoid interrupting an ongoing blinking state
-			for (int i = 0; i < BOARD_MAX_LEDS; ++i) {
-				if (led_control.led_mask & (1 << i)) {
+			لكل (صحيح i = 0; i < BOARD_MAX_LEDS; ++i) {
+				إذا (led_control.led_نقاب & (1 << i)) {
 					// if next state has already a higher priority state than
 					// led_control, set lower prio state directly, so that this
 					// information is not lost
-					if (_states[i].next_state.is_valid() && led_control.priority < _states[i].next_state.priority) {
-						_states[i].set(led_control);
+					إذا (حالتاں[i].اگلا_state.is_valid() && led_control.ترجیح < حالتاں[i].اگلا_state.ترجیح) {
+						حالتاں[i].سیٹ(led_control);
 
-					} else {
+					} وإلا {
 						// if a lower prio event is already in next state and a
 						// higher prio event is coming in
-						if (_states[i].next_state.is_valid() && led_control.priority > _states[i].next_state.priority) {
-							_states[i].apply_next_state();
+						إذا (حالتاں[i].اگلا_state.is_valid() && led_control.ترجیح > حالتاں[i].اگلا_state.ترجیح) {
+							حالتاں[i].apply_اگلا_state();
 						}
 
-						_states[i].next_state.set(led_control);
+						حالتاں[i].اگلا_state.سیٹ(led_control);
 					}
 				}
 			}
 		}
 
-		_force_update = false;
+		_force_update = خطأ;
 	}
 
 	// handle state updates
-	hrt_abstime now = hrt_absolute_time();
+	hrt_abstime now = hrt_absolute_ویلا();
 
-	if (_last_update_call == 0) {
-		_last_update_call = now;
-		return 0;
+	إذا (آخری_update_call == 0) {
+		آخری_update_call = now;
+		أرجع 0;
 	}
 
-	uint16_t blink_delta_t = (uint16_t)((now - _last_update_call) / 100); // Note: this is in 0.1ms
-	constexpr uint16_t breathe_duration = BREATHE_INTERVAL * BREATHE_STEPS / 100;
+	uint16_t blink_delta_t = (uint16_t)((now - آخری_update_call) / 100); // Note: this is in 0.1ms
+	constexpr uint16_t breathe_duration = BREATHE_INTERVAL * BREATHE_قدماں / 100;
 
-	int num_blinking_leds = 0;
-	int num_blinking_do_not_change_state = 0;
-	int current_priorities[BOARD_MAX_LEDS];
+	صحيح عدد_blinking_leds = 0;
+	صحيح عدد_blinking_do_not_change_state = 0;
+	صحيح current_priorities[BOARD_MAX_LEDS];
 
-	for (int i = 0; i < BOARD_MAX_LEDS; ++i) {
-		int priority = led_control_s::MAX_PRIORITY;
+	لكل (صحيح i = 0; i < BOARD_MAX_LEDS; ++i) {
+		صحيح ترجیح = led_control_s::MAX_ترجیح;
 
-		for (; priority >= 0; --priority) {
+		لكل (; ترجیح >= 0; --ترجیح) {
 
-			PerPriorityData &cur_data = _states[i].priority[priority];
+			فی_ترجیح_انکڑے &cur_انکڑے = حالتاں[i].ترجیح[ترجیح];
 
-			if (cur_data.mode == led_control_s::MODE_DISABLED) {
-				continue; // handle next priority
+			إذا (cur_انکڑے.منوال == led_control_s::منوال_DISABLED) {
+				استمر; // handle next priority
 			}
 
 			// handle state updates
 			uint16_t current_blink_duration = 0;
 
-			switch (cur_data.mode) {
-			case led_control_s::MODE_FLASH:
-			case led_control_s::MODE_BLINK_FAST:
+			بدل (cur_انکڑے.منوال) {
+			حالة led_control_s::منوال_FLASH:
+			حالة led_control_s::منوال_BLINK_FAST:
 				current_blink_duration = BLINK_FAST_DURATION / 100;
-				break;
+				اكسر;
 
-			case led_control_s::MODE_BLINK_NORMAL:
-				current_blink_duration = BLINK_NORMAL_DURATION / 100;
-				break;
+			حالة led_control_s::منوال_BLINK_عام:
+				current_blink_duration = BLINK_عام_DURATION / 100;
+				اكسر;
 
-			case led_control_s::MODE_BLINK_SLOW:
+			حالة led_control_s::منوال_BLINK_SLOW:
 				current_blink_duration = BLINK_SLOW_DURATION / 100;
-				break;
+				اكسر;
 
-			case led_control_s::MODE_BREATHE:
-				_states[i].current_blinking_time += blink_delta_t;
+			حالة led_control_s::منوال_BREATHE:
+				حالتاں[i].current_blinking_ویلا += blink_delta_t;
 
-				while (_states[i].current_blinking_time > breathe_duration) {
-					_states[i].current_blinking_time -= breathe_duration;
+				طالما (حالتاں[i].current_blinking_ویلا > breathe_duration) {
+					حالتاں[i].current_blinking_ویلا -= breathe_duration;
 				}
 
-				had_changes = true;
-				break;
+				had_changes = سچ;
+				اكسر;
 			}
 
-			if (current_blink_duration > 0) {
-				++num_blinking_leds;
+			إذا (current_blink_duration > 0) {
+				++عدد_blinking_leds;
 
-				_states[i].current_blinking_time += blink_delta_t;
+				حالتاں[i].current_blinking_ویلا += blink_delta_t;
 
-				if (_states[i].current_blinking_time > current_blink_duration) {
-					_states[i].current_blinking_time -= current_blink_duration;
+				إذا (حالتاں[i].current_blinking_ویلا > current_blink_duration) {
+					حالتاں[i].current_blinking_ویلا -= current_blink_duration;
 
-					if (cur_data.blink_times_left == 246) {
+					إذا (cur_انکڑے.blink_times_بایاں == 246) {
 						// handle toggling for infinite case: decrease between 255 and 246
 						// In order to handle the flash mode infinite case it needs a
 						// total of 10 steps.
-						cur_data.blink_times_left = 255;
-						++num_blinking_do_not_change_state;
+						cur_انکڑے.blink_times_بایاں = 255;
+						++عدد_blinking_do_not_change_state;
 
-					} else if (--cur_data.blink_times_left == 0) {
-						cur_data.mode = led_control_s::MODE_DISABLED;
-						_states[i].current_blinking_time = 0;
+					} وإلا إذا (--cur_انکڑے.blink_times_بایاں == 0) {
+						cur_انکڑے.منوال = led_control_s::منوال_DISABLED;
+						حالتاں[i].current_blinking_ویلا = 0;
 
-					} else if (cur_data.blink_times_left % 2 == 1) {
-						++num_blinking_do_not_change_state;
+					} وإلا إذا (cur_انکڑے.blink_times_بایاں % 2 == 1) {
+						++عدد_blinking_do_not_change_state;
 					}
 
-					had_changes = true;
+					had_changes = سچ;
 
-				} else {
-					++num_blinking_do_not_change_state;
+				} وإلا {
+					++عدد_blinking_do_not_change_state;
 				}
 			}
 
-			break; // handle next led
+			اكسر; // handle next led
 		}
 
-		current_priorities[i] = priority;
+		current_priorities[i] = ترجیح;
 
 	}
 
 	// handle next state:
 	// only allow a state change if no led blinks or at least one of the blinking leds signals that it's ok to switch.
 	// This makes sure all leds are kept in sync, but does not allow interrupting at arbitrary points.
-	if (num_blinking_leds == 0 || num_blinking_leds > num_blinking_do_not_change_state) {
-		for (int i = 0; i < BOARD_MAX_LEDS; ++i) {
-			if (_states[i].next_state.is_valid()) {
-				int next_priority = (int)_states[i].next_state.priority;
+	إذا (عدد_blinking_leds == 0 || عدد_blinking_leds > عدد_blinking_do_not_change_state) {
+		لكل (صحيح i = 0; i < BOARD_MAX_LEDS; ++i) {
+			إذا (حالتاں[i].اگلا_state.is_valid()) {
+				صحيح اگلا_ترجیح = (صحيح)حالتاں[i].اگلا_state.ترجیح;
 
-				if (next_priority >= current_priorities[i]) {
-					_states[i].current_blinking_time = 0;
-					had_changes = true;
+				إذا (اگلا_ترجیح >= current_priorities[i]) {
+					حالتاں[i].current_blinking_ویلا = 0;
+					had_changes = سچ;
 				}
 
-				_states[i].apply_next_state();
-				_states[i].next_state.reset();
+				حالتاں[i].apply_اگلا_state();
+				حالتاں[i].اگلا_state.reset();
 			}
 
 		}
 	}
 
-	_last_update_call = now;
+	آخری_update_call = now;
 
-	if (!had_changes) {
-		return 0;
+	إذا (!had_changes) {
+		أرجع 0;
 	}
 
 	// create output
-	get_control_data(control_data);
+	get_control_انکڑے(control_انکڑے);
 
-	return 1;
+	أرجع 1;
 }
 
-void LedController::get_control_data(LedControlData &control_data)
+فراغ LedController::get_control_انکڑے(Led_Control_انکڑے &control_انکڑے)
 {
-	_breathe_enabled = false;
+	_breathe_enabled = خطأ;
 
-	for (int i = 0; i < BOARD_MAX_LEDS; ++i) {
-		control_data.leds[i].color = led_control_s::COLOR_OFF; // set output to a defined state
-		control_data.leds[i].brightness = _max_brightness;
+	لكل (صحيح i = 0; i < BOARD_MAX_LEDS; ++i) {
+		control_انکڑے.leds[i].color = led_control_s::COLOR_OFF; // set output to a defined state
+		control_انکڑے.leds[i].brightness = _max_brightness;
 
-		for (int priority = led_control_s::MAX_PRIORITY; priority >= 0; --priority) {
-			bool flash_output_active = true;
-			const PerPriorityData &cur_data = _states[i].priority[priority];
+		لكل (صحيح ترجیح = led_control_s::MAX_ترجیح; ترجیح >= 0; --ترجیح) {
+			منطقي flash_output_سرگرم = سچ;
+			ثابت فی_ترجیح_انکڑے &cur_انکڑے = حالتاں[i].ترجیح[ترجیح];
 
-			if (cur_data.mode == led_control_s::MODE_DISABLED) {
-				continue; // handle next priority
+			إذا (cur_انکڑے.منوال == led_control_s::منوال_DISABLED) {
+				استمر; // handle next priority
 			}
 
-			switch (cur_data.mode) {
-			case led_control_s::MODE_ON:
-				control_data.leds[i].color = cur_data.color;
-				break;
+			بدل (cur_انکڑے.منوال) {
+			حالة led_control_s::منوال_ON:
+				control_انکڑے.leds[i].color = cur_انکڑے.color;
+				اكسر;
 
-			case led_control_s::MODE_BREATHE: {
+			حالة led_control_s::منوال_BREATHE: {
 					// fade on and off
-					int counter = _states[i].current_blinking_time / (BREATHE_INTERVAL / 100);
-					int n = counter >= (BREATHE_STEPS / 2) ? BREATHE_STEPS - counter : counter;
-					control_data.leds[i].brightness = (n * n) * _max_brightness / (BREATHE_STEPS * BREATHE_STEPS / 4); // (n/(steps/2))^2
-					control_data.leds[i].color = cur_data.color;
-					_breathe_enabled = true;
-					break;
+					صحيح counter = حالتاں[i].current_blinking_ویلا / (BREATHE_INTERVAL / 100);
+					صحيح n = counter >= (BREATHE_قدماں / 2) ? BREATHE_قدماں - counter : counter;
+					control_انکڑے.leds[i].brightness = (n * n) * _max_brightness / (BREATHE_قدماں * BREATHE_قدماں / 4); // (n/(steps/2))^2
+					control_انکڑے.leds[i].color = cur_انکڑے.color;
+					_breathe_enabled = سچ;
+					اكسر;
 				}
 
-			case led_control_s::MODE_FLASH:
-				if (cur_data.blink_times_left % 10 < 6) { // 2 blinks, then turn off for the rest of the cycle
-					flash_output_active = false;
+			حالة led_control_s::منوال_FLASH:
+				إذا (cur_انکڑے.blink_times_بایاں % 10 < 6) { // 2 blinks, then turn off for the rest of the cycle
+					flash_output_سرگرم = خطأ;
 				}
 
 			/* FALLTHROUGH */
-			case led_control_s::MODE_BLINK_FAST:
-			case led_control_s::MODE_BLINK_NORMAL:
-			case led_control_s::MODE_BLINK_SLOW:
-				if (cur_data.blink_times_left % 2 == 0 && flash_output_active) {
-					control_data.leds[i].color = cur_data.color;
+			حالة led_control_s::منوال_BLINK_FAST:
+			حالة led_control_s::منوال_BLINK_عام:
+			حالة led_control_s::منوال_BLINK_SLOW:
+				إذا (cur_انکڑے.blink_times_بایاں % 2 == 0 && flash_output_سرگرم) {
+					control_انکڑے.leds[i].color = cur_انکڑے.color;
 				}
 
-				break;
+				اكسر;
 				// MODE_OFF does not need to be handled, it's already set above
 			}
 
-			break; // handle next led
+			اكسر; // handle next led
 		}
 	}
 }

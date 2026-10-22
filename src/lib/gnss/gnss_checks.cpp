@@ -36,9 +36,9 @@
  * GNSS quality checks: strict ones to qualify a receiver, relaxed ones once armed
  */
 
-#include "gnss_checks.hpp"
+#ضمن "gnss_checks.hpp"
 
-namespace
+نطاق
 {
 constexpr uint16_t kDriftChecks = vehicle_gnss_s::CHECK_HDRIFT | vehicle_gnss_s::CHECK_VDRIFT
 				  | vehicle_gnss_s::CHECK_HSPEED | vehicle_gnss_s::CHECK_VSPEED;
@@ -48,196 +48,196 @@ constexpr uint16_t kRelaxedChecks = vehicle_gnss_s::CHECK_FIX | vehicle_gnss_s::
 				    | vehicle_gnss_s::CHECK_SACC | vehicle_gnss_s::CHECK_SPOOFED | vehicle_gnss_s::CHECK_JAMMED;
 }
 
-bool GnssChecks::run(const gnssChecksSample &gnss, bool armed, bool in_air, bool vehicle_at_rest)
+منطقي GnssChecks::لگاتار_2(ثابت gnssChecksSample &gnss, منطقي armed, منطقي وچ_air, منطقي vehicle_at_rest)
 {
-	if (_time_last_pass_us != 0 && isTimedOut(_time_last_pass_us, gnss.time_us, kPassTimeoutUs)) {
+	إذا (ویلا_آخری_pass_us != 0 && is_Timed_باہرلا(ویلا_آخری_pass_us, gnss.ویلا_us, kPassTimeoutUs)) {
 		reset();
 	}
 
 	// assume failed first time through
-	if (_time_last_fail_us == 0) {
-		_time_last_fail_us = gnss.time_us;
+	إذا (ویلا_آخری_fail_us == 0) {
+		ویلا_آخری_fail_us = gnss.ویلا_us;
 	}
 
-	if (!armed && !in_air) {
-		_initial_strict_checks_passed = false;
+	إذا (!armed && !وچ_air) {
+		_initial_strict_checks_passed = خطأ;
 	}
 
 	// Both sets run on every sample: both are reported, and the selection ranks receivers on the strict one in flight
-	const bool strict_checks_pass = runStrictChecks(gnss, in_air, vehicle_at_rest);
-	const bool relaxed_checks_pass = runRelaxedChecks(gnss);
+	ثابت منطقي strict_checks_pass = لگاتار_Strict_Checks(gnss, وچ_air, vehicle_at_rest);
+	ثابت منطقي relaxed_checks_pass = لگاتار_Relaxed_Checks(gnss);
 
 	_passed_strict = strict_checks_pass
-			 && isTimedOut(_time_last_fail_us, gnss.time_us, getRequiredPassDurationUs(false));
-	_passed = false;
-	_strict = true;
+			 && is_Timed_باہرلا(ویلا_آخری_fail_us, gnss.ویلا_us, getRequiredPassDurationUs(خطأ));
+	_passed = خطأ;
+	_strict = سچ;
 
-	if (_passed_strict) {
-		_initial_strict_checks_passed = true;
-		_passed = true;
+	إذا (_passed_strict) {
+		_initial_strict_checks_passed = سچ;
+		_passed = سچ;
 
-	} else if (_initial_strict_checks_passed) {
-		_strict = false;
+	} وإلا إذا (_initial_strict_checks_passed) {
+		_strict = خطأ;
 
-		if (relaxed_checks_pass) {
-			_passed = isTimedOut(_time_last_fail_us, gnss.time_us, getRequiredPassDurationUs(true));
+		إذا (relaxed_checks_pass) {
+			_passed = is_Timed_باہرلا(ویلا_آخری_fail_us, gnss.ویلا_us, getRequiredPassDurationUs(سچ));
 
-		} else {
-			_time_last_fail_us = gnss.time_us;
+		} وإلا {
+			ویلا_آخری_fail_us = gnss.ویلا_us;
 		}
 
-	} else if (!strict_checks_pass) {
-		_time_last_fail_us = gnss.time_us;
+	} وإلا إذا (!strict_checks_pass) {
+		ویلا_آخری_fail_us = gnss.ویلا_us;
 	}
 
-	lat_lon_prev.initReference(gnss.lat, gnss.lon, gnss.time_us);
+	lat_lon_prev.initReference(gnss.lat, gnss.lon, gnss.ویلا_us);
 	_alt_prev = gnss.alt;
 
-	if (_passed) {
-		_time_last_pass_us = gnss.time_us;
+	إذا (_passed) {
+		ویلا_آخری_pass_us = gnss.ویلا_us;
 	}
 
-	return _passed;
+	أرجع _passed;
 }
 
-void GnssChecks::setFail(uint16_t &fail_flags, uint16_t check, bool failed)
+فراغ GnssChecks::سیٹ_Fail(uint16_t &fail_flags, uint16_t check, منطقي failed)
 {
-	if (failed) {
+	إذا (failed) {
 		fail_flags |= check;
 
-	} else {
+	} وإلا {
 		fail_flags &= ~check;
 	}
 }
 
-bool GnssChecks::runRelaxedChecks(const gnssChecksSample &gnss)
+منطقي GnssChecks::لگاتار_Relaxed_Checks(ثابت gnssChecksSample &gnss)
 {
-	setFail(_relaxed_fail_flags, vehicle_gnss_s::CHECK_FIX, gnss.fix_type < 3);
+	سیٹ_Fail(_relaxed_fail_flags, vehicle_gnss_s::CHECK_FIX, gnss.fix_type < 3);
 
 	// Check the reported horizontal and vertical position accuracy
-	setFail(_relaxed_fail_flags, vehicle_gnss_s::CHECK_EPH, gnss.hacc > 50.f);
-	setFail(_relaxed_fail_flags, vehicle_gnss_s::CHECK_EPV, gnss.vacc > 50.f);
+	سیٹ_Fail(_relaxed_fail_flags, vehicle_gnss_s::CHECK_EPH, gnss.hacc > 50.f);
+	سیٹ_Fail(_relaxed_fail_flags, vehicle_gnss_s::CHECK_EPV, gnss.vacc > 50.f);
 
 	// Check the reported speed accuracy
-	setFail(_relaxed_fail_flags, vehicle_gnss_s::CHECK_SACC, gnss.sacc > 10.f);
+	سیٹ_Fail(_relaxed_fail_flags, vehicle_gnss_s::CHECK_SACC, gnss.sacc > 10.f);
 
-	setFail(_relaxed_fail_flags, vehicle_gnss_s::CHECK_SPOOFED, gnss.spoofed);
-	setFail(_relaxed_fail_flags, vehicle_gnss_s::CHECK_JAMMED, gnss.jammed);
+	سیٹ_Fail(_relaxed_fail_flags, vehicle_gnss_s::CHECK_SPOOFED, gnss.spoofed);
+	سیٹ_Fail(_relaxed_fail_flags, vehicle_gnss_s::CHECK_JAMMED, gnss.jammed);
 
-	return enabledChecksPass(_relaxed_fail_flags, kRelaxedChecks);
+	أرجع enabledChecksPass(_relaxed_fail_flags, kRelaxedChecks);
 }
 
-bool GnssChecks::runStrictChecks(const gnssChecksSample &gnss, bool in_air, bool vehicle_at_rest)
+منطقي GnssChecks::لگاتار_Strict_Checks(ثابت gnssChecksSample &gnss, منطقي وچ_air, منطقي vehicle_at_rest)
 {
 	// Check the fix type
-	setFail(_strict_fail_flags, vehicle_gnss_s::CHECK_FIX, gnss.fix_type < _params.req_fix);
+	سیٹ_Fail(_strict_fail_flags, vehicle_gnss_s::CHECK_FIX, gnss.fix_type < _params.req_fix);
 
 	// Check the number of satellites
-	setFail(_strict_fail_flags, vehicle_gnss_s::CHECK_NSATS, gnss.nsats < _params.req_nsats);
+	سیٹ_Fail(_strict_fail_flags, vehicle_gnss_s::CHECK_NSATS, gnss.nsats < _params.req_nsats);
 
 	// Check the position dilution of precision
-	setFail(_strict_fail_flags, vehicle_gnss_s::CHECK_PDOP, gnss.pdop > _params.req_pdop);
+	سیٹ_Fail(_strict_fail_flags, vehicle_gnss_s::CHECK_PDOP, gnss.pdop > _params.req_pdop);
 
 	// Check the reported horizontal and vertical position accuracy
-	setFail(_strict_fail_flags, vehicle_gnss_s::CHECK_EPH, gnss.hacc > _params.req_eph);
-	setFail(_strict_fail_flags, vehicle_gnss_s::CHECK_EPV, gnss.vacc > _params.req_epv);
+	سیٹ_Fail(_strict_fail_flags, vehicle_gnss_s::CHECK_EPH, gnss.hacc > _params.req_eph);
+	سیٹ_Fail(_strict_fail_flags, vehicle_gnss_s::CHECK_EPV, gnss.vacc > _params.req_epv);
 
 	// Check the reported speed accuracy
-	setFail(_strict_fail_flags, vehicle_gnss_s::CHECK_SACC, gnss.sacc > _params.req_sacc);
+	سیٹ_Fail(_strict_fail_flags, vehicle_gnss_s::CHECK_SACC, gnss.sacc > _params.req_sacc);
 
-	setFail(_strict_fail_flags, vehicle_gnss_s::CHECK_SPOOFED, gnss.spoofed);
-	setFail(_strict_fail_flags, vehicle_gnss_s::CHECK_JAMMED, gnss.jammed);
+	سیٹ_Fail(_strict_fail_flags, vehicle_gnss_s::CHECK_SPOOFED, gnss.spoofed);
+	سیٹ_Fail(_strict_fail_flags, vehicle_gnss_s::CHECK_JAMMED, gnss.jammed);
 
-	runOnGroundGnssChecks(gnss, in_air, vehicle_at_rest);
+	لگاتار_On_Ground_Gnss_Checks(gnss, وچ_air, vehicle_at_rest);
 
-	return enabledChecksPass(_strict_fail_flags, UINT16_MAX);
+	أرجع enabledChecksPass(_strict_fail_flags, UINT16_MAX);
 }
 
-void GnssChecks::runOnGroundGnssChecks(const gnssChecksSample &gnss, bool in_air, bool vehicle_at_rest)
+فراغ GnssChecks::لگاتار_On_Ground_Gnss_Checks(ثابت gnssChecksSample &gnss, منطقي وچ_air, منطقي vehicle_at_rest)
 {
-	if (in_air) {
+	إذا (وچ_air) {
 		// These checks are always declared as passed when flying
 		// If on ground and moving, the last result before movement commenced is kept
 		clearDriftChecks();
-		return;
+		أرجع;
 	}
 
-	if (vehicle_at_rest) {
+	إذا (vehicle_at_rest) {
 		// Calculate time lapsed since last update, limit to prevent numerical errors and calculate a lowpass filter coefficient
-		constexpr float filt_time_const = 10.0f;
-		const float dt = math::constrain(float(int64_t(gnss.time_us) - int64_t(
+		constexpr عائم filt_ویلا_const = 10.0f;
+		ثابت عائم dt = math::constrain(عائم(int64_t(gnss.ویلا_us) - int64_t(
 				lat_lon_prev.getProjectionReferenceTimestamp()))
-						 * 1e-6f, 0.001f, filt_time_const);
-		const float filter_coef = dt / filt_time_const;
+						 * 1e-6f, 0.001f, filt_ویلا_const);
+		ثابت عائم filter_coef = dt / filt_ویلا_const;
 
 		// Calculate position movement since last measurement
-		float delta_pos_n = 0.0f;
-		float delta_pos_e = 0.0f;
+		عائم delta_pos_n = 0.0f;
+		عائم delta_pos_e = 0.0f;
 
 		// calculate position movement since last fix
-		if (lat_lon_prev.getProjectionReferenceTimestamp() > 0) {
+		إذا (lat_lon_prev.getProjectionReferenceTimestamp() > 0) {
 			lat_lon_prev.project(gnss.lat, gnss.lon, delta_pos_n, delta_pos_e);
 
-		} else {
+		} وإلا {
 			// no previous position has been set
-			lat_lon_prev.initReference(gnss.lat, gnss.lon, gnss.time_us);
+			lat_lon_prev.initReference(gnss.lat, gnss.lon, gnss.ویلا_us);
 			_alt_prev = gnss.alt;
 		}
 
 		// Calculate the horizontal and vertical drift velocity components and limit to 10x the threshold
-		const matrix::Vector3f vel_limit(_params.req_hdrift, _params.req_hdrift, _params.req_vdrift);
-		matrix::Vector3f delta_pos(delta_pos_n, delta_pos_e, (_alt_prev - gnss.alt));
+		ثابت میٹرکس::Vector3f vel_حد_بندی(_params.req_hdrift, _params.req_hdrift, _params.req_vdrift);
+		میٹرکس::Vector3f delta_pos(delta_pos_n, delta_pos_e, (_alt_prev - gnss.alt));
 
 		// Apply a low pass filter
 		_lat_lon_alt_deriv_filt = delta_pos / dt * filter_coef + _lat_lon_alt_deriv_filt * (1.0f - filter_coef);
 
 		// Apply anti-windup to the state instead of the input to avoid generating a bias on asymmetric signals
-		_lat_lon_alt_deriv_filt = matrix::constrain(_lat_lon_alt_deriv_filt, -10.0f * vel_limit, 10.0f * vel_limit);
+		_lat_lon_alt_deriv_filt = میٹرکس::constrain(_lat_lon_alt_deriv_filt, -10.0f * vel_حد_بندی, 10.0f * vel_حد_بندی);
 
 		// hdrift: calculate the horizontal drift speed and fail if too high
-		_horizontal_position_drift_rate_m_s = matrix::Vector2f(_lat_lon_alt_deriv_filt.xy()).norm();
-		setFail(_strict_fail_flags, vehicle_gnss_s::CHECK_HDRIFT, _horizontal_position_drift_rate_m_s > _params.req_hdrift);
+		horizontal_position_drift_شرح_m_s = میٹرکس::Vector2f(_lat_lon_alt_deriv_filt.xy()).norm();
+		سیٹ_Fail(_strict_fail_flags, vehicle_gnss_s::CHECK_HDRIFT, horizontal_position_drift_شرح_m_s > _params.req_hdrift);
 
 		// vdrift: fail if the vertical drift speed is too high
-		_vertical_position_drift_rate_m_s = fabsf(_lat_lon_alt_deriv_filt(2));
-		setFail(_strict_fail_flags, vehicle_gnss_s::CHECK_VDRIFT, _vertical_position_drift_rate_m_s > _params.req_vdrift);
+		vertical_position_drift_شرح_m_s = fabsf(_lat_lon_alt_deriv_filt(2));
+		سیٹ_Fail(_strict_fail_flags, vehicle_gnss_s::CHECK_VDRIFT, vertical_position_drift_شرح_m_s > _params.req_vdrift);
 
 		// hspeed: check the magnitude of the filtered horizontal GNSS velocity
-		const matrix::Vector2f vel_ne = matrix::constrain(matrix::Vector2f(gnss.vel.xy()),
+		ثابت میٹرکس::Vector2f vel_ne = میٹرکس::constrain(میٹرکس::Vector2f(gnss.vel.xy()),
 						-10.0f * _params.req_hdrift,
 						10.0f * _params.req_hdrift);
 		_vel_ne_filt = vel_ne * filter_coef + _vel_ne_filt * (1.0f - filter_coef);
 		_filtered_horizontal_velocity_m_s = _vel_ne_filt.norm();
-		setFail(_strict_fail_flags, vehicle_gnss_s::CHECK_HSPEED, _filtered_horizontal_velocity_m_s > _params.req_hdrift);
+		سیٹ_Fail(_strict_fail_flags, vehicle_gnss_s::CHECK_HSPEED, _filtered_horizontal_velocity_m_s > _params.req_hdrift);
 
 		// vspeed: check the magnitude of the filtered vertical GNSS velocity
-		const float gnss_vz_limit = 10.f * _params.req_vdrift;
-		const float gnss_vz = math::constrain(gnss.vel(2), -gnss_vz_limit, gnss_vz_limit);
+		ثابت عائم gnss_vz_حد_بندی = 10.f * _params.req_vdrift;
+		ثابت عائم gnss_vz = math::constrain(gnss.vel(2), -gnss_vz_حد_بندی, gnss_vz_حد_بندی);
 		_vel_d_filt = gnss_vz * filter_coef + _vel_d_filt * (1.f - filter_coef);
 
-		setFail(_strict_fail_flags, vehicle_gnss_s::CHECK_VSPEED, fabsf(_vel_d_filt) > _params.req_vdrift);
+		سیٹ_Fail(_strict_fail_flags, vehicle_gnss_s::CHECK_VSPEED, fabsf(_vel_d_filt) > _params.req_vdrift);
 
-	} else {
+	} وإلا {
 		// This is the case where the vehicle is on ground and IMU movement is blocking the drift calculation
 		resetDriftFilters();
 	}
 }
 
-void GnssChecks::clearDriftChecks()
+فراغ GnssChecks::clearDriftChecks()
 {
 	_strict_fail_flags &= ~kDriftChecks;
 
 	resetDriftFilters();
 }
 
-void GnssChecks::resetDriftFilters()
+فراغ GnssChecks::resetDriftFilters()
 {
-	_vel_ne_filt.setZero();
+	_vel_ne_filt.سیٹ_Zero();
 	_vel_d_filt = 0.f;
 
-	_lat_lon_alt_deriv_filt.setZero();
+	_lat_lon_alt_deriv_filt.سیٹ_Zero();
 
-	_horizontal_position_drift_rate_m_s = NAN;
-	_vertical_position_drift_rate_m_s = NAN;
+	horizontal_position_drift_شرح_m_s = NAN;
+	vertical_position_drift_شرح_m_s = NAN;
 	_filtered_horizontal_velocity_m_s = NAN;
 }

@@ -8,223 +8,223 @@
  *
  */
 
-#pragma once
+#ہدایت once
 
-#include "Vector.hpp"
+#ضمن "Vector.hpp"
 
-namespace matrix
+نطاق میٹرکس
 {
 // Vector that only store nonzero elements,
 // which indices are specified as parameter pack
-template<typename Type, size_t M, size_t... Idxs>
-class SparseVector
+سانچا<قسم_ناں Type, size_t M, size_t... Idxs>
+صنف Sparse_سمتیہ
 {
-private:
-	enum : size_t { N = sizeof...(Idxs) };
+خاص:
+	تعداد : size_t { N = حجم...(Idxs) };
 
-	static constexpr bool duplicateIndices()
+	ساكن constexpr منطقي duplicateIndices()
 	{
 		constexpr size_t indicies[] {Idxs...};
 
-		for (size_t i = 0; i < N; i++) {
-			for (size_t j = 0; j < i; j++) {
-				if (indicies[i] == indicies[j]) {
-					return true;
+		لكل (size_t i = 0; i < N; i++) {
+			لكل (size_t j = 0; j < i; j++) {
+				إذا (indicies[i] == indicies[j]) {
+					أرجع سچ;
 				}
 			}
 		}
 
-		return false;
+		أرجع خطأ;
 	}
 
-	static constexpr size_t findMaxIndex()
+	ساكن constexpr size_t لبھو_Max_اشاریہ()
 	{
 		constexpr size_t indicies[] {Idxs...};
-		size_t maxIndex = 0;
+		size_t max_اشاریہ = 0;
 
-		for (size_t i = 0; i < N; i++) {
-			if (maxIndex < indicies[i]) {
-				maxIndex = indicies[i];
+		لكل (size_t i = 0; i < N; i++) {
+			إذا (max_اشاریہ < indicies[i]) {
+				max_اشاریہ = indicies[i];
 			}
 		}
 
-		return maxIndex;
+		أرجع max_اشاریہ;
 	}
 
-	static constexpr size_t indexAt(size_t i)
+	ساكن constexpr size_t اشاریہ_At(size_t i)
 	{
 		constexpr size_t indicies[] {Idxs...};
-		return indicies[i];
+		أرجع indicies[i];
 	}
 
 	static_assert(!duplicateIndices(), "Duplicate indices");
 	static_assert(N < M, "More entries than elements, use a dense vector");
 	static_assert(N > 0, "A sparse vector needs at least one element");
-	static_assert(findMaxIndex() < M, "Largest entry doesn't fit in sparse vector");
+	static_assert(لبھو_Max_اشاریہ() < M, "Largest entry doesn't fit in sparse vector");
 
-	Type _data[N] {};
+	Type انکڑے_3[N] {};
 
-	static constexpr int findCompressedIndex(size_t index)
+	ساكن constexpr صحيح لبھو_Compressed_اشاریہ(size_t اشاریہ)
 	{
 		constexpr size_t indicies[] {Idxs...};
-		int compressedIndex = -1;
+		صحيح compressed_اشاریہ = -1;
 
-		for (size_t i = 0; i < N; i++) {
-			if (index == indicies[i]) {
-				compressedIndex = static_cast<int>(i);
+		لكل (size_t i = 0; i < N; i++) {
+			إذا (اشاریہ == indicies[i]) {
+				compressed_اشاریہ = static_cast<صحيح>(i);
 			}
 		}
 
-		return compressedIndex;
+		أرجع compressed_اشاریہ;
 	}
 
-public:
-	constexpr size_t non_zeros() const
+عام:
+	constexpr size_t non_zeros() ثابت
 	{
-		return N;
+		أرجع N;
 	}
 
-	constexpr size_t index(size_t i) const
+	constexpr size_t اشاریہ(size_t i) ثابت
 	{
-		return indexAt(i);
+		أرجع اشاریہ_At(i);
 	}
 
-	SparseVector() = default;
+	Sparse_سمتیہ() = افتراضي;
 
-	SparseVector(const matrix::Vector<Type, M> &data)
+	Sparse_سمتیہ(ثابت میٹرکس::سمتیہ<Type, M> &انکڑے)
 	{
-		for (size_t i = 0; i < N; i++) {
-			_data[i] = data(indexAt(i));
+		لكل (size_t i = 0; i < N; i++) {
+			انکڑے_3[i] = انکڑے(اشاریہ_At(i));
 		}
 	}
 
-	explicit SparseVector(const Type data[N])
+	واضح Sparse_سمتیہ(ثابت Type انکڑے[N])
 	{
-		memcpy(_data, data, sizeof(_data));
+		حافظہ_نقل(انکڑے_3, انکڑے, حجم(انکڑے_3));
 	}
 
-	template <size_t i>
-	inline Type at() const
+	سانچا <size_t i>
+	مضمن Type at() ثابت
 	{
-		constexpr int compressed_index = findCompressedIndex(i);
-		static_assert(compressed_index >= 0, "cannot access unpopulated indices");
-		return _data[compressed_index];
+		constexpr صحيح compressed_اشاریہ_2 = لبھو_Compressed_اشاریہ(i);
+		static_assert(compressed_اشاریہ_2 >= 0, "cannot access unpopulated indices");
+		أرجع انکڑے_3[compressed_اشاریہ_2];
 	}
 
-	template <size_t i>
-	inline Type &at()
+	سانچا <size_t i>
+	مضمن Type &at()
 	{
-		constexpr int compressed_index = findCompressedIndex(i);
-		static_assert(compressed_index >= 0, "cannot access unpopulated indices");
-		return _data[compressed_index];
+		constexpr صحيح compressed_اشاریہ_2 = لبھو_Compressed_اشاریہ(i);
+		static_assert(compressed_اشاریہ_2 >= 0, "cannot access unpopulated indices");
+		أرجع انکڑے_3[compressed_اشاریہ_2];
 	}
 
-	inline Type atCompressedIndex(size_t i) const
+	مضمن Type at_Compressed_اشاریہ(size_t i) ثابت
 	{
-		assert(i < N);
-		return _data[i];
+		أكد(i < N);
+		أرجع انکڑے_3[i];
 	}
 
-	inline Type &atCompressedIndex(size_t i)
+	مضمن Type &at_Compressed_اشاریہ(size_t i)
 	{
-		assert(i < N);
-		return _data[i];
+		أكد(i < N);
+		أرجع انکڑے_3[i];
 	}
 
-	void setZero()
+	فراغ سیٹ_Zero()
 	{
-		for (size_t i = 0; i < N; i++) {
-			_data[i] = Type(0);
+		لكل (size_t i = 0; i < N; i++) {
+			انکڑے_3[i] = Type(0);
 		}
 	}
 
-	Type dot(const matrix::Vector<Type, M> &other) const
+	Type dot(ثابت میٹرکس::سمتیہ<Type, M> &other) ثابت
 	{
 		Type accum(0);
 
-		for (size_t i = 0; i < N; i++) {
-			accum += _data[i] * other(indexAt(i));
+		لكل (size_t i = 0; i < N; i++) {
+			accum += انکڑے_3[i] * other(اشاریہ_At(i));
 		}
 
-		return accum;
+		أرجع accum;
 	}
 
-	matrix::Vector<Type, M> operator+(const matrix::Vector<Type, M> &other) const
+	میٹرکس::سمتیہ<Type, M> عامل+(ثابت میٹرکس::سمتیہ<Type, M> &other) ثابت
 	{
-		matrix::Vector<Type, M> vec = other;
+		میٹرکس::سمتیہ<Type, M> vec = other;
 
-		for (size_t i = 0; i < N; i++) {
-			vec(indexAt(i)) +=  _data[i];
+		لكل (size_t i = 0; i < N; i++) {
+			vec(اشاریہ_At(i)) +=  انکڑے_3[i];
 		}
 
-		return vec;
+		أرجع vec;
 	}
 
-	SparseVector &operator+=(Type t)
+	Sparse_سمتیہ &عامل+=(Type t)
 	{
-		for (size_t i = 0; i < N; i++) {
-			_data[i] += t;
+		لكل (size_t i = 0; i < N; i++) {
+			انکڑے_3[i] += t;
 		}
 
-		return *this;
+		أرجع *هذا;
 	}
 
-	Type norm_squared() const
+	Type norm_squared() ثابت
 	{
 		Type accum(0);
 
-		for (size_t i = 0; i < N; i++) {
-			accum += _data[i] * _data[i];
+		لكل (size_t i = 0; i < N; i++) {
+			accum += انکڑے_3[i] * انکڑے_3[i];
 		}
 
-		return accum;
+		أرجع accum;
 	}
 
-	Type norm() const
+	Type norm() ثابت
 	{
-		return std::sqrt(norm_squared());
+		أرجع std::جذر(norm_squared());
 	}
 
-	bool longerThan(Type testVal) const
+	منطقي longerThan(Type testVal) ثابت
 	{
-		return norm_squared() > testVal * testVal;
+		أرجع norm_squared() > testVal * testVal;
 	}
 };
 
-template<typename Type, size_t Q, size_t M, size_t ... Idxs>
-matrix::Vector<Type, Q> operator*(const matrix::Matrix<Type, Q, M> &mat,
-				  const matrix::SparseVector<Type, M, Idxs...> &vec)
+سانچا<قسم_ناں Type, size_t Q, size_t M, size_t ... Idxs>
+میٹرکس::سمتیہ<Type, Q> عامل*(ثابت میٹرکس::میٹرکس_2<Type, Q, M> &mat,
+				  ثابت میٹرکس::Sparse_سمتیہ<Type, M, Idxs...> &vec)
 {
-	matrix::Vector<Type, Q> res;
+	میٹرکس::سمتیہ<Type, Q> res;
 
-	for (size_t i = 0; i < Q; i++) {
-		const Vector<Type, M> row = mat.row(i);
-		res(i) = vec.dot(row);
+	لكل (size_t i = 0; i < Q; i++) {
+		ثابت سمتیہ<Type, M> صف = mat.صف(i);
+		res(i) = vec.dot(صف);
 	}
 
-	return res;
+	أرجع res;
 }
 
 // returns x.T * A * x
-template<typename Type, size_t M, size_t ... Idxs>
-Type quadraticForm(const matrix::SquareMatrix<Type, M> &A, const matrix::SparseVector<Type, M, Idxs...> &x)
+سانچا<قسم_ناں Type, size_t M, size_t ... Idxs>
+Type quadraticForm(ثابت میٹرکس::مربع_میٹرکس<Type, M> &A, ثابت میٹرکس::Sparse_سمتیہ<Type, M, Idxs...> &x)
 {
 	Type res = Type(0);
 
-	for (size_t i = 0; i < x.non_zeros(); i++) {
+	لكل (size_t i = 0; i < x.non_zeros(); i++) {
 		Type tmp = Type(0);
 
-		for (size_t j = 0; j < x.non_zeros(); j++) {
-			tmp += A(x.index(i), x.index(j)) * x.atCompressedIndex(j);
+		لكل (size_t j = 0; j < x.non_zeros(); j++) {
+			tmp += A(x.اشاریہ(i), x.اشاریہ(j)) * x.at_Compressed_اشاریہ(j);
 		}
 
-		res += x.atCompressedIndex(i) * tmp;
+		res += x.at_Compressed_اشاریہ(i) * tmp;
 	}
 
-	return res;
+	أرجع res;
 }
 
-template<size_t M, size_t ... Idxs>
-using SparseVectorf = SparseVector<float, M, Idxs...>;
+سانچا<size_t M, size_t ... Idxs>
+ورتوں SparseVectorf = Sparse_سمتیہ<عائم, M, Idxs...>;
 
 }

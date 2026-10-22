@@ -31,16 +31,16 @@
  *
  ****************************************************************************/
 
-#include "mixer_module.hpp"
+#ضمن "mixer_module.hpp"
 
-#include <uORB/Publication.hpp>
-#include <px4_platform_common/log.h>
+#ضمن <uORB/Publication.hpp>
+#ضمن <px4_platform_common/log.h>
 
-using namespace time_literals;
+ورتوں نطاق ویلا_literals;
 
 
-struct FunctionProvider {
-	using Constructor = FunctionProviderBase * (*)(const FunctionProviderBase::Context &context);
+بنية FunctionProvider {
+	ورتوں Constructor = Function_Provider_ادھار * (*)(ثابت Function_Provider_ادھار::Context &context);
 	constexpr FunctionProvider(OutputFunction min_func_, OutputFunction max_func_, Constructor constructor_)
 		: min_func(min_func_), max_func(max_func_), constructor(constructor_) {}
 	constexpr FunctionProvider(OutputFunction func, Constructor constructor_)
@@ -51,13 +51,13 @@ struct FunctionProvider {
 	Constructor constructor;
 };
 
-static constexpr FunctionProvider all_function_providers[] = {
+ساكن constexpr FunctionProvider all_function_providers[] = {
 	// Providers higher up take precedence for subscription callback in case there are multiple
 	{OutputFunction::Constant_Min, &FunctionConstantMin::allocate},
 	{OutputFunction::Constant_Max, &FunctionConstantMax::allocate},
 	{OutputFunction::Motor1, OutputFunction::MotorMax, &FunctionMotors::allocate},
 	{OutputFunction::Servo1, OutputFunction::ServoMax, &FunctionServos::allocate},
-	{OutputFunction::Peripheral_via_Actuator_Set1, OutputFunction::Peripheral_via_Actuator_Set6, &FunctionActuatorSet::allocate},
+	{OutputFunction::Peripheral_راہیں_Actuator_Set1, OutputFunction::Peripheral_راہیں_Actuator_Set6, &Function_Actuator_سیٹ::allocate},
 	{OutputFunction::Landing_Gear, &FunctionLandingGear::allocate},
 	{OutputFunction::Landing_Gear_Wheel, &FunctionLandingGearWheel::allocate},
 	{OutputFunction::Parachute, &FunctionParachute::allocate},
@@ -67,31 +67,31 @@ static constexpr FunctionProvider all_function_providers[] = {
 	{OutputFunction::IC_Engine_Ignition, OutputFunction::IC_Engine_Starter, &FunctionICEControl::allocate},
 };
 
-MixingOutput::MixingOutput(const char *param_prefix, uint8_t max_num_outputs, OutputModuleInterface &interface,
-			   SchedulingPolicy scheduling_policy, bool support_esc_calibration, bool ramp_up, const uint8_t instance_start) :
+MixingOutput::MixingOutput(ثابت حرف *param_اگیتر, uint8_t max_عدد_outputs, OutputModuleInterface &interface,
+			   SchedulingPolicy scheduling_policy, منطقي support_esc_calibration, منطقي ramp_اتے, ثابت uint8_t instance_شروع) :
 	ModuleParams(&interface),
-	_output_ramp_up(ramp_up),
+	output_ramp_اتے(ramp_اتے),
 	_scheduling_policy(scheduling_policy),
 	_support_esc_calibration(support_esc_calibration),
-	_max_num_outputs(max_num_outputs < MAX_ACTUATORS ? max_num_outputs : MAX_ACTUATORS),
+	max_عدد_outputs_2(max_عدد_outputs < MAX_ACTUATORS ? max_عدد_outputs : MAX_ACTUATORS),
 	_interface(interface),
 	_control_latency_perf(perf_alloc(PC_ELAPSED, "control latency")),
-	_param_prefix(param_prefix)
+	param_اگیتر_2(param_اگیتر)
 {
 	/* Safely initialize armed flags */
-	_armed.armed = false;
-	_armed.prearmed = false;
-	_armed.ready_to_arm = false;
-	_armed.lockdown = false;
-	_armed.termination = false;
-	_armed.in_esc_calibration_mode = false;
+	_armed.armed = خطأ;
+	_armed.prearmed = خطأ;
+	_armed.ready_منزل_arm = خطأ;
+	_armed.lockdown = خطأ;
+	_armed.termination = خطأ;
+	_armed.وچ_esc_calibration_منوال = خطأ;
 
 	px4_sem_init(&_lock, 0, 1);
 
-	initParamHandles(instance_start);
+	initParamHandles(instance_شروع);
 
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
-		_failsafe_value[i] = UINT16_MAX;
+	لكل (بنانشانی i = 0; i < MAX_ACTUATORS; i++) {
+		failsafe_قدر[i] = UINT16_MAX;
 	}
 
 	updateParams();
@@ -109,155 +109,155 @@ MixingOutput::~MixingOutput()
 	_outputs_pub.unadvertise();
 }
 
-void MixingOutput::initParamHandles(const uint8_t instance_start)
+فراغ MixingOutput::initParamHandles(ثابت uint8_t instance_شروع)
 {
-	char param_name[17];
+	حرف param_name[17];
 
-	for (unsigned i = 0; i < _max_num_outputs; ++i) {
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "FUNC", i + instance_start);
-		_param_handles[i].function = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "DIS", i + instance_start);
-		_param_handles[i].disarmed = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "MIN", i + instance_start);
-		_param_handles[i].min = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "CENT", i + instance_start);
-		_param_handles[i].center = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "MAX", i + instance_start);
-		_param_handles[i].max = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "FAIL", i + instance_start);
-		_param_handles[i].failsafe = param_find(param_name);
+	لكل (بنانشانی i = 0; i < max_عدد_outputs_2; ++i) {
+		snprintf(param_name, حجم(param_name), "%s_%s%d", param_اگیتر_2, "FUNC", i + instance_شروع);
+		_param_handles[i].function = param_لبھو(param_name);
+		snprintf(param_name, حجم(param_name), "%s_%s%d", param_اگیتر_2, "DIS", i + instance_شروع);
+		_param_handles[i].disarmed = param_لبھو(param_name);
+		snprintf(param_name, حجم(param_name), "%s_%s%d", param_اگیتر_2, "MIN", i + instance_شروع);
+		_param_handles[i].min = param_لبھو(param_name);
+		snprintf(param_name, حجم(param_name), "%s_%s%d", param_اگیتر_2, "CENT", i + instance_شروع);
+		_param_handles[i].center = param_لبھو(param_name);
+		snprintf(param_name, حجم(param_name), "%s_%s%d", param_اگیتر_2, "MAX", i + instance_شروع);
+		_param_handles[i].max = param_لبھو(param_name);
+		snprintf(param_name, حجم(param_name), "%s_%s%d", param_اگیتر_2, "FAIL", i + instance_شروع);
+		_param_handles[i].failsafe = param_لبھو(param_name);
 	}
 
-	snprintf(param_name, sizeof(param_name), "%s_%s", _param_prefix, "REV");
-	_param_handle_rev_range = param_find(param_name);
+	snprintf(param_name, حجم(param_name), "%s_%s", param_اگیتر_2, "REV");
+	_param_handle_rev_range = param_لبھو(param_name);
 }
 
-void MixingOutput::printStatus() const
+فراغ MixingOutput::print_حالت_2() ثابت
 {
-	PX4_INFO("Param prefix: %s", _param_prefix);
+	PX4_INFO("Param prefix: %s", param_اگیتر_2);
 	perf_print_counter(_control_latency_perf);
 
-	if (_wq_switched) {
+	إذا (_wq_switched) {
 		PX4_INFO("Switched to rate_ctrl work queue");
 	}
 
 	PX4_INFO_RAW("Channel Configuration:\n");
 
-	for (unsigned i = 0; i < _max_num_outputs; i++) {
+	لكل (بنانشانی i = 0; i < max_عدد_outputs_2; i++) {
 		PX4_INFO_RAW("Channel %2d: func: %3d, value: %.2f, failsafe: %.2f, disarmed: %d, min: %d, max: %d, center: %d\n",
-			     i, (int)_function_assignment[i], (double)_current_output_value[i], (double)actualFailsafeValue(i),
-			     _disarmed_value[i], _min_value[i], _max_value[i], _center_value[i]);
+			     i, (صحيح)_function_assignment[i], (مزدوج)current_output_قدر[i], (مزدوج)actual_Failsafe_قدر(i),
+			     disarmed_قدر[i], min_قدر[i], max_قدر[i], center_قدر[i]);
 	}
 }
 
-void MixingOutput::updateParams()
+فراغ MixingOutput::updateParams()
 {
 	ModuleParams::updateParams();
 
-	bool function_changed = false;
+	منطقي function_بدلیا = خطأ;
 
-	for (unsigned i = 0; i < _max_num_outputs; i++) {
+	لكل (بنانشانی i = 0; i < max_عدد_outputs_2; i++) {
 		int32_t val;
 
-		if (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &val) == 0) {
-			if (val != (int32_t)_function_assignment[i]) {
-				function_changed = true;
+		إذا (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &val) == 0) {
+			إذا (val != (int32_t)_function_assignment[i]) {
+				function_بدلیا = سچ;
 			}
 
 			// we set _function_assignment[i] later to ensure _functions[i] is updated at the same time
 		}
 
-		if (_param_handles[i].disarmed != PARAM_INVALID && param_get(_param_handles[i].disarmed, &val) == 0) {
-			_disarmed_value[i] = val;
+		إذا (_param_handles[i].disarmed != PARAM_INVALID && param_get(_param_handles[i].disarmed, &val) == 0) {
+			disarmed_قدر[i] = val;
 		}
 
-		if (_param_handles[i].min != PARAM_INVALID && param_get(_param_handles[i].min, &val) == 0) {
-			_min_value[i] = val;
+		إذا (_param_handles[i].min != PARAM_INVALID && param_get(_param_handles[i].min, &val) == 0) {
+			min_قدر[i] = val;
 		}
 
-		if (_param_handles[i].center != PARAM_INVALID && param_get(_param_handles[i].center, &val) == 0) {
-			_center_value[i] = val;
+		إذا (_param_handles[i].center != PARAM_INVALID && param_get(_param_handles[i].center, &val) == 0) {
+			center_قدر[i] = val;
 		}
 
-		if (_param_handles[i].max != PARAM_INVALID && param_get(_param_handles[i].max, &val) == 0) {
-			_max_value[i] = val;
+		إذا (_param_handles[i].max != PARAM_INVALID && param_get(_param_handles[i].max, &val) == 0) {
+			max_قدر[i] = val;
 		}
 
-		if (_min_value[i] > _max_value[i]) {
-			uint16_t tmp = _min_value[i];
-			_min_value[i] = _max_value[i];
-			_max_value[i] = tmp;
+		إذا (min_قدر[i] > max_قدر[i]) {
+			uint16_t tmp = min_قدر[i];
+			min_قدر[i] = max_قدر[i];
+			max_قدر[i] = tmp;
 		}
 
 
-		if (_param_handles[i].failsafe != PARAM_INVALID && param_get(_param_handles[i].failsafe, &val) == 0) {
-			_failsafe_value[i] = val;
+		إذا (_param_handles[i].failsafe != PARAM_INVALID && param_get(_param_handles[i].failsafe, &val) == 0) {
+			failsafe_قدر[i] = val;
 		}
 	}
 
-	_reverse_output_mask = 0;
+	الٹ_output_نقاب = 0;
 	int32_t rev_range_param;
 
-	if (_param_handle_rev_range != PARAM_INVALID && param_get(_param_handle_rev_range, &rev_range_param) == 0) {
-		_reverse_output_mask = rev_range_param;
+	إذا (_param_handle_rev_range != PARAM_INVALID && param_get(_param_handle_rev_range, &rev_range_param) == 0) {
+		الٹ_output_نقاب = rev_range_param;
 	}
 
-	if (function_changed) {
-		_need_function_update = true;
+	إذا (function_بدلیا) {
+		_need_function_update = سچ;
 	}
 }
 
-void MixingOutput::cleanupFunctions()
+فراغ MixingOutput::cleanupFunctions()
 {
-	if (_subscription_callback) {
+	إذا (_subscription_callback) {
 		_subscription_callback->unregisterCallback();
-		_subscription_callback = nullptr;
+		_subscription_callback = خالی_سوچک;
 	}
 
-	for (int i = 0; i < MAX_ACTUATORS; ++i) {
-		delete _function_allocated[i];
-		_function_allocated[i] = nullptr;
-		_functions[i] = nullptr;
+	لكل (صحيح i = 0; i < MAX_ACTUATORS; ++i) {
+		مٹاؤ _function_allocated[i];
+		_function_allocated[i] = خالی_سوچک;
+		_functions[i] = خالی_سوچک;
 	}
 }
 
-bool MixingOutput::updateSubscriptions(bool allow_wq_switch)
+منطقي MixingOutput::updateSubscriptions(منطقي allow_wq_switch)
 {
-	if (!_need_function_update || _armed.armed) {
-		return false;
+	إذا (!_need_function_update || _armed.armed) {
+		أرجع خطأ;
 	}
 
 	// must be locked to potentially change WorkQueue
-	lock();
+	جندرا();
 
-	_has_backup_schedule = false;
+	has_backup_ویلا_سارنی = خطأ;
 
-	if (_scheduling_policy == SchedulingPolicy::Auto) {
+	إذا (_scheduling_policy == SchedulingPolicy::Auto) {
 		// first clear everything
 		unregister();
-		_interface.ScheduleClear();
+		_interface.ویلا_سارنی_Clear();
 
-		bool switch_requested = false;
+		منطقي switch_requested = خطأ;
 
 		// potentially switch work queue if we run motor outputs
-		for (unsigned i = 0; i < _max_num_outputs; i++) {
+		لكل (بنانشانی i = 0; i < max_عدد_outputs_2; i++) {
 			// read function directly from param, as _function_assignment[i] is updated later
 			int32_t function;
 
-			if (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &function) == 0) {
-				if (function >= (int32_t)OutputFunction::Motor1 && function <= (int32_t)OutputFunction::MotorMax) {
-					switch_requested = true;
+			إذا (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &function) == 0) {
+				إذا (function >= (int32_t)OutputFunction::Motor1 && function <= (int32_t)OutputFunction::MotorMax) {
+					switch_requested = سچ;
 				}
 			}
 		}
 
-		if (allow_wq_switch && !_wq_switched && switch_requested) {
-			if (_interface.ChangeWorkQueue(px4::wq_configurations::rate_ctrl)) {
+		إذا (allow_wq_switch && !_wq_switched && switch_requested) {
+			إذا (_interface.Change_Work_قطار(px4::wq_configurations::شرح_ctrl)) {
 				// let the new WQ handle the subscribe update
-				_wq_switched = true;
-				_interface.ScheduleNow();
+				_wq_switched = سچ;
+				_interface.ویلا_سارنی_Now();
 				unlock();
-				return false;
+				أرجع خطأ;
 			}
 		}
 	}
@@ -267,346 +267,346 @@ bool MixingOutput::updateSubscriptions(bool allow_wq_switch)
 
 	cleanupFunctions();
 
-	const FunctionProviderBase::Context context{_interface, _param_thr_mdl_fac.reference()};
-	int provider_indexes[MAX_ACTUATORS] {};
-	int next_provider = 0;
-	int subscription_callback_provider_index = INT_MAX;
-	bool all_disabled = true;
+	ثابت Function_Provider_ادھار::Context context{_interface, _param_thr_mdl_fac.reference()};
+	صحيح provider_indexes[MAX_ACTUATORS] {};
+	صحيح اگلا_provider = 0;
+	صحيح subscription_callback_provider_اشاریہ = ودھ_توں_ودھ_عدد;
+	منطقي all_disabled = سچ;
 
-	for (int i = 0; i < _max_num_outputs; ++i) {
+	لكل (صحيح i = 0; i < max_عدد_outputs_2; ++i) {
 		int32_t val;
 
-		if (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &val) == 0) {
+		إذا (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &val) == 0) {
 			_function_assignment[i] = (OutputFunction)val;
 
-		} else {
+		} وإلا {
 			_function_assignment[i] = OutputFunction::Disabled;
 		}
 
-		for (int p = 0; p < (int)(sizeof(all_function_providers) / sizeof(all_function_providers[0])); ++p) {
-			if (_function_assignment[i] >= all_function_providers[p].min_func &&
+		لكل (صحيح p = 0; p < (صحيح)(حجم(all_function_providers) / حجم(all_function_providers[0])); ++p) {
+			إذا (_function_assignment[i] >= all_function_providers[p].min_func &&
 			    _function_assignment[i] <= all_function_providers[p].max_func) {
-				all_disabled = false;
-				int found_index = -1;
+				all_disabled = خطأ;
+				صحيح لبھیا_اشاریہ = -1;
 
-				for (int existing = 0; existing < next_provider; ++existing) {
-					if (provider_indexes[existing] == p) {
-						found_index = existing;
-						break;
+				لكل (صحيح existing = 0; existing < اگلا_provider; ++existing) {
+					إذا (provider_indexes[existing] == p) {
+						لبھیا_اشاریہ = existing;
+						اكسر;
 					}
 				}
 
-				if (found_index >= 0) {
-					_functions[i] = _function_allocated[found_index];
+				إذا (لبھیا_اشاریہ >= 0) {
+					_functions[i] = _function_allocated[لبھیا_اشاریہ];
 
-				} else {
-					_function_allocated[next_provider] = all_function_providers[p].constructor(context);
+				} وإلا {
+					_function_allocated[اگلا_provider] = all_function_providers[p].constructor(context);
 
-					if (_function_allocated[next_provider]) {
-						_functions[i] = _function_allocated[next_provider];
-						provider_indexes[next_provider++] = p;
+					إذا (_function_allocated[اگلا_provider]) {
+						_functions[i] = _function_allocated[اگلا_provider];
+						provider_indexes[اگلا_provider++] = p;
 
 						// lowest provider takes precedence for scheduling
-						if (p < subscription_callback_provider_index && _functions[i]->subscriptionCallback()) {
-							subscription_callback_provider_index = p;
+						إذا (p < subscription_callback_provider_اشاریہ && _functions[i]->subscriptionCallback()) {
+							subscription_callback_provider_اشاریہ = p;
 							_subscription_callback = _functions[i]->subscriptionCallback();
 						}
 
-					} else {
+					} وإلا {
 						PX4_ERR("function alloc failed");
 					}
 				}
 
-				break;
+				اكسر;
 			}
 		}
 	}
 
-	hrt_abstime fixed_rate_scheduling_interval = 4_ms; // schedule at 250Hz
+	hrt_abstime fixed_شرح_scheduling_interval = 4_ms; // schedule at 250Hz
 
-	if (_max_topic_update_interval_us > fixed_rate_scheduling_interval) {
-		fixed_rate_scheduling_interval = _max_topic_update_interval_us;
+	إذا (_max_topic_update_interval_us > fixed_شرح_scheduling_interval) {
+		fixed_شرح_scheduling_interval = _max_topic_update_interval_us;
 	}
 
-	if (_scheduling_policy == SchedulingPolicy::Auto) {
-		if (_subscription_callback) {
-			if (_subscription_callback->registerCallback()) {
+	إذا (_scheduling_policy == SchedulingPolicy::Auto) {
+		إذا (_subscription_callback) {
+			إذا (_subscription_callback->رجسٹر_Callback()) {
 				PX4_DEBUG("Scheduling via callback");
-				_has_backup_schedule = true;
-				_interface.ScheduleDelayed(50_ms);
+				has_backup_ویلا_سارنی = سچ;
+				_interface.ویلا_سارنی_Delayed(50_ms);
 
-			} else {
+			} وإلا {
 				PX4_ERR("registerCallback failed, scheduling at fixed rate");
-				_interface.ScheduleOnInterval(fixed_rate_scheduling_interval);
+				_interface.ویلا_سارنی_On_Interval(fixed_شرح_scheduling_interval);
 			}
 
-		} else if (all_disabled) {
-			_interface.ScheduleOnInterval(_lowrate_schedule_interval);
+		} وإلا إذا (all_disabled) {
+			_interface.ویلا_سارنی_On_Interval(lowrate_ویلا_سارنی_interval);
 			PX4_DEBUG("Scheduling at low rate");
 
-		} else {
-			_interface.ScheduleOnInterval(fixed_rate_scheduling_interval);
+		} وإلا {
+			_interface.ویلا_سارنی_On_Interval(fixed_شرح_scheduling_interval);
 			PX4_DEBUG("Scheduling at fixed rate");
 		}
 	}
 
-	setMaxTopicUpdateRate(_max_topic_update_interval_us);
-	_need_function_update = false;
+	سیٹ_Max_Topic_Update_شرح(_max_topic_update_interval_us);
+	_need_function_update = خطأ;
 
 	_actuator_test.reset();
 
 	unlock();
 
-	_interface.mixerChanged();
+	_interface.mixer_بدلیا();
 
-	return true;
+	أرجع سچ;
 }
 
-void MixingOutput::setMaxTopicUpdateRate(unsigned max_topic_update_interval_us)
+فراغ MixingOutput::سیٹ_Max_Topic_Update_شرح(بنانشانی max_topic_update_interval_us)
 {
 	_max_topic_update_interval_us = max_topic_update_interval_us;
 
-	if (_subscription_callback) {
-		_subscription_callback->set_interval_us(_max_topic_update_interval_us);
+	إذا (_subscription_callback) {
+		_subscription_callback->سیٹ_interval_us(_max_topic_update_interval_us);
 	}
 }
 
-void MixingOutput::setAllMinValues(uint16_t value)
+فراغ MixingOutput::سیٹ_All_Min_اقدار(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	لكل (بنانشانی i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].min = PARAM_INVALID;
-		_min_value[i] = value;
+		min_قدر[i] = value;
 	}
 }
 
-void MixingOutput::setAllCenterValues(uint16_t value)
+فراغ MixingOutput::سیٹ_All_Center_اقدار(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	لكل (بنانشانی i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].center = PARAM_INVALID;
-		_center_value[i] = value;
+		center_قدر[i] = value;
 	}
 }
 
-void MixingOutput::setAllMaxValues(uint16_t value)
+فراغ MixingOutput::سیٹ_All_Max_اقدار(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	لكل (بنانشانی i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].max = PARAM_INVALID;
-		_max_value[i] = value;
+		max_قدر[i] = value;
 	}
 }
 
-void MixingOutput::setAllFailsafeValues(uint16_t value)
+فراغ MixingOutput::سیٹ_All_Failsafe_اقدار(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	لكل (بنانشانی i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].failsafe = PARAM_INVALID;
-		_failsafe_value[i] = value;
+		failsafe_قدر[i] = value;
 	}
 }
 
-void MixingOutput::setAllDisarmedValues(uint16_t value)
+فراغ MixingOutput::سیٹ_All_Disarmed_اقدار(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	لكل (بنانشانی i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].disarmed = PARAM_INVALID;
-		_disarmed_value[i] = value;
+		disarmed_قدر[i] = value;
 	}
 }
 
-void MixingOutput::unregister()
+فراغ MixingOutput::unregister()
 {
-	if (_subscription_callback) {
+	إذا (_subscription_callback) {
 		_subscription_callback->unregisterCallback();
 	}
 }
 
-bool MixingOutput::update()
+منطقي MixingOutput::update()
 {
 	// check arming state
-	if (_armed_sub.update(&_armed)) {
-		_armed.in_esc_calibration_mode &= _support_esc_calibration;
+	إذا (_armed_sub.update(&_armed)) {
+		_armed.وچ_esc_calibration_منوال &= _support_esc_calibration;
 
-		if (_ignore_lockdown) {
-			_armed.lockdown = false;
+		إذا (_ignore_lockdown) {
+			_armed.lockdown = خطأ;
 		}
 
 		/* Update the armed status and check that we're not locked down.
 		 * We also need to arm throttle for the ESC calibration. */
-		_throttle_armed = (_armed.armed && !_armed.lockdown) || _armed.in_esc_calibration_mode;
+		_throttle_armed = (_armed.armed && !_armed.lockdown) || _armed.وچ_esc_calibration_منوال;
 	}
 
 	// only used for sitl with lockstep
-	bool has_updates = _subscription_callback && _subscription_callback->updated();
+	منطقي has_updates = _subscription_callback && _subscription_callback->updated();
 
 	// update topics
-	for (int i = 0; i < MAX_ACTUATORS && _function_allocated[i]; ++i) {
+	لكل (صحيح i = 0; i < MAX_ACTUATORS && _function_allocated[i]; ++i) {
 		_function_allocated[i]->update();
 	}
 
-	if (_has_backup_schedule) {
-		_interface.ScheduleDelayed(50_ms);
+	إذا (has_backup_ویلا_سارنی) {
+		_interface.ویلا_سارنی_Delayed(50_ms);
 	}
 
 	// check for actuator test
-	_actuator_test.update(_max_num_outputs, _param_thr_mdl_fac.get());
+	_actuator_test.update(max_عدد_outputs_2, _param_thr_mdl_fac.get());
 
 	// get output values
-	float outputs[MAX_ACTUATORS];
-	bool all_disabled = true;
-	const uint32_t reversible_mask_prev = _reversible_mask;
-	_reversible_mask = 0;
+	عائم outputs[MAX_ACTUATORS];
+	منطقي all_disabled = سچ;
+	ثابت uint32_t reversible_نقاب_prev = reversible_نقاب;
+	reversible_نقاب = 0;
 
-	for (int i = 0; i < _max_num_outputs; ++i) {
-		if (_functions[i]) {
-			all_disabled = false;
+	لكل (صحيح i = 0; i < max_عدد_outputs_2; ++i) {
+		إذا (_functions[i]) {
+			all_disabled = خطأ;
 
-			if (_armed.armed || (_armed.prearmed && _functions[i]->allowPrearmControl())) {
+			إذا (_armed.armed || (_armed.prearmed && _functions[i]->allowPrearmControl())) {
 				outputs[i] = _functions[i]->value(_function_assignment[i]);
 
-			} else {
+			} وإلا {
 				outputs[i] = NAN;
 			}
 
-			_reversible_mask |= (uint32_t)_functions[i]->reversible(_function_assignment[i]) << i;
+			reversible_نقاب |= (uint32_t)_functions[i]->reversible(_function_assignment[i]) << i;
 
-		} else {
+		} وإلا {
 			outputs[i] = NAN;
 		}
 	}
 
-	if (_reversible_mask != reversible_mask_prev) {
-		_interface.reversibleMaskChanged(_reversible_mask);
+	إذا (reversible_نقاب != reversible_نقاب_prev) {
+		_interface.reversible_نقاب_بدلیا(reversible_نقاب);
 	}
 
 	// Send output if any function mapped or one last disabling sample
-	if (!all_disabled || !_was_all_disabled) {
-		if (!_armed.armed && !_armed.kill) {
-			_actuator_test.overrideValues(outputs, _max_num_outputs);
+	إذا (!all_disabled || !_was_all_disabled) {
+		إذا (!_armed.armed && !_armed.kill) {
+			_actuator_test.override_اقدار(outputs, max_عدد_outputs_2);
 		}
 
-		limitAndUpdateOutputs(outputs, has_updates);
+		حد_بندی_And_Update_Outputs(outputs, has_updates);
 	}
 
 	_was_all_disabled = all_disabled;
 
-	return true;
+	أرجع سچ;
 }
 
-void
-MixingOutput::limitAndUpdateOutputs(float outputs[MAX_ACTUATORS], bool has_updates)
+فراغ
+MixingOutput::حد_بندی_And_Update_Outputs(عائم outputs[MAX_ACTUATORS], منطقي has_updates)
 {
-	if (_armed.lockdown || _armed.kill) {
+	إذا (_armed.lockdown || _armed.kill) {
 		// overwrite outputs in case of lockdown with disarmed values
-		for (size_t i = 0; i < _max_num_outputs; i++) {
-			_current_output_value[i] = _disarmed_value[i];
+		لكل (size_t i = 0; i < max_عدد_outputs_2; i++) {
+			current_output_قدر[i] = disarmed_قدر[i];
 		}
 
-	} else if (_armed.termination) {
+	} وإلا إذا (_armed.termination) {
 		// Overwrite outputs with _failsafe_value when terminated
-		for (size_t i = 0; i < _max_num_outputs; i++) {
-			_current_output_value[i] = actualFailsafeValue(i);
+		لكل (size_t i = 0; i < max_عدد_outputs_2; i++) {
+			current_output_قدر[i] = actual_Failsafe_قدر(i);
 		}
 
-	} else {
+	} وإلا {
 		// the output limit call takes care of out of band errors, NaN and constrains
-		output_limit_calc(_throttle_armed || _actuator_test.inTestMode(), _max_num_outputs, outputs);
+		output_حد_بندی_calc(_throttle_armed || _actuator_test.وچ_Test_منوال(), max_عدد_outputs_2, outputs);
 	}
 
 	// We must calibrate the PWM and Oneshot ESCs to a consistent range of 1000-2000us (gets mapped to 125-250us for Oneshot)
 	// Doing so makes calibrations consistent among different configurations and hence PWM minimum and maximum have a consistent effect
 	// hence the defaults for these parameters also make most setups work out of the box
-	if (_armed.in_esc_calibration_mode) {
-		static constexpr float PWM_CALIBRATION_LOW = 1000.f;
-		static constexpr float PWM_CALIBRATION_HIGH = 2000.f;
+	إذا (_armed.وچ_esc_calibration_منوال) {
+		ساكن constexpr عائم PWM_CALIBRATION_کم = 1000.f;
+		ساكن constexpr عائم PWM_CALIBRATION_بلند = 2000.f;
 
-		for (int i = 0; i < _max_num_outputs; i++) {
-			if (fabsf(_current_output_value[i] - (float)_min_value[i]) < 0.5f) {
-				_current_output_value[i] = PWM_CALIBRATION_LOW;
+		لكل (صحيح i = 0; i < max_عدد_outputs_2; i++) {
+			إذا (fabsf(current_output_قدر[i] - (عائم)min_قدر[i]) < 0.5f) {
+				current_output_قدر[i] = PWM_CALIBRATION_کم;
 			}
 
-			if (fabsf(_current_output_value[i] - (float)_max_value[i]) < 0.5f) {
-				_current_output_value[i] = PWM_CALIBRATION_HIGH;
+			إذا (fabsf(current_output_قدر[i] - (عائم)max_قدر[i]) < 0.5f) {
+				current_output_قدر[i] = PWM_CALIBRATION_بلند;
 			}
 		}
 	}
 
 	/* now return the outputs to the driver */
-	if (_interface.updateOutputs(_current_output_value, _max_num_outputs, has_updates)) {
+	إذا (_interface.updateOutputs(current_output_قدر, max_عدد_outputs_2, has_updates)) {
 		actuator_outputs_s actuator_outputs{};
-		setAndPublishActuatorOutputs(_max_num_outputs, actuator_outputs);
+		سیٹ_And_Publish_Actuator_Outputs(max_عدد_outputs_2, actuator_outputs);
 
 		updateLatencyPerfCounter(actuator_outputs);
 	}
 }
 
-float MixingOutput::output_limit_calc_single(int i, float value) const
+عائم MixingOutput::output_حد_بندی_calc_single(صحيح i, عائم value) ثابت
 {
 	// check for invalid / disabled channels
-	if (!PX4_ISFINITE(value)) {
-		return _disarmed_value[i];
+	إذا (!PX4_ISFINITE(value)) {
+		أرجع disarmed_قدر[i];
 	}
 
-	if (_reverse_output_mask & (1 << i)) {
+	إذا (الٹ_output_نقاب & (1 << i)) {
 		value = -1.f * value;
 	}
 
-	float output = _disarmed_value[i];
+	عائم output = disarmed_قدر[i];
 
-	if (((_function_assignment[i] >= OutputFunction::Servo1
+	إذا (((_function_assignment[i] >= OutputFunction::Servo1
 	      && _function_assignment[i] <= OutputFunction::ServoMax) || _function_assignment[i] == OutputFunction::Landing_Gear_Wheel
 	     || (_function_assignment[i] >= OutputFunction::Gimbal_Roll
 		 && _function_assignment[i] <= OutputFunction::Gimbal_Yaw))
 	    && _param_handles[i].center != PARAM_INVALID
-	    && _center_value[i] >= _min_value[i]
-	    && _center_value[i] <= _max_value[i]) {
-		output = math::interpolateNXY(value, {-1.f, 0.f, 1.f}, {(float)_min_value[i], (float)_center_value[i], (float)_max_value[i]});
+	    && center_قدر[i] >= min_قدر[i]
+	    && center_قدر[i] <= max_قدر[i]) {
+		output = math::interpolateNXY(value, {-1.f, 0.f, 1.f}, {(عائم)min_قدر[i], (عائم)center_قدر[i], (عائم)max_قدر[i]});
 	}
 
 	// Everything except servos, or if center is not set
-	else {
-		output = math::interpolate(value, -1.f, 1.f, static_cast<float>(_min_value[i]), static_cast<float>(_max_value[i]));
+	وإلا {
+		output = math::interpolate(value, -1.f, 1.f, static_cast<عائم>(min_قدر[i]), static_cast<عائم>(max_قدر[i]));
 	}
 
-	return output;
+	أرجع output;
 }
 
-void
-MixingOutput::output_limit_calc(const bool armed, const int num_channels, const float output[MAX_ACTUATORS])
+فراغ
+MixingOutput::output_حد_بندی_calc(ثابت منطقي armed, ثابت صحيح عدد_channels, ثابت عائم output[MAX_ACTUATORS])
 {
 	// time to slowly ramp up the ESCs
-	static constexpr hrt_abstime RAMP_TIME_US = 500_ms;
+	ساكن constexpr hrt_abstime RAMP_ویلا_US = 500_ms;
 
 	/* first evaluate state changes */
-	switch (_output_state) {
-	case OutputLimitState::OFF:
-		if (armed) {
-			if (_output_ramp_up) {
-				_output_state = OutputLimitState::RAMP;
+	بدل (_output_state) {
+	حالة Output_حد_بندی_State::OFF:
+		إذا (armed) {
+			إذا (output_ramp_اتے) {
+				_output_state = Output_حد_بندی_State::RAMP;
 
-			} else {
-				_output_state = OutputLimitState::ON;
+			} وإلا {
+				_output_state = Output_حد_بندی_State::ON;
 			}
 
 			// reset arming time, used for ramp timing
-			_output_time_armed = hrt_absolute_time();
+			output_ویلا_armed = hrt_absolute_ویلا();
 		}
 
-		break;
+		اكسر;
 
-	case OutputLimitState::RAMP:
-		if (!armed) {
-			_output_state = OutputLimitState::OFF;
+	حالة Output_حد_بندی_State::RAMP:
+		إذا (!armed) {
+			_output_state = Output_حد_بندی_State::OFF;
 
-		} else if (hrt_elapsed_time(&_output_time_armed) >= RAMP_TIME_US) {
-			_output_state = OutputLimitState::ON;
+		} وإلا إذا (hrt_elapsed_ویلا(&output_ویلا_armed) >= RAMP_ویلا_US) {
+			_output_state = Output_حد_بندی_State::ON;
 		}
 
-		break;
+		اكسر;
 
-	case OutputLimitState::ON:
-		if (!armed) {
-			_output_state = OutputLimitState::OFF;
+	حالة Output_حد_بندی_State::ON:
+		إذا (!armed) {
+			_output_state = Output_حد_بندی_State::OFF;
 		}
 
-		break;
+		اكسر;
 	}
 
 	/* if the system is pre-armed, the limit state is temporarily on,
@@ -615,88 +615,88 @@ MixingOutput::output_limit_calc(const bool armed, const int num_channels, const 
 	 * as the throttle channels need to go through the ramp at
 	 * regular arming time.
 	 */
-	auto local_limit_state = _output_state;
+	خودکار local_حد_بندی_state = _output_state;
 
-	if (isPrearmed()) {
-		local_limit_state = OutputLimitState::ON;
+	إذا (isPrearmed()) {
+		local_حد_بندی_state = Output_حد_بندی_State::ON;
 	}
 
 	// then set _current_output_value based on state
-	switch (local_limit_state) {
-	case OutputLimitState::OFF:
-		for (int i = 0; i < num_channels; i++) {
-			_current_output_value[i] = _disarmed_value[i];
+	بدل (local_حد_بندی_state) {
+	حالة Output_حد_بندی_State::OFF:
+		لكل (صحيح i = 0; i < عدد_channels; i++) {
+			current_output_قدر[i] = disarmed_قدر[i];
 		}
 
-		break;
+		اكسر;
 
-	case OutputLimitState::RAMP: {
-			hrt_abstime diff = hrt_elapsed_time(&_output_time_armed);
-			float progress = static_cast<float>(diff) / RAMP_TIME_US;
+	حالة Output_حد_بندی_State::RAMP: {
+			hrt_abstime diff = hrt_elapsed_ویلا(&output_ویلا_armed);
+			عائم ترقی = static_cast<عائم>(diff) / RAMP_ویلا_US;
 
-			if (progress > 1.f) {
-				progress = 1.f;
+			إذا (ترقی > 1.f) {
+				ترقی = 1.f;
 			}
 
-			for (int i = 0; i < num_channels; i++) {
+			لكل (صحيح i = 0; i < عدد_channels; i++) {
 				// Ramp from disarmed value to currently desired output that would apply without ramp
-				float desired_output = output_limit_calc_single(i, output[i]);
-				_current_output_value[i] = _disarmed_value[i] + progress * (desired_output - _disarmed_value[i]);
+				عائم desired_output = output_حد_بندی_calc_single(i, output[i]);
+				current_output_قدر[i] = disarmed_قدر[i] + ترقی * (desired_output - disarmed_قدر[i]);
 			}
 		}
-		break;
+		اكسر;
 
-	case OutputLimitState::ON:
-		for (int i = 0; i < num_channels; i++) {
-			_current_output_value[i] = output_limit_calc_single(i, output[i]);
+	حالة Output_حد_بندی_State::ON:
+		لكل (صحيح i = 0; i < عدد_channels; i++) {
+			current_output_قدر[i] = output_حد_بندی_calc_single(i, output[i]);
 		}
 
-		break;
+		اكسر;
 	}
 }
 
-void
-MixingOutput::setAndPublishActuatorOutputs(unsigned num_outputs, actuator_outputs_s &actuator_outputs)
+فراغ
+MixingOutput::سیٹ_And_Publish_Actuator_Outputs(بنانشانی عدد_outputs, actuator_outputs_s &actuator_outputs)
 {
-	actuator_outputs.noutputs = num_outputs;
+	actuator_outputs.noutputs = عدد_outputs;
 
-	for (size_t i = 0; i < num_outputs; ++i) {
-		actuator_outputs.output[i] = _current_output_value[i];
+	لكل (size_t i = 0; i < عدد_outputs; ++i) {
+		actuator_outputs.output[i] = current_output_قدر[i];
 	}
 
-	actuator_outputs.timestamp = hrt_absolute_time();
+	actuator_outputs.timestamp = hrt_absolute_ویلا();
 	_outputs_pub.publish(actuator_outputs);
 }
 
-void
-MixingOutput::updateLatencyPerfCounter(const actuator_outputs_s &actuator_outputs)
+فراغ
+MixingOutput::updateLatencyPerfCounter(ثابت actuator_outputs_s &actuator_outputs)
 {
 	// Just check the first function. It means we only get the latency if motors are assigned first, which is the default
-	if (_function_allocated[0]) {
+	إذا (_function_allocated[0]) {
 		hrt_abstime timestamp_sample;
 
-		if (_function_allocated[0]->getLatestSampleTimestamp(timestamp_sample)) {
-			perf_set_elapsed(_control_latency_perf, actuator_outputs.timestamp - timestamp_sample);
+		إذا (_function_allocated[0]->getLatestSampleTimestamp(timestamp_sample)) {
+			perf_سیٹ_elapsed(_control_latency_perf, actuator_outputs.timestamp - timestamp_sample);
 		}
 	}
 }
 
-float MixingOutput::actualFailsafeValue(int index) const
+عائم MixingOutput::actual_Failsafe_قدر(صحيح اشاریہ) ثابت
 {
-	float value = 0;
+	عائم value = 0;
 
-	if (_failsafe_value[index] == UINT16_MAX) { // if set to default, use the one provided by the function
-		float default_failsafe = NAN;
+	إذا (failsafe_قدر[اشاریہ] == UINT16_MAX) { // if set to default, use the one provided by the function
+		عائم default_failsafe = NAN;
 
-		if (_functions[index]) {
-			default_failsafe = _functions[index]->defaultFailsafeValue(_function_assignment[index]);
+		إذا (_functions[اشاریہ]) {
+			default_failsafe = _functions[اشاریہ]->default_Failsafe_قدر(_function_assignment[اشاریہ]);
 		}
 
-		value = output_limit_calc_single(index, default_failsafe);
+		value = output_حد_بندی_calc_single(اشاریہ, default_failsafe);
 
-	} else {
-		value = static_cast<float>(_failsafe_value[index]);
+	} وإلا {
+		value = static_cast<عائم>(failsafe_قدر[اشاریہ]);
 	}
 
-	return value;
+	أرجع value;
 }

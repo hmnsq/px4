@@ -34,7 +34,7 @@
  *
  ****************************************************************************/
 
-#pragma once
+#ہدایت once
 
 /****************************************************************************
  * Included Files
@@ -42,10 +42,10 @@
 /****************************************************************************
  * Pre-processor Definitions
  ****************************************************************************/
-#define CRC16_INITIAL           0xFFFFu
-#define CRC16_OUTPUT_XOR        0x0000u
-#define CRC64_INITIAL           0xFFFFFFFFFFFFFFFFull
-#define CRC64_OUTPUT_XOR        0xFFFFFFFFFFFFFFFFull
+#تعریف_کرو CRC16_INITIAL           0xFFFFu
+#تعریف_کرو CRC16_OUTPUT_XOR        0x0000u
+#تعریف_کرو CRC64_INITIAL           0xFFFFFFFFFFFFFFFFull
+#تعریف_کرو CRC64_OUTPUT_XOR        0xFFFFFFFFFFFFFFFFull
 
 /****************************************************************************
  * Public Type Definitions
@@ -74,7 +74,7 @@
  *
  ****************************************************************************/
 
-uint16_t crc16_add(uint16_t crc, uint8_t value);
+uint16_t crc16_جوڑو(uint16_t چکری_جانچ, uint8_t قدر);
 
 /****************************************************************************
  * Name: crc16_signature
@@ -93,8 +93,8 @@ uint16_t crc16_add(uint16_t crc, uint8_t value);
  *
  ****************************************************************************/
 
-uint16_t crc16_signature(uint16_t initial, size_t length,
-			 const uint8_t *bytes);
+uint16_t crc16_signature(uint16_t initial, size_t لمائی,
+			 ثابت uint8_t *بائٹاں);
 
 /****************************************************************************
  * Name: crc32_signature
@@ -113,8 +113,8 @@ uint16_t crc16_signature(uint16_t initial, size_t length,
  *
  ****************************************************************************/
 
-uint32_t crc32_signature(uint32_t acc, size_t length,
-			 const uint8_t *bytes);
+uint32_t چکری_جانچ_32_signature(uint32_t acc, size_t لمائی,
+			 ثابت uint8_t *بائٹاں);
 
 
 /****************************************************************************
@@ -134,4 +134,4 @@ uint32_t crc32_signature(uint32_t acc, size_t length,
  *
  ****************************************************************************/
 
-uint64_t crc64_add_word(uint64_t crc, uint32_t value);
+uint64_t crc64_جوڑو_لفظ(uint64_t چکری_جانچ, uint32_t قدر);

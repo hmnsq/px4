@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#ضمن <gtest/gtest.h>
+#ضمن <matrix/math.hpp>
 
-using namespace matrix;
+ورتوں نطاق میٹرکس;
 
-TEST(MatrixTransposeTest, Transpose)
+TEST(میٹرکس_Transpose_Test, Transpose)
 {
-	float data[6] = {1, 2, 3, 4, 5, 6};
-	Matrix<float, 2, 3> A(data);
-	Matrix<float, 3, 2> A_T = A.transpose();
-	float data_check[6] = {1, 4, 2, 5, 3, 6};
-	Matrix<float, 3, 2> A_T_check(data_check);
+	عائم انکڑے[6] = {1, 2, 3, 4, 5, 6};
+	میٹرکس_2<عائم, 2, 3> A(انکڑے);
+	میٹرکس_2<عائم, 3, 2> A_T = A.transpose();
+	عائم انکڑے_check[6] = {1, 4, 2, 5, 3, 6};
+	میٹرکس_2<عائم, 3, 2> A_T_check(انکڑے_check);
 	EXPECT_EQ(A_T, A_T_check);
 }

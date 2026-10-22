@@ -38,101 +38,101 @@
  *
  */
 
-#include "SPI.hpp"
+#ضمن "SPI.hpp"
 
-#if defined(CONFIG_SPI)
+#إذا defined(CONFIG_SPI)
 
-#ifdef __PX4_LINUX
+#جے_تعریف_شدہ __PX4_LINUX
 
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/ioctl.h>
-#include <linux/types.h>
-#include <linux/spi/spidev.h>
+#ضمن <fcntl.h>
+#ضمن <unistd.h>
+#ضمن <sys/ioctl.h>
+#ضمن <linux/types.h>
+#ضمن <linux/spi/spidev.h>
 
-#include <px4_platform_common/i2c_spi_buses.h>
-#include <px4_platform_common/px4_config.h>
+#ضمن <px4_platform_common/i2c_spi_buses.h>
+#ضمن <px4_platform_common/px4_config.h>
 
-namespace device
+نطاق device
 {
 
-SPI::SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency) :
-	CDev(name, nullptr),
+SPI::SPI(uint8_t device_type, ثابت حرف *name, صحيح bus, uint32_t device, تعداد spi_منوال_e منوال, uint32_t frequency) :
+	CDev(name, خالی_سوچک),
 	_device(device),
-	_mode(mode),
+	_mode(منوال),
 	_frequency(frequency)
 {
 	_device_id.devid_s.devtype = device_type;
 	// fill in _device_id fields for a SPI device
 	_device_id.devid_s.bus_type = DeviceBusType_SPI;
 	_device_id.devid_s.bus = bus;
-	_device_id.devid_s.address = (uint8_t)device;
+	_device_id.devid_s.پتہ = (uint8_t)device;
 }
 
-SPI::SPI(const I2CSPIDriverConfig &config)
-	: SPI(config.devid_driver_index, config.module_name, config.bus, config.spi_devid, config.spi_mode,
+SPI::SPI(ثابت I2CSPIDriverConfig &config)
+	: SPI(config.devid_driver_اشاریہ, config.module_name, config.bus, config.spi_devid, config.spi_منوال,
 	      config.bus_frequency)
 {
-	set_external(config.external);
+	سیٹ_external(config.external);
 }
 
 SPI::~SPI()
 {
-	if (_fd >= 0) {
+	إذا (_fd >= 0) {
 		::close(_fd);
 		_fd = -1;
 	}
 }
 
-int
+صحيح
 SPI::init()
 {
 	// Open the actual SPI device
-	char dev_path[16];
-	snprintf(dev_path, sizeof(dev_path), "/dev/spidev%i.%i", get_device_bus(), PX4_SPI_DEV_ID(_device));
-	DEVICE_DEBUG("%s", dev_path);
-	_fd = ::open(dev_path, O_RDWR);
+	حرف dev_رستہ[16];
+	snprintf(dev_رستہ, حجم(dev_رستہ), "/dev/spidev%i.%i", get_device_bus(), PX4_SPI_DEV_ID(_device));
+	DEVICE_DEBUG("%s", dev_رستہ);
+	_fd = ::open(dev_رستہ, O_RDWR);
 
-	if (_fd < 0) {
-		PX4_ERR("could not open %s", dev_path);
-		return PX4_ERROR;
+	إذا (_fd < 0) {
+		PX4_ERR("could not open %s", dev_رستہ);
+		أرجع PX4_ERROR;
 	}
 
 	/* call the probe function to check whether the device is present */
-	int ret = probe();
+	صحيح ret = probe();
 
-	if (ret != OK) {
+	إذا (ret != OK) {
 		DEVICE_DEBUG("probe failed");
-		return ret;
+		أرجع ret;
 	}
 
 	/* do base class init, which will create the device node, etc. */
 	ret = CDev::init();
 
-	if (ret != OK) {
+	إذا (ret != OK) {
 		DEVICE_DEBUG("cdev init failed");
-		return ret;
+		أرجع ret;
 	}
 
 	/* tell the world where we are */
 	DEVICE_DEBUG("on SPI bus %d at %d (%u KHz)", get_device_bus(), PX4_SPI_DEV_ID(_device), _frequency / 1000);
 
-	return PX4_OK;
+	أرجع PX4_OK;
 }
 
-int
-SPI::transfer(uint8_t *send, uint8_t *recv, unsigned len)
+صحيح
+SPI::transfer(uint8_t *send, uint8_t *recv, بنانشانی len)
 {
-	if ((send == nullptr) && (recv == nullptr)) {
-		return -EINVAL;
+	إذا ((send == خالی_سوچک) && (recv == خالی_سوچک)) {
+		أرجع -EINVAL;
 	}
 
 	// set write mode of SPI
-	int result = ::ioctl(_fd, SPI_IOC_WR_MODE, &_mode);
+	صحيح نتیجہ = ::ioctl(_fd, SPI_IOC_WR_منوال, &_mode);
 
-	if (result == -1) {
+	إذا (نتیجہ == -1) {
 		PX4_ERR("can’t set spi mode");
-		return PX4_ERROR;
+		أرجع PX4_ERROR;
 	}
 
 	spi_ioc_transfer spi_transfer{};
@@ -140,40 +140,40 @@ SPI::transfer(uint8_t *send, uint8_t *recv, unsigned len)
 	spi_transfer.tx_buf = (uint64_t)send;
 	spi_transfer.rx_buf = (uint64_t)recv;
 	spi_transfer.len = len;
-	spi_transfer.speed_hz = _frequency;
-	spi_transfer.bits_per_word = 8;
+	spi_transfer.رفتار_hz = _frequency;
+	spi_transfer.بٹ_فی_لفظ = 8;
 
-	result = ::ioctl(_fd, SPI_IOC_MESSAGE(1), &spi_transfer);
+	نتیجہ = ::ioctl(_fd, SPI_IOC_سنیہا(1), &spi_transfer);
 
-	if (result != (int)len) {
-		PX4_ERR("write failed. Reported %d bytes written (%s)", result, strerror(errno));
-		return PX4_ERROR;
+	إذا (نتیجہ != (صحيح)len) {
+		PX4_ERR("write failed. Reported %d bytes written (%s)", نتیجہ, strerror(errno));
+		أرجع PX4_ERROR;
 	}
 
-	return PX4_OK;
+	أرجع PX4_OK;
 }
 
-int
-SPI::transferhword(uint16_t *send, uint16_t *recv, unsigned len)
+صحيح
+SPI::transferhword(uint16_t *send, uint16_t *recv, بنانشانی len)
 {
-	if ((send == nullptr) && (recv == nullptr)) {
-		return -EINVAL;
+	إذا ((send == خالی_سوچک) && (recv == خالی_سوچک)) {
+		أرجع -EINVAL;
 	}
 
 	// set write mode of SPI
-	int result = ::ioctl(_fd, SPI_IOC_WR_MODE, &_mode);
+	صحيح نتیجہ = ::ioctl(_fd, SPI_IOC_WR_منوال, &_mode);
 
-	if (result == -1) {
+	إذا (نتیجہ == -1) {
 		PX4_ERR("can’t set spi mode");
-		return PX4_ERROR;
+		أرجع PX4_ERROR;
 	}
 
-	int bits = 16;
-	result = ::ioctl(_fd, SPI_IOC_WR_BITS_PER_WORD, &bits);
+	صحيح بٹ = 16;
+	نتیجہ = ::ioctl(_fd, SPI_IOC_WR_بٹ_فی_لفظ, &بٹ);
 
-	if (result == -1) {
+	إذا (نتیجہ == -1) {
 		PX4_ERR("can’t set 16 bit spi mode");
-		return PX4_ERROR;
+		أرجع PX4_ERROR;
 	}
 
 	spi_ioc_transfer spi_transfer[1] {};
@@ -181,22 +181,22 @@ SPI::transferhword(uint16_t *send, uint16_t *recv, unsigned len)
 	spi_transfer[0].tx_buf = (uint64_t)send;
 	spi_transfer[0].rx_buf = (uint64_t)recv;
 	spi_transfer[0].len = len * 2;
-	spi_transfer[0].speed_hz = _frequency;
+	spi_transfer[0].رفتار_hz = _frequency;
 	//spi_transfer[0].bits_per_word = 8;
 	//spi_transfer[0].delay_usecs = 10;
-	spi_transfer[0].cs_change = true;
+	spi_transfer[0].cs_change = سچ;
 
-	result = ::ioctl(_fd, SPI_IOC_MESSAGE(1), &spi_transfer);
+	نتیجہ = ::ioctl(_fd, SPI_IOC_سنیہا(1), &spi_transfer);
 
-	if (result != (int)(len * 2)) {
-		PX4_ERR("write failed. Reported %d bytes written (%s)", result, strerror(errno));
-		return PX4_ERROR;
+	إذا (نتیجہ != (صحيح)(len * 2)) {
+		PX4_ERR("write failed. Reported %d bytes written (%s)", نتیجہ, strerror(errno));
+		أرجع PX4_ERROR;
 	}
 
-	return PX4_OK;
+	أرجع PX4_OK;
 }
 
 } // namespace device
 
-#endif // __PX4_LINUX
-#endif // CONFIG_SPI
+#جے_انت // __PX4_LINUX
+#جے_انت // CONFIG_SPI

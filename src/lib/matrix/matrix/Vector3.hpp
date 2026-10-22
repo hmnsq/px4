@@ -6,109 +6,109 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#ہدایت once
 
-#include "Vector.hpp"
+#ضمن "Vector.hpp"
 
-namespace matrix
+نطاق میٹرکس
 {
 
-template <typename Type>
-class Dcm;
+سانچا <قسم_ناں Type>
+صنف Dcm;
 
-template<typename Type>
-class Vector3 : public Vector<Type, 3>
+سانچا<قسم_ناں Type>
+صنف Vector3 : عام سمتیہ<Type, 3>
 {
-public:
+عام:
 
-	using Matrix31 = Matrix<Type, 3, 1>;
+	ورتوں Matrix31 = میٹرکس_2<Type, 3, 1>;
 
-	Vector3() = default;
+	Vector3() = افتراضي;
 
-	Vector3(const Matrix31 &other) :
-		Vector<Type, 3>(other)
+	Vector3(ثابت Matrix31 &other) :
+		سمتیہ<Type, 3>(other)
 	{
 	}
 
-	explicit Vector3(const Type data_[3]) :
-		Vector<Type, 3>(data_)
+	واضح Vector3(ثابت Type انکڑے_2[3]) :
+		سمتیہ<Type, 3>(انکڑے_2)
 	{
 	}
 
 	Vector3(Type x, Type y, Type z)
 	{
-		Vector3 &v(*this);
+		Vector3 &v(*هذا);
 		v(0) = x;
 		v(1) = y;
 		v(2) = z;
 	}
 
-	using base = Vector<Type, 3>;
-	using base::base;
+	ورتوں base = سمتیہ<Type, 3>;
+	ورتوں base::base;
 
-	Vector3 cross(const Matrix31 &b) const
+	Vector3 cross(ثابت Matrix31 &b) ثابت
 	{
-		const Vector3 &a(*this);
-		return {a(1) *b(2, 0) - a(2) *b(1, 0), -a(0) *b(2, 0) + a(2) *b(0, 0), a(0) *b(1, 0) - a(1) *b(0, 0)};
+		ثابت Vector3 &a(*هذا);
+		أرجع {a(1) *b(2, 0) - a(2) *b(1, 0), -a(0) *b(2, 0) + a(2) *b(0, 0), a(0) *b(1, 0) - a(1) *b(0, 0)};
 	}
 
 	/**
 	 * Override matrix ops so Vector3 type is returned
 	 */
 
-	inline Vector3 operator+(Vector3 other) const
+	مضمن Vector3 عامل+(Vector3 other) ثابت
 	{
-		return Matrix31::operator+(other);
+		أرجع Matrix31::عامل+(other);
 	}
 
-	inline Vector3 operator+(Type scalar) const
+	مضمن Vector3 عامل+(Type scalar) ثابت
 	{
-		return Matrix31::operator+(scalar);
+		أرجع Matrix31::عامل+(scalar);
 	}
 
-	inline Vector3 operator-(Vector3 other) const
+	مضمن Vector3 عامل-(Vector3 other) ثابت
 	{
-		return Matrix31::operator-(other);
+		أرجع Matrix31::عامل-(other);
 	}
 
-	inline Vector3 operator-(Type scalar) const
+	مضمن Vector3 عامل-(Type scalar) ثابت
 	{
-		return Matrix31::operator-(scalar);
+		أرجع Matrix31::عامل-(scalar);
 	}
 
-	inline Vector3 operator-() const
+	مضمن Vector3 عامل-() ثابت
 	{
-		return Matrix31::operator-();
+		أرجع Matrix31::عامل-();
 	}
 
-	inline Vector3 operator*(Type scalar) const
+	مضمن Vector3 عامل*(Type scalar) ثابت
 	{
-		return Matrix31::operator*(scalar);
+		أرجع Matrix31::عامل*(scalar);
 	}
 
-	inline Type operator*(Vector3 b) const
+	مضمن Type عامل*(Vector3 b) ثابت
 	{
-		return Vector<Type, 3>::operator*(b);
+		أرجع سمتیہ<Type, 3>::عامل*(b);
 	}
 
-	inline Vector3 operator%(const Matrix31 &b) const
+	مضمن Vector3 عامل%(ثابت Matrix31 &b) ثابت
 	{
-		return (*this).cross(b);
+		أرجع (*هذا).cross(b);
 	}
 
-	ConstSlice<Type, 2, 1, 3, 1> xy() const
+	Const_ٹکڑا<Type, 2, 1, 3, 1> xy() ثابت
 	{
-		return {0, 0, this};
+		أرجع {0, 0, هذا};
 	}
 
-	Slice<Type, 2, 1, 3, 1> xy()
+	ٹکڑا_2<Type, 2, 1, 3, 1> xy()
 	{
-		return {0, 0, this};
+		أرجع {0, 0, هذا};
 	}
 
-	Dcm<Type> hat() const      // inverse to Dcm.vee() operation
+	Dcm<Type> hat() ثابت      // inverse to Dcm.vee() operation
 	{
-		const Vector3 &v(*this);
+		ثابت Vector3 &v(*هذا);
 		Dcm<Type> A;
 		A(0, 0) = 0;
 		A(0, 1) = -v(2);
@@ -119,12 +119,12 @@ public:
 		A(2, 0) = -v(1);
 		A(2, 1) = v(0);
 		A(2, 2) = 0;
-		return A;
+		أرجع A;
 	}
 
 };
 
-using Vector3f = Vector3<float>;
-using Vector3d = Vector3<double>;
+ورتوں Vector3f = Vector3<عائم>;
+ورتوں Vector3d = Vector3<مزدوج>;
 
 } // namespace matrix

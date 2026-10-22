@@ -31,64 +31,64 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <stdint.h>
-#include <string.h>
+#ضمن <gtest/gtest.h>
+#ضمن <stdint.h>
+#ضمن <string.h>
 
 
-#include "VariableLengthRingbuffer.hpp"
+#ضمن "VariableLengthRingbuffer.hpp"
 
-class TempData
+صنف عارضی_انکڑے
 {
-public:
-	TempData(size_t len)
+عام:
+	عارضی_انکڑے(size_t len)
 	{
-		_size = len;
-		_buf = new uint8_t[_size];
+		ناپ_2 = len;
+		_buf = جديد uint8_t[ناپ_2];
 	}
 
-	~TempData()
+	~عارضی_انکڑے()
 	{
-		delete[] _buf;
-		_buf = nullptr;
+		مٹاؤ[] _buf;
+		_buf = خالی_سوچک;
 	}
 
-	uint8_t *buf() const
+	uint8_t *buf() ثابت
 	{
-		return _buf;
+		أرجع _buf;
 	}
 
-	size_t size() const
+	size_t ناپ() ثابت
 	{
-		return _size;
+		أرجع ناپ_2;
 	}
 
-	void paint(unsigned offset = 0)
+	فراغ paint(بنانشانی وتھ = 0)
 	{
-		for (size_t i = 0; i < _size; ++i) {
-			_buf[i] = (uint8_t)((i + offset) % UINT8_MAX);
+		لكل (size_t i = 0; i < ناپ_2; ++i) {
+			_buf[i] = (uint8_t)((i + وتھ) % UINT8_MAX);
 		}
 	}
 
-private:
-	uint8_t *_buf {nullptr};
-	size_t _size{0};
+خاص:
+	uint8_t *_buf {خالی_سوچک};
+	size_t ناپ_2{0};
 
 };
 
-bool operator==(const TempData &lhs, const TempData &rhs)
+منطقي عامل==(ثابت عارضی_انکڑے &lhs, ثابت عارضی_انکڑے &rhs)
 {
-	if (lhs.size() != rhs.size()) {
-		return false;
+	إذا (lhs.ناپ() != rhs.ناپ()) {
+		أرجع خطأ;
 	}
 
-	return memcmp(lhs.buf(), rhs.buf(), lhs.size()) == 0;
+	أرجع memcmp(lhs.buf(), rhs.buf(), lhs.ناپ()) == 0;
 }
 
 
-TEST(VariableLengthRingbuffer, AllocateAndDeallocate)
+TEST(Variable_لمائی_Ringbuffer, AllocateAndDeallocate)
 {
-	VariableLengthRingbuffer buf;
+	Variable_لمائی_Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 	buf.deallocate();
 
@@ -96,40 +96,40 @@ TEST(VariableLengthRingbuffer, AllocateAndDeallocate)
 	// The second time we forget to clean up, but we expect no leak.
 }
 
-TEST(VariableLengthRingbuffer, PushATooBigMessage)
+TEST(Variable_لمائی_Ringbuffer, ڈالو_AToo_Big_سنیہا)
 {
-	VariableLengthRingbuffer buf;
+	Variable_لمائی_Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	TempData data{200};
+	عارضی_انکڑے انکڑے{200};
 
 	// A message that doesn't fit should get rejected.
-	EXPECT_FALSE(buf.push_back(data.buf(), data.size()));
+	EXPECT_FALSE(buf.push_back(انکڑے.buf(), انکڑے.ناپ()));
 }
 
-TEST(VariableLengthRingbuffer, PushAndPopOne)
+TEST(Variable_لمائی_Ringbuffer, ڈالو_And_نکالو_One)
 {
-	VariableLengthRingbuffer buf;
+	Variable_لمائی_Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	TempData data{20};
-	data.paint();
+	عارضی_انکڑے انکڑے{20};
+	انکڑے.paint();
 
-	EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
+	EXPECT_TRUE(buf.push_back(انکڑے.buf(), انکڑے.ناپ()));
 
 
 	// Out buffer is the same size
-	TempData out{20};
-	EXPECT_EQ(buf.pop_front(out.buf(), out.size()), 20);
-	EXPECT_EQ(data, out);
+	عارضی_انکڑے باہرلا{20};
+	EXPECT_EQ(buf.نکالو_front(باہرلا.buf(), باہرلا.ناپ()), 20);
+	EXPECT_EQ(انکڑے, باہرلا);
 
-	EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
+	EXPECT_TRUE(buf.push_back(انکڑے.buf(), انکڑے.ناپ()));
 	// Out buffer is supposedly bigger
-	TempData out2{20};
-	EXPECT_EQ(buf.pop_front(out2.buf(), 21), 20);
-	EXPECT_EQ(data, out2);
+	عارضی_انکڑے out2{20};
+	EXPECT_EQ(buf.نکالو_front(out2.buf(), 21), 20);
+	EXPECT_EQ(انکڑے, out2);
 
-	EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
+	EXPECT_TRUE(buf.push_back(انکڑے.buf(), انکڑے.ناپ()));
 
 	// Disabled because it doesn't work reliably.
 	// For some reason the abort works when tests are filtered using TESTFILTER
@@ -141,117 +141,117 @@ TEST(VariableLengthRingbuffer, PushAndPopOne)
 	//EXPECT_DEATH(buf.pop_front(out3.buf(), out3.size()), ".*");
 }
 
-TEST(VariableLengthRingbuffer, PushAndPopSeveral)
+TEST(Variable_لمائی_Ringbuffer, ڈالو_And_نکالو_Several)
 {
-	VariableLengthRingbuffer buf;
+	Variable_لمائی_Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	TempData data{20};
-	data.paint();
+	عارضی_انکڑے انکڑے{20};
+	انکڑے.paint();
 
 	// 4 should fit
-	for (unsigned i = 0; i < 4; ++i) {
-		EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
+	لكل (بنانشانی i = 0; i < 4; ++i) {
+		EXPECT_TRUE(buf.push_back(انکڑے.buf(), انکڑے.ناپ()));
 	}
 
 	// 5 won't because of overhead
-	EXPECT_FALSE(buf.push_back(data.buf(), data.size()));
+	EXPECT_FALSE(buf.push_back(انکڑے.buf(), انکڑے.ناپ()));
 
 	// Take 4 back out
-	for (unsigned i = 0; i < 4; ++i) {
-		TempData out{20};
-		EXPECT_EQ(buf.pop_front(out.buf(), out.size()), data.size());
-		EXPECT_EQ(data, out);
+	لكل (بنانشانی i = 0; i < 4; ++i) {
+		عارضی_انکڑے باہرلا{20};
+		EXPECT_EQ(buf.نکالو_front(باہرلا.buf(), باہرلا.ناپ()), انکڑے.ناپ());
+		EXPECT_EQ(انکڑے, باہرلا);
 	}
 
-	TempData out{20};
-	EXPECT_EQ(buf.pop_front(out.buf(), out.size()), 0);
+	عارضی_انکڑے باہرلا{20};
+	EXPECT_EQ(buf.نکالو_front(باہرلا.buf(), باہرلا.ناپ()), 0);
 }
 
-TEST(VariableLengthRingbuffer, PushAndPopSeveralVariableSize)
+TEST(Variable_لمائی_Ringbuffer, ڈالو_And_نکالو_Several_Variable_ناپ)
 {
-	VariableLengthRingbuffer buf;
+	Variable_لمائی_Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	TempData data1{50};
+	عارضی_انکڑے data1{50};
 	data1.paint();
-	EXPECT_TRUE(buf.push_back(data1.buf(), data1.size()));
+	EXPECT_TRUE(buf.push_back(data1.buf(), data1.ناپ()));
 
-	TempData data2{30};
+	عارضی_انکڑے data2{30};
 	data2.paint(42);
-	EXPECT_TRUE(buf.push_back(data2.buf(), data2.size()));
+	EXPECT_TRUE(buf.push_back(data2.buf(), data2.ناپ()));
 
 	// Supposedly more space
-	TempData out1{50};
-	EXPECT_EQ(buf.pop_front(out1.buf(), 100), data1.size());
+	عارضی_انکڑے out1{50};
+	EXPECT_EQ(buf.نکالو_front(out1.buf(), 100), data1.ناپ());
 	EXPECT_EQ(data1, out1);
 
-	TempData data3{50};
+	عارضی_انکڑے data3{50};
 	data3.paint(33);
-	EXPECT_TRUE(buf.push_back(data3.buf(), data3.size()));
+	EXPECT_TRUE(buf.push_back(data3.buf(), data3.ناپ()));
 
 	// Supposedly more space
-	TempData out2{30};
-	EXPECT_EQ(buf.pop_front(out2.buf(), 100), data2.size());
+	عارضی_انکڑے out2{30};
+	EXPECT_EQ(buf.نکالو_front(out2.buf(), 100), data2.ناپ());
 	EXPECT_EQ(data2, out2);
 
 	// Supposedly more space
-	TempData out3{50};
-	EXPECT_EQ(buf.pop_front(out3.buf(), 100), data3.size());
+	عارضی_انکڑے out3{50};
+	EXPECT_EQ(buf.نکالو_front(out3.buf(), 100), data3.ناپ());
 	EXPECT_EQ(data3, out3);
 
-	TempData out4{100};
-	EXPECT_EQ(buf.pop_front(out4.buf(), out4.size()), 0);
+	عارضی_انکڑے out4{100};
+	EXPECT_EQ(buf.نکالو_front(out4.buf(), out4.ناپ()), 0);
 }
 
-TEST(VariableLengthRingbuffer, PushEmpty)
+TEST(Variable_لمائی_Ringbuffer, ڈالو_خالی_تھاواں)
 {
-	VariableLengthRingbuffer buf;
+	Variable_لمائی_Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	EXPECT_FALSE(buf.push_back(nullptr, 0));
+	EXPECT_FALSE(buf.push_back(خالی_سوچک, 0));
 }
 
-TEST(VariableLengthRingbuffer, PopWithoutBuffer)
+TEST(Variable_لمائی_Ringbuffer, نکالو_Without_بفر)
 {
-	VariableLengthRingbuffer buf;
+	Variable_لمائی_Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	EXPECT_FALSE(buf.push_back(nullptr, 0));
+	EXPECT_FALSE(buf.push_back(خالی_سوچک, 0));
 
-	TempData data{50};
-	data.paint();
+	عارضی_انکڑے انکڑے{50};
+	انکڑے.paint();
 
-	EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
+	EXPECT_TRUE(buf.push_back(انکڑے.buf(), انکڑے.ناپ()));
 
 
-	EXPECT_EQ(buf.pop_front(nullptr, 50), 0);
+	EXPECT_EQ(buf.نکالو_front(خالی_سوچک, 50), 0);
 }
 
-TEST(VariableLengthRingbuffer, EmptyAndNoSpaceForHeader)
+TEST(Variable_لمائی_Ringbuffer, خالی_تھاواں_And_No_Space_For_سرخی)
 {
 	// Addressing a corner case where start and end are at the end
 	// and the same.
 
-	VariableLengthRingbuffer buf;
+	Variable_لمائی_Ringbuffer buf;
 	// Allocate 4+1 bytes more than the packet, 4 for the header, 1 for the start/end logic.
 	ASSERT_TRUE(buf.allocate(25));
 
 	{
-		TempData data{20};
-		data.paint();
-		EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
-		TempData out{20};
-		EXPECT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
-		EXPECT_EQ(data, out);
+		عارضی_انکڑے انکڑے{20};
+		انکڑے.paint();
+		EXPECT_TRUE(buf.push_back(انکڑے.buf(), انکڑے.ناپ()));
+		عارضی_انکڑے باہرلا{20};
+		EXPECT_EQ(buf.نکالو_front(باہرلا.buf(), باہرلا.ناپ()), باہرلا.ناپ());
+		EXPECT_EQ(انکڑے, باہرلا);
 	}
 
 	{
-		TempData data{10};
-		data.paint();
-		EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
-		TempData out{10};
-		EXPECT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
-		EXPECT_EQ(data, out);
+		عارضی_انکڑے انکڑے{10};
+		انکڑے.paint();
+		EXPECT_TRUE(buf.push_back(انکڑے.buf(), انکڑے.ناپ()));
+		عارضی_انکڑے باہرلا{10};
+		EXPECT_EQ(buf.نکالو_front(باہرلا.buf(), باہرلا.ناپ()), باہرلا.ناپ());
+		EXPECT_EQ(انکڑے, باہرلا);
 	}
 }

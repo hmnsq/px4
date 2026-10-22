@@ -31,19 +31,19 @@
  *
  ****************************************************************************/
 
-#ifndef MATH_UTILITIES_H
-#define MATH_UTILITIES_H
+#جے_بنا_تعریف MATH_UTILITIES_H
+#تعریف_کرو MATH_UTILITIES_H
 
-#include <matrix/math.hpp>
+#ضمن <matrix/math.hpp>
 
-namespace math
+نطاق math
 {
 
-namespace Utilities
+نطاق Utilities
 {
 
 // return the square of two floating point numbers - used in auto coded sections
-static constexpr float sq(float var) { return var * var; }
+ساكن constexpr عائم sq(عائم var) { أرجع var * var; }
 
 // converts Tait-Bryan 312 sequence of rotations from frame 1 to frame 2
 // to the corresponding rotation matrix that rotates from frame 2 to frame 1
@@ -51,18 +51,18 @@ static constexpr float sq(float var) { return var * var; }
 // rot312(1) - Second rotation is a RH rotation about the X axis (rad)
 // rot312(2) - Third rotation is a RH rotation about the Y axis (rad)
 // See http://www.atacolorado.com/eulersequences.doc
-template<typename T = float>
-inline matrix::Dcm<T> taitBryan312ToRotMat(const matrix::Vector3<T> &rot312)
+سانچا<قسم_ناں T = عائم>
+مضمن میٹرکس::Dcm<T> tait_Bryan312_منزل_Rot_Mat(ثابت میٹرکس::Vector3<T> &rot312)
 {
 	// Calculate the frame2 to frame 1 rotation matrix from a 312 Tait-Bryan rotation sequence
-	const T c2 = cosf(rot312(2)); // third rotation is pitch
-	const T s2 = sinf(rot312(2));
-	const T s1 = sinf(rot312(1)); // second rotation is roll
-	const T c1 = cosf(rot312(1));
-	const T s0 = sinf(rot312(0)); // first rotation is yaw
-	const T c0 = cosf(rot312(0));
+	ثابت T c2 = cosf(rot312(2)); // third rotation is pitch
+	ثابت T s2 = sinf(rot312(2));
+	ثابت T s1 = sinf(rot312(1)); // second rotation is roll
+	ثابت T c1 = cosf(rot312(1));
+	ثابت T s0 = sinf(rot312(0)); // first rotation is yaw
+	ثابت T c0 = cosf(rot312(0));
 
-	matrix::Dcm<T> R;
+	میٹرکس::Dcm<T> R;
 	R(0, 0) = c0 * c2 - s0 * s1 * s2;
 	R(1, 1) = c0 * c1;
 	R(2, 2) = c2 * c1;
@@ -73,24 +73,24 @@ inline matrix::Dcm<T> taitBryan312ToRotMat(const matrix::Vector3<T> &rot312)
 	R(2, 0) = -s2 * c1;
 	R(2, 1) = s1;
 
-	return R;
+	أرجع R;
 }
 
-template<typename T = float>
-inline matrix::Dcm<T> quatToInverseRotMat(const matrix::Quaternion<T> &quat)
+سانچا<قسم_ناں T = عائم>
+مضمن میٹرکس::Dcm<T> quat_منزل_Inverse_Rot_Mat(ثابت میٹرکس::Quaternion<T> &quat)
 {
-	const T q00 = quat(0) * quat(0);
-	const T q11 = quat(1) * quat(1);
-	const T q22 = quat(2) * quat(2);
-	const T q33 = quat(3) * quat(3);
-	const T q01 = quat(0) * quat(1);
-	const T q02 = quat(0) * quat(2);
-	const T q03 = quat(0) * quat(3);
-	const T q12 = quat(1) * quat(2);
-	const T q13 = quat(1) * quat(3);
-	const T q23 = quat(2) * quat(3);
+	ثابت T q00 = quat(0) * quat(0);
+	ثابت T q11 = quat(1) * quat(1);
+	ثابت T q22 = quat(2) * quat(2);
+	ثابت T q33 = quat(3) * quat(3);
+	ثابت T q01 = quat(0) * quat(1);
+	ثابت T q02 = quat(0) * quat(2);
+	ثابت T q03 = quat(0) * quat(3);
+	ثابت T q12 = quat(1) * quat(2);
+	ثابت T q13 = quat(1) * quat(3);
+	ثابت T q23 = quat(2) * quat(3);
 
-	matrix::Dcm<T> dcm;
+	میٹرکس::Dcm<T> dcm;
 	dcm(0, 0) = q00 + q11 - q22 - q33;
 	dcm(1, 1) = q00 - q11 + q22 - q33;
 	dcm(2, 2) = q00 - q11 - q22 + q33;
@@ -101,97 +101,97 @@ inline matrix::Dcm<T> quatToInverseRotMat(const matrix::Quaternion<T> &quat)
 	dcm(0, 2) = 2.0f * (q13 - q02);
 	dcm(1, 2) = 2.0f * (q23 + q01);
 
-	return dcm;
+	أرجع dcm;
 }
 
 // We should use a 3-2-1 Tait-Bryan (yaw-pitch-roll) rotation sequence
 // when there is more roll than pitch tilt and a 3-1-2 rotation sequence
 // when there is more pitch than roll tilt to avoid gimbal lock.
-template<typename T = float>
-inline bool shouldUse321RotationSequence(const matrix::Dcm<T> &R)
+سانچا<قسم_ناں T = عائم>
+مضمن منطقي shouldUse321RotationSequence(ثابت میٹرکس::Dcm<T> &R)
 {
-	return fabsf(R(2, 0)) < fabsf(R(2, 1));
+	أرجع fabsf(R(2, 0)) < fabsf(R(2, 1));
 }
 
-template<typename T = float>
-inline float getEuler321Yaw(const matrix::Dcm<T> &R)
+سانچا<قسم_ناں T = عائم>
+مضمن عائم getEuler321Yaw(ثابت میٹرکس::Dcm<T> &R)
 {
-	return atan2f(R(1, 0), R(0, 0));
+	أرجع atan2f(R(1, 0), R(0, 0));
 }
 
-template<typename T = float>
-inline float getEuler312Yaw(const matrix::Dcm<T> &R)
+سانچا<قسم_ناں T = عائم>
+مضمن عائم getEuler312Yaw(ثابت میٹرکس::Dcm<T> &R)
 {
-	return atan2f(-R(0, 1), R(1, 1));
+	أرجع atan2f(-R(0, 1), R(1, 1));
 }
 
-template<typename T = float>
-inline T getEuler321Yaw(const matrix::Quaternion<T> &q)
+سانچا<قسم_ناں T = عائم>
+مضمن T getEuler321Yaw(ثابت میٹرکس::Quaternion<T> &q)
 {
 	// Values from yaw_input_321.c file produced by
 	// https://github.com/PX4/ecl/blob/master/matlab/scripts/Inertial%20Nav%20EKF/quat2yaw321.m
-	const T a = static_cast<T>(2.) * (q(0) * q(3) + q(1) * q(2));
-	const T b = sq(q(0)) + sq(q(1)) - sq(q(2)) - sq(q(3));
-	return atan2f(a, b);
+	ثابت T a = static_cast<T>(2.) * (q(0) * q(3) + q(1) * q(2));
+	ثابت T b = sq(q(0)) + sq(q(1)) - sq(q(2)) - sq(q(3));
+	أرجع atan2f(a, b);
 }
 
-template<typename T = float>
-inline T getEuler312Yaw(const matrix::Quaternion<T> &q)
+سانچا<قسم_ناں T = عائم>
+مضمن T getEuler312Yaw(ثابت میٹرکس::Quaternion<T> &q)
 {
 	// Values from yaw_input_312.c file produced by
 	// https://github.com/PX4/ecl/blob/master/matlab/scripts/Inertial%20Nav%20EKF/quat2yaw312.m
-	const T a = static_cast<T>(2.) * (q(0) * q(3) - q(1) * q(2));
-	const T b = sq(q(0)) - sq(q(1)) + sq(q(2)) - sq(q(3));
-	return atan2f(a, b);
+	ثابت T a = static_cast<T>(2.) * (q(0) * q(3) - q(1) * q(2));
+	ثابت T b = sq(q(0)) - sq(q(1)) + sq(q(2)) - sq(q(3));
+	أرجع atan2f(a, b);
 }
 
-template<typename T = float>
-inline T getEulerYaw(const matrix::Dcm<T> &R)
+سانچا<قسم_ناں T = عائم>
+مضمن T getEulerYaw(ثابت میٹرکس::Dcm<T> &R)
 {
-	if (shouldUse321RotationSequence(R)) {
-		return getEuler321Yaw(R);
+	إذا (shouldUse321RotationSequence(R)) {
+		أرجع getEuler321Yaw(R);
 
-	} else {
-		return getEuler312Yaw(R);
+	} وإلا {
+		أرجع getEuler312Yaw(R);
 	}
 }
 
-template<typename T = float>
-inline T getEulerYaw(const matrix::Quaternion<T> &q)
+سانچا<قسم_ناں T = عائم>
+مضمن T getEulerYaw(ثابت میٹرکس::Quaternion<T> &q)
 {
-	return getEulerYaw(matrix::Dcm<T>(q));
+	أرجع getEulerYaw(میٹرکس::Dcm<T>(q));
 }
 
-template<typename T = float>
-inline matrix::Dcm<T> updateEuler321YawInRotMat(T yaw, const matrix::Dcm<T> &rot_in)
+سانچا<قسم_ناں T = عائم>
+مضمن میٹرکس::Dcm<T> update_Euler321_Yaw_وچ_Rot_Mat(T yaw, ثابت میٹرکس::Dcm<T> &rot_وچ)
 {
-	matrix::Euler<T> euler321(rot_in);
+	میٹرکس::Euler<T> euler321(rot_وچ);
 	euler321(2) = yaw;
-	return matrix::Dcm<T>(euler321);
+	أرجع میٹرکس::Dcm<T>(euler321);
 }
 
-template<typename T = float>
-inline matrix::Dcm<T> updateEuler312YawInRotMat(T yaw, const matrix::Dcm<T> &rot_in)
+سانچا<قسم_ناں T = عائم>
+مضمن میٹرکس::Dcm<T> update_Euler312_Yaw_وچ_Rot_Mat(T yaw, ثابت میٹرکس::Dcm<T> &rot_وچ)
 {
-	const matrix::Vector3<T> rotVec312(yaw,                                  // yaw
-					   asinf(rot_in(2, 1)),                  // roll
-					   atan2f(-rot_in(2, 0), rot_in(2, 2))); // pitch
-	return taitBryan312ToRotMat(rotVec312);
+	ثابت میٹرکس::Vector3<T> rotVec312(yaw,                                  // yaw
+					   asinf(rot_وچ(2, 1)),                  // roll
+					   atan2f(-rot_وچ(2, 0), rot_وچ(2, 2))); // pitch
+	أرجع tait_Bryan312_منزل_Rot_Mat(rotVec312);
 }
 
 // Checks which euler rotation sequence to use and update yaw in rotation matrix
-template<typename T = float>
-inline matrix::Dcm<T> updateYawInRotMat(T yaw, const matrix::Dcm<T> &rot_in)
+سانچا<قسم_ناں T = عائم>
+مضمن میٹرکس::Dcm<T> update_Yaw_وچ_Rot_Mat(T yaw, ثابت میٹرکس::Dcm<T> &rot_وچ)
 {
-	if (shouldUse321RotationSequence(rot_in)) {
-		return updateEuler321YawInRotMat(yaw, rot_in);
+	إذا (shouldUse321RotationSequence(rot_وچ)) {
+		أرجع update_Euler321_Yaw_وچ_Rot_Mat(yaw, rot_وچ);
 
-	} else {
-		return updateEuler312YawInRotMat(yaw, rot_in);
+	} وإلا {
+		أرجع update_Euler312_Yaw_وچ_Rot_Mat(yaw, rot_وچ);
 	}
 }
 
 } // namespace Utilities
 } // namespace math
 
-#endif // MATH_UTILITIES_H
+#جے_انت // MATH_UTILITIES_H
