@@ -31,21 +31,21 @@
  *
  ****************************************************************************/
 
-#include "VelocitySmoothing.hpp"
+#अन्तर्भाव "VelocitySmoothing.hpp"
 
-#include <cstdio>
-#include <float.h>
-#include <mathlib/mathlib.h>
-#include <matrix/matrix/math.hpp>
+#अन्तर्भाव <cstdio>
+#अन्तर्भाव <float.h>
+#अन्तर्भाव <mathlib/mathlib.h>
+#अन्तर्भाव <matrix/matrix/math.hpp>
 
 using matrix::sign;
 
-VelocitySmoothing::VelocitySmoothing(float initial_accel, float initial_vel, float initial_pos)
+VelocitySmoothing::VelocitySmoothing(भिन्न initial_accel, भिन्न initial_vel, भिन्न initial_pos)
 {
 	reset(initial_accel, initial_vel, initial_pos);
 }
 
-void VelocitySmoothing::reset(float accel, float vel, float pos)
+शून्य VelocitySmoothing::reset(भिन्न accel, भिन्न vel, भिन्न pos)
 {
 	_state.j = 0.f;
 	_state.a = accel;
@@ -55,112 +55,112 @@ void VelocitySmoothing::reset(float accel, float vel, float pos)
 	_state_init = _state;
 }
 
-float VelocitySmoothing::saturateT1ForAccel(float a0, float j_max, float T1, float a_max) const
+भिन्न VelocitySmoothing::saturateT1ForAccel(भिन्न a0, भिन्न j_max, भिन्न T1, भिन्न a_max) ध्रुव
 {
 	/* Check maximum acceleration, saturate and recompute T1 if needed */
-	float accel_T1 = a0 + j_max * T1;
-	float T1_new = T1;
+	भिन्न accel_T1 = a0 + j_max * T1;
+	भिन्न T1_new = T1;
 
-	if (accel_T1 > a_max) {
+	यदि (accel_T1 > a_max) {
 		T1_new = (a_max - a0) / j_max;
 
-	} else if (accel_T1 < -a_max) {
+	} अन्यथा यदि (accel_T1 < -a_max) {
 		T1_new = (-a_max - a0) / j_max;
 	}
 
-	return T1_new;
+	प्रत्यागम T1_new;
 }
 
-float VelocitySmoothing::computeT1(float a0, float v3, float j_max, float a_max) const
+भिन्न VelocitySmoothing::computeT1(भिन्न a0, भिन्न v3, भिन्न j_max, भिन्न a_max) ध्रुव
 {
-	float delta = 2.f * a0 * a0 + 4.f * j_max * v3;
+	भिन्न delta = 2.f * a0 * a0 + 4.f * j_max * v3;
 
-	if (delta < 0.f) {
+	यदि (delta < 0.f) {
 		// Solution is not real
-		return 0.f;
+		प्रत्यागम 0.f;
 	}
 
-	float sqrt_delta = sqrtf(delta);
-	float T1_plus = (-a0 + 0.5f * sqrt_delta) / j_max;
-	float T1_minus = (-a0 - 0.5f * sqrt_delta) / j_max;
+	भिन्न sqrt_delta = sqrtf(delta);
+	भिन्न T1_plus = (-a0 + 0.5f * sqrt_delta) / j_max;
+	भिन्न T1_minus = (-a0 - 0.5f * sqrt_delta) / j_max;
 
-	float T3_plus = a0 / j_max + T1_plus;
-	float T3_minus = a0 / j_max + T1_minus;
+	भिन्न T3_plus = a0 / j_max + T1_plus;
+	भिन्न T3_minus = a0 / j_max + T1_minus;
 
-	float T1 = 0.f;
+	भिन्न T1 = 0.f;
 
-	if (T1_plus >= 0.f && T3_plus >= 0.f) {
+	यदि (T1_plus >= 0.f && T3_plus >= 0.f) {
 		T1 = T1_plus;
 
-	} else if (T1_minus >= 0.f && T3_minus >= 0.f) {
+	} अन्यथा यदि (T1_minus >= 0.f && T3_minus >= 0.f) {
 		T1 = T1_minus;
 	}
 
 	T1 = saturateT1ForAccel(a0, j_max, T1, a_max);
 
-	return math::max(T1, 0.f);
+	प्रत्यागम math::max(T1, 0.f);
 }
 
-float VelocitySmoothing::computeT1(float T123, float a0, float v3, float j_max, float a_max) const
+भिन्न VelocitySmoothing::computeT1(भिन्न T123, भिन्न a0, भिन्न v3, भिन्न j_max, भिन्न a_max) ध्रुव
 {
-	float a = -j_max;
-	float b = j_max * T123 - a0;
-	float delta = T123 * T123 * j_max * j_max + 2.f * T123 * a0 * j_max - a0 * a0 - 4.f * j_max * v3;
+	भिन्न a = -j_max;
+	भिन्न b = j_max * T123 - a0;
+	भिन्न delta = T123 * T123 * j_max * j_max + 2.f * T123 * a0 * j_max - a0 * a0 - 4.f * j_max * v3;
 
-	if (delta < 0.f) {
+	यदि (delta < 0.f) {
 		// Solution is not real
-		return 0.f;
+		प्रत्यागम 0.f;
 	}
 
-	float sqrt_delta = sqrtf(delta);
-	float denominator_inv = 1.f / (2.f * a);
-	float T1_plus = math::max((-b + sqrt_delta) * denominator_inv, 0.f);
-	float T1_minus = math::max((-b - sqrt_delta) * denominator_inv, 0.f);
+	भिन्न sqrt_delta = sqrtf(delta);
+	भिन्न denominator_inv = 1.f / (2.f * a);
+	भिन्न T1_plus = math::max((-b + sqrt_delta) * denominator_inv, 0.f);
+	भिन्न T1_minus = math::max((-b - sqrt_delta) * denominator_inv, 0.f);
 
-	float T3_plus = a0 / j_max + T1_plus;
-	float T3_minus = a0 / j_max + T1_minus;
+	भिन्न T3_plus = a0 / j_max + T1_plus;
+	भिन्न T3_minus = a0 / j_max + T1_minus;
 
-	float T1 = 0.f;
+	भिन्न T1 = 0.f;
 
-	if ((T1_plus >= 0.f && T3_plus >= 0.f) && ((T1_plus + T3_plus) <= T123)) {
+	यदि ((T1_plus >= 0.f && T3_plus >= 0.f) && ((T1_plus + T3_plus) <= T123)) {
 		T1 = T1_plus;
 
-	} else if ((T1_minus >= 0.f && T3_minus >= 0.f) && ((T1_minus + T3_minus) <= T123)) {
+	} अन्यथा यदि ((T1_minus >= 0.f && T3_minus >= 0.f) && ((T1_minus + T3_minus) <= T123)) {
 		T1 = T1_minus;
 	}
 
 	T1 = saturateT1ForAccel(a0, j_max, T1, a_max);
 
-	return T1;
+	प्रत्यागम T1;
 }
 
 
-float VelocitySmoothing::computeT2(float T1, float T3, float a0, float v3, float j_max) const
+भिन्न VelocitySmoothing::computeT2(भिन्न T1, भिन्न T3, भिन्न a0, भिन्न v3, भिन्न j_max) ध्रुव
 {
-	float T2 = 0.f;
+	भिन्न T2 = 0.f;
 
-	float den = a0 + j_max * T1;
+	भिन्न den = a0 + j_max * T1;
 
-	if (math::abs_t(den) > FLT_EPSILON) {
+	यदि (math::abs_t(den) > भग्न_अंतर) {
 		T2 = (-0.5f * T1 * T1 * j_max - T1 * T3 * j_max - T1 * a0 + 0.5f * T3 * T3 * j_max - T3 * a0 + v3) / den;
 	}
 
-	return math::max(T2, 0.f);
+	प्रत्यागम math::max(T2, 0.f);
 }
 
-float VelocitySmoothing::computeT2(float T123, float T1, float T3) const
+भिन्न VelocitySmoothing::computeT2(भिन्न T123, भिन्न T1, भिन्न T3) ध्रुव
 {
-	float T2 = T123 - T1 - T3;
-	return math::max(T2, 0.f);
+	भिन्न T2 = T123 - T1 - T3;
+	प्रत्यागम math::max(T2, 0.f);
 }
 
-float VelocitySmoothing::computeT3(float T1, float a0, float j_max) const
+भिन्न VelocitySmoothing::computeT3(भिन्न T1, भिन्न a0, भिन्न j_max) ध्रुव
 {
-	float T3 = a0 / j_max + T1;
-	return math::max(T3, 0.f);
+	भिन्न T3 = a0 / j_max + T1;
+	प्रत्यागम math::max(T3, 0.f);
 }
 
-void VelocitySmoothing::updateDurations(float vel_setpoint)
+शून्य VelocitySmoothing::updateDurations(भिन्न vel_setpoint)
 {
 	_vel_sp = math::constrain(vel_setpoint, -_max_vel, _max_vel);
 	_local_time = 0.f;
@@ -171,43 +171,43 @@ void VelocitySmoothing::updateDurations(float vel_setpoint)
 	updateDurationsMinimizeTotalTime();
 }
 
-int VelocitySmoothing::computeDirection() const
+पूर्णाङ्क VelocitySmoothing::computeDirection() ध्रुव
 {
 	// Compute the velocity at which the trajectory will be
 	// when the acceleration will be zero
-	float vel_zero_acc = computeVelAtZeroAcc();
+	भिन्न vel_zero_acc = computeVelAtZeroAcc();
 
 	/* Depending of the direction, start accelerating positively or negatively */
-	int direction = sign(_vel_sp - vel_zero_acc);
+	पूर्णाङ्क direction = sign(_vel_sp - vel_zero_acc);
 
-	if (direction == 0) {
+	यदि (direction == 0) {
 		// If by braking immediately the velocity is exactly
 		// the required one with zero acceleration, then brake
 		direction = sign(_state.a);
 	}
 
-	return direction;
+	प्रत्यागम direction;
 }
 
-float VelocitySmoothing::computeVelAtZeroAcc() const
+भिन्न VelocitySmoothing::computeVelAtZeroAcc() ध्रुव
 {
-	float vel_zero_acc = _state.v;
+	भिन्न vel_zero_acc = _state.v;
 
-	if (fabsf(_state.a) > FLT_EPSILON) {
-		float j_zero_acc = -sign(_state.a) * _max_jerk; // Required jerk to reduce the acceleration
-		float t_zero_acc = -_state.a / j_zero_acc; // Required time to cancel the current acceleration
+	यदि (fabsf(_state.a) > भग्न_अंतर) {
+		भिन्न j_zero_acc = -sign(_state.a) * _max_jerk; // Required jerk to reduce the acceleration
+		भिन्न t_zero_acc = -_state.a / j_zero_acc; // Required time to cancel the current acceleration
 		vel_zero_acc = _state.v + _state.a * t_zero_acc + 0.5f * j_zero_acc * t_zero_acc * t_zero_acc;
 	}
 
-	return vel_zero_acc;
+	प्रत्यागम vel_zero_acc;
 }
 
-void VelocitySmoothing::updateDurationsMinimizeTotalTime()
+शून्य VelocitySmoothing::updateDurationsMinimizeTotalTime()
 {
-	float jerk_max_T1 = _direction * _max_jerk;
-	float delta_v = _vel_sp - _state.v;
+	भिन्न jerk_max_T1 = _direction * _max_jerk;
+	भिन्न delta_v = _vel_sp - _state.v;
 
-	if (fabsf(jerk_max_T1) > FLT_EPSILON) { // zero direction or jerk would lead to division by zero
+	यदि (fabsf(jerk_max_T1) > भग्न_अंतर) { // zero direction or jerk would lead to division by zero
 		// compute increasing acceleration time
 		_T1 = computeT1(_state.a, delta_v, jerk_max_T1, _max_accel);
 
@@ -217,69 +217,69 @@ void VelocitySmoothing::updateDurationsMinimizeTotalTime()
 		// compute constant acceleration time
 		_T2 = computeT2(_T1, _T3, _state.a, delta_v, jerk_max_T1);
 
-	} else {
+	} अन्यथा {
 		_T1 = _T2 = _T3 = 0.f;
 	}
 }
 
-Trajectory VelocitySmoothing::evaluatePoly(float j, float a0, float v0, float x0, float t, int d) const
+Trajectory VelocitySmoothing::evaluatePoly(भिन्न j, भिन्न a0, भिन्न v0, भिन्न x0, भिन्न t, पूर्णाङ्क d) ध्रुव
 {
 	Trajectory traj;
-	float jt = d * j;
-	float t2 = t * t;
-	float t3 = t2 * t;
+	भिन्न jt = d * j;
+	भिन्न t2 = t * t;
+	भिन्न t3 = t2 * t;
 
 	traj.j = jt;
 	traj.a = a0 + jt * t;
 	traj.v = v0 + a0 * t + 0.5f * jt * t2;
 	traj.x = x0 + v0 * t + 0.5f * a0 * t2 + 1.f / 6.f * jt * t3;
 
-	return traj;
+	प्रत्यागम traj;
 }
 
-void VelocitySmoothing::updateTraj(float dt, float time_stretch)
+शून्य VelocitySmoothing::updateTraj(भिन्न dt, भिन्न time_stretch)
 {
 	_local_time += dt * time_stretch;
-	float t_remain = _local_time;
+	भिन्न t_remain = _local_time;
 
-	float t1 = math::min(t_remain, _T1);
+	भिन्न t1 = math::min(t_remain, _T1);
 	_state = evaluatePoly(_max_jerk, _state_init.a, _state_init.v, _state_init.x, t1, _direction);
 	t_remain -= t1;
 
-	if (t_remain > 0.f) {
-		float t2 = math::min(t_remain, _T2);
+	यदि (t_remain > 0.f) {
+		भिन्न t2 = math::min(t_remain, _T2);
 		_state = evaluatePoly(0.f, _state.a, _state.v, _state.x, t2, 0.f);
 		t_remain -= t2;
 	}
 
-	if (t_remain > 0.f) {
-		float t3 = math::min(t_remain, _T3);
+	यदि (t_remain > 0.f) {
+		भिन्न t3 = math::min(t_remain, _T3);
 		_state = evaluatePoly(_max_jerk, _state.a, _state.v, _state.x, t3, -_direction);
 		t_remain -= t3;
 	}
 
-	if (t_remain > 0.f) {
+	यदि (t_remain > 0.f) {
 		_state = evaluatePoly(0.f, 0.f, _state.v, _state.x, t_remain, 0.f);
 	}
 }
 
-void VelocitySmoothing::timeSynchronization(VelocitySmoothing *traj, int n_traj)
+शून्य VelocitySmoothing::timeSynchronization(VelocitySmoothing *traj, पूर्णाङ्क n_traj)
 {
-	float desired_time = 0.f;
-	int longest_traj_index = 0;
+	भिन्न desired_time = 0.f;
+	पूर्णाङ्क longest_traj_index = 0;
 
-	for (int i = 0; i < n_traj; i++) {
-		const float T123 = traj[i].getTotalTime();
+	प्रति (पूर्णाङ्क i = 0; i < n_traj; i++) {
+		ध्रुव भिन्न T123 = traj[i].getTotalTime();
 
-		if (T123 > desired_time) {
+		यदि (T123 > desired_time) {
 			desired_time = T123;
 			longest_traj_index = i;
 		}
 	}
 
-	if (desired_time > FLT_EPSILON) {
-		for (int i = 0; i < n_traj; i++) {
-			if ((i != longest_traj_index)
+	यदि (desired_time > भग्न_अंतर) {
+		प्रति (पूर्णाङ्क i = 0; i < n_traj; i++) {
+			यदि ((i != longest_traj_index)
 			    && (traj[i].getTotalTime() < desired_time)) {
 				traj[i].updateDurationsGivenTotalTime(desired_time);
 			}
@@ -287,12 +287,12 @@ void VelocitySmoothing::timeSynchronization(VelocitySmoothing *traj, int n_traj)
 	}
 }
 
-void VelocitySmoothing::updateDurationsGivenTotalTime(float T123)
+शून्य VelocitySmoothing::updateDurationsGivenTotalTime(भिन्न T123)
 {
-	float jerk_max_T1 = _direction * _max_jerk;
-	float delta_v = _vel_sp - _state.v;
+	भिन्न jerk_max_T1 = _direction * _max_jerk;
+	भिन्न delta_v = _vel_sp - _state.v;
 
-	if (fabsf(jerk_max_T1) > FLT_EPSILON) { // zero direction or jerk would lead to division by zero
+	यदि (fabsf(jerk_max_T1) > भग्न_अंतर) { // zero direction or jerk would lead to division by zero
 		// compute increasing acceleration time
 		_T1 = computeT1(T123, _state.a, delta_v, jerk_max_T1, _max_accel);
 
@@ -302,7 +302,7 @@ void VelocitySmoothing::updateDurationsGivenTotalTime(float T123)
 		// compute constant acceleration time
 		_T2 = computeT2(T123, _T1, _T3);
 
-	} else {
+	} अन्यथा {
 		_T1 = _T2 = _T3 = 0.f;
 	}
 }

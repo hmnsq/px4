@@ -39,45 +39,45 @@
 
 #pragma once
 
-#include "../CDev.hpp"
+#अन्तर्भाव "../CDev.hpp"
 
 // #include "dev_fs_lib_spi.h"
 
-#include <px4_platform_common/spi.h>
+#अन्तर्भाव <px4_platform_common/spi.h>
 
 // Perhaps not the best place for these but they are only used for the IMU SPI driver on Qurt
-int px4_arch_gpiosetevent(spi_drdy_gpio_t pin, bool r, bool f, bool e, int (*func)(int, void *, void *), void *arg);
-void register_interrupt_callback_initalizer(int (*)(int (*)(int, void *, void *), void *arg));
+पूर्णाङ्क px4_arch_gpiosetevent(spi_drdy_gpio_t pin, तार्किक r, तार्किक f, तार्किक e, पूर्णाङ्क (*func)(पूर्णाङ्क, शून्य *, शून्य *), शून्य *arg);
+शून्य register_interrupt_callback_initalizer(पूर्णाङ्क (*)(पूर्णाङ्क (*)(पूर्णाङ्क, शून्य *, शून्य *), शून्य *arg));
 
-enum spi_mode_e {
+गणना spi_mode_e {
 	SPIDEV_MODE0 = 0, /* CPOL=0 CHPHA=0 */
 	SPIDEV_MODE1 = 1, /* CPOL=0 CHPHA=1 */
 	SPIDEV_MODE2 = 2, /* CPOL=1 CHPHA=0 */
 	SPIDEV_MODE3 = 3  /* CPOL=1 CHPHA=1 */
 };
 
-struct I2CSPIDriverConfig;
+संरचना I2CSPIDriverConfig;
 
-namespace device __EXPORT
+नामाकाश device __EXPORT
 {
 
 /**
  * Abstract class for character device on SPI
  */
-class __EXPORT SPI : public CDev
+वर्ग __EXPORT SPI : सार्वजनिक CDev
 {
-public:
-	typedef int (*_config_spi_bus_func_t)();
-	typedef int (*_spi_transfer_func_t)(int, const uint8_t *, uint8_t *, const unsigned);
+सार्वजनिक:
+	प्रकारनिर्देश पूर्णाङ्क (*_config_spi_bus_func_t)();
+	प्रकारनिर्देश पूर्णाङ्क (*_spi_transfer_func_t)(पूर्णाङ्क, ध्रुव uint8_t *, uint8_t *, ध्रुव अचिन्हित);
 
-	static void configure_callbacks(_config_spi_bus_func_t config_func,
+	स्थिर शून्य configure_callbacks(_config_spi_bus_func_t config_func,
 					_spi_transfer_func_t transfer_func)
 	{
 		_config_spi_bus = config_func;
 		_spi_transfer = transfer_func;
 	}
 
-protected:
+रक्षित:
 	/**
 	 * Constructor
 	 *
@@ -88,27 +88,27 @@ protected:
 	 * @param mode		SPI clock/data mode
 	 * @param frequency	SPI clock frequency
 	 */
-	SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency);
+	SPI(uint8_t device_type, ध्रुव वर्ण *name, पूर्णाङ्क bus, uint32_t device, गणना spi_mode_e mode, uint32_t frequency);
 
-	SPI(const I2CSPIDriverConfig &config);
+	SPI(ध्रुव I2CSPIDriverConfig &config);
 
-	virtual ~SPI();
+	आभास ~SPI();
 
 	/**
 	 * Locking modes supported by the driver.
 	 */
-	enum LockMode {
+	गणना LockMode {
 		LOCK_PREEMPTION,	/**< the default; lock against all forms of preemption. */
 		LOCK_THREADS,		/**< lock only against other threads, using SPI_LOCK */
 		LOCK_NONE		/**< perform no locking, only safe if the bus is entirely private */
 	};
 
-	virtual int	init();
+	आभास पूर्णाङ्क	init();
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	आभास पूर्णाङ्क	probe() { प्रत्यागम PX4_OK; }
 
 	/**
 	 * Perform a SPI transfer.
@@ -129,7 +129,7 @@ protected:
 	 * @return		OK if the exchange was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(uint8_t *send, uint8_t *recv, unsigned len);
+	पूर्णाङ्क		transfer(uint8_t *send, uint8_t *recv, अचिन्हित len);
 
 	/**
 	 * Perform a SPI 16 bit transfer.
@@ -150,7 +150,7 @@ protected:
 	 * @return		OK if the exchange was successful, -errno
 	 *			otherwise.
 	 */
-	int		transferhword(uint16_t *send, uint16_t *recv, unsigned len);
+	पूर्णाङ्क		transferhword(uint16_t *send, uint16_t *recv, अचिन्हित len);
 
 	/**
 	 * Set the SPI bus frequency
@@ -161,8 +161,8 @@ protected:
 	 *
 	 * @param frequency	Frequency to set (Hz)
 	 */
-	void		set_frequency(uint32_t frequency) {}
-	uint32_t	get_frequency() { return 0; }
+	शून्य		set_frequency(uint32_t frequency) {}
+	uint32_t	get_frequency() { प्रत्यागम 0; }
 
 	/**
 	 * Set the SPI bus locking mode
@@ -172,17 +172,17 @@ protected:
 	 *
 	 * @param mode	Locking mode
 	 */
-	void		set_lockmode(enum LockMode mode) {}
+	शून्य		set_lockmode(गणना LockMode mode) {}
 
-private:
-	int 			_fd{-1};
+गुप्त:
+	पूर्णाङ्क 			_fd{-1};
 
-	static _config_spi_bus_func_t  _config_spi_bus;
-	static _spi_transfer_func_t    _spi_transfer;
+	स्थिर _config_spi_bus_func_t  _config_spi_bus;
+	स्थिर _spi_transfer_func_t    _spi_transfer;
 
-	static pthread_mutex_t         _mutex;
+	स्थिर pthread_mutex_t         _mutex;
 
-protected:
+रक्षित:
 
 	/**
 	 * The number of times a read or write operation will be retried on

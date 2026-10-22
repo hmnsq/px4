@@ -39,19 +39,19 @@
 
 #pragma once
 
-#include "Limits.hpp"
+#अन्तर्भाव "Limits.hpp"
 
-#include <px4_platform_common/defines.h>
-#include <matrix/matrix/math.hpp>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <matrix/matrix/math.hpp>
 
-namespace math
+नामाकाश math
 {
 
 // Type-safe signum function with zero treated as positive
-template<typename T>
-int signNoZero(T val)
+ढाँचा<typename T>
+पूर्णाङ्क signNoZero(T val)
 {
-	return (T(0) <= val) - (val < T(0));
+	प्रत्यागम (T(0) <= val) - (val < T(0));
 }
 
 /**
@@ -60,15 +60,15 @@ int signNoZero(T val)
  * @param[in] positive Truth value to take the sign from
  * @return 1 if positive is true, -1 if positive is false
  */
-inline int signFromBool(bool positive)
+अन्तःस्थ पूर्णाङ्क signFromBool(तार्किक positive)
 {
-	return positive ? 1 : -1;
+	प्रत्यागम positive ? 1 : -1;
 }
 
-template<typename T>
+ढाँचा<typename T>
 T sq(T val)
 {
-	return val * val;
+	प्रत्यागम val * val;
 }
 
 /*
@@ -80,12 +80,12 @@ T sq(T val)
  * 		1 - pure cubic function
  * @return result of function output
  */
-template<typename T>
-const T expo(const T &value, const T &e)
+ढाँचा<typename T>
+ध्रुव T expo(ध्रुव T &value, ध्रुव T &e)
 {
 	T x = constrain(value, (T) - 1, (T) 1);
 	T ec = constrain(e, (T) 0, (T) 1);
-	return (1 - ec) * x + ec * x * x * x;
+	प्रत्यागम (1 - ec) * x + ec * x * x * x;
 }
 
 /*
@@ -99,12 +99,12 @@ const T expo(const T &value, const T &e)
  * 		0.99 - very strong bent curve, stays zero until maximum stick input
  * @return result of function output
  */
-template<typename T>
-const T superexpo(const T &value, const T &e, const T &g)
+ढाँचा<typename T>
+ध्रुव T superexpo(ध्रुव T &value, ध्रुव T &e, ध्रुव T &g)
 {
 	T x = constrain(value, (T) - 1, (T) 1);
 	T gc = constrain(g, (T) 0, (T) 0.99);
-	return expo(x, e) * (1 - gc) / (1 - fabsf(x) * gc);
+	प्रत्यागम expo(x, e) * (1 - gc) / (1 - fabsf(x) * gc);
 }
 
 /*
@@ -121,21 +121,21 @@ const T superexpo(const T &value, const T &e, const T &g)
  * 		0.5 - deadzone is half of the span [-0.5,0.5]
  * 		0.99 - almost entire span is deadzone
  */
-template<typename T>
-const T deadzone(const T &value, const T &dz)
+ढाँचा<typename T>
+ध्रुव T deadzone(ध्रुव T &value, ध्रुव T &dz)
 {
 	T x = constrain(value, (T) - 1, (T) 1);
 	T dzc = constrain(dz, (T) 0, (T) 0.99);
 	// Rescale the input such that we get a piecewise linear function that will be continuous with applied deadzone
 	T out = (x - matrix::sign(x) * dzc) / (1 - dzc);
 	// apply the deadzone (values zero around the middle)
-	return out * (fabsf(x) > dzc);
+	प्रत्यागम out * (fabsf(x) > dzc);
 }
 
-template<typename T>
-const T expo_deadzone(const T &value, const T &e, const T &dz)
+ढाँचा<typename T>
+ध्रुव T expo_deadzone(ध्रुव T &value, ध्रुव T &e, ध्रुव T &dz)
 {
-	return expo(deadzone(value, dz), e);
+	प्रत्यागम expo(deadzone(value, dz), e);
 }
 
 
@@ -148,20 +148,20 @@ const T expo_deadzone(const T &value, const T &e, const T &dz)
  * y_low -------
  *         x_low   x_high
  */
-template<typename T>
-const T interpolate(const T &value, const T &x_low, const T &x_high, const T &y_low, const T &y_high)
+ढाँचा<typename T>
+ध्रुव T interpolate(ध्रुव T &value, ध्रुव T &x_निचला, ध्रुव T &x_ऊपरी, ध्रुव T &y_निचला, ध्रुव T &y_ऊपरी)
 {
-	if (value <= x_low) {
-		return y_low;
+	यदि (value <= x_निचला) {
+		प्रत्यागम y_निचला;
 
-	} else if (value > x_high) {
-		return y_high;
+	} अन्यथा यदि (value > x_ऊपरी) {
+		प्रत्यागम y_ऊपरी;
 
-	} else {
+	} अन्यथा {
 		/* linear function between the two points */
-		T a = (y_high - y_low) / (x_high - x_low);
-		T b = y_low - (a * x_low);
-		return (a * value) + b;
+		T a = (y_ऊपरी - y_निचला) / (x_ऊपरी - x_निचला);
+		T b = y_निचला - (a * x_निचला);
+		प्रत्यागम (a * value) + b;
 	}
 }
 
@@ -177,11 +177,11 @@ const T interpolate(const T &value, const T &x_low, const T &x_high, const T &y_
  * y[0] -------
  *        0 1/(N-1) 2/(N-1) ... 1
  */
-template<typename T, size_t N>
-const T interpolateN(const T &value, const T(&y)[N])
+ढाँचा<typename T, माप_प्रकार N>
+ध्रुव T interpolateN(ध्रुव T &value, ध्रुव T(&y)[N])
 {
-	size_t index = constrain((int)(value * (N - 1)), 0, (int)(N - 2));
-	return interpolate(value, (T)index / (T)(N - 1), (T)(index + 1) / (T)(N - 1), y[index], y[index + 1]);
+	माप_प्रकार index = constrain((पूर्णाङ्क)(value * (N - 1)), 0, (पूर्णाङ्क)(N - 2));
+	प्रत्यागम interpolate(value, (T)index / (T)(N - 1), (T)(index + 1) / (T)(N - 1), y[index], y[index + 1]);
 }
 
 /*
@@ -197,16 +197,16 @@ const T interpolateN(const T &value, const T(&y)[N])
  *          x[0] x[1] ... x[N-1]
  * Note: x[N] corner coordinates have to be sorted in ascending order
  */
-template<typename T, size_t N>
-const T interpolateNXY(const T &value, const T(&x)[N], const T(&y)[N])
+ढाँचा<typename T, माप_प्रकार N>
+ध्रुव T interpolateNXY(ध्रुव T &value, ध्रुव T(&x)[N], ध्रुव T(&y)[N])
 {
-	size_t index = 0;
+	माप_प्रकार index = 0;
 
-	while ((value > x[index + 1]) && (index < (N - 2))) {
+	यावत् ((value > x[index + 1]) && (index < (N - 2))) {
 		index++;
 	}
 
-	return interpolate(value, x[index], x[index + 1], y[index], y[index + 1]);
+	प्रत्यागम interpolate(value, x[index], x[index + 1], y[index], y[index + 1]);
 }
 
 /*
@@ -221,17 +221,17 @@ const T interpolateNXY(const T &value, const T(&x)[N], const T(&y)[N])
  * 0     -------
  *             0    1
  */
-template<typename T>
-const T sqrt_linear(const T &value)
+ढाँचा<typename T>
+ध्रुव T sqrt_linear(ध्रुव T &value)
 {
-	if (value < static_cast<T>(0)) {
-		return static_cast<T>(0);
+	यदि (value < static_cast<T>(0)) {
+		प्रत्यागम static_cast<T>(0);
 
-	} else if (value < static_cast<T>(1)) {
-		return sqrtf(value);
+	} अन्यथा यदि (value < static_cast<T>(1)) {
+		प्रत्यागम sqrtf(value);
 
-	} else {
-		return value;
+	} अन्यथा {
+		प्रत्यागम value;
 	}
 }
 
@@ -241,30 +241,30 @@ const T sqrt_linear(const T &value)
  * s=1 returns b
  * Any value for s is valid.
  */
-template<typename T>
-const T lerp(const T &a, const T &b, const T &s)
+ढाँचा<typename T>
+ध्रुव T lerp(ध्रुव T &a, ध्रुव T &b, ध्रुव T &s)
 {
-	return (static_cast<T>(1) - s) * a + s * b;
+	प्रत्यागम (static_cast<T>(1) - s) * a + s * b;
 }
 
-template<typename T>
+ढाँचा<typename T>
 constexpr T negate(T value)
 {
-	static_assert(sizeof(T) > 2, "implement for T");
-	return -value;
+	static_assert(परिमाण(T) > 2, "implement for T");
+	प्रत्यागम -value;
 }
 
-template<>
+ढाँचा<>
 constexpr int16_t negate<int16_t>(int16_t value)
 {
-	if (value == INT16_MAX) {
-		return INT16_MIN;
+	यदि (value == INT16_MAX) {
+		प्रत्यागम INT16_MIN;
 
-	} else if (value == INT16_MIN) {
-		return INT16_MAX;
+	} अन्यथा यदि (value == INT16_MIN) {
+		प्रत्यागम INT16_MAX;
 	}
 
-	return -value;
+	प्रत्यागम -value;
 }
 
 /*
@@ -272,31 +272,31 @@ constexpr int16_t negate<int16_t>(int16_t value)
  * in a given integer.
  */
 
-template<typename T>
-int countSetBits(T n)
+ढाँचा<typename T>
+पूर्णाङ्क गिनती_Set_Bits(T n)
 {
-	return __builtin_popcount(n);
+	प्रत्यागम __builtin_popcount(n);
 }
 
-template<typename T>
-int countTrailingZeros(T n)
+ढाँचा<typename T>
+पूर्णाङ्क गिनती_Trailing_Zeros(T n)
 {
-	return n == 0 ? (int)(sizeof(T) * 8) : __builtin_ctz(n);
+	प्रत्यागम n == 0 ? (पूर्णाङ्क)(परिमाण(T) * 8) : __builtin_ctz(n);
 }
 
-inline bool isFinite(const float &value)
+अन्तःस्थ तार्किक isFinite(ध्रुव भिन्न &value)
 {
-	return PX4_ISFINITE(value);
+	प्रत्यागम PX4_ISFINITE(value);
 }
 
-inline bool isFinite(const matrix::Vector2f &value)
+अन्तःस्थ तार्किक isFinite(ध्रुव matrix::Vector2f &value)
 {
-	return value.isAllFinite();
+	प्रत्यागम value.isAllFinite();
 }
 
-inline bool isFinite(const matrix::Vector3f &value)
+अन्तःस्थ तार्किक isFinite(ध्रुव matrix::Vector3f &value)
 {
-	return value.isAllFinite();
+	प्रत्यागम value.isAllFinite();
 }
 
 } /* namespace math */

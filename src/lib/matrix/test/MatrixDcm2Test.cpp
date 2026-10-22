@@ -31,12 +31,12 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/Dcm.hpp>
-#include <matrix/Dcm2.hpp>
-#include <matrix/Euler.hpp>
+#अन्तर्भाव <gtest/gtest.h>
+#अन्तर्भाव <matrix/Dcm.hpp>
+#अन्तर्भाव <matrix/Dcm2.hpp>
+#अन्तर्भाव <matrix/Euler.hpp>
 
-using namespace matrix;
+using नामाकाश matrix;
 
 TEST(MatrixDcm2Test, CompareToDcm)
 {
@@ -58,19 +58,19 @@ TEST(MatrixDcm2Test, 45DegreeRotation)
 {
 	Vector2f v(1.0f, 0.0f);
 	v = Dcm2f(M_PI / 4.f) * v;
-	EXPECT_EQ(v, Vector2f(1.f, 1.f) * (sqrt(2) / 2));
+	EXPECT_EQ(v, Vector2f(1.f, 1.f) * (वर्ग_मूल(2) / 2));
 	v = Dcm2f(M_PI / 4.f) * v;
 	EXPECT_EQ(v, Vector2f(0.f, 1.f));
 	v = Dcm2f(M_PI / 4.f) * v;
-	EXPECT_EQ(v, Vector2f(-1.f, 1.f) * (sqrt(2) / 2));
+	EXPECT_EQ(v, Vector2f(-1.f, 1.f) * (वर्ग_मूल(2) / 2));
 	v = Dcm2f(M_PI / 4.f) * v;
 	EXPECT_EQ(v, Vector2f(-1.f, 0.f));
 	v = Dcm2f(M_PI / 4.f) * v;
-	EXPECT_EQ(v, Vector2f(-1.f, -1.f) * (sqrt(2) / 2));
+	EXPECT_EQ(v, Vector2f(-1.f, -1.f) * (वर्ग_मूल(2) / 2));
 	v = Dcm2f(M_PI / 4.f) * v;
 	EXPECT_EQ(v, Vector2f(0.f, -1.f));
 	v = Dcm2f(M_PI / 4.f) * v;
-	EXPECT_EQ(v, Vector2f(1.f, -1.f) * (sqrt(2) / 2));
+	EXPECT_EQ(v, Vector2f(1.f, -1.f) * (वर्ग_मूल(2) / 2));
 	v = Dcm2f(M_PI / 4.f) * v;
 	EXPECT_EQ(v, Vector2f(1.f, 0.f));
 }
