@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include "Gyroscope.hpp"
+#ضمن "Gyroscope.hpp"
 
-#include "Utilities.hpp"
+#ضمن "Utilities.hpp"
 
-#include <lib/drivers/device/Device.hpp>
-#include <lib/parameters/param.h>
+#ضمن <lib/drivers/device/Device.hpp>
+#ضمن <lib/parameters/param.h>
 
-using namespace matrix;
-using namespace time_literals;
+using نطاق matrix;
+using نطاق time_literals;
 
-namespace calibration
+نطاق calibration
 {
 
 Gyroscope::Gyroscope()
@@ -54,19 +54,19 @@ Gyroscope::Gyroscope(uint32_t device_id)
 	set_device_id(device_id);
 }
 
-Gyroscope::Gyroscope(uint32_t device_id, bool external)
+Gyroscope::Gyroscope(uint32_t device_id, منطقي external)
 {
 	set_device_id(device_id, external);
 }
 
-void Gyroscope::set_device_id(uint32_t device_id)
+فراغ Gyroscope::set_device_id(uint32_t device_id)
 {
 	set_device_id(device_id, device::device_is_external(device_id));
 }
 
-void Gyroscope::set_device_id(uint32_t device_id, bool external)
+فراغ Gyroscope::set_device_id(uint32_t device_id, منطقي external)
 {
-	if (_device_id != device_id || _external != external) {
+	إذا (_device_id != device_id || _external != external) {
 
 		_device_id = device_id;
 		_external = external;
@@ -78,35 +78,35 @@ void Gyroscope::set_device_id(uint32_t device_id, bool external)
 	}
 }
 
-void Gyroscope::SensorCorrectionsUpdate(bool force)
+فراغ Gyroscope::SensorCorrectionsUpdate(منطقي force)
 {
 	// check if the selected sensor has updated
-	if (_sensor_correction_sub.updated() || force) {
+	إذا (_sensor_correction_sub.updated() || force) {
 
 		// valid device id required
-		if (_device_id == 0) {
-			return;
+		إذا (_device_id == 0) {
+			أرجع;
 		}
 
 		sensor_correction_s corrections;
 
-		if (_sensor_correction_sub.copy(&corrections)) {
+		إذا (_sensor_correction_sub.copy(&corrections)) {
 			// find sensor_corrections index
-			for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
-				if (corrections.gyro_device_ids[i] == _device_id) {
-					switch (i) {
-					case 0:
+			لكل (صحيح i = 0; i < MAX_SENSOR_ژماردن; i++) {
+				إذا (corrections.gyro_device_ids[i] == _device_id) {
+					بدل (i) {
+					حالة 0:
 						_thermal_offset = Vector3f{corrections.gyro_offset_0};
-						return;
-					case 1:
+						أرجع;
+					حالة 1:
 						_thermal_offset = Vector3f{corrections.gyro_offset_1};
-						return;
-					case 2:
+						أرجع;
+					حالة 2:
 						_thermal_offset = Vector3f{corrections.gyro_offset_2};
-						return;
-					case 3:
+						أرجع;
+					حالة 3:
 						_thermal_offset = Vector3f{corrections.gyro_offset_3};
-						return;
+						أرجع;
 					}
 				}
 			}
@@ -117,20 +117,20 @@ void Gyroscope::SensorCorrectionsUpdate(bool force)
 	}
 }
 
-bool Gyroscope::set_offset(const Vector3f &offset)
+منطقي Gyroscope::set_offset(ثابت Vector3f &offset)
 {
-	if (Vector3f(_offset - offset).longerThan(0.01f) || (_calibration_count == 0)) {
-		if (offset.isAllFinite()) {
+	إذا (Vector3f(_offset - offset).longerThan(0.01f) || (calibration_ژماردن == 0)) {
+		إذا (offset.isAllFinite()) {
 			_offset = offset;
-			_calibration_count++;
-			return true;
+			calibration_ژماردن++;
+			أرجع true;
 		}
 	}
 
-	return false;
+	أرجع خطأ;
 }
 
-void Gyroscope::set_rotation(Rotation rotation)
+فراغ Gyroscope::set_rotation(Rotation rotation)
 {
 	_rotation_enum = rotation;
 
@@ -138,48 +138,48 @@ void Gyroscope::set_rotation(Rotation rotation)
 	_rotation = Dcmf(GetSensorLevelAdjustment()) * get_rot_matrix(rotation);
 }
 
-bool Gyroscope::set_calibration_index(int calibration_index)
+منطقي Gyroscope::set_calibration_index(صحيح calibration_index)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
+	إذا ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_ژماردن)) {
 		_calibration_index = calibration_index;
-		return true;
+		أرجع true;
 	}
 
-	return false;
+	أرجع خطأ;
 }
 
-void Gyroscope::ParametersUpdate()
+فراغ Gyroscope::ParametersUpdate()
 {
-	if (_device_id == 0) {
-		return;
+	إذا (_device_id == 0) {
+		أرجع;
 	}
 
 	_calibration_index = FindCurrentCalibrationIndex(SensorString(), _device_id);
 
-	if (_calibration_index == -1) {
+	إذا (_calibration_index == -1) {
 		// no saved calibration available
 		Reset();
 
-	} else {
+	} وإلا {
 		ParametersLoad();
 	}
 }
 
-bool Gyroscope::ParametersLoad()
+منطقي Gyroscope::ParametersLoad()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	إذا (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_ژماردن) {
 		// CAL_GYROx_ROT
-		int32_t rotation_value = GetCalibrationParamInt32(SensorString(), "ROT", _calibration_index);
+		int32_t rotation_بەها = GetCalibrationParamInt32(SensorString(), "ROT", _calibration_index);
 
-		if (_external) {
-			if ((rotation_value >= ROTATION_MAX) || (rotation_value < 0)) {
+		إذا (_external) {
+			إذا ((rotation_بەها >= ROTATION_MAX) || (rotation_بەها < 0)) {
 				// invalid rotation, resetting
-				rotation_value = ROTATION_NONE;
+				rotation_بەها = ROTATION_NONE;
 			}
 
-			set_rotation(static_cast<Rotation>(rotation_value));
+			set_rotation(static_cast<Rotation>(rotation_بەها));
 
-		} else {
+		} وإلا {
 			// internal sensors follow board rotation
 			set_rotation(GetBoardRotation());
 		}
@@ -187,11 +187,11 @@ bool Gyroscope::ParametersLoad()
 		// CAL_GYROx_PRIO
 		_priority = GetCalibrationParamInt32(SensorString(), "PRIO", _calibration_index);
 
-		if ((_priority < 0) || (_priority > 100)) {
+		إذا ((_priority < 0) || (_priority > 100)) {
 			// reset to default, -1 is the uninitialized parameter value
-			static constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
+			ساكن constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
 
-			if (_priority != CAL_PRIO_UNINITIALIZED) {
+			إذا (_priority != CAL_PRIO_UNINITIALIZED) {
 				PX4_ERR("%s %" PRIu32 " (%" PRId8 ") invalid priority %" PRId32 ", resetting", SensorString(), _device_id,
 					_calibration_index, _priority);
 
@@ -204,18 +204,18 @@ bool Gyroscope::ParametersLoad()
 		// CAL_GYROx_OFF{X,Y,Z}
 		set_offset(GetCalibrationParamsVector3f(SensorString(), "OFF", _calibration_index));
 
-		return true;
+		أرجع true;
 	}
 
-	return false;
+	أرجع خطأ;
 }
 
-void Gyroscope::Reset()
+فراغ Gyroscope::Reset()
 {
-	if (_external) {
+	إذا (_external) {
 		set_rotation(ROTATION_NONE);
 
-	} else {
+	} وإلا {
 		// internal sensors follow board rotation
 		set_rotation(GetBoardRotation());
 	}
@@ -228,65 +228,65 @@ void Gyroscope::Reset()
 
 	_calibration_index = -1;
 
-	_calibration_count = 0;
+	calibration_ژماردن = 0;
 }
 
-bool Gyroscope::ParametersSave(int desired_calibration_index, bool force)
+منطقي Gyroscope::ParametersSave(صحيح desired_calibration_index, منطقي force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
+	إذا (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_ژماردن) {
 		_calibration_index = desired_calibration_index;
 
-	} else if (!force || (_calibration_index < 0)
+	} وإلا إذا (!force || (_calibration_index < 0)
 		   || (desired_calibration_index != -1 && desired_calibration_index != _calibration_index)) {
 
 		// ensure we have a valid calibration slot (matching existing or first available slot)
 		int8_t calibration_index_prev = _calibration_index;
 		_calibration_index = FindAvailableCalibrationIndex(SensorString(), _device_id, desired_calibration_index);
 
-		if (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
+		إذا (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
 			PX4_WARN("%s %" PRIu32 " calibration index changed %" PRIi8 " -> %" PRIi8, SensorString(), _device_id,
 				 calibration_index_prev, _calibration_index);
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	إذا (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_ژماردن) {
 		// save calibration
-		bool success = true;
+		منطقي success = true;
 		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
 		success &= SetCalibrationParam(SensorString(), "PRIO", _calibration_index, _priority);
 		success &= SetCalibrationParamsVector3f(SensorString(), "OFF", _calibration_index, _offset);
 
-		if (_external) {
+		إذا (_external) {
 			success &= SetCalibrationParam(SensorString(), "ROT", _calibration_index, (int32_t)_rotation_enum);
 
-		} else {
+		} وإلا {
 			success &= SetCalibrationParam(SensorString(), "ROT", _calibration_index, -1); // internal
 		}
 
-		return success;
+		أرجع success;
 	}
 
-	return false;
+	أرجع خطأ;
 }
 
-void Gyroscope::PrintStatus()
+فراغ Gyroscope::PrintStatus()
 {
-	if (external()) {
+	إذا (external()) {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: [%05.3f %05.3f %05.3f], Ext ROT: %d\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset(0), (double)_offset(1), (double)_offset(2),
+			     (مزدوج)_offset(0), (مزدوج)_offset(1), (مزدوج)_offset(2),
 			     rotation_enum());
 
-	} else {
+	} وإلا {
 		PX4_INFO_RAW("%s %" PRIu32 " EN: %d, offset: [%05.3f %05.3f %05.3f], Internal\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset(0), (double)_offset(1), (double)_offset(2));
+			     (مزدوج)_offset(0), (مزدوج)_offset(1), (مزدوج)_offset(2));
 	}
 
-	if (_thermal_offset.norm() > 0.f) {
+	إذا (_thermal_offset.norm() > 0.f) {
 		PX4_INFO_RAW("%s %" PRIu32 " temperature offset: [%.4f %.4f %.4f]\n", SensorString(), _device_id,
-			     (double)_thermal_offset(0), (double)_thermal_offset(1), (double)_thermal_offset(2));
+			     (مزدوج)_thermal_offset(0), (مزدوج)_thermal_offset(1), (مزدوج)_thermal_offset(2));
 	}
 }
 

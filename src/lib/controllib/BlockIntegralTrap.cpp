@@ -37,21 +37,21 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#ضمن <math.h>
+#ضمن <float.h>
 
-#include "blocks.hpp"
+#ضمن "blocks.hpp"
 
-namespace control
+نطاق control
 {
 
-float BlockIntegralTrap::update(float input)
+عائم BlockIntegralTrap::update(عائم تێخستن)
 {
 	// trapezoidal integration
 	setY(_limit.update(getY() +
-			   (getU() + input) / 2.0f * getDt()));
-	setU(input);
-	return getY();
+			   (getU() + تێخستن) / 2.0f * getDt()));
+	setU(تێخستن);
+	أرجع getY();
 }
 
 } // namespace control

@@ -48,18 +48,18 @@
 
 #pragma once
 
-#include <matrix/matrix/math.hpp>
+#ضمن <matrix/matrix/math.hpp>
 
-class FieldSensorBiasEstimator
+صنف FieldSensorBiasEstimator
 {
-public:
-	FieldSensorBiasEstimator() = default;
-	~FieldSensorBiasEstimator() = default;
+عام:
+	FieldSensorBiasEstimator() = افتراضي;
+	~FieldSensorBiasEstimator() = افتراضي;
 
 	// Set initial states
-	void setField(const matrix::Vector3f &field) { _field_prev = field; }
-	void setBias(const matrix::Vector3f &bias) { _state_bias = bias; }
-	void setLearningGain(float learning_gain) { _learning_gain = learning_gain; }
+	فراغ setField(ثابت matrix::Vector3f &field) { _field_prev = field; }
+	فراغ setBias(ثابت matrix::Vector3f &bias) { _state_bias = bias; }
+	فراغ setLearningGain(عائم learning_gain) { _learning_gain = learning_gain; }
 
 	/**
 	 * Update the estimator and extract updated biases.
@@ -67,20 +67,20 @@ public:
 	 * @param field biased field sensor data
 	 * @param dt time in seconds since the last update
 	 */
-	void updateEstimate(const matrix::Vector3f &gyro, const matrix::Vector3f &field, const float dt)
+	فراغ updateEstimate(ثابت matrix::Vector3f &gyro, ثابت matrix::Vector3f &field, ثابت عائم dt)
 	{
-		const matrix::Vector3f field_pred = _field_prev + (-gyro % (_field_prev - _state_bias)) * dt;
-		const matrix::Vector3f field_innov = field - field_pred;
+		ثابت matrix::Vector3f field_pred = _field_prev + (-gyro % (_field_prev - _state_bias)) * dt;
+		ثابت matrix::Vector3f field_innov = field - field_pred;
 		_state_bias += _learning_gain * (-gyro % field_innov) * dt;
 		_field_prev = field;
 	}
 
-	const matrix::Vector3f &getField() { return _field_prev; }
-	const matrix::Vector3f &getBias() { return _state_bias; }
+	ثابت matrix::Vector3f &getField() { أرجع _field_prev; }
+	ثابت matrix::Vector3f &getBias() { أرجع _state_bias; }
 
-private:
+خاص:
 	// states
 	matrix::Vector3f _field_prev{};
 	matrix::Vector3f _state_bias{};
-	float _learning_gain{20.f};
+	عائم _learning_gain{20.f};
 };

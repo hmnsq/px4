@@ -32,17 +32,17 @@
  ****************************************************************************/
 
 
-#include "PX4Magnetometer.hpp"
+#ضمن "PX4Magnetometer.hpp"
 
-#include <lib/drivers/device/Device.hpp>
+#ضمن <lib/drivers/device/Device.hpp>
 
-PX4Magnetometer::PX4Magnetometer(uint32_t device_id, enum Rotation rotation) :
+PX4Magnetometer::PX4Magnetometer(uint32_t device_id, تعداد Rotation rotation) :
 	PX4Magnetometer(device_id, rotation, device::device_is_external(device_id))
 {
-	_external_forced = false;
+	_external_forced = خطأ;
 }
 
-PX4Magnetometer::PX4Magnetometer(uint32_t device_id, enum Rotation rotation, bool external) :
+PX4Magnetometer::PX4Magnetometer(uint32_t device_id, تعداد Rotation rotation, منطقي external) :
 	_device_id{device_id},
 	_rotation{rotation},
 	_is_external{external},
@@ -50,16 +50,16 @@ PX4Magnetometer::PX4Magnetometer(uint32_t device_id, enum Rotation rotation, boo
 {
 }
 
-void PX4Magnetometer::set_device_id(uint32_t device_id)
+فراغ PX4Magnetometer::set_device_id(uint32_t device_id)
 {
 	_device_id = device_id;
 
-	if (!_external_forced) {
+	إذا (!_external_forced) {
 		_is_external = device::device_is_external(device_id);
 	}
 }
 
-void PX4Magnetometer::set_external(bool external)
+فراغ PX4Magnetometer::set_external(منطقي external)
 {
 	_is_external = external;
 	_external_forced = true;
@@ -70,10 +70,10 @@ PX4Magnetometer::~PX4Magnetometer()
 	_sensor_pub.unadvertise();
 }
 
-void PX4Magnetometer::set_device_type(uint8_t devtype)
+فراغ PX4Magnetometer::set_device_type(uint8_t devtype)
 {
 	// current DeviceStructure
-	union device::Device::DeviceId device_id;
+	اتحاد device::Device::DeviceId device_id;
 	device_id.devid = _device_id;
 
 	// update to new device type
@@ -83,7 +83,7 @@ void PX4Magnetometer::set_device_type(uint8_t devtype)
 	_device_id = device_id.devid;
 }
 
-void PX4Magnetometer::update(const hrt_abstime &timestamp_sample, float x, float y, float z)
+فراغ PX4Magnetometer::update(ثابت hrt_abstime &timestamp_sample, عائم x, عائم y, عائم z)
 {
 	sensor_mag_s report;
 	report.timestamp_sample = timestamp_sample;
@@ -91,7 +91,7 @@ void PX4Magnetometer::update(const hrt_abstime &timestamp_sample, float x, float
 	report.is_external = _is_external;
 	report.temperature = _temperature;
 	report.range = _range;
-	report.error_count = _error_count;
+	report.error_ژماردن = error_ژماردن_2;
 
 	// Apply rotation (before scaling)
 	rotate_3f(_rotation, x, y, z);
@@ -104,9 +104,9 @@ void PX4Magnetometer::update(const hrt_abstime &timestamp_sample, float x, float
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_MAG,
+	إذا (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_MAG,
 					_sensor_pub.get_instance(), report, _stuck)) {
-		return;
+		أرجع;
 	}
 
 	_sensor_pub.publish(report);

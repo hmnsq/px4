@@ -33,21 +33,21 @@
 
 #pragma once
 
-#include "mathlib/math/Limits.hpp"
-#include <matrix/math.hpp>
+#ضمن "mathlib/math/Limits.hpp"
+#ضمن <matrix/math.hpp>
 
-class LatLonAlt
+صنف LatLonAlt
 {
-public:
-	LatLonAlt() = default;
-	LatLonAlt(const LatLonAlt &lla)
+عام:
+	LatLonAlt() = افتراضي;
+	LatLonAlt(ثابت LatLonAlt &lla)
 	{
 		_latitude_rad = lla.latitude_rad();
 		_longitude_rad = lla.longitude_rad();
 		_altitude = lla.altitude();
 	}
 
-	LatLonAlt(const double latitude_deg, const double longitude_deg, const float altitude_m)
+	LatLonAlt(ثابت مزدوج latitude_deg, ثابت مزدوج longitude_deg, ثابت عائم altitude_m)
 	{
 		_latitude_rad = math::radians(latitude_deg);
 		_longitude_rad = math::radians(longitude_deg);
@@ -55,41 +55,41 @@ public:
 	}
 
 
-	static LatLonAlt fromEcef(const matrix::Vector3d &p_ecef);
-	matrix::Vector3d toEcef() const;
+	ساكن LatLonAlt fromEcef(ثابت matrix::Vector3d &p_ecef);
+	matrix::Vector3d toEcef() ثابت;
 
-	void setZero() { _latitude_rad = 0.0; _longitude_rad = 0.0; _altitude = 0.f; }
+	فراغ setZero() { _latitude_rad = 0.0; _longitude_rad = 0.0; _altitude = 0.f; }
 
-	double latitude_deg() const { return math::degrees(latitude_rad()); }
-	double longitude_deg() const { return math::degrees(longitude_rad()); }
+	مزدوج latitude_deg() ثابت { أرجع math::degrees(latitude_rad()); }
+	مزدوج longitude_deg() ثابت { أرجع math::degrees(longitude_rad()); }
 
-	const double &latitude_rad() const { return _latitude_rad; }
-	const double &longitude_rad() const { return _longitude_rad; }
-	float altitude() const { return _altitude; }
+	ثابت مزدوج &latitude_rad() ثابت { أرجع _latitude_rad; }
+	ثابت مزدوج &longitude_rad() ثابت { أرجع _longitude_rad; }
+	عائم altitude() ثابت { أرجع _altitude; }
 
-	void setLatitudeDeg(const double &latitude_deg) { _latitude_rad = math::radians(latitude_deg); }
-	void setLongitudeDeg(const double &longitude_deg) { _longitude_rad = math::radians(longitude_deg); }
-	void setAltitude(const float altitude) { _altitude = altitude; }
+	فراغ setLatitudeDeg(ثابت مزدوج &latitude_deg) { _latitude_rad = math::radians(latitude_deg); }
+	فراغ setLongitudeDeg(ثابت مزدوج &longitude_deg) { _longitude_rad = math::radians(longitude_deg); }
+	فراغ setAltitude(ثابت عائم altitude) { _altitude = altitude; }
 
-	void setLatLon(const LatLonAlt &lla) { _latitude_rad = lla.latitude_rad(); _longitude_rad = lla.longitude_rad(); }
-	void setLatLonDeg(const double latitude, const double longitude) { _latitude_rad = math::radians(latitude); _longitude_rad = math::radians(longitude); }
-	void setLatLonRad(const double latitude, const double longitude) { _latitude_rad = latitude; _longitude_rad = longitude; }
+	فراغ setLatLon(ثابت LatLonAlt &lla) { _latitude_rad = lla.latitude_rad(); _longitude_rad = lla.longitude_rad(); }
+	فراغ setLatLonDeg(ثابت مزدوج latitude, ثابت مزدوج longitude) { _latitude_rad = math::radians(latitude); _longitude_rad = math::radians(longitude); }
+	فراغ setLatLonRad(ثابت مزدوج latitude, ثابت مزدوج longitude) { _latitude_rad = latitude; _longitude_rad = longitude; }
 
-	void print() const { printf("latitude = %f (deg), longitude = %f (deg), altitude = %f (m)\n", _latitude_rad, _longitude_rad, (double)_altitude); }
+	فراغ print() ثابت { printf("latitude = %f (deg), longitude = %f (deg), altitude = %f (m)\n", _latitude_rad, _longitude_rad, (مزدوج)_altitude); }
 
 	/*
 	 * The plus and minus operators below use approximations and should only be used when the Cartesian component is small
 	 */
-	LatLonAlt operator+(const matrix::Vector3f &delta_pos) const;
-	void operator+=(const matrix::Vector3f &delta_pos);
-	void operator+=(const matrix::Vector2f &delta_pos);
-	matrix::Vector3f operator-(const LatLonAlt &lla) const;
+	LatLonAlt operator+(ثابت matrix::Vector3f &delta_pos) ثابت;
+	فراغ operator+=(ثابت matrix::Vector3f &delta_pos);
+	فراغ operator+=(ثابت matrix::Vector2f &delta_pos);
+	matrix::Vector3f operator-(ثابت LatLonAlt &lla) ثابت;
 
-	void operator=(const LatLonAlt &lla)
+	فراغ operator=(ثابت LatLonAlt &lla)
 	{
 		// Protect against self-assignment
-		if (this == &lla) {
-			return;
+		إذا (هذا == &lla) {
+			أرجع;
 		}
 
 		_latitude_rad = lla.latitude_rad();
@@ -101,39 +101,39 @@ public:
 	 * Compute the angular rate of the local navigation frame at the current latitude and height
 	 * with respect to an inertial frame and resolved in the navigation frame
 	 */
-	matrix::Vector3f computeAngularRateNavFrame(const matrix::Vector3f &v_ned) const;
+	matrix::Vector3f computeAngularRateNavFrame(ثابت matrix::Vector3f &v_ned) ثابت;
 
 	// Compute the ECEF to NED coordinate transformation matrix at the current position
-	matrix::Dcmf computeRotEcefToNed() const;
+	matrix::Dcmf computeRotEcefToNed() ثابت;
 
-	struct Wgs84 {
-		static constexpr double equatorial_radius = 6378137.0;
-		static constexpr double eccentricity = 0.0818191908425;
-		static constexpr double eccentricity2 = eccentricity * eccentricity;
-		static constexpr double meridian_radius_of_curvature_numerator = equatorial_radius * (1.0 - eccentricity2);
-		static constexpr double gravity_equator = 9.7803253359;
-		static constexpr double somigliana_coefficient = 0.001931851353;
+	بنية Wgs84 {
+		ساكن constexpr مزدوج equatorial_radius = 6378137.0;
+		ساكن constexpr مزدوج eccentricity = 0.0818191908425;
+		ساكن constexpr مزدوج eccentricity2 = eccentricity * eccentricity;
+		ساكن constexpr مزدوج meridian_radius_of_curvature_numerator = equatorial_radius * (1.0 - eccentricity2);
+		ساكن constexpr مزدوج gravity_equator = 9.7803253359;
+		ساكن constexpr مزدوج somigliana_coefficient = 0.001931851353;
 
 		// Normal gravity at the ellipsoid surface as a function of latitude (Somigliana formula).
 		// Captures the ~9.780 (equator) to ~9.832 m/s^2 (pole) variation. Input in radians.
-		static float gravity(const double latitude_rad)
+		ساكن عائم gravity(ثابت مزدوج latitude_rad)
 		{
-			const double sin_lat = sin(latitude_rad);
-			const double sin_lat2 = sin_lat * sin_lat;
-			const double g = gravity_equator * (1.0 + somigliana_coefficient * sin_lat2)
+			ثابت مزدوج sin_lat = sin(latitude_rad);
+			ثابت مزدوج sin_lat2 = sin_lat * sin_lat;
+			ثابت مزدوج g = gravity_equator * (1.0 + somigliana_coefficient * sin_lat2)
 					 / std::sqrt(1.0 - eccentricity2 * sin_lat2);
-			return static_cast<float>(g);
+			أرجع static_cast<عائم>(g);
 		}
 	};
 
-private:
+خاص:
 	// Convert between curvilinear and cartesian errors
-	static matrix::Vector2d deltaLatLonToDeltaXY(const double latitude, const float altitude);
+	ساكن matrix::Vector2d deltaLatLonToDeltaXY(ثابت مزدوج latitude, ثابت عائم altitude);
 
-	static void computeRadiiOfCurvature(const double latitude, double &meridian_radius_of_curvature,
-					    double &transverse_radius_of_curvature);
+	ساكن فراغ computeRadiiOfCurvature(ثابت مزدوج latitude, مزدوج &meridian_radius_of_curvature,
+					    مزدوج &transverse_radius_of_curvature);
 
-	double _latitude_rad{0.0};
-	double _longitude_rad{0.0};
-	float _altitude{0.0};
+	مزدوج _latitude_rad{0.0};
+	مزدوج _longitude_rad{0.0};
+	عائم _altitude{0.0};
 };

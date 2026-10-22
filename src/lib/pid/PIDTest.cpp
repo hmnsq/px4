@@ -31,8 +31,8 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <PID.hpp>
+#ضمن <gtest/gtest.h>
+#ضمن <PID.hpp>
 
 // Run all PID unit tests:
 //   make tests TESTFILTER=unit-PID
@@ -42,7 +42,7 @@
 TEST(PIDTest, AllZeroCase)
 {
 	PID pid;
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.f, false), 0.f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.f, خطأ), 0.f);
 }
 
 TEST(PIDTest, OutputLimit)
@@ -51,14 +51,14 @@ TEST(PIDTest, OutputLimit)
 	pid.setOutputLimit(.01f);
 	pid.setGains(.1f, 0.f, 0.f);
 	pid.setSetpoint(1.f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.f, false), .01f);
-	EXPECT_FLOAT_EQ(pid.update(.9f, 0.f, false), .01f);
-	EXPECT_NEAR(pid.update(.95f, 0.f, false), .005f, 1e-6f);
-	EXPECT_FLOAT_EQ(pid.update(1.f, 0.f, false), 0.f);
-	EXPECT_NEAR(pid.update(1.05f, 0.f, false), -.005f, 1e-6f);
-	EXPECT_FLOAT_EQ(pid.update(1.1f, 0.f, false), -.01f);
-	EXPECT_FLOAT_EQ(pid.update(1.15f, 0.f, false), -.01f);
-	EXPECT_FLOAT_EQ(pid.update(2.f, 0.f, false), -.01f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.f, خطأ), .01f);
+	EXPECT_FLOAT_EQ(pid.update(.9f, 0.f, خطأ), .01f);
+	EXPECT_NEAR(pid.update(.95f, 0.f, خطأ), .005f, 1e-6f);
+	EXPECT_FLOAT_EQ(pid.update(1.f, 0.f, خطأ), 0.f);
+	EXPECT_NEAR(pid.update(1.05f, 0.f, خطأ), -.005f, 1e-6f);
+	EXPECT_FLOAT_EQ(pid.update(1.1f, 0.f, خطأ), -.01f);
+	EXPECT_FLOAT_EQ(pid.update(1.15f, 0.f, خطأ), -.01f);
+	EXPECT_FLOAT_EQ(pid.update(2.f, 0.f, خطأ), -.01f);
 }
 
 TEST(PIDTest, ProportinalOnly)
@@ -66,22 +66,22 @@ TEST(PIDTest, ProportinalOnly)
 	PID pid;
 	pid.setOutputLimit(1.f);
 	pid.setGains(.1f, 0.f, 0.f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.f, false), 0.f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.f, خطأ), 0.f);
 	pid.setSetpoint(1.f);
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.f, false), .1f);
-	EXPECT_FLOAT_EQ(pid.update(1.f, 0.f, false), 0.f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.f, خطأ), .1f);
+	EXPECT_FLOAT_EQ(pid.update(1.f, 0.f, خطأ), 0.f);
 
-	float plant = 0.f;
-	float output = 10000.f;
-	int i; // need function scope to check how many steps
+	عائم plant = 0.f;
+	عائم output = 10000.f;
+	صحيح i; // need function scope to check how many steps
 
-	for (i = 1000; i > 0; i--) {
-		const float output_new = pid.update(plant, 0.f, false);
+	لكل (i = 1000; i > 0; i--) {
+		ثابت عائم output_new = pid.update(plant, 0.f, خطأ);
 		plant += output_new;
 
 		// expect the output to get smaller with each iteration
-		if (output_new >= output) {
-			break;
+		إذا (output_new >= output) {
+			اكسر;
 		}
 
 		output = output_new;
@@ -134,7 +134,7 @@ TEST(PIDTest, InteralOpenLoop)
 	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, true), -.01f);
 }
 
-TEST(PIDTest, AntiWindupHighSaturation)
+TEST(PIDTest, Anti_Windup_بەرز_Saturation)
 {
 	// Integrator-only controller whose output saturates before the integral limit.
 	PID pid;
@@ -159,7 +159,7 @@ TEST(PIDTest, AntiWindupHighSaturation)
 	EXPECT_FLOAT_EQ(pid.getIntegral(), 0.f);
 }
 
-TEST(PIDTest, AntiWindupLowSaturation)
+TEST(PIDTest, Anti_Windup_نزم_Saturation)
 {
 	PID pid;
 	pid.setGains(0.f, .1f, 0.f);
@@ -190,13 +190,13 @@ TEST(PIDTest, DerivativeOnlyDampsFeedbackMotion)
 	pid.setSetpoint(0.f);
 
 	// First sample seeds _last_feedback; derivative contribution is zero.
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, false), 0.f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, خطأ), 0.f);
 
 	// Feedback rises by 1.0 over dt = 0.1 -> d(feedback)/dt = +10.
 	// Expected output = -Kd * d(feedback)/dt = -10.
-	EXPECT_FLOAT_EQ(pid.update(1.f, 0.1f, false), -10.f);
+	EXPECT_FLOAT_EQ(pid.update(1.f, 0.1f, خطأ), -10.f);
 
 	// Feedback falls by 1.0 over dt = 0.1 -> d(feedback)/dt = -10.
 	// Expected output = +10 (still damping).
-	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, false), 10.f);
+	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, خطأ), 10.f);
 }
