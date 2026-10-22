@@ -39,47 +39,47 @@
  * @author Matthias Grob <maetugr@gmail.com>
  */
 
-#pragma once
+#निर्देशः once
 
-#include "Vector.hpp"
+#अन्तर्भाव "Vector.hpp"
 
-namespace matrix
+नामाकाश matrix
 {
 
-template<typename Type>
-class Vector4 : public Vector<Type, 4>
+प्रतिरूपम्<प्रकारनाम Type>
+वर्ग Vector4 : सार्वजनिक सदिशम्<Type, 4>
 {
-public:
-	using Matrix41 = Matrix<Type, 4, 1>;
+सार्वजनिक:
+	उपयुज्य Matrix41 = Matrix<Type, 4, 1>;
 
-	Vector4() = default;
+	Vector4() = स्वभाव;
 
-	Vector4(const Matrix41 &other) :
-		Vector<Type, 4>(other)
+	Vector4(ध्रुव Matrix41 &other) :
+		सदिशम्<Type, 4>(other)
 	{
 	}
 
-	explicit Vector4(const Type data_[3]) :
-		Vector<Type, 4>(data_)
+	स्पष्ट Vector4(ध्रुव Type दत्त_2[3]) :
+		सदिशम्<Type, 4>(दत्त_2)
 	{
 	}
 
 	Vector4(Type x1, Type x2, Type x3, Type x4)
 	{
-		Vector4 &v(*this);
+		Vector4 &v(*एतत्);
 		v(0) = x1;
 		v(1) = x2;
 		v(2) = x3;
 		v(3) = x4;
 	}
 
-	template<size_t P, size_t Q>
-	Vector4(const Slice<Type, 4, 1, P, Q> &slice_in) : Vector<Type, 4>(slice_in)
+	प्रतिरूपम्<size_t P, size_t Q>
+	Vector4(ध्रुव खण्डिका_2<Type, 4, 1, P, Q> &खण्डिका_अन्तर्) : सदिशम्<Type, 4>(खण्डिका_अन्तर्)
 	{
 	}
 
-	template<size_t P, size_t Q>
-	Vector4(const Slice<Type, 1, 4, P, Q> &slice_in) : Vector<Type, 4>(slice_in)
+	प्रतिरूपम्<size_t P, size_t Q>
+	Vector4(ध्रुव खण्डिका_2<Type, 1, 4, P, Q> &खण्डिका_अन्तर्) : सदिशम्<Type, 4>(खण्डिका_अन्तर्)
 	{
 	}
 
@@ -87,43 +87,43 @@ public:
 	 * Override matrix ops so Vector4 type is returned
 	 */
 
-	Vector4 operator+(Vector4 other) const
+	Vector4 संक्रियकः+(Vector4 other) ध्रुव
 	{
-		return Matrix41::operator+(other);
+		प्रत्यागम Matrix41::संक्रियकः+(other);
 	}
 
-	Vector4 operator+(Type scalar) const
+	Vector4 संक्रियकः+(Type scalar) ध्रुव
 	{
-		return Matrix41::operator+(scalar);
+		प्रत्यागम Matrix41::संक्रियकः+(scalar);
 	}
 
-	Vector4 operator-(Vector4 other) const
+	Vector4 संक्रियकः-(Vector4 other) ध्रुव
 	{
-		return Matrix41::operator-(other);
+		प्रत्यागम Matrix41::संक्रियकः-(other);
 	}
 
-	Vector4 operator-(Type scalar) const
+	Vector4 संक्रियकः-(Type scalar) ध्रुव
 	{
-		return Matrix41::operator-(scalar);
+		प्रत्यागम Matrix41::संक्रियकः-(scalar);
 	}
 
-	Vector4 operator-() const
+	Vector4 संक्रियकः-() ध्रुव
 	{
-		return Matrix41::operator-();
+		प्रत्यागम Matrix41::संक्रियकः-();
 	}
 
-	Vector4 operator*(Type scalar) const
+	Vector4 संक्रियकः*(Type scalar) ध्रुव
 	{
-		return Matrix41::operator*(scalar);
+		प्रत्यागम Matrix41::संक्रियकः*(scalar);
 	}
 
-	Type operator*(Vector4 b) const
+	Type संक्रियकः*(Vector4 b) ध्रुव
 	{
-		return Vector<Type, 4>::operator*(b);
+		प्रत्यागम सदिशम्<Type, 4>::संक्रियकः*(b);
 	}
 
 };
 
-using Vector4f = Vector4<float>;
+उपयुज्य Vector4f = Vector4<भिन्न>;
 
 } // namespace matrix

@@ -32,12 +32,12 @@
 #
 ############################################################################
 
-import math
-import numpy
-import json
-import statistics
-import sys
-import urllib.request
+आनयन math
+आनयन numpy
+आनयन json
+आनयन statistics
+आनयन sys
+आनयन urllib.request
 
 SAMPLING_RES = 10
 SAMPLING_MIN_LAT = -90
@@ -45,10 +45,10 @@ SAMPLING_MAX_LAT = 90
 SAMPLING_MIN_LON = -180
 SAMPLING_MAX_LON = 180
 
-def constrain(n, nmin, nmax):
-    return max(min(nmin, n), nmax)
+परिभाषा constrain(n, nmin, nmax):
+    प्रत्यागम max(min(nmin, n), nmax)
 
-header = """/****************************************************************************
+शीर्षकम् = """/****************************************************************************
  *
  *   Copyright (c) 2020-2024 PX4 Development Team. All rights reserved.
  *
@@ -82,26 +82,26 @@ header = """/*******************************************************************
  ****************************************************************************/
 """
 
-key=sys.argv[1] # NOAA key (https://www.ngdc.noaa.gov/geomag/CalcSurvey.shtml)
+कुञ्चिका=sys.argv[1] # NOAA key (https://www.ngdc.noaa.gov/geomag/CalcSurvey.shtml)
 
-print(header)
+मुद्रय(शीर्षकम्)
 
-print('#include <stdint.h>\n')
+मुद्रय('#include <stdint.h>\n')
 
-LAT_DIM=int((SAMPLING_MAX_LAT-SAMPLING_MIN_LAT)/SAMPLING_RES)+1
-LON_DIM=int((SAMPLING_MAX_LON-SAMPLING_MIN_LON)/SAMPLING_RES)+1
+LAT_DIM=पूर्णाङ्क((SAMPLING_MAX_LAT-SAMPLING_MIN_LAT)/SAMPLING_RES)+1
+LON_DIM=पूर्णाङ्क((SAMPLING_MAX_LON-SAMPLING_MIN_LON)/SAMPLING_RES)+1
 
-print('static constexpr float SAMPLING_RES = {}'.format(SAMPLING_RES) + ';')
-print('static constexpr float SAMPLING_MIN_LAT = {}'.format(SAMPLING_MIN_LAT) + ';')
-print('static constexpr float SAMPLING_MAX_LAT = {}'.format(SAMPLING_MAX_LAT) + ';')
-print('static constexpr float SAMPLING_MIN_LON = {}'.format(SAMPLING_MIN_LON) + ';')
-print('static constexpr float SAMPLING_MAX_LON = {}'.format(SAMPLING_MAX_LON) + ';')
-print('')
-print('static constexpr int LAT_DIM = {}'.format(LAT_DIM) + ';')
-print('static constexpr int LON_DIM = {}'.format(LON_DIM) + ';')
-print('\n')
+मुद्रय('static constexpr float SAMPLING_RES = {}'.format(SAMPLING_RES) + ';')
+मुद्रय('static constexpr float SAMPLING_MIN_LAT = {}'.format(SAMPLING_MIN_LAT) + ';')
+मुद्रय('static constexpr float SAMPLING_MAX_LAT = {}'.format(SAMPLING_MAX_LAT) + ';')
+मुद्रय('static constexpr float SAMPLING_MIN_LON = {}'.format(SAMPLING_MIN_LON) + ';')
+मुद्रय('static constexpr float SAMPLING_MAX_LON = {}'.format(SAMPLING_MAX_LON) + ';')
+मुद्रय('')
+मुद्रय('static constexpr int LAT_DIM = {}'.format(LAT_DIM) + ';')
+मुद्रय('static constexpr int LON_DIM = {}'.format(LON_DIM) + ';')
+मुद्रय('\n')
 
-print('// *INDENT-OFF*\n\n\n')
+मुद्रय('// *INDENT-OFF*\n\n\n')
 
 
 
@@ -109,98 +109,98 @@ print('// *INDENT-OFF*\n\n\n')
 world_magnitude_model = {} # lat/lon dictionary with grid result
 
 params = urllib.parse.urlencode({'lat1': 0, 'lon1': 0, 'resultFormat': 'json'})
-f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?key=%s&%s" % (key, params))
-data = json.loads(f.read())
+f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?key=%s&%s" % (कुञ्चिका, params))
+दत्त = json.loads(f.पठ())
 
-world_magnitude_model_units = data['units']
+world_magnitude_model_units = दत्त['units']
 
-for latitude in range(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
+प्रति latitude अन्तः परिसरः(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
     world_magnitude_model[latitude] = {}
 
-    for longitude in range(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
+    प्रति longitude अन्तः परिसरः(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
         params = urllib.parse.urlencode({'lat1': latitude, 'lon1': longitude, 'lon2': SAMPLING_MAX_LON, 'resultFormat': 'json'})
-        f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?key=%s&%s" % (key, params))
-        data = json.loads(f.read())
+        f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?key=%s&%s" % (कुञ्चिका, params))
+        दत्त = json.loads(f.पठ())
         #print(json.dumps(data, indent = 4)) # debugging
 
-        world_magnitude_model[latitude][longitude] = data['result'][0]
+        world_magnitude_model[latitude][longitude] = दत्त['result'][0]
         #print(world_magnitude_model[latitude][longitude])
 
 
-def print_wmm_table(key_name):
+परिभाषा print_wmm_सारणी(कुञ्चिका_name):
 
-    value_min = float('inf')
-    value_min_lat_lon = ()
+    मानम्_min = भिन्न('inf')
+    मानम्_min_lat_lon = ()
 
-    value_max = float('-inf')
-    value_max_lat_lon = ()
+    मानम्_max = भिन्न('-inf')
+    मानम्_max_lat_lon = ()
 
-    for latitude, lat_row in world_magnitude_model.items():
+    प्रति latitude, lat_row अन्तः world_magnitude_model.वस्तूनि_2():
         #print(latitude, lat_row)
-        for longitude, result in lat_row.items():
+        प्रति longitude, परिणाम अन्तः lat_row.वस्तूनि_2():
             #print(result)
 
-            value = float(result[key_name])
+            मानम् = भिन्न(परिणाम[कुञ्चिका_name])
 
-            if (value > value_max):
-                value_max = value
-                value_max_lat_lon = (latitude, longitude)
+            यदि (मानम् > मानम्_max):
+                मानम्_max = मानम्
+                मानम्_max_lat_lon = (latitude, longitude)
 
-            if (value < value_min):
-                value_min = value
-                value_min_lat_lon = (latitude, longitude)
+            यदि (मानम् < मानम्_min):
+                मानम्_min = मानम्
+                मानम्_min_lat_lon = (latitude, longitude)
 
     # scale the values to fit into int16_t
-    value_scale_max = abs(numpy.iinfo(numpy.int16).max) / abs(value_max)
-    value_scale_min = abs(numpy.iinfo(numpy.int16).min) / abs(value_min)
-    value_scale = min(value_scale_max, value_scale_min)
+    मानम्_scale_max = abs(numpy.iinfo(numpy.int16).max) / abs(मानम्_max)
+    मानम्_scale_min = abs(numpy.iinfo(numpy.int16).min) / abs(मानम्_min)
+    मानम्_scale = min(मानम्_scale_max, मानम्_scale_min)
 
-    units_str = world_magnitude_model_units[key_name].split(' ')[0]
+    units_str = world_magnitude_model_units[कुञ्चिका_name].विभज(' ')[0]
 
     # print the table
-    print('// Magnetic {} data in {:.4g} {}'.format(key_name, 1.0 / value_scale, units_str))
-    print('// Model: {},'.format(data['model']))
-    print('// Version: {},'.format(data['version']))
-    print('// Date: {},'.format(data['result'][0]['date']))
-    print('static constexpr const int16_t {}_table[{}][{}]'.format(key_name, LAT_DIM, LON_DIM) + " {")
-    print('\t//    LONGITUDE: ', end='')
-    for l in range(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
-        print('{0:6d},'.format(l), end='')
-    print('')
+    मुद्रय('// Magnetic {} data in {:.4g} {}'.format(कुञ्चिका_name, 1.0 / मानम्_scale, units_str))
+    मुद्रय('// Model: {},'.format(दत्त['model']))
+    मुद्रय('// Version: {},'.format(दत्त['version']))
+    मुद्रय('// Date: {},'.format(दत्त['result'][0]['date']))
+    मुद्रय('static constexpr const int16_t {}_table[{}][{}]'.format(कुञ्चिका_name, LAT_DIM, LON_DIM) + " {")
+    मुद्रय('\t//    LONGITUDE: ', अन्तः_2='')
+    प्रति l अन्तः परिसरः(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
+        मुद्रय('{0:6d},'.format(l), अन्तः_2='')
+    मुद्रय('')
 
-    for latitude, lat_row in world_magnitude_model.items():
-        print('\t/* LAT: {0:3d} */'.format(latitude) + ' { ', end='')
-        latitude_blackout_zone = False
+    प्रति latitude, lat_row अन्तः world_magnitude_model.वस्तूनि_2():
+        मुद्रय('\t/* LAT: {0:3d} */'.format(latitude) + ' { ', अन्तः_2='')
+        latitude_blackout_zone = असत्य
 
-        for longitude, result in lat_row.items():
+        प्रति longitude, परिणाम अन्तः lat_row.वस्तूनि_2():
 
-            value = float(result[key_name])
+            मानम् = भिन्न(परिणाम[कुञ्चिका_name])
 
             # value scaled to fit into int16_t
-            value_int = int(round(value * value_scale))
-            print('{0:6d},'.format(value_int), end='')
+            मानम्_int = पूर्णाङ्क(round(मानम् * मानम्_scale))
+            मुद्रय('{0:6d},'.format(मानम्_int), अन्तः_2='')
 
             # blackout warning at this latitude
-            try:
-                if result['warning']:
-                    latitude_blackout_zone = True
+            यत्न:
+                यदि परिणाम['warning']:
+                    latitude_blackout_zone = सत्य
 
-            except:
-                pass
+            अपवाद:
+                अतिक्रम
 
-        if latitude_blackout_zone:
-            print(' }, // WARNING! black out zone')
-        else:
-            print(' },')
+        यदि latitude_blackout_zone:
+            मुद्रय(' }, // WARNING! black out zone')
+        अन्यथा:
+            मुद्रय(' },')
 
-    print("};")
+    मुद्रय("};")
 
-    print('static constexpr float WMM_{}_SCALE_TO_{} = {:.9g}f;'.format(key_name.upper(), units_str.upper(), 1.0 / value_scale))
-    print('static constexpr float WMM_{}_MIN_{} = {:.1f}f; // latitude: {:.0f}, longitude: {:.0f}'.format(key_name.upper(), units_str.upper(), value_min, value_min_lat_lon[0], value_min_lat_lon[1]))
-    print('static constexpr float WMM_{}_MAX_{} = {:.1f}f; // latitude: {:.0f}, longitude: {:.0f}'.format(key_name.upper(), units_str.upper(), value_max, value_max_lat_lon[0], value_max_lat_lon[1]))
-    print("\n")
+    मुद्रय('static constexpr float WMM_{}_SCALE_TO_{} = {:.9g}f;'.format(कुञ्चिका_name.ऊर्ध्वस्थम्(), units_str.ऊर्ध्वस्थम्(), 1.0 / मानम्_scale))
+    मुद्रय('static constexpr float WMM_{}_MIN_{} = {:.1f}f; // latitude: {:.0f}, longitude: {:.0f}'.format(कुञ्चिका_name.ऊर्ध्वस्थम्(), units_str.ऊर्ध्वस्थम्(), मानम्_min, मानम्_min_lat_lon[0], मानम्_min_lat_lon[1]))
+    मुद्रय('static constexpr float WMM_{}_MAX_{} = {:.1f}f; // latitude: {:.0f}, longitude: {:.0f}'.format(कुञ्चिका_name.ऊर्ध्वस्थम्(), units_str.ऊर्ध्वस्थम्(), मानम्_max, मानम्_max_lat_lon[0], मानम्_max_lat_lon[1]))
+    मुद्रय("\n")
 
 
-print_wmm_table('declination')
-print_wmm_table('inclination')
-print_wmm_table('totalintensity')
+print_wmm_सारणी('declination')
+print_wmm_सारणी('inclination')
+print_wmm_सारणी('totalintensity')

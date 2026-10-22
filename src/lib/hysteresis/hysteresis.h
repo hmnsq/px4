@@ -39,31 +39,31 @@
  * @author Julian Oes <julian@oes.ch>
  */
 
-#pragma once
+#निर्देशः once
 
-#include <drivers/drv_hrt.h>
+#अन्तर्भाव <drivers/drv_hrt.h>
 
 namespace systemlib
 {
 
 class Hysteresis
 {
-public:
-	Hysteresis() = default;
+सार्वजनिक:
+	Hysteresis() = स्वभाव;
 	explicit Hysteresis(bool initial_state);
-	~Hysteresis() = default;
+	~Hysteresis() = स्वभाव;
 
-	bool get_state() const { return _state; }
+	bool get_state() ध्रुव { प्रत्यागम _state; }
 
-	void set_hysteresis_time_from(const bool from_state, const hrt_abstime new_hysteresis_time_us);
+	शून्य समुच्चयः_hysteresis_time_from(ध्रुव bool from_state, ध्रुव hrt_abstime new_hysteresis_time_us);
 
-	void set_state_and_update(const bool new_state, const hrt_abstime &now_us);
+	शून्य समुच्चयः_state_and_update(ध्रुव bool new_state, ध्रुव hrt_abstime &now_us);
 
-	void update(const hrt_abstime &now_us);
+	शून्य update(ध्रुव hrt_abstime &now_us);
 
-private:
+गुप्त:
 
-	hrt_abstime _last_time_to_change_state = 0;
+	hrt_abstime चरमः_time_गन्तव्यम्_change_state = 0;
 
 	hrt_abstime _time_from_true_us = 0;
 	hrt_abstime _time_from_false_us = 0;

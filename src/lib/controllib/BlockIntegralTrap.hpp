@@ -37,22 +37,22 @@
  * Controller library code
  */
 
-#pragma once
+#निर्देशः once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <assert.h>
+#अन्तर्भाव <time.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <mathlib/math/test/test.hpp>
+#अन्तर्भाव <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#अन्तर्भाव "block/Block.hpp"
+#अन्तर्भाव "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#अन्तर्भाव "matrix/math.hpp"
 
-namespace control
+नामाकाश control
 {
 
 /**
@@ -63,28 +63,28 @@ namespace control
  * for windup protection.
  * @see Limit
  */
-class __EXPORT BlockIntegralTrap : public SuperBlock
+वर्ग __EXPORT खण्डम्_Integral_Trap : सार्वजनिक Super_खण्डम्
 {
-public:
+सार्वजनिक:
 // methods
-	BlockIntegralTrap(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
+	खण्डम्_Integral_Trap(Super_खण्डम् *parent, ध्रुव वर्ण *name) :
+		Super_खण्डम्(parent, name),
 		_u(0),
 		_y(0),
-		_limit(this, "") {}
-	virtual ~BlockIntegralTrap() = default;
-	float update(float input);
+		सीमा(एतत्, "") {}
+	आभास ~खण्डम्_Integral_Trap() = स्वभाव;
+	भिन्न update(भिन्न निवेशः);
 // accessors
-	float getU() {return _u;}
-	float getY() {return _y;}
-	float getMax() {return _limit.getMax();}
-	void setU(float u) {_u = u;}
-	void setY(float y) {_y = y;}
-protected:
-// attributes
-	float _u; /**< previous input */
-	float _y; /**< previous output */
-	BlockLimitSym _limit; /**< limiter */
+	भिन्न getU() {प्रत्यागम _u;}
+	भिन्न getY() {प्रत्यागम _y;}
+	भिन्न getMax() {प्रत्यागम सीमा.getMax();}
+	शून्य समुच्चयः_U(भिन्न u) {_u = u;}
+	शून्य समुच्चयः_Y(भिन्न y) {_y = y;}
+रक्षित:
+//गुणाः
+	भिन्न _u; /**< previous input */
+	भिन्न _y; /**< previous output */
+	खण्डम्_सीमा_Sym सीमा; /**< limiter */
 };
 
 } // namespace control

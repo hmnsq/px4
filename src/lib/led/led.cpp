@@ -36,246 +36,246 @@
  */
 
 
-#include "led.h"
+#अन्तर्भाव "led.h"
 
-int LedController::update(LedControlData &control_data)
+पूर्णाङ्क LedController::update(Led_Control_दत्त &control_दत्त)
 {
-	bool had_changes = false; // did one of the outputs change?
+	तार्किक had_changes = असत्य; // did one of the outputs change?
 
 	// check for parameter updates
-	if (_parameter_update_sub.updated()) {
+	यदि (_parameter_update_sub.updated()) {
 		// clear update
 		parameter_update_s pupdate;
 		_parameter_update_sub.copy(&pupdate);
 
 		updateParams();
 
-		const uint8_t max_brightness_prev = _max_brightness;
+		ध्रुव uint8_t max_brightness_पूर्व = _max_brightness;
 
 		// set maximum brightness (0-255) from percentage
 		_max_brightness = roundf(math::constrain(_param_sys_rgb_maxbrt.get(), 0.f, 1.f) * UINT8_MAX);
 
 		// update existing
-		for (int i = 0; i < BOARD_MAX_LEDS; ++i) {
-			control_data.leds[i].brightness = math::min(_max_brightness, control_data.leds[i].brightness);
+		प्रति (पूर्णाङ्क i = 0; i < BOARD_MAX_LEDS; ++i) {
+			control_दत्त.leds[i].brightness = math::min(_max_brightness, control_दत्त.leds[i].brightness);
 		}
 
-		if (_max_brightness != max_brightness_prev) {
-			had_changes = true;
+		यदि (_max_brightness != max_brightness_पूर्व) {
+			had_changes = सत्य;
 		}
 	}
 
-	while (_led_control_sub.updated() || _force_update) {
-		const unsigned last_generation = _led_control_sub.get_last_generation();
+	यावत् (_led_control_sub.updated() || _force_update) {
+		ध्रुव अचिह्नित चरमः_generation = _led_control_sub.get_चरमः_generation();
 
 		// handle new state
 		led_control_s led_control;
 
-		if (_led_control_sub.copy(&led_control)) {
+		यदि (_led_control_sub.copy(&led_control)) {
 
-			if ((_led_control_sub.get_last_generation() != last_generation + 1)
-			    && (_led_control_sub.get_last_generation() != last_generation)) {
-				perf_count(_led_control_sub_lost_perf);
-				PX4_DEBUG("led_control lost, generation %d -> %d", last_generation, _led_control_sub.get_last_generation());
+			यदि ((_led_control_sub.get_चरमः_generation() != चरमः_generation + 1)
+			    && (_led_control_sub.get_चरमः_generation() != चरमः_generation)) {
+				perf_गणनम्(led_control_sub_नष्टम्_perf);
+				PX4_DEBUG("led_control lost, generation %d -> %d", चरमः_generation, _led_control_sub.get_चरमः_generation());
 			}
 
 			// don't apply the new state just yet to avoid interrupting an ongoing blinking state
-			for (int i = 0; i < BOARD_MAX_LEDS; ++i) {
-				if (led_control.led_mask & (1 << i)) {
+			प्रति (पूर्णाङ्क i = 0; i < BOARD_MAX_LEDS; ++i) {
+				यदि (led_control.led_आवरणम् & (1 << i)) {
 					// if next state has already a higher priority state than
 					// led_control, set lower prio state directly, so that this
 					// information is not lost
-					if (_states[i].next_state.is_valid() && led_control.priority < _states[i].next_state.priority) {
-						_states[i].set(led_control);
+					यदि (अवस्थाः[i].अग्र_state.is_valid() && led_control.प्राथमिकता < अवस्थाः[i].अग्र_state.प्राथमिकता) {
+						अवस्थाः[i].समुच्चयः(led_control);
 
-					} else {
+					} अन्यथा {
 						// if a lower prio event is already in next state and a
 						// higher prio event is coming in
-						if (_states[i].next_state.is_valid() && led_control.priority > _states[i].next_state.priority) {
-							_states[i].apply_next_state();
+						यदि (अवस्थाः[i].अग्र_state.is_valid() && led_control.प्राथमिकता > अवस्थाः[i].अग्र_state.प्राथमिकता) {
+							अवस्थाः[i].apply_अग्र_state();
 						}
 
-						_states[i].next_state.set(led_control);
+						अवस्थाः[i].अग्र_state.समुच्चयः(led_control);
 					}
 				}
 			}
 		}
 
-		_force_update = false;
+		_force_update = असत्य;
 	}
 
 	// handle state updates
 	hrt_abstime now = hrt_absolute_time();
 
-	if (_last_update_call == 0) {
-		_last_update_call = now;
-		return 0;
+	यदि (चरमः_update_call == 0) {
+		चरमः_update_call = now;
+		प्रत्यागम 0;
 	}
 
-	uint16_t blink_delta_t = (uint16_t)((now - _last_update_call) / 100); // Note: this is in 0.1ms
-	constexpr uint16_t breathe_duration = BREATHE_INTERVAL * BREATHE_STEPS / 100;
+	uint16_t blink_delta_t = (uint16_t)((now - चरमः_update_call) / 100); // Note: this is in 0.1ms
+	constexpr uint16_t breathe_duration = BREATHE_INTERVAL * BREATHE_चरणाः / 100;
 
-	int num_blinking_leds = 0;
-	int num_blinking_do_not_change_state = 0;
-	int current_priorities[BOARD_MAX_LEDS];
+	पूर्णाङ्क अङ्कः_blinking_leds = 0;
+	पूर्णाङ्क अङ्कः_blinking_do_not_change_state = 0;
+	पूर्णाङ्क current_priorities[BOARD_MAX_LEDS];
 
-	for (int i = 0; i < BOARD_MAX_LEDS; ++i) {
-		int priority = led_control_s::MAX_PRIORITY;
+	प्रति (पूर्णाङ्क i = 0; i < BOARD_MAX_LEDS; ++i) {
+		पूर्णाङ्क प्राथमिकता = led_control_s::MAX_प्राथमिकता;
 
-		for (; priority >= 0; --priority) {
+		प्रति (; प्राथमिकता >= 0; --प्राथमिकता) {
 
-			PerPriorityData &cur_data = _states[i].priority[priority];
+			प्रत्येकम्_प्राथमिकता_दत्त &cur_दत्त = अवस्थाः[i].प्राथमिकता[प्राथमिकता];
 
-			if (cur_data.mode == led_control_s::MODE_DISABLED) {
-				continue; // handle next priority
+			यदि (cur_दत्त.बहुलकम् == led_control_s::बहुलकम्_DISABLED) {
+				अनुवर्त; // handle next priority
 			}
 
 			// handle state updates
 			uint16_t current_blink_duration = 0;
 
-			switch (cur_data.mode) {
-			case led_control_s::MODE_FLASH:
-			case led_control_s::MODE_BLINK_FAST:
+			विकल्प (cur_दत्त.बहुलकम्) {
+			पक्ष led_control_s::बहुलकम्_FLASH:
+			पक्ष led_control_s::बहुलकम्_BLINK_FAST:
 				current_blink_duration = BLINK_FAST_DURATION / 100;
-				break;
+				भङ्ग;
 
-			case led_control_s::MODE_BLINK_NORMAL:
-				current_blink_duration = BLINK_NORMAL_DURATION / 100;
-				break;
+			पक्ष led_control_s::बहुलकम्_BLINK_प्रसामान्यम्:
+				current_blink_duration = BLINK_प्रसामान्यम्_DURATION / 100;
+				भङ्ग;
 
-			case led_control_s::MODE_BLINK_SLOW:
+			पक्ष led_control_s::बहुलकम्_BLINK_SLOW:
 				current_blink_duration = BLINK_SLOW_DURATION / 100;
-				break;
+				भङ्ग;
 
-			case led_control_s::MODE_BREATHE:
-				_states[i].current_blinking_time += blink_delta_t;
+			पक्ष led_control_s::बहुलकम्_BREATHE:
+				अवस्थाः[i].current_blinking_time += blink_delta_t;
 
-				while (_states[i].current_blinking_time > breathe_duration) {
-					_states[i].current_blinking_time -= breathe_duration;
+				यावत् (अवस्थाः[i].current_blinking_time > breathe_duration) {
+					अवस्थाः[i].current_blinking_time -= breathe_duration;
 				}
 
-				had_changes = true;
-				break;
+				had_changes = सत्य;
+				भङ्ग;
 			}
 
-			if (current_blink_duration > 0) {
-				++num_blinking_leds;
+			यदि (current_blink_duration > 0) {
+				++अङ्कः_blinking_leds;
 
-				_states[i].current_blinking_time += blink_delta_t;
+				अवस्थाः[i].current_blinking_time += blink_delta_t;
 
-				if (_states[i].current_blinking_time > current_blink_duration) {
-					_states[i].current_blinking_time -= current_blink_duration;
+				यदि (अवस्थाः[i].current_blinking_time > current_blink_duration) {
+					अवस्थाः[i].current_blinking_time -= current_blink_duration;
 
-					if (cur_data.blink_times_left == 246) {
+					यदि (cur_दत्त.blink_times_वामः == 246) {
 						// handle toggling for infinite case: decrease between 255 and 246
 						// In order to handle the flash mode infinite case it needs a
 						// total of 10 steps.
-						cur_data.blink_times_left = 255;
-						++num_blinking_do_not_change_state;
+						cur_दत्त.blink_times_वामः = 255;
+						++अङ्कः_blinking_do_not_change_state;
 
-					} else if (--cur_data.blink_times_left == 0) {
-						cur_data.mode = led_control_s::MODE_DISABLED;
-						_states[i].current_blinking_time = 0;
+					} अन्यथा यदि (--cur_दत्त.blink_times_वामः == 0) {
+						cur_दत्त.बहुलकम् = led_control_s::बहुलकम्_DISABLED;
+						अवस्थाः[i].current_blinking_time = 0;
 
-					} else if (cur_data.blink_times_left % 2 == 1) {
-						++num_blinking_do_not_change_state;
+					} अन्यथा यदि (cur_दत्त.blink_times_वामः % 2 == 1) {
+						++अङ्कः_blinking_do_not_change_state;
 					}
 
-					had_changes = true;
+					had_changes = सत्य;
 
-				} else {
-					++num_blinking_do_not_change_state;
+				} अन्यथा {
+					++अङ्कः_blinking_do_not_change_state;
 				}
 			}
 
-			break; // handle next led
+			भङ्ग; // handle next led
 		}
 
-		current_priorities[i] = priority;
+		current_priorities[i] = प्राथमिकता;
 
 	}
 
 	// handle next state:
 	// only allow a state change if no led blinks or at least one of the blinking leds signals that it's ok to switch.
 	// This makes sure all leds are kept in sync, but does not allow interrupting at arbitrary points.
-	if (num_blinking_leds == 0 || num_blinking_leds > num_blinking_do_not_change_state) {
-		for (int i = 0; i < BOARD_MAX_LEDS; ++i) {
-			if (_states[i].next_state.is_valid()) {
-				int next_priority = (int)_states[i].next_state.priority;
+	यदि (अङ्कः_blinking_leds == 0 || अङ्कः_blinking_leds > अङ्कः_blinking_do_not_change_state) {
+		प्रति (पूर्णाङ्क i = 0; i < BOARD_MAX_LEDS; ++i) {
+			यदि (अवस्थाः[i].अग्र_state.is_valid()) {
+				पूर्णाङ्क अग्र_प्राथमिकता = (पूर्णाङ्क)अवस्थाः[i].अग्र_state.प्राथमिकता;
 
-				if (next_priority >= current_priorities[i]) {
-					_states[i].current_blinking_time = 0;
-					had_changes = true;
+				यदि (अग्र_प्राथमिकता >= current_priorities[i]) {
+					अवस्थाः[i].current_blinking_time = 0;
+					had_changes = सत्य;
 				}
 
-				_states[i].apply_next_state();
-				_states[i].next_state.reset();
+				अवस्थाः[i].apply_अग्र_state();
+				अवस्थाः[i].अग्र_state.reset();
 			}
 
 		}
 	}
 
-	_last_update_call = now;
+	चरमः_update_call = now;
 
-	if (!had_changes) {
-		return 0;
+	यदि (!had_changes) {
+		प्रत्यागम 0;
 	}
 
 	// create output
-	get_control_data(control_data);
+	get_control_दत्त(control_दत्त);
 
-	return 1;
+	प्रत्यागम 1;
 }
 
-void LedController::get_control_data(LedControlData &control_data)
+शून्य LedController::get_control_दत्त(Led_Control_दत्त &control_दत्त)
 {
-	_breathe_enabled = false;
+	_breathe_enabled = असत्य;
 
-	for (int i = 0; i < BOARD_MAX_LEDS; ++i) {
-		control_data.leds[i].color = led_control_s::COLOR_OFF; // set output to a defined state
-		control_data.leds[i].brightness = _max_brightness;
+	प्रति (पूर्णाङ्क i = 0; i < BOARD_MAX_LEDS; ++i) {
+		control_दत्त.leds[i].color = led_control_s::COLOR_OFF; // set output to a defined state
+		control_दत्त.leds[i].brightness = _max_brightness;
 
-		for (int priority = led_control_s::MAX_PRIORITY; priority >= 0; --priority) {
-			bool flash_output_active = true;
-			const PerPriorityData &cur_data = _states[i].priority[priority];
+		प्रति (पूर्णाङ्क प्राथमिकता = led_control_s::MAX_प्राथमिकता; प्राथमिकता >= 0; --प्राथमिकता) {
+			तार्किक flash_output_सक्रिय = सत्य;
+			ध्रुव प्रत्येकम्_प्राथमिकता_दत्त &cur_दत्त = अवस्थाः[i].प्राथमिकता[प्राथमिकता];
 
-			if (cur_data.mode == led_control_s::MODE_DISABLED) {
-				continue; // handle next priority
+			यदि (cur_दत्त.बहुलकम् == led_control_s::बहुलकम्_DISABLED) {
+				अनुवर्त; // handle next priority
 			}
 
-			switch (cur_data.mode) {
-			case led_control_s::MODE_ON:
-				control_data.leds[i].color = cur_data.color;
-				break;
+			विकल्प (cur_दत्त.बहुलकम्) {
+			पक्ष led_control_s::बहुलकम्_ON:
+				control_दत्त.leds[i].color = cur_दत्त.color;
+				भङ्ग;
 
-			case led_control_s::MODE_BREATHE: {
+			पक्ष led_control_s::बहुलकम्_BREATHE: {
 					// fade on and off
-					int counter = _states[i].current_blinking_time / (BREATHE_INTERVAL / 100);
-					int n = counter >= (BREATHE_STEPS / 2) ? BREATHE_STEPS - counter : counter;
-					control_data.leds[i].brightness = (n * n) * _max_brightness / (BREATHE_STEPS * BREATHE_STEPS / 4); // (n/(steps/2))^2
-					control_data.leds[i].color = cur_data.color;
-					_breathe_enabled = true;
-					break;
+					पूर्णाङ्क गणक = अवस्थाः[i].current_blinking_time / (BREATHE_INTERVAL / 100);
+					पूर्णाङ्क n = गणक >= (BREATHE_चरणाः / 2) ? BREATHE_चरणाः - गणक : गणक;
+					control_दत्त.leds[i].brightness = (n * n) * _max_brightness / (BREATHE_चरणाः * BREATHE_चरणाः / 4); // (n/(steps/2))^2
+					control_दत्त.leds[i].color = cur_दत्त.color;
+					_breathe_enabled = सत्य;
+					भङ्ग;
 				}
 
-			case led_control_s::MODE_FLASH:
-				if (cur_data.blink_times_left % 10 < 6) { // 2 blinks, then turn off for the rest of the cycle
-					flash_output_active = false;
+			पक्ष led_control_s::बहुलकम्_FLASH:
+				यदि (cur_दत्त.blink_times_वामः % 10 < 6) { // 2 blinks, then turn off for the rest of the cycle
+					flash_output_सक्रिय = असत्य;
 				}
 
 			/* FALLTHROUGH */
-			case led_control_s::MODE_BLINK_FAST:
-			case led_control_s::MODE_BLINK_NORMAL:
-			case led_control_s::MODE_BLINK_SLOW:
-				if (cur_data.blink_times_left % 2 == 0 && flash_output_active) {
-					control_data.leds[i].color = cur_data.color;
+			पक्ष led_control_s::बहुलकम्_BLINK_FAST:
+			पक्ष led_control_s::बहुलकम्_BLINK_प्रसामान्यम्:
+			पक्ष led_control_s::बहुलकम्_BLINK_SLOW:
+				यदि (cur_दत्त.blink_times_वामः % 2 == 0 && flash_output_सक्रिय) {
+					control_दत्त.leds[i].color = cur_दत्त.color;
 				}
 
-				break;
+				भङ्ग;
 				// MODE_OFF does not need to be handled, it's already set above
 			}
 
-			break; // handle next led
+			भङ्ग; // handle next led
 		}
 	}
 }

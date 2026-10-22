@@ -37,52 +37,52 @@
  * Controller library code
  */
 
-#pragma once
+#निर्देशः once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <assert.h>
+#अन्तर्भाव <time.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <mathlib/math/test/test.hpp>
+#अन्तर्भाव <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#अन्तर्भाव "block/Block.hpp"
+#अन्तर्भाव "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#अन्तर्भाव "matrix/math.hpp"
 
-namespace control
+नामाकाश control
 {
 
 /**
  * A proportional-integral controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockPI: public SuperBlock
+वर्ग __EXPORT खण्डम्_PI: सार्वजनिक Super_खण्डम्
 {
-public:
+सार्वजनिक:
 // methods
-	BlockPI(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
-		_integral(this, "I"),
-		_kP(this, "P"),
-		_kI(this, "I")
+	खण्डम्_PI(Super_खण्डम् *parent, ध्रुव वर्ण *name) :
+		Super_खण्डम्(parent, name),
+		_integral(एतत्, "I"),
+		_kP(एतत्, "P"),
+		_kI(एतत्, "I")
 	{}
-	virtual ~BlockPI() = default;
-	float update(float input)
+	आभास ~खण्डम्_PI() = स्वभाव;
+	भिन्न update(भिन्न निवेशः)
 	{
-		return getKP() * input +
-		       getKI() * getIntegral().update(input);
+		प्रत्यागम getKP() * निवेशः +
+		       getKI() * getIntegral().update(निवेशः);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKI() { return _kI.get(); }
-	BlockIntegral &getIntegral() { return _integral; }
-private:
-	BlockIntegral _integral;
-	control::BlockParamFloat _kP;
-	control::BlockParamFloat _kI;
+	भिन्न getKP() { प्रत्यागम _kP.get(); }
+	भिन्न getKI() { प्रत्यागम _kI.get(); }
+	खण्डम्_Integral &getIntegral() { प्रत्यागम _integral; }
+गुप्त:
+	खण्डम्_Integral _integral;
+	control::खण्डम्_Param_Float _kP;
+	control::खण्डम्_Param_Float _kI;
 };
 
 } // namespace control

@@ -37,45 +37,45 @@
  * Controller library code
  */
 
-#pragma once
+#निर्देशः once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <assert.h>
+#अन्तर्भाव <time.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <mathlib/math/test/test.hpp>
+#अन्तर्भाव <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#अन्तर्भाव "block/Block.hpp"
+#अन्तर्भाव "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#अन्तर्भाव "matrix/math.hpp"
 
-namespace control
+नामाकाश control
 {
 
 /**
  * A proportional controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockP: public Block
+वर्ग __EXPORT खण्डम्_P: सार्वजनिक खण्डम्
 {
-public:
+सार्वजनिक:
 // methods
-	BlockP(SuperBlock *parent, const char *name) :
-		Block(parent, name),
-		_kP(this, "") // only one param, no need to name
+	खण्डम्_P(Super_खण्डम् *parent, ध्रुव वर्ण *name) :
+		खण्डम्(parent, name),
+		_kP(एतत्, "") // only one param, no need to name
 	{}
-	virtual ~BlockP() = default;
-	float update(float input)
+	आभास ~खण्डम्_P() = स्वभाव;
+	भिन्न update(भिन्न निवेशः)
 	{
-		return getKP() * input;
+		प्रत्यागम getKP() * निवेशः;
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-protected:
-	control::BlockParamFloat _kP;
+	भिन्न getKP() { प्रत्यागम _kP.get(); }
+रक्षित:
+	control::खण्डम्_Param_Float _kP;
 };
 
 } // namespace control

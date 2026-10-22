@@ -39,36 +39,36 @@
  * @author Matthias Grob <maetugr@gmail.com>
  */
 
-#pragma once
+#निर्देशः once
 
-#include <mathlib/mathlib.h>
-#include <matrix/math.hpp>
+#अन्तर्भाव <mathlib/mathlib.h>
+#अन्तर्भाव <matrix/math.hpp>
 
-template<typename Type>
-class SlewRate
+प्रतिरूपम्<प्रकारनाम Type>
+वर्ग Slew_दरः
 {
-public:
-	SlewRate() = default;
-	SlewRate(Type initial_value) { setForcedValue(initial_value); }
-	~SlewRate() = default;
+सार्वजनिक:
+	Slew_दरः() = स्वभाव;
+	Slew_दरः(Type initial_मानम्) { समुच्चयः_Forced_मानम्(initial_मानम्); }
+	~Slew_दरः() = स्वभाव;
 
 	/**
 	 * Set maximum rate of change for the value
 	 * @param slew_rate maximum rate of change
 	 */
-	void setSlewRate(const Type slew_rate) { _slew_rate = slew_rate; }
+	शून्य समुच्चयः_Slew_दरः(ध्रुव Type slew_दरः) { slew_दरः_2 = slew_दरः; }
 
 	/**
 	 * Set value ignoring slew rate for initialization purpose
 	 * @param value new applied value
 	 */
-	void setForcedValue(const Type value) { _value = value; }
+	शून्य समुच्चयः_Forced_मानम्(ध्रुव Type value) { मानम्_2 = value; }
 
 	/**
 	 * Get value from last update of the slew rate
 	 * @return current value the slew rate is at
 	 */
-	Type getState() const { return _value; }
+	Type getState() ध्रुव { प्रत्यागम मानम्_2; }
 
 	/**
 	 * Update slewrate
@@ -76,17 +76,17 @@ public:
 	 * @param deltatime time in seconds since last update
 	 * @return actual value that complies with the slew rate
 	 */
-	Type update(const Type new_value, const float deltatime)
+	Type update(ध्रुव Type new_मानम्, ध्रुव भिन्न deltatime)
 	{
 		// Limit the rate of change of the value
-		const Type dvalue_desired = new_value - _value;
-		const Type dvalue_max = _slew_rate * deltatime;
-		const Type dvalue = math::constrain(dvalue_desired, -dvalue_max, dvalue_max);
-		_value += dvalue;
-		return _value;
+		ध्रुव Type dvalue_desired = new_मानम् - मानम्_2;
+		ध्रुव Type dvalue_max = slew_दरः_2 * deltatime;
+		ध्रुव Type dvalue = math::constrain(dvalue_desired, -dvalue_max, dvalue_max);
+		मानम्_2 += dvalue;
+		प्रत्यागम मानम्_2;
 	}
 
-protected:
-	Type _slew_rate{}; ///< maximum rate of change for the value
-	Type _value{}; ///< state to keep last value of the slew rate
+रक्षित:
+	Type slew_दरः_2{}; ///< maximum rate of change for the value
+	Type मानम्_2{}; ///< state to keep last value of the slew rate
 };

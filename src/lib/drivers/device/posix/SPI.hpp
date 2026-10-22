@@ -31,7 +31,7 @@
  *
  ****************************************************************************/
 
-#pragma once
+#निर्देशः once
 
 /**
  * @file SPI.hpp
@@ -39,44 +39,44 @@
  * Base class for devices connected via SPI.
  */
 
-#include "../CDev.hpp"
-#include <px4_platform_common/spi.h>
+#अन्तर्भाव "../CDev.hpp"
+#अन्तर्भाव <px4_platform_common/spi.h>
 
-#if defined(CONFIG_SPI)
+#यदि defined(CONFIG_SPI)
 
-#ifdef __PX4_LINUX
+#यदि_परिभाषितम् __PX4_LINUX
 
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/ioctl.h>
-#include <linux/types.h>
-#include <linux/spi/spidev.h>
+#अन्तर्भाव <fcntl.h>
+#अन्तर्भाव <unistd.h>
+#अन्तर्भाव <sys/ioctl.h>
+#अन्तर्भाव <linux/types.h>
+#अन्तर्भाव <linux/spi/spidev.h>
 
-enum spi_mode_e {
-	SPIDEV_MODE0 = SPI_MODE_0, /* CPOL=0 CHPHA=0 */
-	SPIDEV_MODE1 = SPI_MODE_1, /* CPOL=0 CHPHA=1 */
-	SPIDEV_MODE2 = SPI_MODE_2, /* CPOL=1 CHPHA=0 */
-	SPIDEV_MODE3 = SPI_MODE_3  /* CPOL=1 CHPHA=1 */
+गणना spi_बहुलकम्_e {
+	SPIDEV_MODE0 = SPI_बहुलकम्_0, /* CPOL=0 CHPHA=0 */
+	SPIDEV_MODE1 = SPI_बहुलकम्_1, /* CPOL=0 CHPHA=1 */
+	SPIDEV_MODE2 = SPI_बहुलकम्_2, /* CPOL=1 CHPHA=0 */
+	SPIDEV_MODE3 = SPI_बहुलकम्_3  /* CPOL=1 CHPHA=1 */
 };
 
-struct I2CSPIDriverConfig;
+संरचना I2CSPIDriverConfig;
 
-namespace device __EXPORT
+नामाकाश device __EXPORT
 {
 
 /**
  * Abstract class for character device on SPI
  */
-class __EXPORT SPI : public CDev
+वर्ग __EXPORT SPI : सार्वजनिक CDev
 {
-public:
+सार्वजनिक:
 	// no copy, assignment, move, move assignment
-	SPI(const SPI &) = delete;
-	SPI &operator=(const SPI &) = delete;
-	SPI(SPI &&) = delete;
-	SPI &operator=(SPI &&) = delete;
+	SPI(ध्रुव SPI &) = विलोपय;
+	SPI &संक्रियकः=(ध्रुव SPI &) = विलोपय;
+	SPI(SPI &&) = विलोपय;
+	SPI &संक्रियकः=(SPI &&) = विलोपय;
 
-protected:
+रक्षित:
 	/**
 	 * Constructor
 	 *
@@ -87,27 +87,27 @@ protected:
 	 * @param mode		SPI clock/data mode
 	 * @param frequency	SPI clock frequency
 	 */
-	SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency);
+	SPI(uint8_t device_type, ध्रुव वर्ण *name, पूर्णाङ्क bus, uint32_t device, गणना spi_बहुलकम्_e बहुलकम्, uint32_t frequency);
 
-	SPI(const I2CSPIDriverConfig &config);
+	SPI(ध्रुव I2CSPIDriverConfig &config);
 
-	virtual ~SPI();
+	आभास ~SPI();
 
 	/**
 	 * Locking modes supported by the driver.
 	 */
-	enum LockMode {
-		LOCK_PREEMPTION,	/**< the default; lock against all forms of preemption. */
-		LOCK_THREADS,		/**< lock only against other threads, using SPI_LOCK */
-		LOCK_NONE		/**< perform no locking, only safe if the bus is entirely private */
+	गणना तालकम्_बहुलकम् {
+		तालकम्_PREEMPTION,	/**< the default; lock against all forms of preemption. */
+		तालकम्_तन्तवः,		/**< lock only against other threads, using SPI_LOCK */
+		तालकम्_NONE		/**< perform no locking, only safe if the bus is entirely private */
 	};
 
-	virtual int	init() override;
+	आभास पूर्णाङ्क	init() override;
 
 	/**
 	 * Check for the presence of the device on the bus.
 	 */
-	virtual int	probe() { return PX4_OK; }
+	आभास पूर्णाङ्क	probe() { प्रत्यागम PX4_OK; }
 
 	/**
 	 * Perform a SPI transfer.
@@ -128,7 +128,7 @@ protected:
 	 * @return		OK if the exchange was successful, -errno
 	 *			otherwise.
 	 */
-	int		transfer(uint8_t *send, uint8_t *recv, unsigned len);
+	पूर्णाङ्क		transfer(uint8_t *send, uint8_t *recv, अचिह्नित len);
 
 	/**
 	 * Perform a SPI 16 bit transfer.
@@ -149,7 +149,7 @@ protected:
 	 * @return		OK if the exchange was successful, -errno
 	 *			otherwise.
 	 */
-	int		transferhword(uint16_t *send, uint16_t *recv, unsigned len);
+	पूर्णाङ्क		transferhword(uint16_t *send, uint16_t *recv, अचिह्नित len);
 
 	/**
 	 * Set the SPI bus frequency
@@ -160,8 +160,8 @@ protected:
 	 *
 	 * @param frequency	Frequency to set (Hz)
 	 */
-	void		set_frequency(uint32_t frequency) { _frequency = frequency; }
-	uint32_t	get_frequency() { return _frequency; }
+	शून्य		समुच्चयः_frequency(uint32_t frequency) { _frequency = frequency; }
+	uint32_t	get_frequency() { प्रत्यागम _frequency; }
 
 	/**
 	 * Set the SPI bus locking mode
@@ -171,33 +171,33 @@ protected:
 	 *
 	 * @param mode	Locking mode
 	 */
-	void		set_lockmode(enum LockMode mode) { _locking_mode = mode; }
+	शून्य		समुच्चयः_lockmode(गणना तालकम्_बहुलकम् बहुलकम्) { locking_बहुलकम् = बहुलकम्; }
 
-private:
+गुप्त:
 	uint32_t		_device;
-	enum spi_mode_e		_mode;
+	गणना spi_बहुलकम्_e		_mode;
 	uint32_t		_frequency;
-	int 			_fd{-1};
+	पूर्णाङ्क 			_fd{-1};
 
-	LockMode		_locking_mode{LOCK_THREADS};	/**< selected locking mode */
+	तालकम्_बहुलकम्		locking_बहुलकम्{तालकम्_तन्तवः};	/**< selected locking mode */
 
-protected:
-	int	_transfer(uint8_t *send, uint8_t *recv, unsigned len);
+रक्षित:
+	पूर्णाङ्क	_transfer(uint8_t *send, uint8_t *recv, अचिह्नित len);
 
-	int	_transferhword(uint16_t *send, uint16_t *recv, unsigned len);
+	पूर्णाङ्क	_transferhword(uint16_t *send, uint16_t *recv, अचिह्नित len);
 
 };
 
 } // namespace device
 
-#else
+#अन्यथा
 
-enum spi_mode_e {
+गणना spi_बहुलकम्_e {
 	SPIDEV_MODE0 = 0, /* CPOL=0 CHPHA=0 */
 	SPIDEV_MODE1 = 1, /* CPOL=0 CHPHA=1 */
 	SPIDEV_MODE2 = 2, /* CPOL=1 CHPHA=0 */
 	SPIDEV_MODE3 = 3  /* CPOL=1 CHPHA=1 */
 };
-#endif // __PX4_LINUX
+#यदि_अन्तः // __PX4_LINUX
 
-#endif // CONFIG_SPI
+#यदि_अन्तः // CONFIG_SPI

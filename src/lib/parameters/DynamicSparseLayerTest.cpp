@@ -41,48 +41,48 @@
  * to catch use-after-free or data races.
  */
 
-#include <gtest/gtest.h>
+#अन्तर्भाव <gtest/gtest.h>
 
-#include <parameters/px4_parameters.hpp>
-#include "DynamicSparseLayer.h"
+#अन्तर्भाव <parameters/px4_parameters.hpp>
+#अन्तर्भाव "DynamicSparseLayer.h"
 
-#include <atomic>
-#include <thread>
-#include <vector>
+#अन्तर्भाव <atomic>
+#अन्तर्भाव <thread>
+#अन्तर्भाव <vector>
 
 /**
  * Minimal ParamLayer parent that returns a default zero value for all params.
  */
-class StubParamLayer : public ParamLayer
+वर्ग StubParamLayer : सार्वजनिक ParamLayer
 {
-public:
-	StubParamLayer() : ParamLayer(nullptr) {}
-	virtual ~StubParamLayer() = default;
+सार्वजनिक:
+	StubParamLayer() : ParamLayer(शून्यसूचकः) {}
+	आभास ~StubParamLayer() = स्वभाव;
 
-	bool store(param_t, param_value_u) override { return false; }
-	bool contains(param_t) const override { return false; }
+	तार्किक store(param_t, param_मानम्_u) override { प्रत्यागम असत्य; }
+	तार्किक अन्तर्भवति(param_t) ध्रुव override { प्रत्यागम असत्य; }
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_गणनम्> containedAsBitset() ध्रुव override
 	{
-		return px4::AtomicBitset<PARAM_COUNT>();
+		प्रत्यागम px4::AtomicBitset<PARAM_गणनम्>();
 	}
 
-	param_value_u get(param_t) const override
+	param_मानम्_u get(param_t) ध्रुव override
 	{
-		param_value_u v{};
+		param_मानम्_u v{};
 		v.i = 0;
-		return v;
+		प्रत्यागम v;
 	}
 
-	void reset(param_t) override {}
-	void refresh(param_t) override {}
-	int size() const override { return 0; }
-	int byteSize() const override { return 0; }
+	शून्य reset(param_t) override {}
+	शून्य refresh(param_t) override {}
+	पूर्णाङ्क आकार() ध्रुव override { प्रत्यागम 0; }
+	पूर्णाङ्क byte_आकार() ध्रुव override { प्रत्यागम 0; }
 };
 
-class DynamicSparseLayerConcurrentTest : public ::testing::Test
+वर्ग DynamicSparseLayerConcurrentTest : सार्वजनिक ::testing::Test
 {
-protected:
+रक्षित:
 	StubParamLayer stub;
 };
 
@@ -91,31 +91,31 @@ protected:
 // this safely stresses the read-side during buffer reallocation.
 TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentStoreGetRace)
 {
-	for (int rep = 0; rep < 50; rep++) {
+	प्रति (पूर्णाङ्क rep = 0; rep < 50; rep++) {
 		DynamicSparseLayer layer(&stub, /*n_prealloc=*/2, /*n_grow=*/1);
 
-		constexpr int NUM_PARAMS = 100;
-		std::atomic<bool> stop{false};
+		constexpr पूर्णाङ्क अङ्कः_PARAMS = 100;
+		std::atomic<तार्किक> stop{असत्य};
 
 		std::thread writer([&]() {
-			for (int i = 0; i < NUM_PARAMS; i++) {
-				param_value_u v{};
+			प्रति (पूर्णाङ्क i = 0; i < अङ्कः_PARAMS; i++) {
+				param_मानम्_u v{};
 				v.i = i * 10;
 				layer.store(static_cast<param_t>(i), v);
 			}
 
-			stop.store(true, std::memory_order_release);
+			stop.store(सत्य, std::स्मृतिः_क्रमः_release);
 		});
 
-		std::vector<std::thread> readers;
+		std::सदिशम्_2<std::thread> readers;
 
-		for (int r = 0; r < 4; r++) {
-			readers.emplace_back([&]() {
-				while (!stop.load(std::memory_order_acquire)) {
-					int current_size = layer.size();
+		प्रति (पूर्णाङ्क r = 0; r < 4; r++) {
+			readers.emplace_पृष्ठभागः([&]() {
+				यावत् (!stop.आरोपय(std::स्मृतिः_क्रमः_acquire)) {
+					पूर्णाङ्क current_आकार = layer.आकार();
 
-					for (int i = 0; i < current_size && i < NUM_PARAMS; i++) {
-						layer.contains(static_cast<param_t>(i));
+					प्रति (पूर्णाङ्क i = 0; i < current_आकार && i < अङ्कः_PARAMS; i++) {
+						layer.अन्तर्भवति(static_cast<param_t>(i));
 						layer.get(static_cast<param_t>(i));
 					}
 				}
@@ -124,19 +124,19 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentStoreGetRace)
 
 		writer.join();
 
-		for (auto &t : readers) {
+		प्रति (स्वचालित &t : readers) {
 			t.join();
 		}
 
-		for (int i = 0; i < NUM_PARAMS; i++) {
-			ASSERT_TRUE(layer.contains(static_cast<param_t>(i)))
+		प्रति (पूर्णाङ्क i = 0; i < अङ्कः_PARAMS; i++) {
+			ASSERT_TRUE(layer.अन्तर्भवति(static_cast<param_t>(i)))
 					<< "rep=" << rep << " param=" << i;
-			param_value_u v = layer.get(static_cast<param_t>(i));
+			param_मानम्_u v = layer.get(static_cast<param_t>(i));
 			ASSERT_EQ(v.i, i * 10)
 					<< "rep=" << rep << " param=" << i;
 		}
 
-		ASSERT_EQ(layer.size(), NUM_PARAMS);
+		ASSERT_EQ(layer.आकार(), अङ्कः_PARAMS);
 	}
 }
 
@@ -144,39 +144,39 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentStoreGetRace)
 // Pre-allocated to avoid concurrent _grow() which has a known ABA
 // limitation in the CAS retry loop (see _grow() implementation).
 // This test validates concurrent store correctness.
-TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentMultipleWriters)
+TEST_F(DynamicSparseLayerConcurrentTest, Concurrent_गुणजः_Writers)
 {
-	constexpr int PARAMS_PER_WRITER = 50;
-	constexpr int NUM_WRITERS = 4;
-	constexpr int TOTAL = NUM_WRITERS * PARAMS_PER_WRITER;
+	constexpr पूर्णाङ्क PARAMS_प्रत्येकम्_WRITER = 50;
+	constexpr पूर्णाङ्क अङ्कः_WRITERS = 4;
+	constexpr पूर्णाङ्क योग_3 = अङ्कः_WRITERS * PARAMS_प्रत्येकम्_WRITER;
 
-	for (int rep = 0; rep < 20; rep++) {
-		DynamicSparseLayer layer(&stub, /*n_prealloc=*/TOTAL, /*n_grow=*/1);
+	प्रति (पूर्णाङ्क rep = 0; rep < 20; rep++) {
+		DynamicSparseLayer layer(&stub, /*n_prealloc=*/योग_3, /*n_grow=*/1);
 
-		std::vector<std::thread> writers;
+		std::सदिशम्_2<std::thread> writers;
 
-		for (int w = 0; w < NUM_WRITERS; w++) {
-			writers.emplace_back([&layer, w]() {
-				int base = w * PARAMS_PER_WRITER;
+		प्रति (पूर्णाङ्क w = 0; w < अङ्कः_WRITERS; w++) {
+			writers.emplace_पृष्ठभागः([&layer, w]() {
+				पूर्णाङ्क base = w * PARAMS_प्रत्येकम्_WRITER;
 
-				for (int i = 0; i < PARAMS_PER_WRITER; i++) {
-					param_value_u v{};
+				प्रति (पूर्णाङ्क i = 0; i < PARAMS_प्रत्येकम्_WRITER; i++) {
+					param_मानम्_u v{};
 					v.i = (base + i) * 10;
 					layer.store(static_cast<param_t>(base + i), v);
 				}
 			});
 		}
 
-		for (auto &t : writers) {
+		प्रति (स्वचालित &t : writers) {
 			t.join();
 		}
 
-		ASSERT_EQ(layer.size(), TOTAL) << "rep=" << rep;
+		ASSERT_EQ(layer.आकार(), योग_3) << "rep=" << rep;
 
-		for (int i = 0; i < TOTAL; i++) {
-			ASSERT_TRUE(layer.contains(static_cast<param_t>(i)))
+		प्रति (पूर्णाङ्क i = 0; i < योग_3; i++) {
+			ASSERT_TRUE(layer.अन्तर्भवति(static_cast<param_t>(i)))
 					<< "rep=" << rep << " param=" << i;
-			param_value_u v = layer.get(static_cast<param_t>(i));
+			param_मानम्_u v = layer.get(static_cast<param_t>(i));
 			ASSERT_EQ(v.i, i * 10)
 					<< "rep=" << rep << " param=" << i;
 		}
@@ -186,59 +186,59 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentMultipleWriters)
 // Combined stress: writers store while readers access concurrently.
 TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentWritersAndReaders)
 {
-	constexpr int PARAMS_PER_WRITER = 50;
-	constexpr int NUM_WRITERS = 2;
-	constexpr int TOTAL = NUM_WRITERS * PARAMS_PER_WRITER;
+	constexpr पूर्णाङ्क PARAMS_प्रत्येकम्_WRITER = 50;
+	constexpr पूर्णाङ्क अङ्कः_WRITERS = 2;
+	constexpr पूर्णाङ्क योग_3 = अङ्कः_WRITERS * PARAMS_प्रत्येकम्_WRITER;
 
-	for (int rep = 0; rep < 20; rep++) {
+	प्रति (पूर्णाङ्क rep = 0; rep < 20; rep++) {
 		DynamicSparseLayer layer(&stub, /*n_prealloc=*/2, /*n_grow=*/1);
-		std::atomic<bool> stop{false};
+		std::atomic<तार्किक> stop{असत्य};
 
-		std::vector<std::thread> writers;
+		std::सदिशम्_2<std::thread> writers;
 
-		for (int w = 0; w < NUM_WRITERS; w++) {
-			writers.emplace_back([&layer, w]() {
-				int base = w * PARAMS_PER_WRITER;
+		प्रति (पूर्णाङ्क w = 0; w < अङ्कः_WRITERS; w++) {
+			writers.emplace_पृष्ठभागः([&layer, w]() {
+				पूर्णाङ्क base = w * PARAMS_प्रत्येकम्_WRITER;
 
-				for (int i = 0; i < PARAMS_PER_WRITER; i++) {
-					param_value_u v{};
+				प्रति (पूर्णाङ्क i = 0; i < PARAMS_प्रत्येकम्_WRITER; i++) {
+					param_मानम्_u v{};
 					v.i = (base + i) * 10;
 					layer.store(static_cast<param_t>(base + i), v);
 				}
 			});
 		}
 
-		std::vector<std::thread> readers;
+		std::सदिशम्_2<std::thread> readers;
 
-		for (int r = 0; r < 4; r++) {
-			readers.emplace_back([&]() {
-				while (!stop.load(std::memory_order_acquire)) {
-					int current_size = layer.size();
+		प्रति (पूर्णाङ्क r = 0; r < 4; r++) {
+			readers.emplace_पृष्ठभागः([&]() {
+				यावत् (!stop.आरोपय(std::स्मृतिः_क्रमः_acquire)) {
+					पूर्णाङ्क current_आकार = layer.आकार();
 
-					for (int i = 0; i < current_size && i < TOTAL; i++) {
-						layer.contains(static_cast<param_t>(i));
+					प्रति (पूर्णाङ्क i = 0; i < current_आकार && i < योग_3; i++) {
+						layer.अन्तर्भवति(static_cast<param_t>(i));
 						layer.get(static_cast<param_t>(i));
 					}
 				}
 			});
 		}
 
-		for (auto &t : writers) {
+		प्रति (स्वचालित &t : writers) {
 			t.join();
 		}
 
-		stop.store(true, std::memory_order_release);
+		stop.store(सत्य, std::स्मृतिः_क्रमः_release);
 
-		for (auto &t : readers) {
+		प्रति (स्वचालित &t : readers) {
 			t.join();
 		}
 
-		ASSERT_EQ(layer.size(), TOTAL) << "rep=" << rep;
+		ASSERT_EQ(layer.आकार(), योग_3) << "rep=" << rep;
 
-		for (int i = 0; i < TOTAL; i++) {
-			ASSERT_TRUE(layer.contains(static_cast<param_t>(i)))
+		प्रति (पूर्णाङ्क i = 0; i < योग_3; i++) {
+			ASSERT_TRUE(layer.अन्तर्भवति(static_cast<param_t>(i)))
 					<< "rep=" << rep << " param=" << i;
-			param_value_u v = layer.get(static_cast<param_t>(i));
+			param_मानम्_u v = layer.get(static_cast<param_t>(i));
 			ASSERT_EQ(v.i, i * 10)
 					<< "rep=" << rep << " param=" << i;
 		}

@@ -39,9 +39,9 @@
  * @author Kurt Kiefer <kekiefer@gmail.com>
  */
 
-#pragma once
+#निर्देशः once
 
-#include <climits>
+#अन्तर्भाव <climits>
 
 /*
 min_rssi_dbm = -92.0
@@ -67,22 +67,22 @@ constexpr int8_t lu_dbm_percent[] = {
 	0,
 };
 
-#define MASK(n) (n >> (sizeof(n) * CHAR_BIT - 1))
+#परिभाषय आवरणम्_2(n) (n >> (परिमाण(n) * CHAR_BIT - 1))
 
 /* constexpr-compatible version of abs() */
-constexpr unsigned c_abs(int n)
+constexpr अचिह्नित c_abs(पूर्णाङ्क n)
 {
-	return (n + MASK(n)) ^ MASK(n);
+	प्रत्यागम (n + आवरणम्_2(n)) ^ आवरणम्_2(n);
 }
 
 /* convert signed spektrum dbm (-92 to -42) to percentage */
-constexpr int8_t spek_dbm_to_percent(int8_t dbm)
+constexpr int8_t spek_dbm_गन्तव्यम्_percent(int8_t dbm)
 {
-	return lu_dbm_percent[c_abs(dbm)];
+	प्रत्यागम lu_dbm_percent[c_abs(dbm)];
 }
 
-static_assert(spek_dbm_to_percent(0) == 100, "0 dbm should be 100%");
-static_assert(spek_dbm_to_percent(-42) == 100, "-42 dbm should be 100%");
-static_assert(spek_dbm_to_percent(-80) == 50, "-80 dbm should be 50%");
-static_assert(spek_dbm_to_percent(-92) == 0, "-92 dbm should be 0%");
-static_assert(spek_dbm_to_percent(-128) == 0, "-128 dbm should be 0%");
+static_assert(spek_dbm_गन्तव्यम्_percent(0) == 100, "0 dbm should be 100%");
+static_assert(spek_dbm_गन्तव्यम्_percent(-42) == 100, "-42 dbm should be 100%");
+static_assert(spek_dbm_गन्तव्यम्_percent(-80) == 50, "-80 dbm should be 50%");
+static_assert(spek_dbm_गन्तव्यम्_percent(-92) == 0, "-92 dbm should be 0%");
+static_assert(spek_dbm_गन्तव्यम्_percent(-128) == 0, "-128 dbm should be 0%");

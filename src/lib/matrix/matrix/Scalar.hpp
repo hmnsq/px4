@@ -6,58 +6,58 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#निर्देशः once
 
-#include "Matrix.hpp"
+#अन्तर्भाव "Matrix.hpp"
 
-namespace matrix
+नामाकाश matrix
 {
 
-template<typename Type>
-class Scalar
+प्रतिरूपम्<प्रकारनाम Type>
+वर्ग Scalar
 {
-public:
-	Scalar() = delete;
+सार्वजनिक:
+	Scalar() = विलोपय;
 
-	Scalar(const Matrix<Type, 1, 1> &other) :
-		_value{other(0, 0)}
+	Scalar(ध्रुव Matrix<Type, 1, 1> &other) :
+		मानम्_2{other(0, 0)}
 	{
 	}
 
-	Scalar(Type other) : _value(other)
+	Scalar(Type other) : मानम्_2(other)
 	{
 	}
 
-	operator const Type &()
+	संक्रियकः ध्रुव Type &()
 	{
-		return _value;
+		प्रत्यागम मानम्_2;
 	}
 
-	operator Matrix<Type, 1, 1>() const
+	संक्रियकः Matrix<Type, 1, 1>() ध्रुव
 	{
 		Matrix<Type, 1, 1> m;
-		m(0, 0) = _value;
-		return m;
+		m(0, 0) = मानम्_2;
+		प्रत्यागम m;
 	}
 
-	operator Vector<Type, 1>() const
+	संक्रियकः सदिशम्<Type, 1>() ध्रुव
 	{
-		Vector<Type, 1> m;
-		m(0) = _value;
-		return m;
+		सदिशम्<Type, 1> m;
+		m(0) = मानम्_2;
+		प्रत्यागम m;
 	}
 
-	bool operator==(const float other) const
+	तार्किक संक्रियकः==(ध्रुव भिन्न other) ध्रुव
 	{
-		return isEqualF(_value, other);
+		प्रत्यागम isEqualF(मानम्_2, other);
 	}
 
-private:
-	const Type _value;
+गुप्त:
+	ध्रुव Type मानम्_2;
 
 };
 
-using Scalarf = Scalar<float>;
-using Scalard = Scalar<double>;
+उपयुज्य Scalarf = Scalar<भिन्न>;
+उपयुज्य Scalard = Scalar<द्विगुण>;
 
 } // namespace matrix

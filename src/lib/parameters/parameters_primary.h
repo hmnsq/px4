@@ -31,21 +31,21 @@
  *
  ****************************************************************************/
 
-#pragma once
+#निर्देशः once
 
-#include "param.h"
+#अन्तर्भाव "param.h"
 
-struct param_primary_counters {
-	uint32_t set_value_request_received;
-	uint32_t set_value_response_sent;
-	uint32_t reset_sent;
-	uint32_t set_value_request_sent;
-	uint32_t set_value_response_received;
-	uint32_t set_used_received;
+संरचना param_primary_counters {
+	uint32_t समुच्चयः_मानम्_request_received;
+	uint32_t समुच्चयः_मानम्_response_प्रेषितम्;
+	uint32_t reset_प्रेषितम्;
+	uint32_t समुच्चयः_मानम्_request_प्रेषितम्;
+	uint32_t समुच्चयः_मानम्_response_received;
+	uint32_t समुच्चयः_प्रयुक्तम्_received;
 };
 
-void param_primary_init();
-void param_primary_set_value(param_t param, const void *val);
-void param_primary_reset(param_t param);
-void param_primary_reset_all();
-void param_primary_get_counters(struct param_primary_counters *cnt);
+शून्य param_primary_init();
+शून्य param_primary_समुच्चयः_मानम्(param_t param, ध्रुव शून्य *val);
+शून्य param_primary_reset(param_t param);
+शून्य param_primary_reset_all();
+शून्य param_primary_get_counters(संरचना param_primary_counters *cnt);

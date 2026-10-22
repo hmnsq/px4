@@ -31,14 +31,14 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <lib/rate_control/rate_control.hpp>
+#अन्तर्भाव <gtest/gtest.h>
+#अन्तर्भाव <lib/rate_control/rate_control.hpp>
 
-using namespace matrix;
+उपयुज्य नामाकाश matrix;
 
-TEST(RateControlTest, AllZeroCase)
+TEST(दरः_Control_Test, AllZeroCase)
 {
-	RateControl rate_control;
-	Vector3f torque = rate_control.update(Vector3f(), Vector3f(), Vector3f(), 0.f, false);
+	दरः_Control दरः_control;
+	Vector3f torque = दरः_control.update(Vector3f(), Vector3f(), Vector3f(), 0.f, असत्य);
 	EXPECT_EQ(torque, Vector3f());
 }

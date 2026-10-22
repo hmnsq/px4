@@ -46,20 +46,20 @@
  * http://www.roboticsproceedings.org/rss09/p50.pdf
  */
 
-#pragma once
+#निर्देशः once
 
-#include <matrix/matrix/math.hpp>
+#अन्तर्भाव <matrix/matrix/math.hpp>
 
-class FieldSensorBiasEstimator
+वर्ग क्षेत्रम्_Sensor_Bias_Estimator
 {
-public:
-	FieldSensorBiasEstimator() = default;
-	~FieldSensorBiasEstimator() = default;
+सार्वजनिक:
+	क्षेत्रम्_Sensor_Bias_Estimator() = स्वभाव;
+	~क्षेत्रम्_Sensor_Bias_Estimator() = स्वभाव;
 
 	// Set initial states
-	void setField(const matrix::Vector3f &field) { _field_prev = field; }
-	void setBias(const matrix::Vector3f &bias) { _state_bias = bias; }
-	void setLearningGain(float learning_gain) { _learning_gain = learning_gain; }
+	शून्य समुच्चयः_क्षेत्रम्(ध्रुव matrix::Vector3f &क्षेत्रम्) { क्षेत्रम्_पूर्व = क्षेत्रम्; }
+	शून्य समुच्चयः_Bias(ध्रुव matrix::Vector3f &bias) { _state_bias = bias; }
+	शून्य समुच्चयः_Learning_Gain(भिन्न learning_gain) { _learning_gain = learning_gain; }
 
 	/**
 	 * Update the estimator and extract updated biases.
@@ -67,20 +67,20 @@ public:
 	 * @param field biased field sensor data
 	 * @param dt time in seconds since the last update
 	 */
-	void updateEstimate(const matrix::Vector3f &gyro, const matrix::Vector3f &field, const float dt)
+	शून्य updateEstimate(ध्रुव matrix::Vector3f &gyro, ध्रुव matrix::Vector3f &क्षेत्रम्, ध्रुव भिन्न dt)
 	{
-		const matrix::Vector3f field_pred = _field_prev + (-gyro % (_field_prev - _state_bias)) * dt;
-		const matrix::Vector3f field_innov = field - field_pred;
-		_state_bias += _learning_gain * (-gyro % field_innov) * dt;
-		_field_prev = field;
+		ध्रुव matrix::Vector3f क्षेत्रम्_pred = क्षेत्रम्_पूर्व + (-gyro % (क्षेत्रम्_पूर्व - _state_bias)) * dt;
+		ध्रुव matrix::Vector3f क्षेत्रम्_innov = क्षेत्रम् - क्षेत्रम्_pred;
+		_state_bias += _learning_gain * (-gyro % क्षेत्रम्_innov) * dt;
+		क्षेत्रम्_पूर्व = क्षेत्रम्;
 	}
 
-	const matrix::Vector3f &getField() { return _field_prev; }
-	const matrix::Vector3f &getBias() { return _state_bias; }
+	ध्रुव matrix::Vector3f &get_क्षेत्रम्() { प्रत्यागम क्षेत्रम्_पूर्व; }
+	ध्रुव matrix::Vector3f &getBias() { प्रत्यागम _state_bias; }
 
-private:
-	// states
-	matrix::Vector3f _field_prev{};
+गुप्त:
+	//अवस्थाः
+	matrix::Vector3f क्षेत्रम्_पूर्व{};
 	matrix::Vector3f _state_bias{};
-	float _learning_gain{20.f};
+	भिन्न _learning_gain{20.f};
 };

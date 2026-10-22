@@ -31,58 +31,58 @@
  *
  ****************************************************************************/
 
-#include "PositionSmoothing.hpp"
-#include "TrajectoryConstraints.hpp"
-#include <mathlib/mathlib.h>
-#include <matrix/matrix/math.hpp>
+#अन्तर्भाव "PositionSmoothing.hpp"
+#अन्तर्भाव "TrajectoryConstraints.hpp"
+#अन्तर्भाव <mathlib/mathlib.h>
+#अन्तर्भाव <matrix/matrix/math.hpp>
 
-void PositionSmoothing::_generateSetpoints(
-	const Vector3f &position,
-	const Vector3f(&waypoints)[3],
-	bool is_single_waypoint,
-	const Vector3f &feedforward_velocity,
-	float delta_time,
-	bool force_zero_velocity_setpoint,
-	PositionSmoothingSetpoints &out_setpoints)
+शून्य PositionSmoothing::_generateSetpoints(
+	ध्रुव Vector3f &position,
+	ध्रुव Vector3f(&waypoints)[3],
+	तार्किक is_single_waypoint,
+	ध्रुव Vector3f &feedforward_velocity,
+	भिन्न delta_time,
+	तार्किक force_zero_velocity_setpoint,
+	PositionSmoothingSetpoints &बहिर्गमनम्_setpoints)
 {
 	Vector3f velocity_setpoint{0.f, 0.f, 0.f};
 
-	if (!force_zero_velocity_setpoint) {
+	यदि (!force_zero_velocity_setpoint) {
 		velocity_setpoint = _generateVelocitySetpoint(position, waypoints, is_single_waypoint, feedforward_velocity);
 	}
 
-	out_setpoints.unsmoothed_velocity = velocity_setpoint;
+	बहिर्गमनम्_setpoints.unsmoothed_velocity = velocity_setpoint;
 
 	_generateTrajectory(
 		position,
 		velocity_setpoint,
 		delta_time,
-		out_setpoints
+		बहिर्गमनम्_setpoints
 	);
 }
 
 
-bool PositionSmoothing::_isTurning(const Vector3f &target) const
+तार्किक PositionSmoothing::_isTurning(ध्रुव Vector3f &target) ध्रुव
 {
-	const Vector2f vel_traj(_trajectory[0].getCurrentVelocity(),
+	ध्रुव Vector2f vel_traj(_trajectory[0].getCurrentVelocity(),
 				_trajectory[1].getCurrentVelocity());
-	const Vector2f pos_traj(_trajectory[0].getCurrentPosition(),
+	ध्रुव Vector2f pos_traj(_trajectory[0].getCurrentPosition(),
 				_trajectory[1].getCurrentPosition());
-	const Vector2f target_xy(target);
-	const Vector2f u_vel_traj = vel_traj.unit_or_zero();
-	const Vector2f pos_to_target = Vector2f(target_xy - pos_traj);
-	const float cos_align = u_vel_traj * pos_to_target.unit_or_zero();
+	ध्रुव Vector2f target_xy(target);
+	ध्रुव Vector2f u_vel_traj = vel_traj.unit_or_zero();
+	ध्रुव Vector2f pos_गन्तव्यम्_target = Vector2f(target_xy - pos_traj);
+	ध्रुव भिन्न cos_align = u_vel_traj * pos_गन्तव्यम्_target.unit_or_zero();
 
 	// The vehicle is turning if the angle between the velocity vector
 	// and the direction to the target is greater than 10 degrees, the
 	// velocity is large enough and the drone isn't in the acceptance
 	// radius of the last WP.
-	return (vel_traj.longerThan(0.2f)
+	प्रत्यागम (vel_traj.longerThan(0.2f)
 		&& cos_align < 0.98f
-		&& pos_to_target.longerThan(_target_acceptance_radius));
+		&& pos_गन्तव्यम्_target.longerThan(_target_acceptance_radius));
 }
 
-float PositionSmoothing::_getMaxXYSpeed(const Vector3f(&waypoints)[3]) const
+भिन्न PositionSmoothing::_getMaxXYSpeed(ध्रुव Vector3f(&waypoints)[3]) ध्रुव
 {
 	Vector3f pos_traj(_trajectory[0].getCurrentPosition(),
 			  _trajectory[1].getCurrentPosition(),
@@ -93,209 +93,209 @@ float PositionSmoothing::_getMaxXYSpeed(const Vector3f(&waypoints)[3]) const
 	config.xy_accept_rad = _target_acceptance_radius;
 	config.max_acc_xy = _trajectory[0].getMaxAccel();
 	config.max_jerk = _trajectory[0].getMaxJerk();
-	config.max_speed_xy = _cruise_speed;
+	config.max_जवः_xy = cruise_जवः;
 	config.max_acc_xy_radius_scale = _horizontal_trajectory_gain;
 
 	// constrain velocity to go to the position setpoint first if the position setpoint has been modified by an external source
 	// (eg. Obstacle Avoidance)
 
-	Vector3f pos_to_waypoints[3] = {pos_traj, waypoints[1], waypoints[2]};
+	Vector3f pos_गन्तव्यम्_waypoints[3] = {pos_traj, waypoints[1], waypoints[2]};
 
-	return math::trajectory::computeXYSpeedFromWaypoints<3>(pos_to_waypoints, config);
+	प्रत्यागम math::trajectory::computeXYSpeedFromWaypoints<3>(pos_गन्तव्यम्_waypoints, config);
 }
 
-float PositionSmoothing::_getMaxZSpeed(const Vector3f(&waypoints)[3]) const
+भिन्न PositionSmoothing::_getMaxZSpeed(ध्रुव Vector3f(&waypoints)[3]) ध्रुव
 {
-	const Vector3f &start_position = {_trajectory[0].getCurrentPosition(),
+	ध्रुव Vector3f &start_position = {_trajectory[0].getCurrentPosition(),
 					  _trajectory[1].getCurrentPosition(),
 					  _trajectory[2].getCurrentPosition()
 					 };
-	const Vector3f &target = waypoints[1];
-	const Vector3f &next_target = waypoints[2];
+	ध्रुव Vector3f &target = waypoints[1];
+	ध्रुव Vector3f &अग्र_target = waypoints[2];
 
-	const Vector2f start_position_xy_z = {start_position.xy().norm(), start_position(2)};
-	const Vector2f target_xy_z = {target.xy().norm(), target(2)};
-	const Vector2f next_target_xy_z = {next_target.xy().norm(), next_target(2)};
+	ध्रुव Vector2f start_position_xy_z = {start_position.xy().norm(), start_position(2)};
+	ध्रुव Vector2f target_xy_z = {target.xy().norm(), target(2)};
+	ध्रुव Vector2f अग्र_target_xy_z = {अग्र_target.xy().norm(), अग्र_target(2)};
 
-	float arrival_z_speed = 0.0f;
-	const bool target_next_different = fabsf(target(2) - next_target(2)) > 0.001f;
+	भिन्न आगमनम्_z_जवः = 0.0f;
+	ध्रुव तार्किक target_अग्र_different = fabsf(target(2) - अग्र_target(2)) > 0.001f;
 
-	if (target_next_different) {
+	यदि (target_अग्र_different) {
 		// rounding can push the dot product of two unit vectors past 1, which acosf turns into NaN
-		const float cos_alpha = math::constrain(Vector2f((target_xy_z - start_position_xy_z)).unit_or_zero().dot(
-				Vector2f((target_xy_z - next_target_xy_z)).unit_or_zero()), -1.f, 1.f);
-		const float alpha = acosf(cos_alpha);
+		ध्रुव भिन्न cos_alpha = math::constrain(Vector2f((target_xy_z - start_position_xy_z)).unit_or_zero().dot(
+				Vector2f((target_xy_z - अग्र_target_xy_z)).unit_or_zero()), -1.f, 1.f);
+		ध्रुव भिन्न alpha = acosf(cos_alpha);
 
-		const float safe_alpha = math::constrain(alpha, 0.f, M_PI_F - FLT_EPSILON);
-		float accel_tmp = _trajectory[2].getMaxAccel();
-		float max_speed_in_turn = math::trajectory::computeMaxSpeedInWaypoint(safe_alpha, accel_tmp,
+		ध्रुव भिन्न safe_alpha = math::constrain(alpha, 0.f, M_PI_F - FLT_EPSILON);
+		भिन्न accel_tmp = _trajectory[2].getMaxAccel();
+		भिन्न max_जवः_अन्तर्_turn = math::trajectory::compute_Max_जवः_अन्तर्_Waypoint(safe_alpha, accel_tmp,
 					  _vertical_acceptance_radius);
-		arrival_z_speed = math::min(max_speed_in_turn, _trajectory[2].getMaxVel());
+		आगमनम्_z_जवः = math::min(max_जवः_अन्तर्_turn, _trajectory[2].getMaxVel());
 	}
 
-	const float distance_start_target = fabs(target(2) - start_position(2));
-	float max_speed = math::min(_trajectory[2].getMaxVel(), math::trajectory::computeMaxSpeedFromDistance(
+	ध्रुव भिन्न distance_start_target = fabs(target(2) - start_position(2));
+	भिन्न max_जवः = math::min(_trajectory[2].getMaxVel(), math::trajectory::compute_Max_जवः_From_Distance(
 					    _trajectory[2].getMaxJerk(), _trajectory[2].getMaxAccel(),
-					    distance_start_target, arrival_z_speed));
+					    distance_start_target, आगमनम्_z_जवः));
 
-	return max_speed;
+	प्रत्यागम max_जवः;
 }
 
-const Vector3f PositionSmoothing::_getCrossingPoint(const Vector3f &position, const Vector3f(&waypoints)[3]) const
+ध्रुव Vector3f PositionSmoothing::_getCrossingPoint(ध्रुव Vector3f &position, ध्रुव Vector3f(&waypoints)[3]) ध्रुव
 {
-	const auto &target = waypoints[1];
+	ध्रुव स्वचालित &target = waypoints[1];
 
-	if (!_isTurning(target)) {
-		return target;
+	यदि (!_isTurning(target)) {
+		प्रत्यागम target;
 	}
 
 	// Get the crossing point using L1-style guidance
-	return _getL1Point(position, waypoints);
+	प्रत्यागम _getL1Point(position, waypoints);
 }
 
-const Vector3f PositionSmoothing::_getL1Point(const Vector3f &position, const Vector3f(&waypoints)[3]) const
+ध्रुव Vector3f PositionSmoothing::_getL1Point(ध्रुव Vector3f &position, ध्रुव Vector3f(&waypoints)[3]) ध्रुव
 {
-	const Vector3f pos_traj(_trajectory[0].getCurrentPosition(), _trajectory[1].getCurrentPosition(),
+	ध्रुव Vector3f pos_traj(_trajectory[0].getCurrentPosition(), _trajectory[1].getCurrentPosition(),
 				_trajectory[2].getCurrentPosition());
-	const Vector3f prev_to_target = waypoints[1] - waypoints[0];
-	const float leg_length = prev_to_target.length();
-	const Vector3f u_prev_to_target = (leg_length > FLT_EPSILON) ? prev_to_target / leg_length : Vector3f();
-	const Vector3f prev_to_pos(pos_traj - waypoints[0]);
-	const float along_track = prev_to_pos * u_prev_to_target;
+	ध्रुव Vector3f पूर्व_गन्तव्यम्_target = waypoints[1] - waypoints[0];
+	ध्रुव भिन्न leg_दीर्घता = पूर्व_गन्तव्यम्_target.दीर्घता_2();
+	ध्रुव Vector3f u_पूर्व_गन्तव्यम्_target = (leg_दीर्घता > FLT_EPSILON) ? पूर्व_गन्तव्यम्_target / leg_दीर्घता : Vector3f();
+	ध्रुव Vector3f पूर्व_गन्तव्यम्_pos(pos_traj - waypoints[0]);
+	ध्रुव भिन्न along_track = पूर्व_गन्तव्यम्_pos * u_पूर्व_गन्तव्यम्_target;
 
 	// If the trajectory has already passed the target, aim straight at it instead of
 	// projecting the look-ahead point further along the (extended) leg. Otherwise an
 	// overshoot of a not-yet-accepted waypoint marches the setpoint away from it forever.
-	if (along_track >= leg_length) {
-		return waypoints[1];
+	यदि (along_track >= leg_दीर्घता) {
+		प्रत्यागम waypoints[1];
 	}
 
-	const Vector3f closest_pt = waypoints[0] + u_prev_to_target * along_track;
+	ध्रुव Vector3f closest_pt = waypoints[0] + u_पूर्व_गन्तव्यम्_target * along_track;
 
 	// Compute along-track error using L1 distance and cross-track error
-	const float crosstrack_error = (closest_pt - pos_traj).length();
+	ध्रुव भिन्न crosstrack_error = (closest_pt - pos_traj).दीर्घता_2();
 
-	const float l1 = math::max(_target_acceptance_radius, 5.f);
-	float alongtrack_error = 0.f;
+	ध्रुव भिन्न l1 = math::max(_target_acceptance_radius, 5.f);
+	भिन्न alongtrack_error = 0.f;
 
 	// Protect against sqrt of a negative number
-	if (l1 > crosstrack_error) {
+	यदि (l1 > crosstrack_error) {
 		alongtrack_error = sqrtf(l1 * l1 - crosstrack_error * crosstrack_error);
 	}
 
 	// Position of the point on the line where L1 intersect the line between the two waypoints
-	return closest_pt + alongtrack_error * u_prev_to_target;
+	प्रत्यागम closest_pt + alongtrack_error * u_पूर्व_गन्तव्यम्_target;
 }
 
-const Vector3f PositionSmoothing::_generateVelocitySetpoint(const Vector3f &position, const Vector3f(&waypoints)[3],
-		bool is_single_waypoint,
-		const Vector3f &feedforward_velocity_setpoint)
+ध्रुव Vector3f PositionSmoothing::_generateVelocitySetpoint(ध्रुव Vector3f &position, ध्रुव Vector3f(&waypoints)[3],
+		तार्किक is_single_waypoint,
+		ध्रुव Vector3f &feedforward_velocity_setpoint)
 {
 	// Interface: A valid position setpoint generates a velocity target using conservative motion constraints.
 	// If a velocity is specified, that is used as a feedforward to track the position setpoint
 	// (ie. it assumes the position setpoint is moving at the specified velocity)
 	// If the position setpoints are set to NAN, the values in the velocity setpoints are used as velocity targets: nothing to do here.
-	const Vector3f &target = waypoints[1];
-	const bool xy_target_valid = Vector2f(target).isAllFinite();
-	const bool z_target_valid = PX4_ISFINITE(target(2));
+	ध्रुव Vector3f &target = waypoints[1];
+	ध्रुव तार्किक xy_target_valid = Vector2f(target).isAllFinite();
+	ध्रुव तार्किक z_target_valid = PX4_ISFINITE(target(2));
 
 	Vector3f velocity_setpoint = feedforward_velocity_setpoint;
 
-	if (xy_target_valid && z_target_valid) {
+	यदि (xy_target_valid && z_target_valid) {
 		// Use 3D position setpoint to generate a 3D velocity setpoint
 		Vector3f pos_traj(_trajectory[0].getCurrentPosition(),
 				  _trajectory[1].getCurrentPosition(),
 				  _trajectory[2].getCurrentPosition());
-		const Vector3f crossing_point = is_single_waypoint ? target : _getCrossingPoint(position, waypoints);
-		const Vector3f u_pos_traj_to_dest{(crossing_point - pos_traj).unit_or_zero()};
+		ध्रुव Vector3f crossing_point = is_single_waypoint ? target : _getCrossingPoint(position, waypoints);
+		ध्रुव Vector3f u_pos_traj_गन्तव्यम्_dest{(crossing_point - pos_traj).unit_or_zero()};
 
-		float xy_speed = _getMaxXYSpeed(waypoints);
-		const float z_speed = _getMaxZSpeed(waypoints);
+		भिन्न xy_जवः = _getMaxXYSpeed(waypoints);
+		ध्रुव भिन्न z_जवः = _getMaxZSpeed(waypoints);
 
-		if (!is_single_waypoint && _isTurning(target)) {
+		यदि (!is_single_waypoint && _isTurning(target)) {
 			// Limit speed during a turn
-			xy_speed = math::min(_max_speed_previous, xy_speed);
+			xy_जवः = math::min(max_जवः_previous, xy_जवः);
 
-		} else {
-			_max_speed_previous = xy_speed;
+		} अन्यथा {
+			max_जवः_previous = xy_जवः;
 		}
 
 		// Scale one 3D direction to fit both limits, so the slower axis limits the other
 		// one and a leg that changes altitude is flown as a straight line
-		Vector3f vel_sp_constrained = u_pos_traj_to_dest * sqrtf(xy_speed * xy_speed + z_speed * z_speed);
-		math::trajectory::clampToXYNorm(vel_sp_constrained, xy_speed, 0.5f);
-		math::trajectory::clampToZNorm(vel_sp_constrained, z_speed, 0.5f);
+		Vector3f vel_sp_constrained = u_pos_traj_गन्तव्यम्_dest * sqrtf(xy_जवः * xy_जवः + z_जवः * z_जवः);
+		math::trajectory::clamp_गन्तव्यम्_XYNorm(vel_sp_constrained, xy_जवः, 0.5f);
+		math::trajectory::clamp_गन्तव्यम्_ZNorm(vel_sp_constrained, z_जवः, 0.5f);
 
-		for (int i = 0; i < 3; i++) {
+		प्रति (पूर्णाङ्क i = 0; i < 3; i++) {
 			// If available, use the existing velocity as a feedforward, otherwise replace it
-			if (PX4_ISFINITE(velocity_setpoint(i))) {
+			यदि (PX4_ISFINITE(velocity_setpoint(i))) {
 				velocity_setpoint(i) += vel_sp_constrained(i);
 
-			} else {
+			} अन्यथा {
 				velocity_setpoint(i) = vel_sp_constrained(i);
 			}
 		}
 	}
 
-	else if (xy_target_valid) {
+	अन्यथा यदि (xy_target_valid) {
 		// Use 2D position setpoint to generate a 2D velocity setpoint
 
 		// Get various path specific vectors
 		Vector2f pos_traj(_trajectory[0].getCurrentPosition(), _trajectory[1].getCurrentPosition());
 		Vector2f crossing_point = is_single_waypoint ? Vector2f(target) : Vector2f(_getCrossingPoint(position, waypoints));
-		Vector2f pos_traj_to_dest_xy = crossing_point - pos_traj;
-		Vector2f u_pos_traj_to_dest_xy(pos_traj_to_dest_xy.unit_or_zero());
+		Vector2f pos_traj_गन्तव्यम्_dest_xy = crossing_point - pos_traj;
+		Vector2f u_pos_traj_गन्तव्यम्_dest_xy(pos_traj_गन्तव्यम्_dest_xy.unit_or_zero());
 
-		float xy_speed = _getMaxXYSpeed(waypoints);
+		भिन्न xy_जवः = _getMaxXYSpeed(waypoints);
 
-		if (_isTurning(target)) {
+		यदि (_isTurning(target)) {
 			// Lock speed during turn
-			xy_speed = math::min(_max_speed_previous, xy_speed);
+			xy_जवः = math::min(max_जवः_previous, xy_जवः);
 
-		} else {
-			_max_speed_previous = xy_speed;
+		} अन्यथा {
+			max_जवः_previous = xy_जवः;
 		}
 
-		Vector2f vel_sp_constrained_xy = u_pos_traj_to_dest_xy * xy_speed;
+		Vector2f vel_sp_constrained_xy = u_pos_traj_गन्तव्यम्_dest_xy * xy_जवः;
 
-		for (int i = 0; i < 2; i++) {
+		प्रति (पूर्णाङ्क i = 0; i < 2; i++) {
 			// If available, use the existing velocity as a feedforward, otherwise replace it
-			if (PX4_ISFINITE(velocity_setpoint(i))) {
+			यदि (PX4_ISFINITE(velocity_setpoint(i))) {
 				velocity_setpoint(i) += vel_sp_constrained_xy(i);
 
-			} else {
+			} अन्यथा {
 				velocity_setpoint(i) = vel_sp_constrained_xy(i);
 			}
 		}
 	}
 
-	else if (z_target_valid) {
+	अन्यथा यदि (z_target_valid) {
 		// Use Z position setpoint to generate a Z velocity setpoint
 
-		const float z_dir = matrix::sign(target(2) - _trajectory[2].getCurrentPosition());
-		const float vel_sp_z = z_dir * _getMaxZSpeed(waypoints);
+		ध्रुव भिन्न z_dir = matrix::sign(target(2) - _trajectory[2].getCurrentPosition());
+		ध्रुव भिन्न vel_sp_z = z_dir * _getMaxZSpeed(waypoints);
 
 		// If available, use the existing velocity as a feedforward, otherwise replace it
-		if (PX4_ISFINITE(velocity_setpoint(2))) {
+		यदि (PX4_ISFINITE(velocity_setpoint(2))) {
 			velocity_setpoint(2) += vel_sp_z;
 
-		} else {
+		} अन्यथा {
 			velocity_setpoint(2) = vel_sp_z;
 		}
 	}
 
-	return velocity_setpoint;
+	प्रत्यागम velocity_setpoint;
 }
 
 
-void PositionSmoothing::_generateTrajectory(
-	const Vector3f &position,
-	const Vector3f &velocity_setpoint,
-	float delta_time,
-	PositionSmoothingSetpoints &out_setpoints)
+शून्य PositionSmoothing::_generateTrajectory(
+	ध्रुव Vector3f &position,
+	ध्रुव Vector3f &velocity_setpoint,
+	भिन्न delta_time,
+	PositionSmoothingSetpoints &बहिर्गमनम्_setpoints)
 {
-	if (!velocity_setpoint.isAllFinite()) {
-		return;
+	यदि (!velocity_setpoint.isAllFinite()) {
+		प्रत्यागम;
 	}
 
 	/* Slow down the trajectory by decreasing the integration time based on the position error.
@@ -310,45 +310,45 @@ void PositionSmoothing::_generateTrajectory(
 	Vector2f position_trajectory_xy(_trajectory[0].getCurrentPosition(), _trajectory[1].getCurrentPosition());
 	Vector2f position_xy(position);
 	Vector2f vel_traj_xy(_trajectory[0].getCurrentVelocity(), _trajectory[1].getCurrentVelocity());
-	Vector2f drone_to_trajectory_xy(position_trajectory_xy - position_xy);
-	float position_error_xy = drone_to_trajectory_xy.length();
+	Vector2f drone_गन्तव्यम्_trajectory_xy(position_trajectory_xy - position_xy);
+	भिन्न position_error_xy = drone_गन्तव्यम्_trajectory_xy.दीर्घता_2();
 
-	float time_stretch_xy = 1.f;
+	भिन्न time_stretch_xy = 1.f;
 
 	// Only stretch time if there's no division by zero and the drone isn't ahead of the position setpoint
-	if ((_max_allowed_horizontal_error > FLT_EPSILON)
-	    && drone_to_trajectory_xy.dot(vel_traj_xy) >= 0) {
+	यदि ((_max_allowed_horizontal_error > FLT_EPSILON)
+	    && drone_गन्तव्यम्_trajectory_xy.dot(vel_traj_xy) >= 0) {
 		time_stretch_xy = 1.f - math::constrain(position_error_xy / _max_allowed_horizontal_error, 0.f, 1.f);
 	}
 
-	if (drone_to_trajectory_xy.dot(vel_traj_xy) < 0.f) {
+	यदि (drone_गन्तव्यम्_trajectory_xy.dot(vel_traj_xy) < 0.f) {
 		time_stretch_xy = 1.f;
 	}
 
 	// Same idea for the vertical axis: only stretch when the virtual trajectory is leading the
 	// drone AND moving further away from it. Reversing trajectories (virtual coming back toward
 	// the drone) are left alone so we can recover without artificially slowing down.
-	float time_stretch_z = 1.f;
-	const float drone_to_traj_z = _trajectory[2].getCurrentPosition() - position(2);
-	const float vel_traj_z = _trajectory[2].getCurrentVelocity();
+	भिन्न time_stretch_z = 1.f;
+	ध्रुव भिन्न drone_गन्तव्यम्_traj_z = _trajectory[2].getCurrentPosition() - position(2);
+	ध्रुव भिन्न vel_traj_z = _trajectory[2].getCurrentVelocity();
 
-	if ((_max_allowed_vertical_error > FLT_EPSILON)
-	    && drone_to_traj_z * vel_traj_z >= 0.f) {
-		time_stretch_z = 1.f - math::constrain(fabsf(drone_to_traj_z) / _max_allowed_vertical_error, 0.f, 1.f);
+	यदि ((_max_allowed_vertical_error > FLT_EPSILON)
+	    && drone_गन्तव्यम्_traj_z * vel_traj_z >= 0.f) {
+		time_stretch_z = 1.f - math::constrain(fabsf(drone_गन्तव्यम्_traj_z) / _max_allowed_vertical_error, 0.f, 1.f);
 	}
 
 	// Axis 0,1 (XY) get the horizontal stretch; axis 2 (Z) gets the vertical stretch.
-	const float axis_stretch[3] = { time_stretch_xy, time_stretch_xy, time_stretch_z };
+	ध्रुव भिन्न axis_stretch[3] = { time_stretch_xy, time_stretch_xy, time_stretch_z };
 
-	for (int i = 0; i < 3; ++i) {
+	प्रति (पूर्णाङ्क i = 0; i < 3; ++i) {
 		_trajectory[i].updateTraj(delta_time, axis_stretch[i]);
-		out_setpoints.jerk(i) = _trajectory[i].getCurrentJerk();
-		out_setpoints.acceleration(i) = _trajectory[i].getCurrentAcceleration();
-		out_setpoints.velocity(i) = _trajectory[i].getCurrentVelocity();
-		out_setpoints.position(i) = _trajectory[i].getCurrentPosition();
+		बहिर्गमनम्_setpoints.jerk(i) = _trajectory[i].getCurrentJerk();
+		बहिर्गमनम्_setpoints.acceleration(i) = _trajectory[i].getCurrentAcceleration();
+		बहिर्गमनम्_setpoints.velocity(i) = _trajectory[i].getCurrentVelocity();
+		बहिर्गमनम्_setpoints.position(i) = _trajectory[i].getCurrentPosition();
 	}
 
-	for (int i = 0; i < 3; ++i) {
+	प्रति (पूर्णाङ्क i = 0; i < 3; ++i) {
 		_trajectory[i].updateDurations(velocity_setpoint(i));
 	}
 

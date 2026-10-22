@@ -37,65 +37,65 @@
  * Controller library code
  */
 
-#pragma once
+#निर्देशः once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <assert.h>
+#अन्तर्भाव <time.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <mathlib/math/test/test.hpp>
+#अन्तर्भाव <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#अन्तर्भाव "block/Block.hpp"
+#अन्तर्भाव "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#अन्तर्भाव "matrix/math.hpp"
 
-namespace control
+नामाकाश control
 {
-template<class Type, size_t M>
-class __EXPORT BlockStats: public Block
+प्रतिरूपम्<वर्ग Type, size_t M>
+वर्ग __EXPORT खण्डम्_Stats: सार्वजनिक खण्डम्
 {
 
-public:
+सार्वजनिक:
 // methods
-	BlockStats(SuperBlock *parent,
-		   const char *name) :
-		Block(parent, name),
-		_sum(),
-		_sumSq(),
-		_count(0)
+	खण्डम्_Stats(Super_खण्डम् *parent,
+		   ध्रुव वर्ण *name) :
+		खण्डम्(parent, name),
+		योग_2(),
+		योग_Sq(),
+		गणनम्_3(0)
 	{}
-	virtual ~BlockStats() = default;
-	void update(const matrix::Vector<Type, M> &u)
+	आभास ~खण्डम्_Stats() = स्वभाव;
+	शून्य update(ध्रुव matrix::सदिशम्<Type, M> &u)
 	{
-		_sum += u;
-		_sumSq += u.emult(u);
-		_count += 1;
+		योग_2 += u;
+		योग_Sq += u.emult(u);
+		गणनम्_3 += 1;
 	}
-	void reset()
+	शून्य reset()
 	{
-		_sum.setZero();
-		_sumSq.setZero();
-		_count = 0;
+		योग_2.समुच्चयः_Zero();
+		योग_Sq.समुच्चयः_Zero();
+		गणनम्_3 = 0;
 	}
 // accessors
-	size_t getCount() { return _count; }
-	matrix::Vector<Type, M> getMean() { return _sum / _count; }
-	matrix::Vector<Type, M> getVar()
+	size_t get_गणनम्() { प्रत्यागम गणनम्_3; }
+	matrix::सदिशम्<Type, M> get_माध्यम्() { प्रत्यागम योग_2 / गणनम्_3; }
+	matrix::सदिशम्<Type, M> getVar()
 	{
-		return (_sumSq - _sum.emult(_sum) / _count) / _count;
+		प्रत्यागम (योग_Sq - योग_2.emult(योग_2) / गणनम्_3) / गणनम्_3;
 	}
-	matrix::Vector<Type, M> getStdDev()
+	matrix::सदिशम्<Type, M> getStdDev()
 	{
-		return getVar().sqrt();
+		प्रत्यागम getVar().वर्गमूलम्();
 	}
-private:
-// attributes
-	matrix::Vector<Type, M> _sum;
-	matrix::Vector<Type, M> _sumSq;
-	size_t _count;
+गुप्त:
+//गुणाः
+	matrix::सदिशम्<Type, M> योग_2;
+	matrix::सदिशम्<Type, M> योग_Sq;
+	size_t गणनम्_3;
 };
 
 } // namespace control

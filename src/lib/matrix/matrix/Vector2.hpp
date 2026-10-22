@@ -6,103 +6,103 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#निर्देशः once
 
-#include "Vector.hpp"
+#अन्तर्भाव "Vector.hpp"
 
-namespace matrix
+नामाकाश matrix
 {
 
-template<typename Type>
-class Vector2 : public Vector<Type, 2>
+प्रतिरूपम्<प्रकारनाम Type>
+वर्ग Vector2 : सार्वजनिक सदिशम्<Type, 2>
 {
-public:
+सार्वजनिक:
 
-	using Matrix21 = Matrix<Type, 2, 1>;
-	using Vector3 = Vector<Type, 3>;
+	उपयुज्य Matrix21 = Matrix<Type, 2, 1>;
+	उपयुज्य Vector3 = सदिशम्<Type, 3>;
 
-	Vector2() = default;
+	Vector2() = स्वभाव;
 
-	Vector2(const Matrix21 &other) :
-		Vector<Type, 2>(other)
+	Vector2(ध्रुव Matrix21 &other) :
+		सदिशम्<Type, 2>(other)
 	{
 	}
 
-	explicit Vector2(const Type data_[2]) :
-		Vector<Type, 2>(data_)
+	स्पष्ट Vector2(ध्रुव Type दत्त_2[2]) :
+		सदिशम्<Type, 2>(दत्त_2)
 	{
 	}
 
 	Vector2(Type x, Type y)
 	{
-		Vector2 &v(*this);
+		Vector2 &v(*एतत्);
 		v(0) = x;
 		v(1) = y;
 	}
 
-	using base = Vector<Type, 2>;
-	using base::base;
+	उपयुज्य base = सदिशम्<Type, 2>;
+	उपयुज्य base::base;
 
-	explicit Vector2(const Vector3 &other)
+	स्पष्ट Vector2(ध्रुव Vector3 &other)
 	{
-		Vector2 &v(*this);
+		Vector2 &v(*एतत्);
 		v(0) = other(0);
 		v(1) = other(1);
 	}
 
-	Type cross(const Matrix21 &b) const
+	Type cross(ध्रुव Matrix21 &b) ध्रुव
 	{
-		const Vector2 &a(*this);
-		return a(0) * b(1, 0) - a(1) * b(0, 0);
+		ध्रुव Vector2 &a(*एतत्);
+		प्रत्यागम a(0) * b(1, 0) - a(1) * b(0, 0);
 	}
 
 	/**
 	 * Override matrix ops so Vector2 type is returned
 	 */
 
-	Vector2 operator+(Vector2 other) const
+	Vector2 संक्रियकः+(Vector2 other) ध्रुव
 	{
-		return Matrix21::operator+(other);
+		प्रत्यागम Matrix21::संक्रियकः+(other);
 	}
 
-	Vector2 operator+(Type scalar) const
+	Vector2 संक्रियकः+(Type scalar) ध्रुव
 	{
-		return Matrix21::operator+(scalar);
+		प्रत्यागम Matrix21::संक्रियकः+(scalar);
 	}
 
-	Vector2 operator-(Vector2 other) const
+	Vector2 संक्रियकः-(Vector2 other) ध्रुव
 	{
-		return Matrix21::operator-(other);
+		प्रत्यागम Matrix21::संक्रियकः-(other);
 	}
 
-	Vector2 operator-(Type scalar) const
+	Vector2 संक्रियकः-(Type scalar) ध्रुव
 	{
-		return Matrix21::operator-(scalar);
+		प्रत्यागम Matrix21::संक्रियकः-(scalar);
 	}
 
-	Vector2 operator-() const
+	Vector2 संक्रियकः-() ध्रुव
 	{
-		return Matrix21::operator-();
+		प्रत्यागम Matrix21::संक्रियकः-();
 	}
 
-	Vector2 operator*(Type scalar) const
+	Vector2 संक्रियकः*(Type scalar) ध्रुव
 	{
-		return Matrix21::operator*(scalar);
+		प्रत्यागम Matrix21::संक्रियकः*(scalar);
 	}
 
-	Type operator*(Vector2 b) const
+	Type संक्रियकः*(Vector2 b) ध्रुव
 	{
-		return Vector<Type, 2>::operator*(b);
+		प्रत्यागम सदिशम्<Type, 2>::संक्रियकः*(b);
 	}
 
-	Type operator%(const Matrix21 &b) const
+	Type संक्रियकः%(ध्रुव Matrix21 &b) ध्रुव
 	{
-		return (*this).cross(b);
+		प्रत्यागम (*एतत्).cross(b);
 	}
 
 };
 
-using Vector2f = Vector2<float>;
-using Vector2d = Vector2<double>;
+उपयुज्य Vector2f = Vector2<भिन्न>;
+उपयुज्य Vector2d = Vector2<द्विगुण>;
 
 } // namespace matrix

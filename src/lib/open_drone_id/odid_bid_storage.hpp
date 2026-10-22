@@ -31,64 +31,64 @@
  *
  ****************************************************************************/
 
-#pragma once
+#निर्देशः once
 
-#include <stdint.h>
+#अन्तर्भाव <stdint.h>
 
-namespace open_drone_id
+नामाकाश open_drone_id
 {
 
-static constexpr uint8_t UAS_ID_SIZE = 20;
-static constexpr uint8_t UAS_ID_TYPE_SERIAL_NUMBER = 1;
-static constexpr int32_t UAS_ID_MODE_LOCK_FIRST_BASIC_ID = 1;
+स्थिर constexpr uint8_t UAS_ID_आकार = 20;
+स्थिर constexpr uint8_t UAS_ID_TYPE_SERIAL_सङ्ख्या = 1;
+स्थिर constexpr int32_t UAS_ID_बहुलकम्_तालकम्_FIRST_BASIC_ID = 1;
 
-struct UasId {
+संरचना UasId {
 	uint8_t ua_type{0};
-	uint8_t uas_id[UAS_ID_SIZE] {};
+	uint8_t uas_id[UAS_ID_आकार] {};
 };
 
-enum class BidLockState {
-	Empty,
+गणना वर्ग Bid_तालकम्_State {
+	रिक्तानि_2,
 	Locked,
-	InvalidRecord,
+	Invalid_लेखः,
 	StorageUnavailable,
 	WriteError,
 	Unsupported,
 };
 
-struct BidLockInfo {
-	BidLockState state{BidLockState::Unsupported};
+संरचना Bid_तालकम्_Info {
+	Bid_तालकम्_State state{Bid_तालकम्_State::Unsupported};
 	UasId id{};
 
-	bool locked() const { return state == BidLockState::Locked; }
+	तार्किक locked() ध्रुव { प्रत्यागम state == Bid_तालकम्_State::Locked; }
 };
 
-enum class BidStoreResult {
+गणना वर्ग Bid_Store_परिणाम {
 	Stored,
 	AlreadyLocked,
 	AlreadyLockedDifferent,
 	InvalidBasicId,
 	StorageUnavailable,
-	InvalidRecord,
+	Invalid_लेखः,
 	WriteError,
 	Unsupported,
 };
 
-class BidStorage
+वर्ग BidStorage
 {
-public:
-	static BidLockInfo get();
-	static BidStoreResult checkOrStore(uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE]);
+सार्वजनिक:
+	स्थिर Bid_तालकम्_Info get();
+	स्थिर Bid_Store_परिणाम checkOrStore(uint8_t ua_type, ध्रुव uint8_t uas_id[UAS_ID_आकार]);
 };
 
-class BidLock
+वर्ग Bid_तालकम्
 {
-public:
-	BidStoreResult resolve(uint8_t id_type, uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE], UasId &locked_id);
+सार्वजनिक:
+	Bid_Store_परिणाम resolve(uint8_t id_type, uint8_t ua_type, ध्रुव uint8_t uas_id[UAS_ID_आकार], UasId &locked_id);
 
-private:
-	BidLockInfo _info{};
-	bool _loaded{false};
+गुप्त:
+	Bid_तालकम्_Info _info{};
+	तार्किक _loaded{असत्य};
 };
 
 } // namespace open_drone_id

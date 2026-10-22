@@ -37,120 +37,120 @@
  * @author Jonas Perolini <jonspero@me.com>
  */
 
-#include <gtest/gtest.h>
+#अन्तर्भाव <gtest/gtest.h>
 
-#include <lib/adsb/DaaActionPolicy.h>
-#include <uORB/topics/detect_and_avoid.h>
-#include <uORB/topics/vehicle_status.h>
+#अन्तर्भाव <lib/adsb/DaaActionPolicy.h>
+#अन्तर्भाव <uORB/topics/detect_and_avoid.h>
+#अन्तर्भाव <uORB/topics/vehicle_status.h>
 
-namespace
+नामाकाश
 {
 
 // Same action parameter value for every conflict level, so the decide() tests
 // behave identically in F3442 and Crosstrack builds.
-daa_action_params_s params_for_all_levels(const int32_t action_param)
+daa_action_params_s params_for_all_स्तराः(ध्रुव int32_t action_param)
 {
 	daa_action_params_s params{};
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
-	params.lvl_low_act = action_param;
+#यदि defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+	params.lvl_नीचः_act = action_param;
 	params.lvl_med_act = action_param;
-	params.lvl_high_act = action_param;
+	params.lvl_उच्चः_act = action_param;
 	params.lvl_crit_act = action_param;
-#else
+#अन्यथा
 	params.traff_avoid = action_param;
-#endif // CONFIG_NAVIGATOR_ADSB_F3442
-	return params;
+#यदि_अन्तः // CONFIG_NAVIGATOR_ADSB_F3442
+	प्रत्यागम params;
 }
 
 // Navigation state groups by the weakest DAA action allowed to escalate above them.
-const uint8_t kStatesEnableHold[] {
-	vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION,
-	vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF,
-	vehicle_status_s::NAVIGATION_STATE_AUTO_FOLLOW_TARGET,
-	vehicle_status_s::NAVIGATION_STATE_AUTO_VTOL_TAKEOFF,
-	vehicle_status_s::NAVIGATION_STATE_GUIDED_COURSE,
+ध्रुव uint8_t k_अवस्थाः_Enable_Hold[] {
+	vehicle_स्थितिः_s::NAVIGATION_STATE_AUTO_MISSION,
+	vehicle_स्थितिः_s::NAVIGATION_STATE_AUTO_TAKEOFF,
+	vehicle_स्थितिः_s::NAVIGATION_STATE_AUTO_FOLLOW_TARGET,
+	vehicle_स्थितिः_s::NAVIGATION_STATE_AUTO_VTOL_TAKEOFF,
+	vehicle_स्थितिः_s::NAVIGATION_STATE_GUIDED_COURSE,
 };
 
-const uint8_t kStatesEnableRtl[] {
-	vehicle_status_s::NAVIGATION_STATE_ORBIT,
-	vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER,
+ध्रुव uint8_t k_अवस्थाः_Enable_Rtl[] {
+	vehicle_स्थितिः_s::NAVIGATION_STATE_ORBIT,
+	vehicle_स्थितिः_s::NAVIGATION_STATE_AUTO_LOITER,
 };
 
-const uint8_t kStatesEnableLand[] {
-	vehicle_status_s::NAVIGATION_STATE_AUTO_RTL,
+ध्रुव uint8_t k_अवस्थाः_Enable_Land[] {
+	vehicle_स्थितिः_s::NAVIGATION_STATE_AUTO_RTL,
 };
 
-const uint8_t kStatesEnableTermination[] {
-	vehicle_status_s::NAVIGATION_STATE_AUTO_LAND,
-	vehicle_status_s::NAVIGATION_STATE_DESCEND,
-	vehicle_status_s::NAVIGATION_STATE_AUTO_PRECLAND,
-	vehicle_status_s::NAVIGATION_STATE_MANUAL,
-	vehicle_status_s::NAVIGATION_STATE_ALTCTL,
-	vehicle_status_s::NAVIGATION_STATE_ALTITUDE_CRUISE,
-	vehicle_status_s::NAVIGATION_STATE_MANUAL_PARKING,
-	vehicle_status_s::NAVIGATION_STATE_POSCTL,
-	vehicle_status_s::NAVIGATION_STATE_POSITION_SLOW,
-	vehicle_status_s::NAVIGATION_STATE_ACRO,
-	vehicle_status_s::NAVIGATION_STATE_STAB,
+ध्रुव uint8_t k_अवस्थाः_Enable_Termination[] {
+	vehicle_स्थितिः_s::NAVIGATION_STATE_AUTO_LAND,
+	vehicle_स्थितिः_s::NAVIGATION_STATE_DESCEND,
+	vehicle_स्थितिः_s::NAVIGATION_STATE_AUTO_PRECLAND,
+	vehicle_स्थितिः_s::NAVIGATION_STATE_MANUAL,
+	vehicle_स्थितिः_s::NAVIGATION_STATE_ALTCTL,
+	vehicle_स्थितिः_s::NAVIGATION_STATE_ALTITUDE_CRUISE,
+	vehicle_स्थितिः_s::NAVIGATION_STATE_MANUAL_PARKING,
+	vehicle_स्थितिः_s::NAVIGATION_STATE_POSCTL,
+	vehicle_स्थितिः_s::NAVIGATION_STATE_POSITION_SLOW,
+	vehicle_स्थितिः_s::NAVIGATION_STATE_ACRO,
+	vehicle_स्थितिः_s::NAVIGATION_STATE_STAB,
 };
 
-const uint8_t kStatesNeverEnable[] {
-	vehicle_status_s::NAVIGATION_STATE_TERMINATION,
-	vehicle_status_s::NAVIGATION_STATE_OFFBOARD,
-	vehicle_status_s::NAVIGATION_STATE_EXTERNAL1,
-	vehicle_status_s::NAVIGATION_STATE_EXTERNAL2,
-	vehicle_status_s::NAVIGATION_STATE_EXTERNAL3,
-	vehicle_status_s::NAVIGATION_STATE_EXTERNAL4,
-	vehicle_status_s::NAVIGATION_STATE_EXTERNAL5,
-	vehicle_status_s::NAVIGATION_STATE_EXTERNAL6,
-	vehicle_status_s::NAVIGATION_STATE_EXTERNAL7,
-	vehicle_status_s::NAVIGATION_STATE_EXTERNAL8,
+ध्रुव uint8_t k_अवस्थाः_Never_Enable[] {
+	vehicle_स्थितिः_s::NAVIGATION_STATE_TERMINATION,
+	vehicle_स्थितिः_s::NAVIGATION_STATE_OFFBOARD,
+	vehicle_स्थितिः_s::NAVIGATION_STATE_EXTERNAL1,
+	vehicle_स्थितिः_s::NAVIGATION_STATE_EXTERNAL2,
+	vehicle_स्थितिः_s::NAVIGATION_STATE_EXTERNAL3,
+	vehicle_स्थितिः_s::NAVIGATION_STATE_EXTERNAL4,
+	vehicle_स्थितिः_s::NAVIGATION_STATE_EXTERNAL5,
+	vehicle_स्थितिः_s::NAVIGATION_STATE_EXTERNAL6,
+	vehicle_स्थितिः_s::NAVIGATION_STATE_EXTERNAL7,
+	vehicle_स्थितिः_s::NAVIGATION_STATE_EXTERNAL8,
 };
 
-struct escalation_case_s {
+संरचना escalation_case_s {
 	DaaAction action{DaaAction::kDisabled};
-	bool hold_allowed{false};
-	bool rtl_allowed{false};
-	bool land_allowed{false};
-	bool terminate_allowed{false};
+	तार्किक hold_allowed{असत्य};
+	तार्किक rtl_allowed{असत्य};
+	तार्किक land_allowed{असत्य};
+	तार्किक terminate_allowed{असत्य};
 };
 
-void check_escalation_matrix(const escalation_case_s &test_case)
+शून्य check_escalation_matrix(ध्रुव escalation_case_s &test_case)
 {
-	for (const uint8_t nav_state : kStatesEnableHold) {
+	प्रति (ध्रुव uint8_t nav_state : k_अवस्थाः_Enable_Hold) {
 		EXPECT_EQ(DaaActionPolicy::action_escalates_above_nav_state(test_case.action, nav_state),
-			  test_case.hold_allowed) << "action " << (int)test_case.action << " nav_state " << (int)nav_state;
+			  test_case.hold_allowed) << "action " << (पूर्णाङ्क)test_case.action << " nav_state " << (पूर्णाङ्क)nav_state;
 	}
 
-	for (const uint8_t nav_state : kStatesEnableRtl) {
+	प्रति (ध्रुव uint8_t nav_state : k_अवस्थाः_Enable_Rtl) {
 		EXPECT_EQ(DaaActionPolicy::action_escalates_above_nav_state(test_case.action, nav_state),
-			  test_case.rtl_allowed) << "action " << (int)test_case.action << " nav_state " << (int)nav_state;
+			  test_case.rtl_allowed) << "action " << (पूर्णाङ्क)test_case.action << " nav_state " << (पूर्णाङ्क)nav_state;
 	}
 
-	for (const uint8_t nav_state : kStatesEnableLand) {
+	प्रति (ध्रुव uint8_t nav_state : k_अवस्थाः_Enable_Land) {
 		EXPECT_EQ(DaaActionPolicy::action_escalates_above_nav_state(test_case.action, nav_state),
-			  test_case.land_allowed) << "action " << (int)test_case.action << " nav_state " << (int)nav_state;
+			  test_case.land_allowed) << "action " << (पूर्णाङ्क)test_case.action << " nav_state " << (पूर्णाङ्क)nav_state;
 	}
 
-	for (const uint8_t nav_state : kStatesEnableTermination) {
+	प्रति (ध्रुव uint8_t nav_state : k_अवस्थाः_Enable_Termination) {
 		EXPECT_EQ(DaaActionPolicy::action_escalates_above_nav_state(test_case.action, nav_state),
-			  test_case.terminate_allowed) << "action " << (int)test_case.action << " nav_state " << (int)nav_state;
+			  test_case.terminate_allowed) << "action " << (पूर्णाङ्क)test_case.action << " nav_state " << (पूर्णाङ्क)nav_state;
 	}
 
-	for (const uint8_t nav_state : kStatesNeverEnable) {
+	प्रति (ध्रुव uint8_t nav_state : k_अवस्थाः_Never_Enable) {
 		EXPECT_FALSE(DaaActionPolicy::action_escalates_above_nav_state(test_case.action, nav_state))
-				<< "action " << (int)test_case.action << " nav_state " << (int)nav_state;
+				<< "action " << (पूर्णाङ्क)test_case.action << " nav_state " << (पूर्णाङ्क)nav_state;
 	}
 }
 
-void expect_no_response(const daa_action_decision_s &decision)
+शून्य expect_no_response(ध्रुव daa_action_decision_s &decision)
 {
 	EXPECT_EQ(decision.action_command, DaaAction::kDisabled);
 	EXPECT_FALSE(decision.announce_action);
 	EXPECT_FALSE(decision.warn_on_ground);
 }
 
-void expect_ground_warning(const daa_action_decision_s &decision, const NotifyLandedActCause expected_cause)
+शून्य expect_ground_warning(ध्रुव daa_action_decision_s &decision, ध्रुव NotifyLandedActCause expected_cause)
 {
 	EXPECT_EQ(decision.action_command, DaaAction::kDisabled);
 	EXPECT_FALSE(decision.announce_action);
@@ -158,8 +158,8 @@ void expect_ground_warning(const daa_action_decision_s &decision, const NotifyLa
 	EXPECT_EQ(decision.ground_warning_cause, expected_cause);
 }
 
-void expect_command(const daa_action_decision_s &decision, const DaaAction expected_action,
-		    const bool expected_announcement)
+शून्य expect_command(ध्रुव daa_action_decision_s &decision, ध्रुव DaaAction expected_action,
+		    ध्रुव तार्किक expected_announcement)
 {
 	EXPECT_EQ(decision.action_command, expected_action);
 	EXPECT_EQ(decision.announce_action, expected_announcement);
@@ -169,50 +169,50 @@ void expect_command(const daa_action_decision_s &decision, const DaaAction expec
 } // namespace
 
 // Param numbering and the internal action ladder map both ways; out-of-range maps to Disabled.
-TEST(DaaActionPolicyTest, ActionParamMappingUsesParameterNumbering)
+TEST(DaaActionPolicyTest, Action_Param_Mapping_उपयुङ्क्ते_Parameter_Numbering)
 {
-	struct action_param_case_s {
+	संरचना action_param_case_s {
 		int32_t param;
 		DaaAction action;
 	};
 
-	const action_param_case_s cases[] {
+	ध्रुव action_param_case_s cases[] {
 		{0, DaaAction::kDisabled},
 		{1, DaaAction::kWarnOnly},
-		{2, DaaAction::kReturnMode},
-		{3, DaaAction::kLandMode},
-		{4, DaaAction::kPositionHoldMode},
+		{2, DaaAction::k_Return_बहुलकम्},
+		{3, DaaAction::k_Land_बहुलकम्},
+		{4, DaaAction::k_Position_Hold_बहुलकम्},
 		{5, DaaAction::kTerminate},
 	};
 
-	for (const action_param_case_s &test_case : cases) {
-		EXPECT_EQ(DaaActionPolicy::action_param_to_daa_action(test_case.param), test_case.action)
+	प्रति (ध्रुव action_param_case_s &test_case : cases) {
+		EXPECT_EQ(DaaActionPolicy::action_param_गन्तव्यम्_daa_action(test_case.param), test_case.action)
 				<< "param " << test_case.param;
-		EXPECT_EQ(DaaActionPolicy::daa_action_to_action_param(test_case.action), test_case.param)
-				<< "action " << static_cast<int>(test_case.action);
+		EXPECT_EQ(DaaActionPolicy::daa_action_गन्तव्यम्_action_param(test_case.action), test_case.param)
+				<< "action " << static_cast<पूर्णाङ्क>(test_case.action);
 	}
 
 	// out-of-range -> Disabled
-	EXPECT_EQ(DaaActionPolicy::action_param_to_daa_action(-1), DaaAction::kDisabled);
-	EXPECT_EQ(DaaActionPolicy::action_param_to_daa_action(6), DaaAction::kDisabled);
-	EXPECT_EQ(DaaActionPolicy::daa_action_to_action_param(DaaAction::kMaxActionValue), 0);
+	EXPECT_EQ(DaaActionPolicy::action_param_गन्तव्यम्_daa_action(-1), DaaAction::kDisabled);
+	EXPECT_EQ(DaaActionPolicy::action_param_गन्तव्यम्_daa_action(6), DaaAction::kDisabled);
+	EXPECT_EQ(DaaActionPolicy::daa_action_गन्तव्यम्_action_param(DaaAction::k_Max_Action_मानम्), 0);
 }
 
 // An action escalates only when stronger than the current navigator state (protects manual/offboard).
 TEST(DaaActionPolicyTest, ActionEscalatesOnlyAboveNavState)
 {
-	check_escalation_matrix({DaaAction::kDisabled, false, false, false, false});
-	check_escalation_matrix({DaaAction::kWarnOnly, false, false, false, false});
-	check_escalation_matrix({DaaAction::kPositionHoldMode, true, false, false, false});
-	check_escalation_matrix({DaaAction::kReturnMode, true, true, false, false});
-	check_escalation_matrix({DaaAction::kLandMode, true, true, true, false});
-	check_escalation_matrix({DaaAction::kTerminate, true, true, true, true});
+	check_escalation_matrix({DaaAction::kDisabled, असत्य, असत्य, असत्य, असत्य});
+	check_escalation_matrix({DaaAction::kWarnOnly, असत्य, असत्य, असत्य, असत्य});
+	check_escalation_matrix({DaaAction::k_Position_Hold_बहुलकम्, सत्य, असत्य, असत्य, असत्य});
+	check_escalation_matrix({DaaAction::k_Return_बहुलकम्, सत्य, सत्य, असत्य, असत्य});
+	check_escalation_matrix({DaaAction::k_Land_बहुलकम्, सत्य, सत्य, सत्य, असत्य});
+	check_escalation_matrix({DaaAction::kTerminate, सत्य, सत्य, सत्य, सत्य});
 }
 
 // NONE and out-of-range levels never request an action, even with actions configured everywhere.
-TEST(DaaActionPolicyTest, NoActionForInvalidLevels)
+TEST(DaaActionPolicyTest, No_Action_For_Invalid_स्तराः)
 {
-	const daa_action_params_s params = params_for_all_levels(5); // Terminate everywhere
+	ध्रुव daa_action_params_s params = params_for_all_स्तराः(5); // Terminate everywhere
 
 	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_NONE, params),
 		  DaaAction::kDisabled);
@@ -220,20 +220,20 @@ TEST(DaaActionPolicyTest, NoActionForInvalidLevels)
 		  DaaAction::kDisabled);
 }
 
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
-TEST(DaaActionPolicyTest, F3442FallbackUsesGuaranteedBreachedZones)
+#यदि defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+TEST(DaaActionPolicyTest, F3442_Fallback_उपयुङ्क्ते_Guaranteed_Breached_Zones)
 {
 	daa_action_params_s params{};
-	params.lvl_low_act = 1;		// Warn only
+	params.lvl_नीचः_act = 1;		// Warn only
 	params.lvl_med_act = 4;		// Hold
-	params.lvl_high_act = 0;	// Disabled
+	params.lvl_उच्चः_act = 0;	// Disabled
 	params.lvl_crit_act = 5;	// Terminate
 
-	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_LOW, params),
+	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_नीचः, params),
 		  DaaAction::kWarnOnly);
 	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_MEDIUM, params),
-		  DaaAction::kPositionHoldMode);
-	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_HIGH, params),
+		  DaaAction::k_Position_Hold_बहुलकम्);
+	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_उच्चः, params),
 		  DaaAction::kWarnOnly);
 	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL, params),
 		  DaaAction::kTerminate);
@@ -241,93 +241,93 @@ TEST(DaaActionPolicyTest, F3442FallbackUsesGuaranteedBreachedZones)
 	// CRITICAL guarantees that HIGH, MEDIUM, and LOW are also breached.
 	params.lvl_crit_act = 0;
 	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL, params),
-		  DaaAction::kPositionHoldMode);
+		  DaaAction::k_Position_Hold_बहुलकम्);
 
 	// all levels disabled -> fallback chain ends disabled
 	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL,
-			params_for_all_levels(0)), DaaAction::kDisabled);
+			params_for_all_स्तराः(0)), DaaAction::kDisabled);
 }
-#else
+#अन्यथा
 // Crosstrack maps every level through the single NAV_TRAFF_AVOID action.
 TEST(DaaActionPolicyTest, CrosstrackSingleActionMapping)
 {
-	const daa_action_params_s params = params_for_all_levels(3); // Land
+	ध्रुव daa_action_params_s params = params_for_all_स्तराः(3); // Land
 
-	for (uint8_t level = detect_and_avoid_s::DAA_CONFLICT_LVL_LOW;
+	प्रति (uint8_t level = detect_and_avoid_s::DAA_CONFLICT_LVL_नीचः;
 	     level <= detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL; ++level) {
-		EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(level, params), DaaAction::kLandMode);
+		EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(level, params), DaaAction::k_Land_बहुलकम्);
 	}
 }
-#endif // CONFIG_NAVIGATOR_ADSB_F3442
+#यदि_अन्तः // CONFIG_NAVIGATOR_ADSB_F3442
 
 // Unchanged level: no command or warning.
 TEST(DaaActionPolicyTest, DecideNoResponseWithoutLevelChange)
 {
-	const daa_action_decision_s decision = DaaActionPolicy::decide(
+	ध्रुव daa_action_decision_s decision = DaaActionPolicy::decide(
 			detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL, detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL,
-			vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION, false, true,
-			DaaAction::kDisabled, params_for_all_levels(5));
+			vehicle_स्थितिः_s::NAVIGATION_STATE_AUTO_MISSION, असत्य, सत्य,
+			DaaAction::kDisabled, params_for_all_स्तराः(5));
 
 	expect_no_response(decision);
 }
 
-TEST(DaaActionPolicyTest, DecideWarnsOnGroundInsteadOfActing)
+TEST(DaaActionPolicyTest, Decide_Warns_On_Ground_Instead_सम्बन्धि_Acting)
 {
-	const uint8_t critical = detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL;
-	const uint8_t none = detect_and_avoid_s::DAA_CONFLICT_LVL_NONE;
-	const uint8_t nav_state = vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION;
+	ध्रुव uint8_t critical = detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL;
+	ध्रुव uint8_t none = detect_and_avoid_s::DAA_CONFLICT_LVL_NONE;
+	ध्रुव uint8_t nav_state = vehicle_स्थितिः_s::NAVIGATION_STATE_AUTO_MISSION;
 
 	// armed -> takeoff warning
-	daa_action_decision_s decision = DaaActionPolicy::decide(critical, none, nav_state, true, true,
-					 DaaAction::kDisabled, params_for_all_levels(5));
+	daa_action_decision_s decision = DaaActionPolicy::decide(critical, none, nav_state, सत्य, सत्य,
+					 DaaAction::kDisabled, params_for_all_स्तराः(5));
 	expect_ground_warning(decision, NotifyLandedActCause::kConflictAndArmed);
 
 	// disarmed -> arming warning
-	decision = DaaActionPolicy::decide(critical, none, nav_state, true, false,
-					   DaaAction::kDisabled, params_for_all_levels(5));
+	decision = DaaActionPolicy::decide(critical, none, nav_state, सत्य, असत्य,
+					   DaaAction::kDisabled, params_for_all_स्तराः(5));
 	expect_ground_warning(decision, NotifyLandedActCause::kConflictAndDisarmed);
 
 	// Repeated requests allow the caller to emit rate-limited ground warnings.
-	decision = DaaActionPolicy::decide(critical, critical, nav_state, true, false,
-					   DaaAction::kDisabled, params_for_all_levels(5));
+	decision = DaaActionPolicy::decide(critical, critical, nav_state, सत्य, असत्य,
+					   DaaAction::kDisabled, params_for_all_स्तराः(5));
 	expect_ground_warning(decision, NotifyLandedActCause::kConflictAndDisarmed);
 
 	// warn-only config -> nothing
-	decision = DaaActionPolicy::decide(critical, none, nav_state, true, true,
-					   DaaAction::kDisabled, params_for_all_levels(1));
+	decision = DaaActionPolicy::decide(critical, none, nav_state, सत्य, सत्य,
+					   DaaAction::kDisabled, params_for_all_स्तराः(1));
 	expect_no_response(decision);
 }
 
-TEST(DaaActionPolicyTest, DecideRequestsCommandOnAirborneEscalationOnly)
+TEST(DaaActionPolicyTest, Decide_अनुरोधाः_Command_On_Airborne_Escalation_Only)
 {
-	const uint8_t critical = detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL;
-	const uint8_t low = detect_and_avoid_s::DAA_CONFLICT_LVL_LOW;
-	const daa_action_params_s land_params = params_for_all_levels(3); // Land
+	ध्रुव uint8_t critical = detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL;
+	ध्रुव uint8_t नीचः = detect_and_avoid_s::DAA_CONFLICT_LVL_नीचः;
+	ध्रुव daa_action_params_s land_params = params_for_all_स्तराः(3); // Land
 
 	// escalation -> Land command, announced
-	daa_action_decision_s decision = DaaActionPolicy::decide(critical, low,
-					 vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION, false, true,
+	daa_action_decision_s decision = DaaActionPolicy::decide(critical, नीचः,
+					 vehicle_स्थितिः_s::NAVIGATION_STATE_AUTO_MISSION, असत्य, सत्य,
 					 DaaAction::kDisabled, land_params);
-	expect_command(decision, DaaAction::kLandMode, true);
+	expect_command(decision, DaaAction::k_Land_बहुलकम्, सत्य);
 
 	// A later level escalation that maps to the same action is not re-announced.
-	decision = DaaActionPolicy::decide(critical, low, vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION,
-					   false, true, DaaAction::kLandMode, land_params);
-	expect_command(decision, DaaAction::kLandMode, false);
+	decision = DaaActionPolicy::decide(critical, नीचः, vehicle_स्थितिः_s::NAVIGATION_STATE_AUTO_MISSION,
+					   असत्य, सत्य, DaaAction::k_Land_बहुलकम्, land_params);
+	expect_command(decision, DaaAction::k_Land_बहुलकम्, असत्य);
 
 	// The first escalation after all conflicts cleared starts a new action episode.
 	decision = DaaActionPolicy::decide(critical, detect_and_avoid_s::DAA_CONFLICT_LVL_NONE,
-					   vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION,
-					   false, true, DaaAction::kLandMode, land_params);
-	expect_command(decision, DaaAction::kLandMode, true);
+					   vehicle_स्थितिः_s::NAVIGATION_STATE_AUTO_MISSION,
+					   असत्य, सत्य, DaaAction::k_Land_बहुलकम्, land_params);
+	expect_command(decision, DaaAction::k_Land_बहुलकम्, सत्य);
 
 	// already in a stronger mode -> nothing
-	decision = DaaActionPolicy::decide(critical, low, vehicle_status_s::NAVIGATION_STATE_TERMINATION,
-					   false, true, DaaAction::kDisabled, land_params);
+	decision = DaaActionPolicy::decide(critical, नीचः, vehicle_स्थितिः_s::NAVIGATION_STATE_TERMINATION,
+					   असत्य, सत्य, DaaAction::kDisabled, land_params);
 	expect_no_response(decision);
 
 	// de-escalation -> nothing
-	decision = DaaActionPolicy::decide(low, critical, vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION,
-					   false, true, DaaAction::kLandMode, land_params);
+	decision = DaaActionPolicy::decide(नीचः, critical, vehicle_स्थितिः_s::NAVIGATION_STATE_AUTO_MISSION,
+					   असत्य, सत्य, DaaAction::k_Land_बहुलकम्, land_params);
 	expect_no_response(decision);
 }

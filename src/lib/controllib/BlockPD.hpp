@@ -37,52 +37,52 @@
  * Controller library code
  */
 
-#pragma once
+#निर्देशः once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <assert.h>
+#अन्तर्भाव <time.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <mathlib/math/test/test.hpp>
+#अन्तर्भाव <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#अन्तर्भाव "block/Block.hpp"
+#अन्तर्भाव "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#अन्तर्भाव "matrix/math.hpp"
 
-namespace control
+नामाकाश control
 {
 
 /**
  * A proportional-derivative controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockPD: public SuperBlock
+वर्ग __EXPORT खण्डम्_PD: सार्वजनिक Super_खण्डम्
 {
-public:
+सार्वजनिक:
 // methods
-	BlockPD(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
-		_derivative(this, "D"),
-		_kP(this, "P"),
-		_kD(this, "D")
+	खण्डम्_PD(Super_खण्डम् *parent, ध्रुव वर्ण *name) :
+		Super_खण्डम्(parent, name),
+		_derivative(एतत्, "D"),
+		_kP(एतत्, "P"),
+		_kD(एतत्, "D")
 	{}
-	virtual ~BlockPD() = default;
-	float update(float input)
+	आभास ~खण्डम्_PD() = स्वभाव;
+	भिन्न update(भिन्न निवेशः)
 	{
-		return getKP() * input +
-		       getKD() * getDerivative().update(input);
+		प्रत्यागम getKP() * निवेशः +
+		       getKD() * getDerivative().update(निवेशः);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKD() { return _kD.get(); }
-	BlockDerivative &getDerivative() { return _derivative; }
-private:
-	BlockDerivative _derivative;
-	control::BlockParamFloat _kP;
-	control::BlockParamFloat _kD;
+	भिन्न getKP() { प्रत्यागम _kP.get(); }
+	भिन्न getKD() { प्रत्यागम _kD.get(); }
+	खण्डम्_Derivative &getDerivative() { प्रत्यागम _derivative; }
+गुप्त:
+	खण्डम्_Derivative _derivative;
+	control::खण्डम्_Param_Float _kP;
+	control::खण्डम्_Param_Float _kD;
 };
 
 } // namespace control

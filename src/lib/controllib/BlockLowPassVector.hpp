@@ -37,61 +37,61 @@
  * Controller library code
  */
 
-#pragma once
+#निर्देशः once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <assert.h>
+#अन्तर्भाव <time.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <mathlib/math/test/test.hpp>
+#अन्तर्भाव <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#अन्तर्भाव "block/Block.hpp"
+#अन्तर्भाव "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#अन्तर्भाव "matrix/math.hpp"
 
-namespace control
+नामाकाश control
 {
 
-template<class Type, size_t M>
-class __EXPORT BlockLowPassVector: public Block
+प्रतिरूपम्<वर्ग Type, size_t M>
+वर्ग __EXPORT खण्डम्_नीचः_Pass_सदिशम्: सार्वजनिक खण्डम्
 {
-public:
+सार्वजनिक:
 // methods
-	BlockLowPassVector(SuperBlock *parent,
-			   const char *name) :
-		Block(parent, name),
+	खण्डम्_नीचः_Pass_सदिशम्(Super_खण्डम् *parent,
+			   ध्रुव वर्ण *name) :
+		खण्डम्(parent, name),
 		_state(),
-		_fCut(this, "") // only one parameter, no need to name
+		_fCut(एतत्, "") // only one parameter, no need to name
 	{
-		for (size_t i = 0; i < M; i++) {
+		प्रति (size_t i = 0; i < M; i++) {
 			_state(i) = 0.0f / 0.0f;
 		}
 	}
-	virtual ~BlockLowPassVector() = default;
-	matrix::Vector<Type, M> update(const matrix::Matrix<Type, M, 1> &input)
+	आभास ~खण्डम्_नीचः_Pass_सदिशम्() = स्वभाव;
+	matrix::सदिशम्<Type, M> update(ध्रुव matrix::Matrix<Type, M, 1> &निवेशः)
 	{
-		for (size_t i = 0; i < M; i++) {
-			if (!PX4_ISFINITE(getState()(i))) {
-				setState(input);
+		प्रति (size_t i = 0; i < M; i++) {
+			यदि (!PX4_ISFINITE(getState()(i))) {
+				समुच्चयः_State(निवेशः);
 			}
 		}
 
-		float b = 2 * M_PI_F * getFCut() * getDt();
-		float a = b / (1 + b);
-		setState(input * a + getState() * (1 - a));
-		return getState();
+		भिन्न b = 2 * M_PI_F * getFCut() * getDt();
+		भिन्न a = b / (1 + b);
+		समुच्चयः_State(निवेशः * a + getState() * (1 - a));
+		प्रत्यागम getState();
 	}
 // accessors
-	matrix::Vector<Type, M> getState() { return _state; }
-	float getFCut() { return _fCut.get(); }
-	void setState(const matrix::Vector<Type, M> &state) { _state = state; }
-private:
-// attributes
-	matrix::Vector<Type, M> _state;
-	control::BlockParamFloat _fCut;
+	matrix::सदिशम्<Type, M> getState() { प्रत्यागम _state; }
+	भिन्न getFCut() { प्रत्यागम _fCut.get(); }
+	शून्य समुच्चयः_State(ध्रुव matrix::सदिशम्<Type, M> &state) { _state = state; }
+गुप्त:
+//गुणाः
+	matrix::सदिशम्<Type, M> _state;
+	control::खण्डम्_Param_Float _fCut;
 };
 
 } // namespace control

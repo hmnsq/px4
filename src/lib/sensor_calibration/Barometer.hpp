@@ -31,85 +31,85 @@
  *
  ****************************************************************************/
 
-#pragma once
+#निर्देशः once
 
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/log.h>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/sensor_correction.h>
+#अन्तर्भाव <px4_platform_common/px4_config.h>
+#अन्तर्भाव <px4_platform_common/log.h>
+#अन्तर्भाव <uORB/Subscription.hpp>
+#अन्तर्भाव <uORB/topics/sensor_correction.h>
 
-namespace calibration
+नामाकाश calibration
 {
-class Barometer
+वर्ग Barometer
 {
-public:
-	static constexpr int MAX_SENSOR_COUNT = 4;
+सार्वजनिक:
+	स्थिर constexpr पूर्णाङ्क MAX_SENSOR_गणनम् = 4;
 
-	static constexpr uint8_t DEFAULT_PRIORITY = 50;
-	static constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 75;
+	स्थिर constexpr uint8_t DEFAULT_प्राथमिकता = 50;
+	स्थिर constexpr uint8_t DEFAULT_EXTERNAL_प्राथमिकता = 75;
 
-	static constexpr const char *SensorString() { return "BARO"; }
+	स्थिर constexpr ध्रुव वर्ण *SensorString() { प्रत्यागम "BARO"; }
 
 	Barometer();
-	explicit Barometer(uint32_t device_id);
-	Barometer(uint32_t device_id, bool external);
+	स्पष्ट Barometer(uint32_t device_id);
+	Barometer(uint32_t device_id, तार्किक external);
 
-	~Barometer() = default;
+	~Barometer() = स्वभाव;
 
-	void PrintStatus();
+	शून्य Print_स्थितिः();
 
-	bool set_calibration_index(int calibration_index);
-	void set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
-	void set_device_id(uint32_t device_id, bool external);
-	bool set_offset(const float &offset);
+	तार्किक समुच्चयः_calibration_सूचकांक(पूर्णाङ्क calibration_सूचकांक);
+	शून्य समुच्चयः_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
+	शून्य समुच्चयः_device_id(uint32_t device_id, तार्किक external);
+	तार्किक समुच्चयः_विस्थापनम्(ध्रुव भिन्न &विस्थापनम्);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool enabled() const { return (_priority > 0); }
-	bool external() const { return _external; }
-	const float &offset() const { return _offset; }
-	const int32_t &priority() const { return _priority; }
-	const float &thermal_offset() const { return _thermal_offset; }
+	तार्किक calibrated() ध्रुव { प्रत्यागम (_device_id != 0) && (calibration_सूचकांक_2 >= 0); }
+	uint8_t calibration_गणनम्_2() ध्रुव { प्रत्यागम calibration_गणनम्; }
+	int8_t calibration_सूचकांक() ध्रुव { प्रत्यागम calibration_सूचकांक_2; }
+	uint32_t device_id() ध्रुव { प्रत्यागम _device_id; }
+	तार्किक enabled() ध्रुव { प्रत्यागम (प्राथमिकता_2 > 0); }
+	तार्किक external() ध्रुव { प्रत्यागम _external; }
+	ध्रुव भिन्न &विस्थापनम्() ध्रुव { प्रत्यागम विस्थापनम्_2; }
+	ध्रुव int32_t &प्राथमिकता() ध्रुव { प्रत्यागम प्राथमिकता_2; }
+	ध्रुव भिन्न &thermal_विस्थापनम्_2() ध्रुव { प्रत्यागम thermal_विस्थापनम्; }
 
 	// apply offsets
-	inline float Correct(const float &data) const
+	अन्तःस्थ भिन्न Correct(ध्रुव भिन्न &दत्त) ध्रुव
 	{
-		return data - _thermal_offset - _offset;
+		प्रत्यागम दत्त - thermal_विस्थापनम् - विस्थापनम्_2;
 	}
 
-	inline float Uncorrect(const float &corrected_data) const
+	अन्तःस्थ भिन्न Uncorrect(ध्रुव भिन्न &corrected_दत्त) ध्रुव
 	{
-		return corrected_data + _thermal_offset + _offset;
+		प्रत्यागम corrected_दत्त + thermal_विस्थापनम् + विस्थापनम्_2;
 	}
 
 	// Compute sensor offset from bias (board frame)
-	float BiasCorrectedSensorOffset(const float &bias) const
+	भिन्न Bias_Corrected_Sensor_विस्थापनम्(ध्रुव भिन्न &bias) ध्रुव
 	{
-		return bias + _thermal_offset + _offset;
+		प्रत्यागम bias + thermal_विस्थापनम् + विस्थापनम्_2;
 	}
 
-	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
-	void ParametersUpdate();
+	तार्किक Parameters_आरोपय();
+	तार्किक ParametersSave(पूर्णाङ्क desired_calibration_सूचकांक = -1, तार्किक force = असत्य);
+	शून्य ParametersUpdate();
 
-	void Reset();
+	शून्य Reset();
 
-	void SensorCorrectionsUpdate(bool force = false);
+	शून्य SensorCorrectionsUpdate(तार्किक force = असत्य);
 
-private:
+गुप्त:
 	uORB::Subscription _sensor_correction_sub{ORB_ID(sensor_correction)};
 
-	float _offset{0};
-	float _thermal_offset{0};
+	भिन्न विस्थापनम्_2{0};
+	भिन्न thermal_विस्थापनम्{0};
 
-	int8_t _calibration_index{-1};
+	int8_t calibration_सूचकांक_2{-1};
 	uint32_t _device_id{0};
-	int32_t _priority{-1};
+	int32_t प्राथमिकता_2{-1};
 
-	bool _external{false};
+	तार्किक _external{असत्य};
 
-	uint8_t _calibration_count{0};
+	uint8_t calibration_गणनम्{0};
 };
 } // namespace calibration

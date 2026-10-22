@@ -31,54 +31,54 @@
  *
  ****************************************************************************/
 
-#pragma once
+#निर्देशः once
 
-#include "FunctionProviderBase.hpp"
+#अन्तर्भाव "FunctionProviderBase.hpp"
 
-#include <uORB/topics/internal_combustion_engine_control.h>
+#अन्तर्भाव <uORB/topics/internal_combustion_engine_control.h>
 
 /**
  * Functions: ICE...
  */
-class FunctionICEControl : public FunctionProviderBase
+वर्ग FunctionICEControl : सार्वजनिक Function_Provider_आधारः
 {
-public:
+सार्वजनिक:
 	FunctionICEControl()
 	{
-		resetAllToDisarmedValue();
+		reset_All_गन्तव्यम्_Disarmed_मानम्();
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionICEControl(); }
+	स्थिर Function_Provider_आधारः *allocate(ध्रुव Context &context) { प्रत्यागम नूतन FunctionICEControl(); }
 
-	void update() override
+	शून्य update() override
 	{
-		internal_combustion_engine_control_s internal_combustion_engine_control;
+		आन्तरिकम्_combustion_engine_control_s आन्तरिकम्_combustion_engine_control;
 
 		// map [0, 1] to [-1, 1] which is the interface for non-motor PWM channels
 		// NAN is mapped to disarmed
-		if (_internal_combustion_engine_control_sub.update(&internal_combustion_engine_control)) {
-			_data[0] = internal_combustion_engine_control.ignition_on * 2.f - 1.f;
-			_data[1] = internal_combustion_engine_control.throttle_control * 2.f - 1.f;
-			_data[2] = internal_combustion_engine_control.choke_control * 2.f - 1.f;
-			_data[3] = internal_combustion_engine_control.starter_engine_control * 2.f - 1.f;
+		यदि (आन्तरिकम्_combustion_engine_control_sub.update(&आन्तरिकम्_combustion_engine_control)) {
+			दत्त_3[0] = आन्तरिकम्_combustion_engine_control.ignition_on * 2.f - 1.f;
+			दत्त_3[1] = आन्तरिकम्_combustion_engine_control.throttle_control * 2.f - 1.f;
+			दत्त_3[2] = आन्तरिकम्_combustion_engine_control.choke_control * 2.f - 1.f;
+			दत्त_3[3] = आन्तरिकम्_combustion_engine_control.starter_engine_control * 2.f - 1.f;
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::IC_Engine_Ignition]; }
+	भिन्न value(OutputFunction func) override { प्रत्यागम दत्त_3[(पूर्णाङ्क)func - (पूर्णाङ्क)OutputFunction::IC_Engine_Ignition]; }
 
-private:
-	static constexpr int num_data_points = 4;
+गुप्त:
+	स्थिर constexpr पूर्णाङ्क अङ्कः_दत्त_points = 4;
 
-	void resetAllToDisarmedValue()
+	शून्य reset_All_गन्तव्यम्_Disarmed_मानम्()
 	{
-		for (int i = 0; i < num_data_points; ++i) {
-			_data[i] = NAN;
+		प्रति (पूर्णाङ्क i = 0; i < अङ्कः_दत्त_points; ++i) {
+			दत्त_3[i] = NAN;
 		}
 	}
 
-	static_assert(num_data_points == (int)OutputFunction::IC_Engine_Starter - (int)OutputFunction::IC_Engine_Ignition + 1,
+	static_assert(अङ्कः_दत्त_points == (पूर्णाङ्क)OutputFunction::IC_Engine_Starter - (पूर्णाङ्क)OutputFunction::IC_Engine_Ignition + 1,
 		      "number of functions mismatch");
 
-	uORB::Subscription _internal_combustion_engine_control_sub{ORB_ID(internal_combustion_engine_control)};
-	float _data[num_data_points] {};
+	uORB::Subscription आन्तरिकम्_combustion_engine_control_sub{ORB_ID(आन्तरिकम्_combustion_engine_control)};
+	भिन्न दत्त_3[अङ्कः_दत्त_points] {};
 };

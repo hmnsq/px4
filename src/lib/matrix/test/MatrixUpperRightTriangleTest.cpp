@@ -31,22 +31,22 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#अन्तर्भाव <gtest/gtest.h>
+#अन्तर्भाव <matrix/math.hpp>
 
-using namespace matrix;
+उपयुज्य नामाकाश matrix;
 
-TEST(MatrixUpperRightTriangleTest, UpperRightTriangle)
+TEST(Matrix_ऊर्ध्वस्थम्_दक्षिणः_Triangle_Test, ऊर्ध्वस्थम्_दक्षिणः_Triangle)
 {
-	float data[9] = {1, 2, 3,
+	भिन्न दत्त[9] = {1, 2, 3,
 			 4, 5, 6,
 			 7, 8, 10
 			};
-	float urt[6] = {1, 2, 3, 5, 6, 10};
+	भिन्न urt[6] = {1, 2, 3, 5, 6, 10};
 
-	SquareMatrix<float, 3> A(data);
+	वर्गफलम्_Matrix<भिन्न, 3> A(दत्त);
 
-	for (size_t i = 0; i < 6; i++) {
-		EXPECT_FLOAT_EQ(urt[i], A.upper_right_triangle()(i));
+	प्रति (size_t i = 0; i < 6; i++) {
+		EXPECT_FLOAT_EQ(urt[i], A.ऊर्ध्वस्थम्_दक्षिणः_triangle()(i));
 	}
 }

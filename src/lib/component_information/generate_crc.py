@@ -1,60 +1,60 @@
 #!/usr/bin/env python
 
-import argparse
-import os
-import hashlib
+आनयन argparse
+आनयन os
+आनयन hashlib
 
-parser = argparse.ArgumentParser(description="""Generate the COMPONENT_INFORMATION checksums (CRC32) header file""")
-parser.add_argument('--output', metavar='checksums.h', help='output file')
-parser.add_argument('files', nargs='+', metavar='input_file.json', help='files to generate CRC from')
+parser = argparse.तर्कः_Parser(description="""Generate the COMPONENT_INFORMATION checksums (CRC32) header file""")
+parser.सङ्कलय_तर्कः('--output', metavar='checksums.h', help='output file')
+parser.सङ्कलय_तर्कः('files', nargs='+', metavar='input_file.json', help='files to generate CRC from')
 
-args = parser.parse_args()
-filename = args.output
-files = args.files
+तर्काः = parser.parse_तर्काः()
+filename = तर्काः.output
+files = तर्काः.files
 
-def create_table():
+परिभाषा create_सारणी():
     a = []
-    for i in range(256):
+    प्रति i अन्तः परिसरः(256):
         k = i
-        for j in range(8):
-            if k & 1:
+        प्रति j अन्तः परिसरः(8):
+            यदि k & 1:
                 k ^= 0x1db710640
             k >>= 1
         a.append(k)
-    return a
+    प्रत्यागम a
 
 # MAVLink's CRC32
-def crc_update(buf, crc_table, crc):
-    for k in buf:
-        crc = (crc >> 8) ^ crc_table[(crc & 0xff) ^ k]
-    return crc
+परिभाषा crc_update(buf, crc_सारणी, crc):
+    प्रति k अन्तः buf:
+        crc = (crc >> 8) ^ crc_सारणी[(crc & 0xff) ^ k]
+    प्रत्यागम crc
 
-crc_table = create_table()
+crc_सारणी = create_सारणी()
 
-def sha256sum(filename):
+परिभाषा sha256sum(filename):
     h  = hashlib.sha256()
     b  = bytearray(128*1024)
     mv = memoryview(b)
-    with open(filename, 'rb', buffering=0) as f:
-        for n in iter(lambda : f.readinto(mv), 0):
+    सह open(filename, 'rb', buffering=0) इव f:
+        प्रति n अन्तः iter(अनामन् : f.readinto(mv), 0):
             h.update(mv[:n])
-    return h.hexdigest()
+    प्रत्यागम h.hexdigest()
 
 
-with open(filename, 'w') as outfile:
-    outfile.write("#pragma once\n")
-    outfile.write("#include <stdint.h>\n")
-    outfile.write("namespace component_information {\n")
-    for filename in files:
+सह open(filename, 'w') इव outfile:
+    outfile.लिख("#pragma once\n")
+    outfile.लिख("#include <stdint.h>\n")
+    outfile.लिख("namespace component_information {\n")
+    प्रति filename अन्तः files:
         file_crc = 0
-        for line in open(filename, "rb"):
-            file_crc = crc_update(line, crc_table, file_crc)
+        प्रति पङ्क्तिः अन्तः open(filename, "rb"):
+            file_crc = crc_update(पङ्क्तिः, crc_सारणी, file_crc)
         file_sha256 = sha256sum(filename)
 
-        basename = os.path.basename(filename)
-        identifier = basename.split('.')[0]
-        outfile.write("static constexpr uint32_t {:}_crc = {:};\n".format(identifier, file_crc))
-        outfile.write("static constexpr const char *{:}_sha256 = \"{:}\";\n".format(identifier, file_sha256))
+        basename = os.मार्गः.basename(filename)
+        identifier = basename.विभज('.')[0]
+        outfile.लिख("static constexpr uint32_t {:}_crc = {:};\n".format(identifier, file_crc))
+        outfile.लिख("static constexpr const char *{:}_sha256 = \"{:}\";\n".format(identifier, file_sha256))
 
 
-    outfile.write("}\n")
+    outfile.लिख("}\n")

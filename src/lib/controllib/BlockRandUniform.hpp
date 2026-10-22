@@ -37,56 +37,56 @@
  * Controller library code
  */
 
-#pragma once
+#निर्देशः once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <assert.h>
+#अन्तर्भाव <time.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <mathlib/math/test/test.hpp>
+#अन्तर्भाव <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#अन्तर्भाव "block/Block.hpp"
+#अन्तर्भाव "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#अन्तर्भाव "matrix/math.hpp"
 
-namespace control
+नामाकाश control
 {
 
 /**
  * A uniform random number generator
  */
-class __EXPORT BlockRandUniform: public Block
+वर्ग __EXPORT खण्डम्_Rand_एकरूपम्: सार्वजनिक खण्डम्
 {
-public:
+सार्वजनिक:
 // methods
-	BlockRandUniform(SuperBlock *parent,
-			 const char *name) :
-		Block(parent, name),
-		_min(this, "MIN"),
-		_max(this, "MAX")
+	खण्डम्_Rand_एकरूपम्(Super_खण्डम् *parent,
+			 ध्रुव वर्ण *name) :
+		खण्डम्(parent, name),
+		_min(एतत्, "MIN"),
+		_max(एतत्, "MAX")
 	{
 		// seed should be initialized somewhere
 		// in main program for all calls to rand
 		// XXX currently in nuttx if you seed to 0, rand breaks
 	}
-	virtual ~BlockRandUniform() = default;
-	float update()
+	आभास ~खण्डम्_Rand_एकरूपम्() = स्वभाव;
+	भिन्न update()
 	{
-		static float rand_max = static_cast<float>(RAND_MAX);
-		float rand_val = rand();
-		float bounds = getMax() - getMin();
-		return getMin() + (rand_val * bounds) / rand_max;
+		स्थिर भिन्न rand_max = static_cast<भिन्न>(RAND_MAX);
+		भिन्न rand_val = यादृच्छिकम्();
+		भिन्न bounds = getMax() - getMin();
+		प्रत्यागम getMin() + (rand_val * bounds) / rand_max;
 	}
 // accessors
-	float getMin() { return _min.get(); }
-	float getMax() { return _max.get(); }
-private:
-// attributes
-	control::BlockParamFloat _min;
-	control::BlockParamFloat _max;
+	भिन्न getMin() { प्रत्यागम _min.get(); }
+	भिन्न getMax() { प्रत्यागम _max.get(); }
+गुप्त:
+//गुणाः
+	control::खण्डम्_Param_Float _min;
+	control::खण्डम्_Param_Float _max;
 };
 
 } // namespace control

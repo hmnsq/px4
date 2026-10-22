@@ -36,16 +36,16 @@
  * Run this test only using make tests TESTFILTER=arx_rls
  */
 
-#include <gtest/gtest.h>
-#include <matrix/matrix/math.hpp>
+#अन्तर्भाव <gtest/gtest.h>
+#अन्तर्भाव <matrix/matrix/math.hpp>
 
-#include "arx_rls.hpp"
+#अन्तर्भाव "arx_rls.hpp"
 
-using namespace matrix;
+उपयुज्य नामाकाश matrix;
 
-class ArxRlsTest : public ::testing::Test
+वर्ग ArxRlsTest : सार्वजनिक ::testing::Test
 {
-public:
+सार्वजनिक:
 	ArxRlsTest() {};
 };
 
@@ -53,7 +53,7 @@ TEST_F(ArxRlsTest, test211)
 {
 	ArxRls<2, 1, 1> _rls;
 
-	for (int i = 0; i < (2 + 1 + 1); i++) {
+	प्रति (पूर्णाङ्क i = 0; i < (2 + 1 + 1); i++) {
 		// Fill the buffers with zeros
 		_rls.update(0.f, 0.f);
 	}
@@ -61,17 +61,17 @@ TEST_F(ArxRlsTest, test211)
 	_rls.update(1, 2);
 	_rls.update(3, 4);
 	_rls.update(5, 6);
-	const Vector4f coefficients = _rls.getCoefficients();
-	const Vector4f coefficients_check(-1.79f, 0.97f, 0.42f, -0.48f); // generated from Python script
-	float eps = 1e-2;
-	EXPECT_TRUE((coefficients - coefficients_check).abs().max() < eps);
+	ध्रुव Vector4f coefficients = _rls.getCoefficients();
+	ध्रुव Vector4f coefficients_check(-1.79f, 0.97f, 0.42f, -0.48f); // generated from Python script
+	भिन्न eps = 1e-2;
+	EXPECT_TRUE((coefficients - coefficients_check).निरपेक्षम्().max() < eps);
 }
 
 TEST_F(ArxRlsTest, test221)
 {
 	ArxRls<2, 2, 1> _rls;
 
-	for (int i = 0; i < (2 + 2 + 1); i++) {
+	प्रति (पूर्णाङ्क i = 0; i < (2 + 2 + 1); i++) {
 		// Fill the buffers with zeros
 		_rls.update(0.f, 0.f);
 	}
@@ -80,11 +80,11 @@ TEST_F(ArxRlsTest, test221)
 	_rls.update(3, 4);
 	_rls.update(5, 6);
 	_rls.update(7, 8);
-	const Vector<float, 5> coefficients = _rls.getCoefficients();
-	float data_check[] = {-1.81, 1.06f, 0.38f, -0.27f, 0.26f};
-	const Vector<float, 5> coefficients_check(data_check);
-	float eps = 1e-2;
-	EXPECT_TRUE((coefficients - coefficients_check).abs().max() < eps);
+	ध्रुव सदिशम्<भिन्न, 5> coefficients = _rls.getCoefficients();
+	भिन्न दत्त_check[] = {-1.81, 1.06f, 0.38f, -0.27f, 0.26f};
+	ध्रुव सदिशम्<भिन्न, 5> coefficients_check(दत्त_check);
+	भिन्न eps = 1e-2;
+	EXPECT_TRUE((coefficients - coefficients_check).निरपेक्षम्().max() < eps);
 	coefficients.print();
 	coefficients_check.print();
 }
@@ -96,14 +96,14 @@ TEST_F(ArxRlsTest, resetTest)
 	_rls.update(3, 4);
 	_rls.update(5, 6);
 	_rls.update(7, 8);
-	const Vector<float, 5> coefficients = _rls.getCoefficients();
+	ध्रुव सदिशम्<भिन्न, 5> coefficients = _rls.getCoefficients();
 
 	// WHEN: resetting
 	_rls.reset();
 
 	// THEN: the variances and coefficients should be properly reset
 	EXPECT_TRUE(_rls.getVariances().min() > 5000.f);
-	EXPECT_TRUE(_rls.getCoefficients().abs().max() < 1e-8f);
+	EXPECT_TRUE(_rls.getCoefficients().निरपेक्षम्().max() < 1e-8f);
 
 	// AND WHEN: running the same sequence of inputs-outputs
 	_rls.update(1, 2);
@@ -112,5 +112,5 @@ TEST_F(ArxRlsTest, resetTest)
 	_rls.update(7, 8);
 
 	// THEN: the result should be exactly the same
-	EXPECT_TRUE((coefficients - _rls.getCoefficients()).abs().max() < 1e-8f);
+	EXPECT_TRUE((coefficients - _rls.getCoefficients()).निरपेक्षम्().max() < 1e-8f);
 }

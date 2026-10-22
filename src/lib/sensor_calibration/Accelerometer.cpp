@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include "Accelerometer.hpp"
+#अन्तर्भाव "Accelerometer.hpp"
 
-#include "Utilities.hpp"
+#अन्तर्भाव "Utilities.hpp"
 
-#include <lib/drivers/device/Device.hpp>
-#include <lib/parameters/param.h>
+#अन्तर्भाव <lib/drivers/device/Device.hpp>
+#अन्तर्भाव <lib/parameters/param.h>
 
-using namespace matrix;
-using namespace time_literals;
+उपयुज्य नामाकाश matrix;
+उपयुज्य नामाकाश time_literals;
 
-namespace calibration
+नामाकाश calibration
 {
 
 Accelerometer::Accelerometer()
@@ -51,22 +51,22 @@ Accelerometer::Accelerometer()
 
 Accelerometer::Accelerometer(uint32_t device_id)
 {
-	set_device_id(device_id);
+	समुच्चयः_device_id(device_id);
 }
 
-Accelerometer::Accelerometer(uint32_t device_id, bool external)
+Accelerometer::Accelerometer(uint32_t device_id, तार्किक external)
 {
-	set_device_id(device_id, external);
+	समुच्चयः_device_id(device_id, external);
 }
 
-void Accelerometer::set_device_id(uint32_t device_id)
+शून्य Accelerometer::समुच्चयः_device_id(uint32_t device_id)
 {
-	set_device_id(device_id, device::device_is_external(device_id));
+	समुच्चयः_device_id(device_id, device::device_is_external(device_id));
 }
 
-void Accelerometer::set_device_id(uint32_t device_id, bool external)
+शून्य Accelerometer::समुच्चयः_device_id(uint32_t device_id, तार्किक external)
 {
-	if (_device_id != device_id || _external != external) {
+	यदि (_device_id != device_id || _external != external) {
 
 		_device_id = device_id;
 		_external = external;
@@ -74,76 +74,76 @@ void Accelerometer::set_device_id(uint32_t device_id, bool external)
 		Reset();
 
 		ParametersUpdate();
-		SensorCorrectionsUpdate(true);
+		SensorCorrectionsUpdate(सत्य);
 	}
 }
 
-void Accelerometer::SensorCorrectionsUpdate(bool force)
+शून्य Accelerometer::SensorCorrectionsUpdate(तार्किक force)
 {
 	// check if the selected sensor has updated
-	if (_sensor_correction_sub.updated() || force) {
+	यदि (_sensor_correction_sub.updated() || force) {
 
 		// valid device id required
-		if (_device_id == 0) {
-			return;
+		यदि (_device_id == 0) {
+			प्रत्यागम;
 		}
 
 		sensor_correction_s corrections;
 
-		if (_sensor_correction_sub.copy(&corrections)) {
+		यदि (_sensor_correction_sub.copy(&corrections)) {
 			// find sensor_corrections index
-			for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
-				if (corrections.accel_device_ids[i] == _device_id) {
-					switch (i) {
-					case 0:
-						_thermal_offset = Vector3f{corrections.accel_offset_0};
-						return;
-					case 1:
-						_thermal_offset = Vector3f{corrections.accel_offset_1};
-						return;
-					case 2:
-						_thermal_offset = Vector3f{corrections.accel_offset_2};
-						return;
-					case 3:
-						_thermal_offset = Vector3f{corrections.accel_offset_3};
-						return;
+			प्रति (पूर्णाङ्क i = 0; i < MAX_SENSOR_गणनम्; i++) {
+				यदि (corrections.accel_device_ids[i] == _device_id) {
+					विकल्प (i) {
+					पक्ष 0:
+						thermal_विस्थापनम् = Vector3f{corrections.accel_विस्थापनम्_0};
+						प्रत्यागम;
+					पक्ष 1:
+						thermal_विस्थापनम् = Vector3f{corrections.accel_विस्थापनम्_1};
+						प्रत्यागम;
+					पक्ष 2:
+						thermal_विस्थापनम् = Vector3f{corrections.accel_विस्थापनम्_2};
+						प्रत्यागम;
+					पक्ष 3:
+						thermal_विस्थापनम् = Vector3f{corrections.accel_विस्थापनम्_3};
+						प्रत्यागम;
 					}
 				}
 			}
 		}
 
 		// zero thermal offset if not found
-		_thermal_offset.zero();
+		thermal_विस्थापनम्.zero();
 	}
 }
 
-bool Accelerometer::set_offset(const Vector3f &offset)
+तार्किक Accelerometer::समुच्चयः_विस्थापनम्(ध्रुव Vector3f &विस्थापनम्)
 {
-	if (Vector3f(_offset - offset).longerThan(0.01f)) {
-		if (offset.isAllFinite()) {
-			_offset = offset;
-			_calibration_count++;
-			return true;
+	यदि (Vector3f(विस्थापनम्_2 - विस्थापनम्).longerThan(0.01f)) {
+		यदि (विस्थापनम्.isAllFinite()) {
+			विस्थापनम्_2 = विस्थापनम्;
+			calibration_गणनम्++;
+			प्रत्यागम सत्य;
 		}
 	}
 
-	return false;
+	प्रत्यागम असत्य;
 }
 
-bool Accelerometer::set_scale(const Vector3f &scale)
+तार्किक Accelerometer::समुच्चयः_scale(ध्रुव Vector3f &scale)
 {
-	if (Vector3f(_scale - scale).longerThan(0.01f)) {
-		if (scale.isAllFinite() && (scale(0) > 0.f) && (scale(1) > 0.f) && (scale(2) > 0.f)) {
+	यदि (Vector3f(_scale - scale).longerThan(0.01f)) {
+		यदि (scale.isAllFinite() && (scale(0) > 0.f) && (scale(1) > 0.f) && (scale(2) > 0.f)) {
 			_scale = scale;
-			_calibration_count++;
-			return true;
+			calibration_गणनम्++;
+			प्रत्यागम सत्य;
 		}
 	}
 
-	return false;
+	प्रत्यागम असत्य;
 }
 
-void Accelerometer::set_rotation(Rotation rotation)
+शून्य Accelerometer::समुच्चयः_rotation(Rotation rotation)
 {
 	_rotation_enum = rotation;
 
@@ -151,163 +151,163 @@ void Accelerometer::set_rotation(Rotation rotation)
 	_rotation = Dcmf(GetSensorLevelAdjustment()) * get_rot_matrix(rotation);
 }
 
-bool Accelerometer::set_calibration_index(int calibration_index)
+तार्किक Accelerometer::समुच्चयः_calibration_सूचकांक(पूर्णाङ्क calibration_सूचकांक)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
-		_calibration_index = calibration_index;
-		return true;
+	यदि ((calibration_सूचकांक >= 0) && (calibration_सूचकांक < MAX_SENSOR_गणनम्)) {
+		calibration_सूचकांक_2 = calibration_सूचकांक;
+		प्रत्यागम सत्य;
 	}
 
-	return false;
+	प्रत्यागम असत्य;
 }
 
-void Accelerometer::ParametersUpdate()
+शून्य Accelerometer::ParametersUpdate()
 {
-	if (_device_id == 0) {
-		return;
+	यदि (_device_id == 0) {
+		प्रत्यागम;
 	}
 
-	_calibration_index = FindCurrentCalibrationIndex(SensorString(), _device_id);
+	calibration_सूचकांक_2 = Find_Current_Calibration_सूचकांक(SensorString(), _device_id);
 
-	if (_calibration_index == -1) {
+	यदि (calibration_सूचकांक_2 == -1) {
 		// no saved calibration available
 		Reset();
 
-	} else {
-		ParametersLoad();
+	} अन्यथा {
+		Parameters_आरोपय();
 	}
 }
 
-bool Accelerometer::ParametersLoad()
+तार्किक Accelerometer::Parameters_आरोपय()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	यदि (calibration_सूचकांक_2 >= 0 && calibration_सूचकांक_2 < MAX_SENSOR_गणनम्) {
 		// CAL_ACCx_ROT
-		int32_t rotation_value = GetCalibrationParamInt32(SensorString(), "ROT", _calibration_index);
+		int32_t rotation_मानम् = GetCalibrationParamInt32(SensorString(), "ROT", calibration_सूचकांक_2);
 
-		if (_external) {
-			if ((rotation_value >= ROTATION_MAX) || (rotation_value < 0)) {
+		यदि (_external) {
+			यदि ((rotation_मानम् >= ROTATION_MAX) || (rotation_मानम् < 0)) {
 				// invalid rotation, resetting
-				rotation_value = ROTATION_NONE;
+				rotation_मानम् = ROTATION_NONE;
 			}
 
-			set_rotation(static_cast<Rotation>(rotation_value));
+			समुच्चयः_rotation(static_cast<Rotation>(rotation_मानम्));
 
-		} else {
+		} अन्यथा {
 			// internal sensors follow board rotation
-			set_rotation(GetBoardRotation());
+			समुच्चयः_rotation(GetBoardRotation());
 		}
 
 		// CAL_ACCx_PRIO
-		_priority = GetCalibrationParamInt32(SensorString(), "PRIO", _calibration_index);
+		प्राथमिकता_2 = GetCalibrationParamInt32(SensorString(), "PRIO", calibration_सूचकांक_2);
 
-		if ((_priority < 0) || (_priority > 100)) {
+		यदि ((प्राथमिकता_2 < 0) || (प्राथमिकता_2 > 100)) {
 			// reset to default, -1 is the uninitialized parameter value
-			static constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
+			स्थिर constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
 
-			if (_priority != CAL_PRIO_UNINITIALIZED) {
+			यदि (प्राथमिकता_2 != CAL_PRIO_UNINITIALIZED) {
 				PX4_ERR("%s %" PRIu32 " (%" PRId8 ") invalid priority %" PRId32 ", resetting", SensorString(), _device_id,
-					_calibration_index, _priority);
+					calibration_सूचकांक_2, प्राथमिकता_2);
 
-				SetCalibrationParam(SensorString(), "PRIO", _calibration_index, CAL_PRIO_UNINITIALIZED);
+				समुच्चयः_Calibration_Param(SensorString(), "PRIO", calibration_सूचकांक_2, CAL_PRIO_UNINITIALIZED);
 			}
 
-			_priority = _external ? DEFAULT_EXTERNAL_PRIORITY : DEFAULT_PRIORITY;
+			प्राथमिकता_2 = _external ? DEFAULT_EXTERNAL_प्राथमिकता : DEFAULT_प्राथमिकता;
 		}
 
 		// CAL_ACCx_OFF{X,Y,Z}
-		set_offset(GetCalibrationParamsVector3f(SensorString(), "OFF", _calibration_index));
+		समुच्चयः_विस्थापनम्(GetCalibrationParamsVector3f(SensorString(), "OFF", calibration_सूचकांक_2));
 
 		// CAL_ACCx_SCALE{X,Y,Z}
-		set_scale(GetCalibrationParamsVector3f(SensorString(), "SCALE", _calibration_index));
+		समुच्चयः_scale(GetCalibrationParamsVector3f(SensorString(), "SCALE", calibration_सूचकांक_2));
 
-		return true;
+		प्रत्यागम सत्य;
 	}
 
-	return false;
+	प्रत्यागम असत्य;
 }
 
-void Accelerometer::Reset()
+शून्य Accelerometer::Reset()
 {
-	if (_external) {
-		set_rotation(ROTATION_NONE);
+	यदि (_external) {
+		समुच्चयः_rotation(ROTATION_NONE);
 
-	} else {
+	} अन्यथा {
 		// internal sensors follow board rotation
-		set_rotation(GetBoardRotation());
+		समुच्चयः_rotation(GetBoardRotation());
 	}
 
-	_offset.zero();
+	विस्थापनम्_2.zero();
 	_scale = Vector3f{1.f, 1.f, 1.f};
 
-	_thermal_offset.zero();
+	thermal_विस्थापनम्.zero();
 
-	_priority = _external ? DEFAULT_EXTERNAL_PRIORITY : DEFAULT_PRIORITY;
+	प्राथमिकता_2 = _external ? DEFAULT_EXTERNAL_प्राथमिकता : DEFAULT_प्राथमिकता;
 
-	_calibration_index = -1;
+	calibration_सूचकांक_2 = -1;
 
-	_calibration_count = 0;
+	calibration_गणनम् = 0;
 }
 
-bool Accelerometer::ParametersSave(int desired_calibration_index, bool force)
+तार्किक Accelerometer::ParametersSave(पूर्णाङ्क desired_calibration_सूचकांक, तार्किक force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
-		_calibration_index = desired_calibration_index;
+	यदि (force && desired_calibration_सूचकांक >= 0 && desired_calibration_सूचकांक < MAX_SENSOR_गणनम्) {
+		calibration_सूचकांक_2 = desired_calibration_सूचकांक;
 
-	} else if (!force || (_calibration_index < 0)
-		   || (desired_calibration_index != -1 && desired_calibration_index != _calibration_index)) {
+	} अन्यथा यदि (!force || (calibration_सूचकांक_2 < 0)
+		   || (desired_calibration_सूचकांक != -1 && desired_calibration_सूचकांक != calibration_सूचकांक_2)) {
 
 		// ensure we have a valid calibration slot (matching existing or first available slot)
-		int8_t calibration_index_prev = _calibration_index;
-		_calibration_index = FindAvailableCalibrationIndex(SensorString(), _device_id, desired_calibration_index);
+		int8_t calibration_सूचकांक_पूर्व = calibration_सूचकांक_2;
+		calibration_सूचकांक_2 = Find_उपलब्धम्_Calibration_सूचकांक(SensorString(), _device_id, desired_calibration_सूचकांक);
 
-		if (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
+		यदि (calibration_सूचकांक_पूर्व >= 0 && (calibration_सूचकांक_पूर्व != calibration_सूचकांक_2)) {
 			PX4_WARN("%s %" PRIu32 " calibration index changed %" PRIi8 " -> %" PRIi8, SensorString(), _device_id,
-				 calibration_index_prev, _calibration_index);
+				 calibration_सूचकांक_पूर्व, calibration_सूचकांक_2);
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	यदि (calibration_सूचकांक_2 >= 0 && calibration_सूचकांक_2 < MAX_SENSOR_गणनम्) {
 		// save calibration
-		bool success = true;
-		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
-		success &= SetCalibrationParam(SensorString(), "PRIO", _calibration_index, _priority);
-		success &= SetCalibrationParamsVector3f(SensorString(), "OFF", _calibration_index, _offset);
-		success &= SetCalibrationParamsVector3f(SensorString(), "SCALE", _calibration_index, _scale);
+		तार्किक success = सत्य;
+		success &= समुच्चयः_Calibration_Param(SensorString(), "ID", calibration_सूचकांक_2, _device_id);
+		success &= समुच्चयः_Calibration_Param(SensorString(), "PRIO", calibration_सूचकांक_2, प्राथमिकता_2);
+		success &= समुच्चयः_Calibration_Params_Vector3f(SensorString(), "OFF", calibration_सूचकांक_2, विस्थापनम्_2);
+		success &= समुच्चयः_Calibration_Params_Vector3f(SensorString(), "SCALE", calibration_सूचकांक_2, _scale);
 
-		if (_external) {
-			success &= SetCalibrationParam(SensorString(), "ROT", _calibration_index, (int32_t)_rotation_enum);
+		यदि (_external) {
+			success &= समुच्चयः_Calibration_Param(SensorString(), "ROT", calibration_सूचकांक_2, (int32_t)_rotation_enum);
 
-		} else {
-			success &= SetCalibrationParam(SensorString(), "ROT", _calibration_index, -1); // internal
+		} अन्यथा {
+			success &= समुच्चयः_Calibration_Param(SensorString(), "ROT", calibration_सूचकांक_2, -1); //आन्तरिकम्
 		}
 
-		return success;
+		प्रत्यागम success;
 	}
 
-	return false;
+	प्रत्यागम असत्य;
 }
 
-void Accelerometer::PrintStatus()
+शून्य Accelerometer::Print_स्थितिः()
 {
-	if (external()) {
+	यदि (external()) {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: [%05.3f %05.3f %05.3f], scale: [%05.3f %05.3f %05.3f], Ext ROT: %d\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset(0), (double)_offset(1), (double)_offset(2),
-			     (double)_scale(0), (double)_scale(1), (double)_scale(2),
+			     (द्विगुण)विस्थापनम्_2(0), (द्विगुण)विस्थापनम्_2(1), (द्विगुण)विस्थापनम्_2(2),
+			     (द्विगुण)_scale(0), (द्विगुण)_scale(1), (द्विगुण)_scale(2),
 			     rotation_enum());
 
-	} else {
+	} अन्यथा {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: [%05.3f %05.3f %05.3f], scale: [%05.3f %05.3f %05.3f], Internal\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset(0), (double)_offset(1), (double)_offset(2),
-			     (double)_scale(0), (double)_scale(1), (double)_scale(2));
+			     (द्विगुण)विस्थापनम्_2(0), (द्विगुण)विस्थापनम्_2(1), (द्विगुण)विस्थापनम्_2(2),
+			     (द्विगुण)_scale(0), (द्विगुण)_scale(1), (द्विगुण)_scale(2));
 	}
 
-	if (_thermal_offset.norm() > 0.f) {
+	यदि (thermal_विस्थापनम्.norm() > 0.f) {
 		PX4_INFO_RAW("%s %" PRIu32 " temperature offset: [%.4f %.4f %.4f]\n", SensorString(), _device_id,
-			     (double)_thermal_offset(0), (double)_thermal_offset(1), (double)_thermal_offset(2));
+			     (द्विगुण)thermal_विस्थापनम्(0), (द्विगुण)thermal_विस्थापनम्(1), (द्विगुण)thermal_विस्थापनम्(2));
 	}
 }
 

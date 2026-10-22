@@ -31,100 +31,100 @@
  *
  ****************************************************************************/
 
-#include "ObstacleMath.hpp"
-#include <mathlib/math/Limits.hpp>
+#अन्तर्भाव "ObstacleMath.hpp"
+#अन्तर्भाव <mathlib/math/Limits.hpp>
 
-using namespace matrix;
+उपयुज्य नामाकाश matrix;
 
-namespace ObstacleMath
+नामाकाश ObstacleMath
 {
 
-void project_distance_on_horizontal_plane(float &distance, const float yaw, const matrix::Quatf &q_world_vehicle)
+शून्य project_distance_on_horizontal_plane(भिन्न &distance, ध्रुव भिन्न yaw, ध्रुव matrix::Quatf &q_world_vehicle)
 {
-	const Quatf q_vehicle_sensor(Quatf(cosf(yaw / 2.f), 0.f, 0.f, sinf(yaw / 2.f)));
-	const Quatf q_world_sensor = q_world_vehicle * q_vehicle_sensor;
-	const Vector3f forward(1.f, 0.f, 0.f);
-	const Vector3f sensor_direction_in_world = q_world_sensor.rotateVector(forward);
+	ध्रुव Quatf q_vehicle_sensor(Quatf(cosf(yaw / 2.f), 0.f, 0.f, sinf(yaw / 2.f)));
+	ध्रुव Quatf q_world_sensor = q_world_vehicle * q_vehicle_sensor;
+	ध्रुव Vector3f forward(1.f, 0.f, 0.f);
+	ध्रुव Vector3f sensor_direction_अन्तर्_world = q_world_sensor.rotate_सदिशम्(forward);
 
-	float horizontal_projection_scale = sensor_direction_in_world.xy().norm();
+	भिन्न horizontal_projection_scale = sensor_direction_अन्तर्_world.xy().norm();
 	horizontal_projection_scale = math::constrain(horizontal_projection_scale, FLT_EPSILON, 1.0f);
 	distance *= horizontal_projection_scale;
 }
 
-int get_bin_at_angle(float bin_width, float angle)
+पूर्णाङ्क get_bin_at_angle(भिन्न bin_विस्तारः, भिन्न angle)
 {
-	int bin_at_angle = (int)round(matrix::wrap(angle, 0.f, 360.f) / bin_width);
-	return wrap_bin(bin_at_angle, 360 / bin_width);
+	पूर्णाङ्क bin_at_angle = (पूर्णाङ्क)round(matrix::wrap(angle, 0.f, 360.f) / bin_विस्तारः);
+	प्रत्यागम wrap_bin(bin_at_angle, 360 / bin_विस्तारः);
 }
 
-float get_lower_bound_angle(int bin, float bin_width, float angle_offset)
+भिन्न get_अधस्तनम्_bound_angle(पूर्णाङ्क bin, भिन्न bin_विस्तारः, भिन्न angle_विस्थापनम्)
 {
-	bin = wrap_bin(bin, 360 / bin_width);
-	return wrap_360(bin * bin_width + angle_offset - bin_width / 2.f);
+	bin = wrap_bin(bin, 360 / bin_विस्तारः);
+	प्रत्यागम wrap_360(bin * bin_विस्तारः + angle_विस्थापनम् - bin_विस्तारः / 2.f);
 }
 
-int get_offset_bin_index(int bin, float bin_width, float angle_offset)
+पूर्णाङ्क get_विस्थापनम्_bin_सूचकांक(पूर्णाङ्क bin, भिन्न bin_विस्तारः, भिन्न angle_विस्थापनम्)
 {
-	int offset = get_bin_at_angle(bin_width, angle_offset);
-	return wrap_bin(bin - offset, 360 / bin_width);
+	पूर्णाङ्क विस्थापनम् = get_bin_at_angle(bin_विस्तारः, angle_विस्थापनम्);
+	प्रत्यागम wrap_bin(bin - विस्थापनम्, 360 / bin_विस्तारः);
 }
 
-float sensor_orientation_to_yaw_offset(const SensorOrientation orientation, const float q[4])
+भिन्न sensor_orientation_गन्तव्यम्_yaw_विस्थापनम्(ध्रुव SensorOrientation orientation, ध्रुव भिन्न q[4])
 {
-	float offset = 0.0f;
+	भिन्न विस्थापनम् = 0.0f;
 
-	switch (orientation) {
-	case SensorOrientation::ROTATION_YAW_0:
-		offset = 0.0f;
-		break;
+	विकल्प (orientation) {
+	पक्ष SensorOrientation::ROTATION_YAW_0:
+		विस्थापनम् = 0.0f;
+		भङ्ग;
 
-	case SensorOrientation::ROTATION_YAW_45:
-		offset = M_PI_F / 4.0f;
-		break;
+	पक्ष SensorOrientation::ROTATION_YAW_45:
+		विस्थापनम् = M_PI_F / 4.0f;
+		भङ्ग;
 
-	case SensorOrientation::ROTATION_YAW_90:
-		offset = M_PI_F / 2.0f;
-		break;
+	पक्ष SensorOrientation::ROTATION_YAW_90:
+		विस्थापनम् = M_PI_F / 2.0f;
+		भङ्ग;
 
-	case SensorOrientation::ROTATION_YAW_135:
-		offset = 3.0f * M_PI_F / 4.0f;
-		break;
+	पक्ष SensorOrientation::ROTATION_YAW_135:
+		विस्थापनम् = 3.0f * M_PI_F / 4.0f;
+		भङ्ग;
 
-	case SensorOrientation::ROTATION_YAW_180:
-		offset = M_PI_F;
-		break;
+	पक्ष SensorOrientation::ROTATION_YAW_180:
+		विस्थापनम् = M_PI_F;
+		भङ्ग;
 
-	case SensorOrientation::ROTATION_YAW_225:
-		offset = -3.0f * M_PI_F / 4.0f;
-		break;
+	पक्ष SensorOrientation::ROTATION_YAW_225:
+		विस्थापनम् = -3.0f * M_PI_F / 4.0f;
+		भङ्ग;
 
-	case SensorOrientation::ROTATION_YAW_270:
-		offset = -M_PI_F / 2.0f;
-		break;
+	पक्ष SensorOrientation::ROTATION_YAW_270:
+		विस्थापनम् = -M_PI_F / 2.0f;
+		भङ्ग;
 
-	case SensorOrientation::ROTATION_YAW_315:
-		offset = -M_PI_F / 4.0f;
-		break;
+	पक्ष SensorOrientation::ROTATION_YAW_315:
+		विस्थापनम् = -M_PI_F / 4.0f;
+		भङ्ग;
 
-	case SensorOrientation::ROTATION_CUSTOM:
-		if (q != nullptr) {
-			offset = Eulerf(Quatf(q)).psi();
+	पक्ष SensorOrientation::ROTATION_CUSTOM:
+		यदि (q != शून्यसूचकः) {
+			विस्थापनम् = Eulerf(Quatf(q)).psi();
 		}
 
-		break;
+		भङ्ग;
 	}
 
-	return offset;
+	प्रत्यागम विस्थापनम्;
 }
 
-int wrap_bin(int bin, int bin_count)
+पूर्णाङ्क wrap_bin(पूर्णाङ्क bin, पूर्णाङ्क bin_गणनम्)
 {
-	return (bin + bin_count) % bin_count;
+	प्रत्यागम (bin + bin_गणनम्) % bin_गणनम्;
 }
 
-float wrap_360(const float angle)
+भिन्न wrap_360(ध्रुव भिन्न angle)
 {
-	return matrix::wrap(angle, 0.0f, 360.0f);
+	प्रत्यागम matrix::wrap(angle, 0.0f, 360.0f);
 }
 
 } // ObstacleMath

@@ -31,35 +31,35 @@
  *
  ****************************************************************************/
 
-#pragma once
+#निर्देशः once
 
-#include "FunctionProviderBase.hpp"
+#अन्तर्भाव "FunctionProviderBase.hpp"
 
-#include <uORB/topics/gimbal_controls.h>
+#अन्तर्भाव <uORB/topics/gimbal_controls.h>
 
 /**
  * Functions: Gimbal_Roll .. Gimbal_Yaw
  */
-class FunctionGimbal : public FunctionProviderBase
+वर्ग FunctionGimbal : सार्वजनिक Function_Provider_आधारः
 {
-public:
-	FunctionGimbal() = default;
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionGimbal(); }
+सार्वजनिक:
+	FunctionGimbal() = स्वभाव;
+	स्थिर Function_Provider_आधारः *allocate(ध्रुव Context &context) { प्रत्यागम नूतन FunctionGimbal(); }
 
-	void update() override
+	शून्य update() override
 	{
 		gimbal_controls_s gimbal_controls;
 
-		if (_topic.update(&gimbal_controls)) {
-			_data[0] = gimbal_controls.control[gimbal_controls_s::INDEX_ROLL];
-			_data[1] = gimbal_controls.control[gimbal_controls_s::INDEX_PITCH];
-			_data[2] = gimbal_controls.control[gimbal_controls_s::INDEX_YAW];
+		यदि (_topic.update(&gimbal_controls)) {
+			दत्त_3[0] = gimbal_controls.control[gimbal_controls_s::सूचकांक_ROLL];
+			दत्त_3[1] = gimbal_controls.control[gimbal_controls_s::सूचकांक_PITCH];
+			दत्त_3[2] = gimbal_controls.control[gimbal_controls_s::सूचकांक_YAW];
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::Gimbal_Roll]; }
+	भिन्न value(OutputFunction func) override { प्रत्यागम दत्त_3[(पूर्णाङ्क)func - (पूर्णाङ्क)OutputFunction::Gimbal_Roll]; }
 
-private:
+गुप्त:
 	uORB::Subscription _topic{ORB_ID(gimbal_controls)};
-	float _data[3] { NAN, NAN, NAN };
+	भिन्न दत्त_3[3] { NAN, NAN, NAN };
 };

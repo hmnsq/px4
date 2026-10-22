@@ -1,23 +1,23 @@
-#pragma once
+#निर्देशः once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#यदि_परिभाषितम् __cplusplus
+बाह्य "C" {
+#यदि_अन्तः
 
-#include <stdbool.h>
-#include <termios.h>
+#अन्तर्भाव <stdbool.h>
+#अन्तर्भाव <termios.h>
 
-int qurt_uart_get_port(const char *dev);
-int qurt_uart_open(const char *dev, speed_t speed);
-int qurt_uart_write(int fd, const char *buf, size_t len);
-int qurt_uart_read(int fd, char *buf, size_t len, uint32_t timeout_us);
+पूर्णाङ्क qurt_uart_get_पत्तनम्(ध्रुव वर्ण *dev);
+पूर्णाङ्क qurt_uart_open(ध्रुव वर्ण *dev, speed_t जवः);
+पूर्णाङ्क qurt_uart_write(पूर्णाङ्क fd, ध्रुव वर्ण *buf, size_t len);
+पूर्णाङ्क qurt_uart_read(पूर्णाङ्क fd, वर्ण *buf, size_t len, uint32_t timeout_us);
 
-typedef int (*open_uart_func_t)(uint8_t, speed_t);
-typedef int (*write_uart_func_t)(int, const void *, size_t);
-typedef int (*read_uart_func_t)(int,  void *, size_t);
+प्रकारनिर्देश पूर्णाङ्क (*open_uart_func_t)(uint8_t, speed_t);
+प्रकारनिर्देश पूर्णाङ्क (*write_uart_func_t)(पूर्णाङ्क, ध्रुव शून्य *, size_t);
+प्रकारनिर्देश पूर्णाङ्क (*read_uart_func_t)(पूर्णाङ्क,  शून्य *, size_t);
 
-void configure_uart_callbacks(open_uart_func_t, write_uart_func_t, read_uart_func_t);
+शून्य configure_uart_callbacks(open_uart_func_t, write_uart_func_t, read_uart_func_t);
 
-#ifdef __cplusplus
+#यदि_परिभाषितम् __cplusplus
 }
-#endif // __cplusplus
+#यदि_अन्तः // __cplusplus

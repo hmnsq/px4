@@ -37,78 +37,78 @@
  * @brief Unit tests for the second order reference model implementation
  */
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
-#include <lib/mathlib/math/filter/second_order_reference_model.hpp>
+#अन्तर्भाव <gtest/gtest.h>
+#अन्तर्भाव <matrix/math.hpp>
+#अन्तर्भाव <lib/mathlib/math/filter/second_order_reference_model.hpp>
 
-using math::SecondOrderReferenceModel;
-using matrix::Vector3f;
+उपयुज्य math::Second_क्रमः_Reference_Model;
+उपयुज्य matrix::Vector3f;
 
-TEST(SecondOrderReferenceModel, FloatDefaultConstructorInitializesStatesToZero)
+TEST(Second_क्रमः_Reference_Model, Float_Default_Constructor_Initializes_अवस्थाः_गन्तव्यम्_Zero)
 {
-	SecondOrderReferenceModel<float> sys_float;
+	Second_क्रमः_Reference_Model<भिन्न> sys_float;
 
 	// default constructor leaves states initialized to zero
 	EXPECT_FLOAT_EQ(sys_float.getState(), 0.0f);
-	EXPECT_FLOAT_EQ(sys_float.getRate(), 0.0f);
+	EXPECT_FLOAT_EQ(sys_float.get_दरः(), 0.0f);
 	EXPECT_FLOAT_EQ(sys_float.getAccel(), 0.0f);
 }
 
-TEST(SecondOrderReferenceModel, FloatReset)
+TEST(Second_क्रमः_Reference_Model, FloatReset)
 {
-	SecondOrderReferenceModel<float> sys_float;
+	Second_क्रमः_Reference_Model<भिन्न> sys_float;
 
 	// reset the system states
-	float init_state = 3.0f;
-	float init_rate = 1.1f;
-	sys_float.reset(init_state, init_rate);
+	भिन्न init_state = 3.0f;
+	भिन्न init_दरः = 1.1f;
+	sys_float.reset(init_state, init_दरः);
 	EXPECT_FLOAT_EQ(sys_float.getState(), init_state);
-	EXPECT_FLOAT_EQ(sys_float.getRate(), init_rate);
+	EXPECT_FLOAT_EQ(sys_float.get_दरः(), init_दरः);
 	EXPECT_FLOAT_EQ(sys_float.getAccel(), 0.0f);
 
 	// reset the system without providing rate
 	init_state = 5.5f;
 	sys_float.reset(init_state);
 	EXPECT_FLOAT_EQ(sys_float.getState(), init_state);
-	EXPECT_FLOAT_EQ(sys_float.getRate(), 0.0f);
+	EXPECT_FLOAT_EQ(sys_float.get_दरः(), 0.0f);
 	EXPECT_FLOAT_EQ(sys_float.getAccel(), 0.0f);
 }
 
-TEST(SecondOrderReferenceModel, Vector3DefaultConstructorInitializesStatesToZero)
+TEST(Second_क्रमः_Reference_Model, Vector3_Default_Constructor_Initializes_अवस्थाः_गन्तव्यम्_Zero)
 {
-	SecondOrderReferenceModel<Vector3f> sys_vector3f;
+	Second_क्रमः_Reference_Model<Vector3f> sys_vector3f;
 
 	// default constructor leaves states initialized to zero
 	Vector3f state = sys_vector3f.getState();
 	EXPECT_FLOAT_EQ(state(0), 0.0f);
 	EXPECT_FLOAT_EQ(state(1), 0.0f);
 	EXPECT_FLOAT_EQ(state(2), 0.0f);
-	Vector3f rate = sys_vector3f.getRate();
-	EXPECT_FLOAT_EQ(rate(0), 0.0f);
-	EXPECT_FLOAT_EQ(rate(1), 0.0f);
-	EXPECT_FLOAT_EQ(rate(2), 0.0f);
+	Vector3f दरः = sys_vector3f.get_दरः();
+	EXPECT_FLOAT_EQ(दरः(0), 0.0f);
+	EXPECT_FLOAT_EQ(दरः(1), 0.0f);
+	EXPECT_FLOAT_EQ(दरः(2), 0.0f);
 	Vector3f accel = sys_vector3f.getAccel();
 	EXPECT_FLOAT_EQ(accel(0), 0.0f);
 	EXPECT_FLOAT_EQ(accel(1), 0.0f);
 	EXPECT_FLOAT_EQ(accel(2), 0.0f);
 }
 
-TEST(SecondOrderReferenceModel, Vector3Reset)
+TEST(Second_क्रमः_Reference_Model, Vector3Reset)
 {
-	SecondOrderReferenceModel<Vector3f> sys_vector3f;
+	Second_क्रमः_Reference_Model<Vector3f> sys_vector3f;
 
 	// reset the system states
 	Vector3f init_state(1.0f, 2.0f, 3.0f);
-	Vector3f init_rate(0.1f, 0.2f, 0.3f);
-	sys_vector3f.reset(init_state, init_rate);
+	Vector3f init_दरः(0.1f, 0.2f, 0.3f);
+	sys_vector3f.reset(init_state, init_दरः);
 	Vector3f state = sys_vector3f.getState();
 	EXPECT_FLOAT_EQ(state(0), init_state(0));
 	EXPECT_FLOAT_EQ(state(1), init_state(1));
 	EXPECT_FLOAT_EQ(state(2), init_state(2));
-	Vector3f rate = sys_vector3f.getRate();
-	EXPECT_FLOAT_EQ(rate(0), init_rate(0));
-	EXPECT_FLOAT_EQ(rate(1), init_rate(1));
-	EXPECT_FLOAT_EQ(rate(2), init_rate(2));
+	Vector3f दरः = sys_vector3f.get_दरः();
+	EXPECT_FLOAT_EQ(दरः(0), init_दरः(0));
+	EXPECT_FLOAT_EQ(दरः(1), init_दरः(1));
+	EXPECT_FLOAT_EQ(दरः(2), init_दरः(2));
 	Vector3f accel = sys_vector3f.getAccel();
 	EXPECT_FLOAT_EQ(accel(0), 0.0f);
 	EXPECT_FLOAT_EQ(accel(1), 0.0f);
@@ -121,10 +121,10 @@ TEST(SecondOrderReferenceModel, Vector3Reset)
 	EXPECT_FLOAT_EQ(state(0), init_state(0));
 	EXPECT_FLOAT_EQ(state(1), init_state(1));
 	EXPECT_FLOAT_EQ(state(2), init_state(2));
-	rate = sys_vector3f.getRate();
-	EXPECT_FLOAT_EQ(rate(0), 0.0f);
-	EXPECT_FLOAT_EQ(rate(1), 0.0f);
-	EXPECT_FLOAT_EQ(rate(2), 0.0f);
+	दरः = sys_vector3f.get_दरः();
+	EXPECT_FLOAT_EQ(दरः(0), 0.0f);
+	EXPECT_FLOAT_EQ(दरः(1), 0.0f);
+	EXPECT_FLOAT_EQ(दरः(2), 0.0f);
 	accel = sys_vector3f.getAccel();
 	EXPECT_FLOAT_EQ(accel(0), 0.0f);
 	EXPECT_FLOAT_EQ(accel(1), 0.0f);

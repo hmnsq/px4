@@ -31,99 +31,99 @@
  *
  ****************************************************************************/
 
-#pragma once
+#निर्देशः once
 
-#include <lib/conversion/rotation.h>
-#include <lib/matrix/matrix/math.hpp>
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/log.h>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/sensor_correction.h>
+#अन्तर्भाव <lib/conversion/rotation.h>
+#अन्तर्भाव <lib/matrix/matrix/math.hpp>
+#अन्तर्भाव <px4_platform_common/px4_config.h>
+#अन्तर्भाव <px4_platform_common/log.h>
+#अन्तर्भाव <uORB/Subscription.hpp>
+#अन्तर्भाव <uORB/topics/sensor_correction.h>
 
-namespace calibration
+नामाकाश calibration
 {
-class Gyroscope
+वर्ग Gyroscope
 {
-public:
-	static constexpr int MAX_SENSOR_COUNT = 4;
+सार्वजनिक:
+	स्थिर constexpr पूर्णाङ्क MAX_SENSOR_गणनम् = 4;
 
-	static constexpr uint8_t DEFAULT_PRIORITY = 50;
+	स्थिर constexpr uint8_t DEFAULT_प्राथमिकता = 50;
 
 	// Unlike a magnetometer, an external IMU is never a better primary than the
 	// on-board one: it is behind a bus with its own clock and transport latency
 	// and is not thermally managed, so it must not win the vote uncalibrated.
-	static constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 25;
+	स्थिर constexpr uint8_t DEFAULT_EXTERNAL_प्राथमिकता = 25;
 
-	static constexpr const char *SensorString() { return "GYRO"; }
+	स्थिर constexpr ध्रुव वर्ण *SensorString() { प्रत्यागम "GYRO"; }
 
 	Gyroscope();
-	explicit Gyroscope(uint32_t device_id);
-	Gyroscope(uint32_t device_id, bool external);
+	स्पष्ट Gyroscope(uint32_t device_id);
+	Gyroscope(uint32_t device_id, तार्किक external);
 
-	~Gyroscope() = default;
+	~Gyroscope() = स्वभाव;
 
-	void PrintStatus();
+	शून्य Print_स्थितिः();
 
-	bool set_calibration_index(int calibration_index);
-	void set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
-	void set_device_id(uint32_t device_id, bool external);
-	bool set_offset(const matrix::Vector3f &offset);
-	void set_rotation(Rotation rotation);
+	तार्किक समुच्चयः_calibration_सूचकांक(पूर्णाङ्क calibration_सूचकांक);
+	शून्य समुच्चयः_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
+	शून्य समुच्चयः_device_id(uint32_t device_id, तार्किक external);
+	तार्किक समुच्चयः_विस्थापनम्(ध्रुव matrix::Vector3f &विस्थापनम्);
+	शून्य समुच्चयः_rotation(Rotation rotation);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool enabled() const { return (_priority > 0); }
-	bool external() const { return _external; }
-	const matrix::Vector3f &offset() const { return _offset; }
-	const int32_t &priority() const { return _priority; }
-	const matrix::Dcmf &rotation() const { return _rotation; }
-	const Rotation &rotation_enum() const { return _rotation_enum; }
-	const matrix::Vector3f &thermal_offset() const { return _thermal_offset; }
+	तार्किक calibrated() ध्रुव { प्रत्यागम (_device_id != 0) && (calibration_सूचकांक_2 >= 0); }
+	uint8_t calibration_गणनम्_2() ध्रुव { प्रत्यागम calibration_गणनम्; }
+	int8_t calibration_सूचकांक() ध्रुव { प्रत्यागम calibration_सूचकांक_2; }
+	uint32_t device_id() ध्रुव { प्रत्यागम _device_id; }
+	तार्किक enabled() ध्रुव { प्रत्यागम (प्राथमिकता_2 > 0); }
+	तार्किक external() ध्रुव { प्रत्यागम _external; }
+	ध्रुव matrix::Vector3f &विस्थापनम्() ध्रुव { प्रत्यागम विस्थापनम्_2; }
+	ध्रुव int32_t &प्राथमिकता() ध्रुव { प्रत्यागम प्राथमिकता_2; }
+	ध्रुव matrix::Dcmf &rotation() ध्रुव { प्रत्यागम _rotation; }
+	ध्रुव Rotation &rotation_enum() ध्रुव { प्रत्यागम _rotation_enum; }
+	ध्रुव matrix::Vector3f &thermal_विस्थापनम्_2() ध्रुव { प्रत्यागम thermal_विस्थापनम्; }
 
 	// apply offsets and scale
 	// rotate corrected measurements from sensor to body frame
-	inline matrix::Vector3f Correct(const matrix::Vector3f &data) const
+	अन्तःस्थ matrix::Vector3f Correct(ध्रुव matrix::Vector3f &दत्त) ध्रुव
 	{
-		return _rotation * matrix::Vector3f{data - _thermal_offset - _offset};
+		प्रत्यागम _rotation * matrix::Vector3f{दत्त - thermal_विस्थापनम् - विस्थापनम्_2};
 	}
 
-	inline matrix::Vector3f Uncorrect(const matrix::Vector3f &corrected_data) const
+	अन्तःस्थ matrix::Vector3f Uncorrect(ध्रुव matrix::Vector3f &corrected_दत्त) ध्रुव
 	{
-		return (_rotation.T() * corrected_data) + _thermal_offset + _offset;
+		प्रत्यागम (_rotation.T() * corrected_दत्त) + thermal_विस्थापनम् + विस्थापनम्_2;
 	}
 
 	// Compute sensor offset from bias (board frame)
-	matrix::Vector3f BiasCorrectedSensorOffset(const matrix::Vector3f &bias) const
+	matrix::Vector3f Bias_Corrected_Sensor_विस्थापनम्(ध्रुव matrix::Vector3f &bias) ध्रुव
 	{
 		// updated calibration offset = existing offset + bias rotated to sensor frame
-		return _offset + (_rotation.T() * bias);
+		प्रत्यागम विस्थापनम्_2 + (_rotation.T() * bias);
 	}
 
-	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
-	void ParametersUpdate();
+	तार्किक Parameters_आरोपय();
+	तार्किक ParametersSave(पूर्णाङ्क desired_calibration_सूचकांक = -1, तार्किक force = असत्य);
+	शून्य ParametersUpdate();
 
-	void Reset();
+	शून्य Reset();
 
-	void SensorCorrectionsUpdate(bool force = false);
+	शून्य SensorCorrectionsUpdate(तार्किक force = असत्य);
 
-private:
+गुप्त:
 	uORB::Subscription _sensor_correction_sub{ORB_ID(sensor_correction)};
 
 	Rotation _rotation_enum{ROTATION_NONE};
 
 	matrix::Dcmf _rotation;
-	matrix::Vector3f _offset;
-	matrix::Vector3f _thermal_offset;
+	matrix::Vector3f विस्थापनम्_2;
+	matrix::Vector3f thermal_विस्थापनम्;
 
-	int8_t _calibration_index{-1};
+	int8_t calibration_सूचकांक_2{-1};
 	uint32_t _device_id{0};
-	int32_t _priority{-1};
+	int32_t प्राथमिकता_2{-1};
 
-	bool _external{false};
+	तार्किक _external{असत्य};
 
-	uint8_t _calibration_count{0};
+	uint8_t calibration_गणनम्{0};
 };
 } // namespace calibration

@@ -37,22 +37,22 @@
  * Controller library code
  */
 
-#pragma once
+#निर्देशः once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <assert.h>
+#अन्तर्भाव <time.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <mathlib/math/test/test.hpp>
+#अन्तर्भाव <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#अन्तर्भाव "block/Block.hpp"
+#अन्तर्भाव "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#अन्तर्भाव "matrix/math.hpp"
 
-namespace control
+नामाकाश control
 {
 
 /**
@@ -60,21 +60,21 @@ namespace control
  * Same as limiter but with only a max, is used for
  * upper limit of +max, and lower limit of -max
  */
-class __EXPORT BlockLimitSym : public Block
+वर्ग __EXPORT खण्डम्_सीमा_Sym : सार्वजनिक खण्डम्
 {
-public:
+सार्वजनिक:
 // methods
-	BlockLimitSym(SuperBlock *parent, const char *name) :
-		Block(parent, name),
-		_max(this, "MAX")
+	खण्डम्_सीमा_Sym(Super_खण्डम् *parent, ध्रुव वर्ण *name) :
+		खण्डम्(parent, name),
+		_max(एतत्, "MAX")
 	{}
-	virtual ~BlockLimitSym() = default;
-	float update(float input);
+	आभास ~खण्डम्_सीमा_Sym() = स्वभाव;
+	भिन्न update(भिन्न निवेशः);
 // accessors
-	float getMax() { return _max.get(); }
-protected:
-// attributes
-	control::BlockParamFloat _max;
+	भिन्न getMax() { प्रत्यागम _max.get(); }
+रक्षित:
+//गुणाः
+	control::खण्डम्_Param_Float _max;
 };
 
 } // namespace control

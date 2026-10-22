@@ -2,71 +2,71 @@
 # Injects params from XML file into a param_group
 #
 
-from __future__ import print_function
-from px4params import srcscanner, srcparser, xmlout, markdownout
-from .srcparser import ParameterGroup, Parameter
+तः __future__ आनयन print_function
+तः px4params आनयन srcscanner, srcparser, xmlout, markdownout
+तः .srcparser आनयन Parameter_गणः, Parameter
 
-import xml.etree.ElementTree as ET
-import sys
+आनयन xml.etree.Element_वृक्षः इव ET
+आनयन sys
 
 
-class XMLInject():
-    def __init__(self, injected_xml_filename):
+वर्ग XMLInject():
+    परिभाषा __init__(self, injected_xml_filename):
         self.groups=[]
 
-        valid_parameter_attributes = set(["category", "default", "name", "type", "volatile", "boolean"])
-        valid_field_tags = set(["board","short_desc", "long_desc", "min", "max", "unit", "decimal", "increment", "reboot_required"])
-        valid_other_top_level_tags = set(["group","values"])
+        valid_parameter_गुणाः = समुच्चयः(["category", "default", "name", "type", "volatile", "boolean"])
+        valid_क्षेत्रम्_चिह्नकानि = समुच्चयः(["board","short_desc", "long_desc", "min", "max", "unit", "decimal", "increment", "reboot_required"])
+        valid_other_शिखरम्_level_चिह्नकानि = समुच्चयः(["group","values"])
 
         importtree = ET.parse(injected_xml_filename)
         injectgroups = importtree.getroot().findall("group")
-        not_handled_parameter_tags=set()
-        not_handled_parameter_attributes=set()
-        for igroup in injectgroups:
-            group_name=igroup.get('name')
-            imported_group = ParameterGroup(group_name)
-            no_code_generation=igroup.get('no_code_generation')
-            if no_code_generation:
-                imported_group.no_code_generation=no_code_generation
-            for iparam in igroup:
+        not_handled_parameter_चिह्नकानि=समुच्चयः()
+        not_handled_parameter_गुणाः=समुच्चयः()
+        प्रति igroup अन्तः injectgroups:
+            गणः_name=igroup.get('name')
+            imported_गणः = Parameter_गणः(गणः_name)
+            no_संहिता_generation=igroup.get('no_code_generation')
+            यदि no_संहिता_generation:
+                imported_गणः.no_संहिता_generation=no_संहिता_generation
+            प्रति iparam अन्तः igroup:
                 param_name=iparam.get('name')
                 param_type=iparam.get('type')
                 new_param= Parameter(param_name, param_type)
                 #get other param info stored as attributes
-                for param_attrib in iparam.attrib:
-                    if param_attrib not in valid_parameter_attributes:
-                        not_handled_parameter_attributes.add(param_attrib)
-                    elif param_attrib == 'category':
-                        new_param.SetCategory(iparam.get('category'))
-                    elif param_attrib == 'default':
-                        new_param.default = iparam.get('default')
-                    elif param_attrib == 'volatile':
-                        new_param.SetVolatile()
-                    elif param_attrib == "boolean":
-                        new_param.SetBoolean()
+                प्रति param_attrib अन्तः iparam.attrib:
+                    यदि param_attrib न अन्तः valid_parameter_गुणाः:
+                        not_handled_parameter_गुणाः.सङ्कलय(param_attrib)
+                    नोचेद्यदि param_attrib == 'category':
+                        new_param.समुच्चयः_Category(iparam.get('category'))
+                    नोचेद्यदि param_attrib == 'default':
+                        new_param.स्वभाव = iparam.get('default')
+                    नोचेद्यदि param_attrib == 'volatile':
+                        new_param.समुच्चयः_Volatile()
+                    नोचेद्यदि param_attrib == "boolean":
+                        new_param.समुच्चयः_Boolean()
 
                 #get param info stored as child tags
-                for child in iparam:
-                    if child.tag in valid_field_tags:
-                        new_param.SetField(child.tag, child.text)
-                    elif child.tag == 'values':
-                        for value in child:
-                            new_param.SetEnumValue(value.get('code'), value.text)
-                    elif child.tag == 'bitmask':
-                        for bit in child:
-                            new_param.SetBitmaskBit(bit.get('index'), bit.text)
-                    else:
-                        not_handled_parameter_tags.add(child.tag)                      
+                प्रति child अन्तः iparam:
+                    यदि child.चिह्नकम् अन्तः valid_क्षेत्रम्_चिह्नकानि:
+                        new_param.समुच्चयः_क्षेत्रम्_2(child.चिह्नकम्, child.text)
+                    नोचेद्यदि child.चिह्नकम् == 'values':
+                        प्रति मानम् अन्तः child:
+                            new_param.समुच्चयः_Enum_मानम्(मानम्.get('code'), मानम्.text)
+                    नोचेद्यदि child.चिह्नकम् == 'bitmask':
+                        प्रति bit अन्तः child:
+                            new_param.समुच्चयः_Bitmask_Bit(bit.get('index'), bit.text)
+                    अन्यथा:
+                        not_handled_parameter_चिह्नकानि.सङ्कलय(child.चिह्नकम्)                      
             
-                imported_group.AddParameter(new_param)
-            self.groups.append(imported_group)
+                imported_गणः.सङ्कलय_Parameter(new_param)
+            self.groups.append(imported_गणः)
 
                     
-        if not_handled_parameter_tags or not_handled_parameter_attributes:
-            print("WARNING: Injected file parameter has unhandled child tags: %s" % not_handled_parameter_tags)
-            print("WARNING: Injected file parameter has unhandled attributes: %s" % not_handled_parameter_attributes)
+        यदि not_handled_parameter_चिह्नकानि वा not_handled_parameter_गुणाः:
+            मुद्रय("WARNING: Injected file parameter has unhandled child tags: %s" % not_handled_parameter_चिह्नकानि)
+            मुद्रय("WARNING: Injected file parameter has unhandled attributes: %s" % not_handled_parameter_गुणाः)
 
         
 
-    def injected(self):
-        return self.groups
+    परिभाषा injected(self):
+        प्रत्यागम self.groups

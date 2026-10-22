@@ -32,9 +32,9 @@
 #
 ############################################################################
 
-import json
-import sys
-import urllib.request
+आनयन json
+आनयन sys
+आनयन urllib.request
 
 SAMPLING_RES = 5
 SAMPLING_MIN_LAT = -50
@@ -42,7 +42,7 @@ SAMPLING_MAX_LAT = 60
 SAMPLING_MIN_LON = -180
 SAMPLING_MAX_LON = 180
 
-header = """/****************************************************************************
+शीर्षकम् = """/****************************************************************************
  *
  *   Copyright (c) 2020-2024 PX4 Development Team. All rights reserved.
  *
@@ -82,65 +82,65 @@ header = """/*******************************************************************
 #include "geo_mag_declination.h"
 """
 
-print(header)
+मुद्रय(शीर्षकम्)
 
-print('')
+मुद्रय('')
 
 # Declination
 params = urllib.parse.urlencode({'lat1': 0, 'lat2': 0, 'lon1': 0, 'lon2': 0, 'latStepSize': 1, 'lonStepSize': 1, 'magneticComponent': 'd', 'resultFormat': 'json'})
-key=sys.argv[1] # NOAA key (https://www.ngdc.noaa.gov/geomag/CalcSurvey.shtml)
-f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfgrid?key=%s&%s" % (key, params))
-data = json.loads(f.read())
+कुञ्चिका=sys.argv[1] # NOAA key (https://www.ngdc.noaa.gov/geomag/CalcSurvey.shtml)
+f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfgrid?key=%s&%s" % (कुञ्चिका, params))
+दत्त = json.loads(f.पठ())
 
 
-print('TEST(GeoLookupTest, declination)\n{')
-for latitude in range(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
+मुद्रय('TEST(GeoLookupTest, declination)\n{')
+प्रति latitude अन्तः परिसरः(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
     params = urllib.parse.urlencode({'lat1': latitude, 'lat2': latitude, 'lon1': SAMPLING_MIN_LON, 'lon2': SAMPLING_MAX_LON, 'latStepSize': 1, 'lonStepSize': SAMPLING_RES, 'magneticComponent': 'd', 'resultFormat': 'json'})
-    f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfgrid?key=%s&%s" % (key, params))
-    data = json.loads(f.read())
+    f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfgrid?key=%s&%s" % (कुञ्चिका, params))
+    दत्त = json.loads(f.पठ())
 
-    for p in data['result']:
+    प्रति p अन्तः दत्त['result']:
         error_deg = 1.0
 
         # why is this area worse?
-        if (-45 <= p['latitude'] <= -44) and (100 <= p['longitude'] <= 120):
+        यदि (-45 <= p['latitude'] <= -44) च (100 <= p['longitude'] <= 120):
             error_deg = 1.8
 
-        print('\tEXPECT_NEAR(get_mag_declination_degrees({}, {}), {:.1f}, {:.2f} + {});'.format(p['latitude'], p['longitude'], p['declination'], p['declination_uncertainty'], error_deg))
-print('}')
+        मुद्रय('\tEXPECT_NEAR(get_mag_declination_degrees({}, {}), {:.1f}, {:.2f} + {});'.format(p['latitude'], p['longitude'], p['declination'], p['declination_uncertainty'], error_deg))
+मुद्रय('}')
 
-print('')
+मुद्रय('')
 
-print('TEST(GeoLookupTest, inclination)\n{')
-for latitude in range(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
+मुद्रय('TEST(GeoLookupTest, inclination)\n{')
+प्रति latitude अन्तः परिसरः(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
     params = urllib.parse.urlencode({'lat1': latitude, 'lat2': latitude, 'lon1': SAMPLING_MIN_LON, 'lon2': SAMPLING_MAX_LON, 'latStepSize': 1, 'lonStepSize': SAMPLING_RES, 'magneticComponent': 'i', 'resultFormat': 'json'})
-    f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfgrid?key=%s&%s" % (key, params))
-    data = json.loads(f.read())
+    f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfgrid?key=%s&%s" % (कुञ्चिका, params))
+    दत्त = json.loads(f.पठ())
 
-    for p in data['result']:
+    प्रति p अन्तः दत्त['result']:
         error = 1.2
 
         # why is this area worse?
-        if (-45 <= p['latitude'] <= -44) and (100 <= p['longitude'] <= 120):
+        यदि (-45 <= p['latitude'] <= -44) च (100 <= p['longitude'] <= 120):
             error_deg = 1.5
 
-        print('\tEXPECT_NEAR(get_mag_inclination_degrees({}, {}), {:.1f}, {:.2f} + {});'.format(p['latitude'], p['longitude'], p['inclination'], p['inclination_uncertainty'], error))
-print('}')
+        मुद्रय('\tEXPECT_NEAR(get_mag_inclination_degrees({}, {}), {:.1f}, {:.2f} + {});'.format(p['latitude'], p['longitude'], p['inclination'], p['inclination_uncertainty'], error))
+मुद्रय('}')
 
-print('')
+मुद्रय('')
 
-print('TEST(GeoLookupTest, strength)\n{')
-for latitude in range(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
+मुद्रय('TEST(GeoLookupTest, strength)\n{')
+प्रति latitude अन्तः परिसरः(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
     params = urllib.parse.urlencode({'lat1': latitude, 'lat2': latitude, 'lon1': SAMPLING_MIN_LON, 'lon2': SAMPLING_MAX_LON, 'latStepSize': 1, 'lonStepSize': SAMPLING_RES, 'magneticComponent': 'f', 'resultFormat': 'json'})
-    f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfgrid?key=%s&%s" % (key, params))
-    data = json.loads(f.read())
+    f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfgrid?key=%s&%s" % (कुञ्चिका, params))
+    दत्त = json.loads(f.पठ())
 
-    for p in data['result']:
+    प्रति p अन्तः दत्त['result']:
         error = 0.01
 
         # why is this area worse?
-        if (-45 <= p['latitude'] <= -35):
+        यदि (-45 <= p['latitude'] <= -35):
             error = 0.017
 
-        print('\tEXPECT_NEAR(get_mag_strength_tesla({}, {}) * 1e9, {:.0f}, {:.0f} + {:.0f});'.format(p['latitude'], p['longitude'], p['totalintensity'], p['totalintensity_uncertainty'], p['totalintensity'] * error))
-print('}')
+        मुद्रय('\tEXPECT_NEAR(get_mag_strength_tesla({}, {}) * 1e9, {:.0f}, {:.0f} + {:.0f});'.format(p['latitude'], p['longitude'], p['totalintensity'], p['totalintensity_uncertainty'], p['totalintensity'] * error))
+मुद्रय('}')

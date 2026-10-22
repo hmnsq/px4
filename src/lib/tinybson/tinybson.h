@@ -40,15 +40,15 @@
 * in the Mongo C connector.
 */
 
-#ifndef _TINYBSON_H
-#define _TINYBSON_H
+#यदि_अपरिभाषितम् _TINYBSON_H
+#परिभाषय _TINYBSON_H
 
-#include <sys/types.h>
-#include <stdint.h>
-#include <stdbool.h>
+#अन्तर्भाव <sys/types.h>
+#अन्तर्भाव <stdint.h>
+#अन्तर्भाव <stdbool.h>
 
 /** subset of the BSON node types we might care about */
-typedef enum {
+प्रकारनिर्देश गणना {
 	BSON_EOO       = 0,
 	BSON_DOUBLE    = 1,
 	BSON_STRING    = 2,
@@ -64,69 +64,69 @@ typedef enum {
 	BSON_INT64     = 18
 } bson_type_t;
 
-typedef enum bson_binary_subtype {
-	BSON_BIN_BINARY = 0,
+प्रकारनिर्देश गणना bson_द्विमान_subtype {
+	BSON_BIN_द्विमान = 0,
 	BSON_BIN_USER = 128
-} bson_binary_subtype_t;
+} bson_द्विमान_subtype_t;
 
 /**
  * Maximum node name length.
  */
-#define BSON_MAXNAME		32
+#परिभाषय BSON_MAXNAME		32
 
 /**
  * Buffer growth increment when writing to a buffer.
  */
-#define BSON_BUF_INCREMENT	128
+#परिभाषय BSON_BUF_INCREMENT	128
 
 /**
  * Node structure passed to the callback.
  */
-typedef struct bson_node_s {
-	char			name[BSON_MAXNAME];
+प्रकारनिर्देश संरचना bson_ग्रन्थिः_s {
+	वर्ण			name[BSON_MAXNAME];
 	bson_type_t		type;
-	bson_binary_subtype_t	subtype;
-	union {
-		double  d;   // bson type 1
+	bson_द्विमान_subtype_t	subtype;
+	सङ्घ {
+		द्विगुण  d;   // bson type 1
 		bool    b;   // bson type 8
 		int32_t i32; // bson type 16
 		int64_t i64; // bson type 18
 	};
-} *bson_node_t;
+} *bson_ग्रन्थिः_t;
 
-typedef struct bson_decoder_s *bson_decoder_t;
+प्रकारनिर्देश संरचना bson_decoder_s *bson_decoder_t;
 
 /**
  * Node callback.
  *
  * The node callback function's return value is returned by bson_decoder_next.
  */
-typedef int	(* bson_decoder_callback)(bson_decoder_t decoder, bson_node_t node);
+प्रकारनिर्देश पूर्णाङ्क	(* bson_decoder_callback)(bson_decoder_t decoder, bson_ग्रन्थिः_t ग्रन्थिः_2);
 
-struct bson_decoder_s {
+संरचना bson_decoder_s {
 	/* file reader state */
-	int			fd{-1};
+	पूर्णाङ्क			fd{-1};
 
 	/* buffer reader state */
 	uint8_t			*buf{nullptr};
 	size_t			bufsize{0};
-	unsigned		bufpos{0};
+	अचिह्नित		bufpos{0};
 
 	bool			dead{false};
 	bson_decoder_callback	callback;
-	unsigned		nesting{0};
-	struct bson_node_s	node {};
+	अचिह्नित		nesting{0};
+	संरचना bson_ग्रन्थिः_s	ग्रन्थिः_2 {};
 	int32_t			pending{0};
 
-	int32_t                 total_document_size{0};
-	int32_t                 total_decoded_size{0};
+	int32_t                 योग_document_आकार{0};
+	int32_t                 योग_decoded_आकार{0};
 
-	uint16_t                count_node_double{0};
-	uint16_t                count_node_string{0};
-	uint16_t                count_node_bindata{0};
-	uint16_t                count_node_bool{0};
-	uint16_t                count_node_int32{0};
-	uint16_t                count_node_int64{0};
+	uint16_t                गणनम्_ग्रन्थिः_double{0};
+	uint16_t                गणनम्_ग्रन्थिः_string{0};
+	uint16_t                गणनम्_ग्रन्थिः_bindata{0};
+	uint16_t                गणनम्_ग्रन्थिः_bool{0};
+	uint16_t                गणनम्_ग्रन्थिः_int32{0};
+	uint16_t                गणनम्_ग्रन्थिः_int64{0};
 };
 
 /**
@@ -137,7 +137,7 @@ struct bson_decoder_s {
  * @param callback		Callback to be invoked by bson_decoder_next
  * @return			Zero on success.
  */
-__EXPORT int bson_decoder_init_file(bson_decoder_t decoder, int fd, bson_decoder_callback callback);
+__EXPORT पूर्णाङ्क bson_decoder_init_file(bson_decoder_t decoder, पूर्णाङ्क fd, bson_decoder_callback callback);
 
 /**
  * Initialise the decoder to read from a buffer in memory.
@@ -150,7 +150,7 @@ __EXPORT int bson_decoder_init_file(bson_decoder_t decoder, int fd, bson_decoder
  * @param callback		Callback to be invoked by bson_decoder_next
  * @return			Zero on success.
  */
-__EXPORT int bson_decoder_init_buf(bson_decoder_t decoder, void *buf, unsigned bufsize, bson_decoder_callback callback);
+__EXPORT पूर्णाङ्क bson_decoder_init_buf(bson_decoder_t decoder, शून्य *buf, अचिह्नित bufsize, bson_decoder_callback callback);
 
 /**
  * Process the next node from the stream and invoke the callback.
@@ -159,38 +159,38 @@ __EXPORT int bson_decoder_init_buf(bson_decoder_t decoder, void *buf, unsigned b
  * @return			-1 if parsing encountered an error, 0 if the BSON stream has ended,
  *				otherwise the return value from the callback.
  */
-__EXPORT int bson_decoder_next(bson_decoder_t decoder);
+__EXPORT पूर्णाङ्क bson_decoder_अग्र(bson_decoder_t decoder);
 
 /**
  * Copy node data.
  *
  * @param decoder		Decoder state, must have been initialised with bson_decoder_init.
  */
-__EXPORT int bson_decoder_copy_data(bson_decoder_t decoder, void *buf);
+__EXPORT पूर्णाङ्क bson_decoder_copy_दत्त(bson_decoder_t decoder, शून्य *buf);
 
 /**
  * Report copyable data size.
  *
  * @param decoder		Decoder state, must have been initialised with bson_decoder_init.
  */
-__EXPORT size_t bson_decoder_data_pending(bson_decoder_t decoder);
+__EXPORT size_t bson_decoder_दत्त_pending(bson_decoder_t decoder);
 
 /**
  * Encoder state structure.
  */
-typedef struct bson_encoder_s {
+प्रकारनिर्देश संरचना bson_encoder_s {
 	/* file writer state */
-	int		fd{-1};
+	पूर्णाङ्क		fd{-1};
 
 	/* buffer writer state */
 	uint8_t		*buf{nullptr};
-	unsigned	bufsize{0};
-	unsigned	bufpos{0};
+	अचिह्नित	bufsize{0};
+	अचिह्नित	bufpos{0};
 
 	bool		realloc_ok{false};
 	bool		dead{false};
 
-	int32_t        total_document_size{0};
+	int32_t        योग_document_आकार{0};
 
 } *bson_encoder_t;
 
@@ -201,7 +201,7 @@ typedef struct bson_encoder_s {
  * @param fd			File to write to.
  * @return			Zero on success.
  */
-__EXPORT int bson_encoder_init_file(bson_encoder_t encoder, int fd);
+__EXPORT पूर्णाङ्क bson_encoder_init_file(bson_encoder_t encoder, पूर्णाङ्क fd);
 
 /**
  * Initialze the encoder for writing to a file.
@@ -212,7 +212,7 @@ __EXPORT int bson_encoder_init_file(bson_encoder_t encoder, int fd);
  * @param bufsize		Supplied buffer size
  * @return			Zero on success.
  */
-__EXPORT int bson_encoder_init_buf_file(bson_encoder_t encoder, int fd, void *buf, unsigned bufsize);
+__EXPORT पूर्णाङ्क bson_encoder_init_buf_file(bson_encoder_t encoder, पूर्णाङ्क fd, शून्य *buf, अचिह्नित bufsize);
 
 /**
  * Initialze the encoder for writing to a buffer.
@@ -224,19 +224,19 @@ __EXPORT int bson_encoder_init_buf_file(bson_encoder_t encoder, int fd, void *bu
  *				the buffer is supplied, the size of the supplied buffer.
  * @return			Zero on success.
  */
-__EXPORT int bson_encoder_init_buf(bson_encoder_t encoder, void *buf, unsigned bufsize);
+__EXPORT पूर्णाङ्क bson_encoder_init_buf(bson_encoder_t encoder, शून्य *buf, अचिह्नित bufsize);
 
 /**
  * Finalise the encoded stream.
  *
  * @param encoder		The encoder to finalise.
  */
-__EXPORT int bson_encoder_fini(bson_encoder_t encoder);
+__EXPORT पूर्णाङ्क bson_encoder_fini(bson_encoder_t encoder);
 
 /**
  * Fetch the size of the encoded object; only valid for buffer operations.
  */
-__EXPORT int bson_encoder_buf_size(bson_encoder_t encoder);
+__EXPORT पूर्णाङ्क bson_encoder_buf_आकार(bson_encoder_t encoder);
 
 /**
  * Get a pointer to the encoded object buffer.
@@ -244,7 +244,7 @@ __EXPORT int bson_encoder_buf_size(bson_encoder_t encoder);
  * Note that if the buffer was allocated by the encoder, it is the caller's responsibility
  * to free this buffer.
  */
-__EXPORT void *bson_encoder_buf_data(bson_encoder_t encoder);
+__EXPORT शून्य *bson_encoder_buf_दत्त(bson_encoder_t encoder);
 
 /**
  * Append a boolean to the encoded stream.
@@ -253,7 +253,7 @@ __EXPORT void *bson_encoder_buf_data(bson_encoder_t encoder);
  * @param name			Node name.
  * @param value			Value to be encoded.
  */
-__EXPORT int bson_encoder_append_bool(bson_encoder_t encoder, const char *name, bool value);
+__EXPORT पूर्णाङ्क bson_encoder_append_bool(bson_encoder_t encoder, ध्रुव वर्ण *name, bool मानम्);
 
 /**
  * Append an int32 to the encoded stream.
@@ -262,7 +262,7 @@ __EXPORT int bson_encoder_append_bool(bson_encoder_t encoder, const char *name, 
  * @param name			Node name.
  * @param value			Value to be encoded.
  */
-__EXPORT int bson_encoder_append_int32(bson_encoder_t encoder, const char *name, int32_t value);
+__EXPORT पूर्णाङ्क bson_encoder_append_int32(bson_encoder_t encoder, ध्रुव वर्ण *name, int32_t मानम्);
 
 /**
  * Append an int64 to the encoded stream.
@@ -271,7 +271,7 @@ __EXPORT int bson_encoder_append_int32(bson_encoder_t encoder, const char *name,
  * @param name			Node name.
  * @param value			Value to be encoded.
  */
-__EXPORT int bson_encoder_append_int64(bson_encoder_t encoder, const char *name, int64_t value);
+__EXPORT पूर्णाङ्क bson_encoder_append_int64(bson_encoder_t encoder, ध्रुव वर्ण *name, int64_t मानम्);
 
 /**
  * Append a double to the encoded stream
@@ -280,7 +280,7 @@ __EXPORT int bson_encoder_append_int64(bson_encoder_t encoder, const char *name,
  * @param name			Node name.
  * @param value			Value to be encoded.
  */
-__EXPORT int bson_encoder_append_double(bson_encoder_t encoder, const char *name, double value);
+__EXPORT पूर्णाङ्क bson_encoder_append_double(bson_encoder_t encoder, ध्रुव वर्ण *name, द्विगुण मानम्);
 
 /**
  * Append a string to the encoded stream.
@@ -289,7 +289,7 @@ __EXPORT int bson_encoder_append_double(bson_encoder_t encoder, const char *name
  * @param name			Node name.
  * @param string		Nul-terminated C string.
  */
-__EXPORT int bson_encoder_append_string(bson_encoder_t encoder, const char *name, const char *string);
+__EXPORT पूर्णाङ्क bson_encoder_append_string(bson_encoder_t encoder, ध्रुव वर्ण *name, ध्रुव वर्ण *string);
 
 /**
  * Append a binary blob to the encoded stream.
@@ -300,13 +300,13 @@ __EXPORT int bson_encoder_append_string(bson_encoder_t encoder, const char *name
  * @param size			Data size.
  * @param data			Buffer containing data to be encoded.
  */
-__EXPORT int bson_encoder_append_binary(bson_encoder_t encoder, const char *name, bson_binary_subtype_t subtype,
-					size_t size, const void *data);
+__EXPORT पूर्णाङ्क bson_encoder_append_द्विमान(bson_encoder_t encoder, ध्रुव वर्ण *name, bson_द्विमान_subtype_t subtype,
+					size_t आकार, ध्रुव शून्य *दत्त);
 
 /**
  * Append a BSON null (type 0x0A). Name only; no value payload.
  */
-__EXPORT int bson_encoder_append_null(bson_encoder_t encoder, const char *name);
+__EXPORT पूर्णाङ्क bson_encoder_append_null(bson_encoder_t encoder, ध्रुव वर्ण *name);
 
 
-#endif
+#यदि_अन्तः

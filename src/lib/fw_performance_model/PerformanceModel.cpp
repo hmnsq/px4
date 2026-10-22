@@ -37,191 +37,191 @@
  * Performance model.
  */
 
-#include <geo/geo.h>
-#include <px4_platform_common/events.h>
-#include "PerformanceModel.hpp"
-#include <lib/atmosphere/atmosphere.h>
+#अन्तर्भाव <geo/geo.h>
+#अन्तर्भाव <px4_platform_common/events.h>
+#अन्तर्भाव "PerformanceModel.hpp"
+#अन्तर्भाव <lib/atmosphere/atmosphere.h>
 
-using namespace atmosphere;
+उपयुज्य नामाकाश atmosphere;
 
 
 // [.] minimum ratio between the actual vehicle weight and the vehicle nominal weight (weight at which the performance limits are derived)
-static constexpr float kMinWeightRatio = 0.5f;
+स्थिर constexpr भिन्न k_Min_Weight_अनुपातः = 0.5f;
 
 // [.] maximum ratio between the actual vehicle weight and the vehicle nominal weight (weight at which the performance limits are derived)
-static constexpr float kMaxWeightRatio = 2.0f;
+स्थिर constexpr भिन्न k_Max_Weight_अनुपातः = 2.0f;
 
 // [m/s] climbrate defining the service ceiling, used to compensate max climbrate based on air density
-static constexpr float kClimbRateAtServiceCeiling = 0.5f;
+स्थिर constexpr भिन्न k_Climb_दरः_At_Service_Ceiling = 0.5f;
 
-PerformanceModel::PerformanceModel(): ModuleParams(nullptr)
+PerformanceModel::PerformanceModel(): ModuleParams(शून्यसूचकः)
 {
 	updateParams();
 }
-void PerformanceModel::setFuelFractionRemaining(float fuel_fraction_remaining)
+शून्य PerformanceModel::समुच्चयः_Fuel_Fraction_Remaining(भिन्न fuel_fraction_remaining)
 {
-	if (PX4_ISFINITE(fuel_fraction_remaining)) {
+	यदि (PX4_ISFINITE(fuel_fraction_remaining)) {
 		_fuel_fraction_remaining = math::constrain(fuel_fraction_remaining, 0.f, 1.f);
 	}
 }
 
-float PerformanceModel::getFuelFractionRemaining(const fuel_tank_status_s &fuel_tank_status)
+भिन्न PerformanceModel::getFuelFractionRemaining(ध्रुव fuel_tank_स्थितिः_s &fuel_tank_स्थितिः)
 {
-	float fraction = NAN;
+	भिन्न fraction = NAN;
 
-	if (fuel_tank_status.percent_remaining <= 100) {
-		fraction = fuel_tank_status.percent_remaining * 0.01f;
+	यदि (fuel_tank_स्थितिः.percent_remaining <= 100) {
+		fraction = fuel_tank_स्थितिः.percent_remaining * 0.01f;
 
-	} else if (PX4_ISFINITE(fuel_tank_status.remaining_fuel) && fuel_tank_status.maximum_fuel_capacity > FLT_EPSILON) {
-		fraction = fuel_tank_status.remaining_fuel / fuel_tank_status.maximum_fuel_capacity;
+	} अन्यथा यदि (PX4_ISFINITE(fuel_tank_स्थितिः.remaining_fuel) && fuel_tank_स्थितिः.अधिकतमम्_fuel_क्षमता > FLT_EPSILON) {
+		fraction = fuel_tank_स्थितिः.remaining_fuel / fuel_tank_स्थितिः.अधिकतमम्_fuel_क्षमता;
 
-	} else if (PX4_ISFINITE(fuel_tank_status.consumed_fuel) && fuel_tank_status.maximum_fuel_capacity > FLT_EPSILON) {
-		fraction = 1.f - fuel_tank_status.consumed_fuel / fuel_tank_status.maximum_fuel_capacity;
+	} अन्यथा यदि (PX4_ISFINITE(fuel_tank_स्थितिः.consumed_fuel) && fuel_tank_स्थितिः.अधिकतमम्_fuel_क्षमता > FLT_EPSILON) {
+		fraction = 1.f - fuel_tank_स्थितिः.consumed_fuel / fuel_tank_स्थितिः.अधिकतमम्_fuel_क्षमता;
 	}
 
-	return PX4_ISFINITE(fraction) ? math::constrain(fraction, 0.f, 1.f) : NAN;
+	प्रत्यागम PX4_ISFINITE(fraction) ? math::constrain(fraction, 0.f, 1.f) : NAN;
 }
 
-float PerformanceModel::getWeightRatio() const
+भिन्न PerformanceModel::get_Weight_अनुपातः() ध्रुव
 {
-	float weight_factor = 1.0f;
+	भिन्न weight_गुणकः = 1.0f;
 
-	if (_param_weight_base.get() > FLT_EPSILON && _param_weight_gross.get() > FLT_EPSILON) {
-		float weight = _param_weight_gross.get();
+	यदि (param_weight_आधारः.get() > FLT_EPSILON && _param_weight_gross.get() > FLT_EPSILON) {
+		भिन्न weight = _param_weight_gross.get();
 
-		if (_param_weight_fuel.get() > FLT_EPSILON && PX4_ISFINITE(_fuel_fraction_remaining)) {
+		यदि (_param_weight_fuel.get() > FLT_EPSILON && PX4_ISFINITE(_fuel_fraction_remaining)) {
 			weight -= (1.f - _fuel_fraction_remaining) * _param_weight_fuel.get();
 		}
 
-		weight_factor = math::constrain(weight / _param_weight_base.get(), kMinWeightRatio,
-						kMaxWeightRatio);
+		weight_गुणकः = math::constrain(weight / param_weight_आधारः.get(), k_Min_Weight_अनुपातः,
+						k_Max_Weight_अनुपातः);
 	}
 
-	return weight_factor;
+	प्रत्यागम weight_गुणकः;
 }
-float PerformanceModel::getMaximumClimbRate(float air_density) const
+भिन्न PerformanceModel::get_अधिकतमम्_Climb_दरः(भिन्न air_density) ध्रुव
 {
 	air_density = sanitiseAirDensity(air_density);
-	float climbrate_max = _param_fw_t_clmb_max.get();
+	भिन्न climbrate_max = _param_fw_t_clmb_max.get();
 
-	const float service_ceiling = _param_service_ceiling.get();
+	ध्रुव भिन्न service_ceiling = _param_service_ceiling.get();
 
-	if (service_ceiling > FLT_EPSILON) {
-		const float ceiling_pressure = getPressureFromAltitude(service_ceiling);
-		const float ceiling_density = getDensityFromPressureAndTemp(ceiling_pressure,
+	यदि (service_ceiling > FLT_EPSILON) {
+		ध्रुव भिन्न ceiling_pressure = getPressureFromAltitude(service_ceiling);
+		ध्रुव भिन्न ceiling_density = get_Density_From_Pressure_And_अस्थायी(ceiling_pressure,
 					      getStandardTemperatureAtAltitude(service_ceiling));
-		const float climbrate_gradient = math::max((_param_fw_t_clmb_max.get() - kClimbRateAtServiceCeiling) /
+		ध्रुव भिन्न climbrate_gradient = math::max((_param_fw_t_clmb_max.get() - k_Climb_दरः_At_Service_Ceiling) /
 						 (kAirDensitySeaLevelStandardAtmos -
 						  ceiling_density), 0.0f);
-		const float delta_rho = air_density - kAirDensitySeaLevelStandardAtmos;
-		climbrate_max = math::constrain(_param_fw_t_clmb_max.get() + climbrate_gradient * delta_rho, kClimbRateAtServiceCeiling,
+		ध्रुव भिन्न delta_rho = air_density - kAirDensitySeaLevelStandardAtmos;
+		climbrate_max = math::constrain(_param_fw_t_clmb_max.get() + climbrate_gradient * delta_rho, k_Climb_दरः_At_Service_Ceiling,
 						_param_fw_t_clmb_max.get());
 	}
 
-	return climbrate_max / getWeightRatio();
+	प्रत्यागम climbrate_max / get_Weight_अनुपातः();
 }
-float PerformanceModel::getTrimThrottle(float throttle_min, float throttle_max, float airspeed_sp,
-					float air_density) const
+भिन्न PerformanceModel::getTrimThrottle(भिन्न throttle_min, भिन्न throttle_max, भिन्न airspeed_sp,
+					भिन्न air_density) ध्रुव
 {
-	const float throttle_trim = getTrimThrottleForCalibratedAirspeed(airspeed_sp) * getAirDensityThrottleScale(
+	ध्रुव भिन्न throttle_trim = getTrimThrottleForCalibratedAirspeed(airspeed_sp) * getAirDensityThrottleScale(
 					    air_density);
-	return math::constrain(throttle_trim, throttle_min, throttle_max);
+	प्रत्यागम math::constrain(throttle_trim, throttle_min, throttle_max);
 }
 
-float PerformanceModel::getAirDensityThrottleScale(float air_density) const
+भिन्न PerformanceModel::getAirDensityThrottleScale(भिन्न air_density) ध्रुव
 {
 	air_density = sanitiseAirDensity(air_density);
-	float air_density_throttle_scale = 1.0f;
+	भिन्न air_density_throttle_scale = 1.0f;
 
 	// scale throttle as a function of sqrt(rho0/rho)
-	const float eas2tas = sqrtf(kAirDensitySeaLevelStandardAtmos / air_density);
-	const float eas2tas_at_11km_amsl = sqrtf(kAirDensitySeaLevelStandardAtmos / kAirDensityStandardAtmos11000Amsl);
+	ध्रुव भिन्न eas2tas = sqrtf(kAirDensitySeaLevelStandardAtmos / air_density);
+	ध्रुव भिन्न eas2tas_at_11km_amsl = sqrtf(kAirDensitySeaLevelStandardAtmos / kAirDensityStandardAtmos11000Amsl);
 	air_density_throttle_scale = math::constrain(eas2tas, 1.f, eas2tas_at_11km_amsl);
 
-	return air_density_throttle_scale;
+	प्रत्यागम air_density_throttle_scale;
 }
-float PerformanceModel::getTrimThrottleForCalibratedAirspeed(float calibrated_airspeed_sp) const
+भिन्न PerformanceModel::getTrimThrottleForCalibratedAirspeed(भिन्न calibrated_airspeed_sp) ध्रुव
 {
-	float throttle_trim =
+	भिन्न throttle_trim =
 		_param_fw_thr_trim.get(); // throttle required for level flight at trim airspeed, at sea level (standard atmosphere)
 
 	// Drag modelling (parasite drag): calculate mapping airspeed-->throttle, assuming a linear relation with different gradients
 // above and below trim. This is tunable thorugh FW_THR_ASPD_MIN and FW_THR_ASPD_MAX.
-	const float slope_below_trim = (_param_fw_thr_trim.get() - _param_fw_thr_aspd_min.get()) /
+	ध्रुव भिन्न नतिः_अधः_trim = (_param_fw_thr_trim.get() - _param_fw_thr_aspd_min.get()) /
 				       (_param_fw_airspd_trim.get() - _param_fw_airspd_min.get());
-	const float slope_above_trim = (_param_fw_thr_aspd_max.get() - _param_fw_thr_trim.get()) /
+	ध्रुव भिन्न नतिः_above_trim = (_param_fw_thr_aspd_max.get() - _param_fw_thr_trim.get()) /
 				       (_param_fw_airspd_max.get() - _param_fw_airspd_trim.get());
 
-	if (PX4_ISFINITE(calibrated_airspeed_sp) && PX4_ISFINITE(slope_below_trim) && _param_fw_thr_aspd_min.get() > FLT_EPSILON
+	यदि (PX4_ISFINITE(calibrated_airspeed_sp) && PX4_ISFINITE(नतिः_अधः_trim) && _param_fw_thr_aspd_min.get() > FLT_EPSILON
 	    && calibrated_airspeed_sp < _param_fw_airspd_trim.get()) {
-		throttle_trim = _param_fw_thr_trim.get() - slope_below_trim * (_param_fw_airspd_trim.get() - calibrated_airspeed_sp);
+		throttle_trim = _param_fw_thr_trim.get() - नतिः_अधः_trim * (_param_fw_airspd_trim.get() - calibrated_airspeed_sp);
 
-	} else if (PX4_ISFINITE(calibrated_airspeed_sp) && PX4_ISFINITE(slope_above_trim)
+	} अन्यथा यदि (PX4_ISFINITE(calibrated_airspeed_sp) && PX4_ISFINITE(नतिः_above_trim)
 		   && _param_fw_thr_aspd_max.get() > FLT_EPSILON
 		   && calibrated_airspeed_sp > _param_fw_airspd_trim.get()) {
-		throttle_trim = _param_fw_thr_trim.get() + slope_above_trim * (calibrated_airspeed_sp - _param_fw_airspd_trim.get());
+		throttle_trim = _param_fw_thr_trim.get() + नतिः_above_trim * (calibrated_airspeed_sp - _param_fw_airspd_trim.get());
 	}
 
-	return throttle_trim;
+	प्रत्यागम throttle_trim;
 }
-float PerformanceModel::getMinimumSinkRate(float air_density) const
+भिन्न PerformanceModel::get_Minimum_Sink_दरः(भिन्न air_density) ध्रुव
 {
 	air_density = sanitiseAirDensity(air_density);
-	return _param_fw_t_sink_min.get() * sqrtf(getWeightRatio() * kAirDensitySeaLevelStandardAtmos / air_density);
+	प्रत्यागम _param_fw_t_sink_min.get() * sqrtf(get_Weight_अनुपातः() * kAirDensitySeaLevelStandardAtmos / air_density);
 }
-float PerformanceModel::getCalibratedTrimAirspeed() const
+भिन्न PerformanceModel::getCalibratedTrimAirspeed() ध्रुव
 {
-	return math::constrain(_param_fw_airspd_trim.get() * sqrtf(getWeightRatio()), _param_fw_airspd_min.get(),
+	प्रत्यागम math::constrain(_param_fw_airspd_trim.get() * sqrtf(get_Weight_अनुपातः()), _param_fw_airspd_min.get(),
 			       _param_fw_airspd_max.get());
 }
-float PerformanceModel::getMinimumCalibratedAirspeed(float load_factor, float flaps_setpoint) const
+भिन्न PerformanceModel::getMinimumCalibratedAirspeed(भिन्न आरोपय_गुणकः, भिन्न flaps_setpoint) ध्रुव
 {
-	load_factor = math::max(load_factor, FLT_EPSILON);
-	const float airspeed_flap_factor = math::lerp(1.f, _param_fw_airspd_flp_sc.get(), flaps_setpoint);
-	return (_param_fw_airspd_min.get() * airspeed_flap_factor) * sqrtf(getWeightRatio() * load_factor);
+	आरोपय_गुणकः = math::max(आरोपय_गुणकः, FLT_EPSILON);
+	ध्रुव भिन्न airspeed_flap_गुणकः = math::lerp(1.f, _param_fw_airspd_flp_sc.get(), flaps_setpoint);
+	प्रत्यागम (_param_fw_airspd_min.get() * airspeed_flap_गुणकः) * sqrtf(get_Weight_अनुपातः() * आरोपय_गुणकः);
 }
 
-float PerformanceModel::getCalibratedStallAirspeed(float load_factor, float flaps_setpoint) const
+भिन्न PerformanceModel::getCalibratedStallAirspeed(भिन्न आरोपय_गुणकः, भिन्न flaps_setpoint) ध्रुव
 {
-	load_factor = math::max(load_factor, FLT_EPSILON);
-	const float airspeed_flap_factor = math::lerp(1.f, _param_fw_airspd_flp_sc.get(), flaps_setpoint);
-	return (_param_fw_airspd_stall.get() * airspeed_flap_factor) * sqrtf(getWeightRatio() * load_factor);
+	आरोपय_गुणकः = math::max(आरोपय_गुणकः, FLT_EPSILON);
+	ध्रुव भिन्न airspeed_flap_गुणकः = math::lerp(1.f, _param_fw_airspd_flp_sc.get(), flaps_setpoint);
+	प्रत्यागम (_param_fw_airspd_stall.get() * airspeed_flap_गुणकः) * sqrtf(get_Weight_अनुपातः() * आरोपय_गुणकः);
 }
 
-float PerformanceModel::getMaximumCalibratedAirspeed() const
+भिन्न PerformanceModel::get_अधिकतमम्_Calibrated_Airspeed() ध्रुव
 {
-	return _param_fw_airspd_max.get();
+	प्रत्यागम _param_fw_airspd_max.get();
 }
-bool PerformanceModel::runSanityChecks() const
+तार्किक PerformanceModel::सततम्_Sanity_Checks() ध्रुव
 {
-	bool ret = true;
+	तार्किक ret = सत्य;
 
 	// sanity check parameters
-	if (_param_fw_airspd_max.get() < _param_fw_airspd_min.get()) {
+	यदि (_param_fw_airspd_max.get() < _param_fw_airspd_min.get()) {
 		/* EVENT
 		 * @description
 		 * - <param>FW_AIRSPD_MAX</param>: {1:.1}
 		 * - <param>FW_AIRSPD_MIN</param>: {2:.1}
 		 */
-		events::send<float, float>(events::ID("fixedwing_position_control_conf_invalid_airspeed"), events::Log::Error,
+		events::send<भिन्न, भिन्न>(events::ID("fixedwing_position_control_conf_invalid_airspeed"), events::Log::Error,
 					   "Invalid configuration: Airspeed max smaller than min",
 					   _param_fw_airspd_max.get(), _param_fw_airspd_min.get());
-		ret = false;
+		ret = असत्य;
 	}
 
-	if (_param_fw_airspd_max.get() < 5.0f || _param_fw_airspd_min.get() > 100.0f) {
+	यदि (_param_fw_airspd_max.get() < 5.0f || _param_fw_airspd_min.get() > 100.0f) {
 		/* EVENT
 		 * @description
 		 * - <param>FW_AIRSPD_MAX</param>: {1:.1}
 		 * - <param>FW_AIRSPD_MIN</param>: {2:.1}
 		 */
-		events::send<float, float>(events::ID("fixedwing_position_control_conf_invalid_airspeed_bounds"), events::Log::Error,
+		events::send<भिन्न, भिन्न>(events::ID("fixedwing_position_control_conf_invalid_airspeed_bounds"), events::Log::Error,
 					   "Invalid configuration: Airspeed max \\< 5 m/s or min \\> 100 m/s",
 					   _param_fw_airspd_max.get(), _param_fw_airspd_min.get());
-		ret = false;
+		ret = असत्य;
 	}
 
-	if (_param_fw_airspd_trim.get() < _param_fw_airspd_min.get() ||
+	यदि (_param_fw_airspd_trim.get() < _param_fw_airspd_min.get() ||
 	    _param_fw_airspd_trim.get() > _param_fw_airspd_max.get()) {
 		/* EVENT
 		 * @description
@@ -229,29 +229,29 @@ bool PerformanceModel::runSanityChecks() const
 		 * - <param>FW_AIRSPD_MIN</param>: {2:.1}
 		 * - <param>FW_AIRSPD_TRIM</param>: {3:.1}
 		 */
-		events::send<float, float, float>(events::ID("fixedwing_position_control_conf_invalid_trim_bounds"),
+		events::send<भिन्न, भिन्न, भिन्न>(events::ID("fixedwing_position_control_conf_invalid_trim_bounds"),
 						  events::Log::Error,
 						  "Invalid configuration: Airspeed trim out of min or max bounds",
 						  _param_fw_airspd_max.get(), _param_fw_airspd_min.get(), _param_fw_airspd_trim.get());
-		ret = false;
+		ret = असत्य;
 	}
 
-	if (_param_fw_airspd_stall.get() > _param_fw_airspd_min.get()) {
+	यदि (_param_fw_airspd_stall.get() > _param_fw_airspd_min.get()) {
 		/* EVENT
 		 * @description
 		 * - <param>FW_AIRSPD_MIN</param>: {1:.1}
 		 * - <param>FW_AIRSPD_STALL</param>: {2:.1}
 		 */
-		events::send<float, float>(events::ID("fixedwing_position_control_conf_invalid_stall"), events::Log::Error,
+		events::send<भिन्न, भिन्न>(events::ID("fixedwing_position_control_conf_invalid_stall"), events::Log::Error,
 					   "Invalid configuration: FW_AIRSPD_STALL higher FW_AIRSPD_MIN",
 					   _param_fw_airspd_min.get(), _param_fw_airspd_stall.get());
-		ret = false;
+		ret = असत्य;
 	}
 
-	const float max_bank_loadfactor = 1 / cosf(math::radians(_param_fw_r_lim.get()));
-	const float min_airspd_at_max_bank = getMinimumCalibratedAirspeed(max_bank_loadfactor, /*flaps_setpoint = */0.0f);
+	ध्रुव भिन्न max_bank_loadfactor = 1 / cosf(math::radians(_param_fw_r_lim.get()));
+	ध्रुव भिन्न min_airspd_at_max_bank = getMinimumCalibratedAirspeed(max_bank_loadfactor, /*flaps_setpoint = */0.0f);
 
-	if (min_airspd_at_max_bank > _param_fw_airspd_max.get()) {
+	यदि (min_airspd_at_max_bank > _param_fw_airspd_max.get()) {
 
 		// Flying the maximum bank angle requires an airspeed above FW_AIRSPD_MAX.
 		// To mitigate, choose between these (or a combination):
@@ -267,25 +267,25 @@ bool PerformanceModel::runSanityChecks() const
 		 * - <param>FW_AIRSPD_MAX</param>: {2:.1}
 		 * - <param>FW_R_LIM</param>: {3:.1}
 		 */
-		events::send<float, float, float>(events::ID("fixedwing_position_control_conf_invalid_maxbank_infeasible"), events::Log::Error,
+		events::send<भिन्न, भिन्न, भिन्न>(events::ID("fixedwing_position_control_conf_invalid_maxbank_infeasible"), events::Log::Error,
 						  "Invalid configuration: FW_AIRSPD_MAX too low to sustain max bank angle",
 						  _param_fw_airspd_min.get(), _param_fw_airspd_max.get(), _param_fw_r_lim.get());
-		ret = false;
+		ret = असत्य;
 	}
 
-	return ret;
+	प्रत्यागम ret;
 
 }
-void PerformanceModel::	updateParameters()
+शून्य PerformanceModel::	updateParameters()
 {
 	updateParams();
 }
 
-float PerformanceModel::sanitiseAirDensity(float air_density)
+भिन्न PerformanceModel::sanitiseAirDensity(भिन्न air_density)
 {
-	if (!PX4_ISFINITE(air_density)) {
+	यदि (!PX4_ISFINITE(air_density)) {
 		air_density = kAirDensitySeaLevelStandardAtmos;
 	}
 
-	return math::max(air_density, kAirDensityStandardAtmos11000Amsl);
+	प्रत्यागम math::max(air_density, kAirDensityStandardAtmos11000Amsl);
 }

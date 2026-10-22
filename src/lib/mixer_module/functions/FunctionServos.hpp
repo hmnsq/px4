@@ -31,39 +31,39 @@
  *
  ****************************************************************************/
 
-#pragma once
+#निर्देशः once
 
-#include "FunctionProviderBase.hpp"
+#अन्तर्भाव "FunctionProviderBase.hpp"
 
-#include <uORB/topics/actuator_servos.h>
+#अन्तर्भाव <uORB/topics/actuator_servos.h>
 
 /**
  * Functions: Servo1 ... ServoMax
  */
-class FunctionServos : public FunctionProviderBase
+वर्ग FunctionServos : सार्वजनिक Function_Provider_आधारः
 {
-public:
-	static_assert(actuator_servos_s::NUM_CONTROLS == (int)OutputFunction::ServoMax - (int)OutputFunction::Servo1 + 1,
+सार्वजनिक:
+	static_assert(actuator_servos_s::अङ्कः_CONTROLS == (पूर्णाङ्क)OutputFunction::ServoMax - (पूर्णाङ्क)OutputFunction::Servo1 + 1,
 		      "Unexpected num servos");
 
-	FunctionServos(const Context &context) :
+	FunctionServos(ध्रुव Context &context) :
 		_topic(&context.work_item, ORB_ID(actuator_servos))
 	{
-		for (int i = 0; i < actuator_servos_s::NUM_CONTROLS; ++i) {
-			_data.control[i] = NAN;
+		प्रति (पूर्णाङ्क i = 0; i < actuator_servos_s::अङ्कः_CONTROLS; ++i) {
+			दत्त_3.control[i] = NAN;
 		}
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionServos(context); }
+	स्थिर Function_Provider_आधारः *allocate(ध्रुव Context &context) { प्रत्यागम नूतन FunctionServos(context); }
 
-	void update() override { _topic.update(&_data); }
-	float value(OutputFunction func) override { return _data.control[(int)func - (int)OutputFunction::Servo1]; }
+	शून्य update() override { _topic.update(&दत्त_3); }
+	भिन्न value(OutputFunction func) override { प्रत्यागम दत्त_3.control[(पूर्णाङ्क)func - (पूर्णाङ्क)OutputFunction::Servo1]; }
 
-	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { return &_topic; }
+	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { प्रत्यागम &_topic; }
 
-	float defaultFailsafeValue(OutputFunction func) const override { return 0.f; }
+	भिन्न default_Failsafe_मानम्(OutputFunction func) ध्रुव override { प्रत्यागम 0.f; }
 
-private:
+गुप्त:
 	uORB::SubscriptionCallbackWorkItem _topic;
-	actuator_servos_s _data{};
+	actuator_servos_s दत्त_3{};
 };

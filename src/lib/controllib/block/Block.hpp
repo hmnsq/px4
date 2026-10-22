@@ -37,89 +37,89 @@
  * Controller library code
  */
 
-#pragma once
+#निर्देशः once
 
-#include <containers/List.hpp>
-#include <controllib/block/BlockParam.hpp>
-#include <cstdint>
+#अन्तर्भाव <containers/List.hpp>
+#अन्तर्भाव <controllib/block/BlockParam.hpp>
+#अन्तर्भाव <cstdint>
 
-namespace control
+नामाकाश control
 {
 
-static constexpr uint8_t maxChildrenPerBlock = 100;
-static constexpr uint8_t maxParamsPerBlock = 110;
-static constexpr uint8_t blockNameLengthMax = 40;
+स्थिर constexpr uint8_t max_Children_प्रत्येकम्_खण्डम् = 100;
+स्थिर constexpr uint8_t max_Params_प्रत्येकम्_खण्डम् = 110;
+स्थिर constexpr uint8_t खण्डम्_Name_दीर्घता_Max = 40;
 
 // forward declaration
-class BlockParamBase;
-class SuperBlock;
+वर्ग खण्डम्_Param_आधारः;
+वर्ग Super_खण्डम्;
 
 /**
  */
-class __EXPORT Block : public ListNode<Block *>
+वर्ग __EXPORT खण्डम् : सार्वजनिक List_ग्रन्थिः<खण्डम् *>
 {
-public:
-	friend class BlockParamBase;
+सार्वजनिक:
+	मित्रम् वर्ग खण्डम्_Param_आधारः;
 
-	Block(SuperBlock *parent, const char *name);
-	virtual ~Block() = default;
+	खण्डम्(Super_खण्डम् *parent, ध्रुव वर्ण *name);
+	आभास ~खण्डम्() = स्वभाव;
 
 	// no copy, assignment, move, move assignment
-	Block(const Block &) = delete;
-	Block &operator=(const Block &) = delete;
-	Block(Block &&) = delete;
-	Block &operator=(Block &&) = delete;
+	खण्डम्(ध्रुव खण्डम् &) = विलोपय;
+	खण्डम् &संक्रियकः=(ध्रुव खण्डम् &) = विलोपय;
+	खण्डम्(खण्डम् &&) = विलोपय;
+	खण्डम् &संक्रियकः=(खण्डम् &&) = विलोपय;
 
-	void getName(char *name, size_t n);
+	शून्य getName(वर्ण *name, size_t n);
 
-	virtual void updateParams();
+	आभास शून्य updateParams();
 
-	virtual void setDt(float dt) { _dt = dt; }
-	float getDt() { return _dt; }
+	आभास शून्य समुच्चयः_Dt(भिन्न dt) { _dt = dt; }
+	भिन्न getDt() { प्रत्यागम _dt; }
 
-protected:
+रक्षित:
 
-	virtual void updateParamsSubclass() {}
+	आभास शून्य updateParamsSubclass() {}
 
-	SuperBlock *getParent() { return _parent; }
-	List<BlockParamBase *> &getParams() { return _params; }
+	Super_खण्डम् *getParent() { प्रत्यागम _parent; }
+	List<खण्डम्_Param_आधारः *> &getParams() { प्रत्यागम _params; }
 
-	const char *_name;
-	SuperBlock *_parent;
-	float _dt{0.0f};
+	ध्रुव वर्ण *_name;
+	Super_खण्डम् *_parent;
+	भिन्न _dt{0.0f};
 
-	List<BlockParamBase *> _params;
+	List<खण्डम्_Param_आधारः *> _params;
 };
 
-class __EXPORT SuperBlock :
-	public Block
+वर्ग __EXPORT Super_खण्डम् :
+	सार्वजनिक खण्डम्
 {
-public:
-	friend class Block;
+सार्वजनिक:
+	मित्रम् वर्ग खण्डम्;
 
-	SuperBlock(SuperBlock *parent, const char *name) : Block(parent, name) {}
-	~SuperBlock() = default;
+	Super_खण्डम्(Super_खण्डम् *parent, ध्रुव वर्ण *name) : खण्डम्(parent, name) {}
+	~Super_खण्डम्() = स्वभाव;
 
 	// no copy, assignment, move, move assignment
-	SuperBlock(const SuperBlock &) = delete;
-	SuperBlock &operator=(const SuperBlock &) = delete;
-	SuperBlock(SuperBlock &&) = delete;
-	SuperBlock &operator=(SuperBlock &&) = delete;
+	Super_खण्डम्(ध्रुव Super_खण्डम् &) = विलोपय;
+	Super_खण्डम् &संक्रियकः=(ध्रुव Super_खण्डम् &) = विलोपय;
+	Super_खण्डम्(Super_खण्डम् &&) = विलोपय;
+	Super_खण्डम् &संक्रियकः=(Super_खण्डम् &&) = विलोपय;
 
-	void setDt(float dt) override;
+	शून्य समुच्चयः_Dt(भिन्न dt) override;
 
-	void updateParams() override
+	शून्य updateParams() override
 	{
-		Block::updateParams();
+		खण्डम्::updateParams();
 
-		if (getChildren().getHead() != nullptr) { updateChildParams(); }
+		यदि (getChildren().get_शीर्ष() != शून्यसूचकः) { updateChildParams(); }
 	}
 
-protected:
-	List<Block *> &getChildren() { return _children; }
-	void updateChildParams();
+रक्षित:
+	List<खण्डम् *> &getChildren() { प्रत्यागम _children; }
+	शून्य updateChildParams();
 
-	List<Block *> _children;
+	List<खण्डम् *> _children;
 };
 
 

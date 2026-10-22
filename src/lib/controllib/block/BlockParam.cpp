@@ -37,108 +37,108 @@
  * Controller library code
  */
 
-#include "Block.hpp"
-#include "BlockParam.hpp"
+#अन्तर्भाव "Block.hpp"
+#अन्तर्भाव "BlockParam.hpp"
 
-#include <cstdio>
-#include <cstring>
+#अन्तर्भाव <cstdio>
+#अन्तर्भाव <cstring>
 
-#include <containers/List.hpp>
+#अन्तर्भाव <containers/List.hpp>
 
-#include <px4_platform_common/log.h>
+#अन्तर्भाव <px4_platform_common/log.h>
 
-namespace control
+नामाकाश control
 {
 
-BlockParamBase::BlockParamBase(Block *parent, const char *name, bool parent_prefix)
+खण्डम्_Param_आधारः::खण्डम्_Param_आधारः(खण्डम् *parent, ध्रुव वर्ण *name, तार्किक parent_उपसर्गः)
 {
-	char fullname[blockNameLengthMax];
+	वर्ण fullname[खण्डम्_Name_दीर्घता_Max];
 
-	if (parent == nullptr) {
-		strncpy(fullname, name, blockNameLengthMax - 1);
-		fullname[sizeof(fullname) - 1] = '\0';
+	यदि (parent == शून्यसूचकः) {
+		strncpy(fullname, name, खण्डम्_Name_दीर्घता_Max - 1);
+		fullname[परिमाण(fullname) - 1] = '\0';
 
-	} else {
-		char parentName[blockNameLengthMax];
-		parent->getName(parentName, blockNameLengthMax);
+	} अन्यथा {
+		वर्ण parentName[खण्डम्_Name_दीर्घता_Max];
+		parent->getName(parentName, खण्डम्_Name_दीर्घता_Max);
 
-		if (strcmp(name, "") == 0) {
-			strncpy(fullname, parentName, blockNameLengthMax);
+		यदि (वाक्यं_तुलय(name, "") == 0) {
+			strncpy(fullname, parentName, खण्डम्_Name_दीर्घता_Max);
 			// ensure string is terminated
-			fullname[sizeof(fullname) - 1] = '\0';
+			fullname[परिमाण(fullname) - 1] = '\0';
 
-		} else if (parent_prefix) {
-			if (snprintf(fullname, blockNameLengthMax, "%s_%s", parentName, name) >= blockNameLengthMax) {
+		} अन्यथा यदि (parent_उपसर्गः) {
+			यदि (snprintf(fullname, खण्डम्_Name_दीर्घता_Max, "%s_%s", parentName, name) >= खण्डम्_Name_दीर्घता_Max) {
 				PX4_ERR("param too long: %s", name);
 			}
 
-		} else {
-			strncpy(fullname, name, blockNameLengthMax);
+		} अन्यथा {
+			strncpy(fullname, name, खण्डम्_Name_दीर्घता_Max);
 			// ensure string is terminated
-			fullname[sizeof(fullname) - 1] = '\0';
+			fullname[परिमाण(fullname) - 1] = '\0';
 		}
 
-		parent->getParams().add(this);
+		parent->getParams().सङ्कलय(एतत्);
 	}
 
 	_handle = param_find(fullname);
 
-	if (_handle == PARAM_INVALID) {
+	यदि (_handle == PARAM_INVALID) {
 		PX4_ERR("error finding param: %s", fullname);
 	}
 };
 
-template <>
-BlockParam<bool>::BlockParam(Block *block, const char *name, bool parent_prefix) :
-	BlockParamBase(block, name, parent_prefix),
+प्रतिरूपम् <>
+खण्डम्_Param<तार्किक>::खण्डम्_Param(खण्डम् *खण्डम्_2, ध्रुव वर्ण *name, तार्किक parent_उपसर्गः) :
+	खण्डम्_Param_आधारः(खण्डम्_2, name, parent_उपसर्गः),
 	_val()
 {
 	update();
 }
 
-template <>
-bool BlockParam<bool>::update()
+प्रतिरूपम् <>
+तार्किक खण्डम्_Param<तार्किक>::update()
 {
 	int32_t tmp = 0;
-	int ret = param_get(_handle, &tmp);
+	पूर्णाङ्क ret = param_get(_handle, &tmp);
 
-	if (tmp == 1) {
-		_val = true;
+	यदि (tmp == 1) {
+		_val = सत्य;
 
-	} else {
-		_val = false;
+	} अन्यथा {
+		_val = असत्य;
 	}
 
-	return (ret == PX4_OK);
+	प्रत्यागम (ret == PX4_OK);
 }
 
-template <>
-BlockParam<int32_t>::BlockParam(Block *block, const char *name, bool parent_prefix) :
-	BlockParamBase(block, name, parent_prefix),
+प्रतिरूपम् <>
+खण्डम्_Param<int32_t>::खण्डम्_Param(खण्डम् *खण्डम्_2, ध्रुव वर्ण *name, तार्किक parent_उपसर्गः) :
+	खण्डम्_Param_आधारः(खण्डम्_2, name, parent_उपसर्गः),
 	_val()
 {
 	update();
 }
 
-template <>
-BlockParam<float>::BlockParam(Block *block, const char *name, bool parent_prefix) :
-	BlockParamBase(block, name, parent_prefix),
+प्रतिरूपम् <>
+खण्डम्_Param<भिन्न>::खण्डम्_Param(खण्डम् *खण्डम्_2, ध्रुव वर्ण *name, तार्किक parent_उपसर्गः) :
+	खण्डम्_Param_आधारः(खण्डम्_2, name, parent_उपसर्गः),
 	_val()
 {
 	update();
 }
 
-template <>
-BlockParam<int32_t &>::BlockParam(Block *block, const char *name, bool parent_prefix, int32_t &extern_val) :
-	BlockParamBase(block, name, parent_prefix),
+प्रतिरूपम् <>
+खण्डम्_Param<int32_t &>::खण्डम्_Param(खण्डम् *खण्डम्_2, ध्रुव वर्ण *name, तार्किक parent_उपसर्गः, int32_t &extern_val) :
+	खण्डम्_Param_आधारः(खण्डम्_2, name, parent_उपसर्गः),
 	_val(extern_val)
 {
 	update();
 }
 
-template <>
-BlockParam<float &>::BlockParam(Block *block, const char *name, bool parent_prefix, float &extern_val) :
-	BlockParamBase(block, name, parent_prefix),
+प्रतिरूपम् <>
+खण्डम्_Param<भिन्न &>::खण्डम्_Param(खण्डम् *खण्डम्_2, ध्रुव वर्ण *name, तार्किक parent_उपसर्गः, भिन्न &extern_val) :
+	खण्डम्_Param_आधारः(खण्डम्_2, name, parent_उपसर्गः),
 	_val(extern_val)
 {
 	update();

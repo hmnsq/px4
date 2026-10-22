@@ -1,35 +1,35 @@
 #!/usr/bin/env python
 
-import argparse
-import os
-import sys
-import subprocess
-import re
+आनयन argparse
+आनयन os
+आनयन sys
+आनयन subprocess
+आनयन re
 
-parser = argparse.ArgumentParser(description="""Extract version info from git and
+parser = argparse.तर्कः_Parser(description="""Extract version info from git and
 generate a version header file. The working directory is expected to be
 the root of Firmware.""")
-parser.add_argument('filename', metavar='version.h', help='Header output file')
-parser.add_argument('--git_tag', help='git tag string')
-parser.add_argument('-v', '--verbose', dest='verbose', action='store_true',
-                    help='Verbose output', default=False)
-parser.add_argument('--validate', dest='validate', action='store_true',
-                    help='Validate the tag format', default=False)
+parser.सङ्कलय_तर्कः('filename', metavar='version.h', help='Header output file')
+parser.सङ्कलय_तर्कः('--git_tag', help='git tag string')
+parser.सङ्कलय_तर्कः('-v', '--verbose', dest='verbose', action='store_true',
+                    help='Verbose output', स्वभाव=असत्य)
+parser.सङ्कलय_तर्कः('--validate', dest='validate', action='store_true',
+                    help='Validate the tag format', स्वभाव=असत्य)
 
-args = parser.parse_args()
-filename = args.filename
-verbose = args.verbose
-validate = args.validate
+तर्काः = parser.parse_तर्काः()
+filename = तर्काः.filename
+verbose = तर्काः.verbose
+validate = तर्काः.validate
 
-try:
-    fp_header = open(filename, 'r')
-    old_header = fp_header.read()
-except:
-    old_header = ''
+यत्न:
+    fp_शीर्षकम् = open(filename, 'r')
+    old_शीर्षकम् = fp_शीर्षकम्.पठ()
+अपवाद:
+    old_शीर्षकम् = ''
 
 
 # Generate the header file content
-header = """
+शीर्षकम् = """
 /* Auto Magically Generated file */
 /* Do not edit! */
 #pragma once
@@ -37,72 +37,72 @@ header = """
 
 
 # PX4
-if args.git_tag:
-    git_tag = args.git_tag
-else:
+यदि तर्काः.git_चिह्नकम्:
+    git_चिह्नकम् = तर्काः.git_चिह्नकम्
+अन्यथा:
     git_describe_cmd = 'git describe --exclude ext/* --always --tags --dirty'
-    git_tag = subprocess.check_output(git_describe_cmd.split(),
+    git_चिह्नकम् = subprocess.check_output(git_describe_cmd.विभज(),
                                   stderr=subprocess.STDOUT).decode('utf-8').strip()
 
-try:
+यत्न:
     # get the tag if we're on a tagged commit
-    tag_or_branch = subprocess.check_output((git_describe_cmd+' --exact-match').split(),
+    चिह्नकम्_or_branch = subprocess.check_output((git_describe_cmd+' --exact-match').विभज(),
                                             stderr=subprocess.STDOUT).decode('utf-8').strip()
-except:
-    tag_or_branch = None
+अपवाद:
+    चिह्नकम्_or_branch = किमपि_न
 
-if validate:
-    if verbose:
-        print("testing git tag: "+git_tag)
+यदि validate:
+    यदि verbose:
+        मुद्रय("testing git tag: "+git_चिह्नकम्)
     # remove optional '-dirty' at the end
-    git_tag_test = re.sub(r'-dirty$', '', git_tag)
+    git_चिह्नकम्_test = re.sub(r'-dirty$', '', git_चिह्नकम्)
     # remove optional -<num_commits>-g<commit_hash> at the end (in case we are not on a tagged commit)
-    git_tag_test = re.sub(r'-[0-9]+-g[0-9a-fA-F]+$', '', git_tag_test)
+    git_चिह्नकम्_test = re.sub(r'-[0-9]+-g[0-9a-fA-F]+$', '', git_चिह्नकम्_test)
     # now check the version format
-    m = re.match(r'v([0-9]+)\.([0-9]+)\.[0-9]+(((-dev)|(-alpha[0-9]+)|(-beta[0-9]+)|(-rc[0-9]+))|'\
-                 r'(-[0-9]+\.[0-9]+\.[0-9]+((-dev)|(-alpha[0-9]+)|(-beta[0-9]+)|([-]?rc[0-9]+))?))?$', git_tag_test)
-    if not m:
-        print("")
-        print("Error: the git tag '{:}' does not match the expected format.".format(git_tag_test))
-        print("")
-        print("The expected format is 'v<PX4 version>[-<custom version>]'")
-        print("  <PX4 version>: v<major>.<minor>.<patch>[-rc<rc>|-beta<beta>|-alpha<alpha>|-dev]")
-        print("  <custom version>: <major>.<minor>.<patch>[-rc<rc>|-beta<beta>|-alpha<alpha>|-dev]")
-        print("Examples:")
-        print("  v1.9.0-rc3 (preferred)")
-        print("  v1.9.0-beta1")
-        print("  v1.9.0-1.0.0")
-        print("  v1.9.0-1.0.0-alpha2")
-        print("See also https://docs.px4.io/main/en/dev_setup/building_px4.html#building-for-nuttx")
-        print("")
+    m = re.मेलनम्(r'v([0-9]+)\.([0-9]+)\.[0-9]+(((-dev)|(-alpha[0-9]+)|(-beta[0-9]+)|(-rc[0-9]+))|'\
+                 r'(-[0-9]+\.[0-9]+\.[0-9]+((-dev)|(-alpha[0-9]+)|(-beta[0-9]+)|([-]?rc[0-9]+))?))?$', git_चिह्नकम्_test)
+    यदि न m:
+        मुद्रय("")
+        मुद्रय("Error: the git tag '{:}' does not match the expected format.".format(git_चिह्नकम्_test))
+        मुद्रय("")
+        मुद्रय("The expected format is 'v<PX4 version>[-<custom version>]'")
+        मुद्रय("  <PX4 version>: v<major>.<minor>.<patch>[-rc<rc>|-beta<beta>|-alpha<alpha>|-dev]")
+        मुद्रय("  <custom version>: <major>.<minor>.<patch>[-rc<rc>|-beta<beta>|-alpha<alpha>|-dev]")
+        मुद्रय("Examples:")
+        मुद्रय("  v1.9.0-rc3 (preferred)")
+        मुद्रय("  v1.9.0-beta1")
+        मुद्रय("  v1.9.0-1.0.0")
+        मुद्रय("  v1.9.0-1.0.0-alpha2")
+        मुद्रय("See also https://docs.px4.io/main/en/dev_setup/building_px4.html#building-for-nuttx")
+        मुद्रय("")
         sys.exit(1)
 
-git_version = subprocess.check_output('git rev-parse --verify HEAD'.split(),
+git_संस्करणम् = subprocess.check_output('git rev-parse --verify HEAD'.विभज(),
                                       stderr=subprocess.STDOUT).decode('utf-8').strip()
-try:
-    git_branch_name = subprocess.check_output('git symbolic-ref -q --short HEAD'.split(),
+यत्न:
+    git_branch_name = subprocess.check_output('git symbolic-ref -q --short HEAD'.विभज(),
                                           stderr=subprocess.STDOUT).decode('utf-8').strip()
-except:
+अपवाद:
     git_branch_name = ''
-git_version_short = git_version[0:16]
+git_संस्करणम्_short = git_संस्करणम्[0:16]
 
 # OEM version
-try:
-    oem_tag = subprocess.check_output('git describe --match ext/oem-* --tags'.split(),
+यत्न:
+    oem_चिह्नकम् = subprocess.check_output('git describe --match ext/oem-* --tags'.विभज(),
                                       stderr=subprocess.STDOUT).decode('utf-8').strip()
-    oem_tag = oem_tag[8:]
-except:
-    oem_tag = ''
+    oem_चिह्नकम् = oem_चिह्नकम्[8:]
+अपवाद:
+    oem_चिह्नकम् = ''
 
-if tag_or_branch is None:
+यदि चिह्नकम्_or_branch अस्ति किमपि_न:
     # replace / so it can be used as directory name
-    tag_or_branch = git_branch_name.replace('/', '-')
+    चिह्नकम्_or_branch = git_branch_name.replace('/', '-')
     # either a release or master branch (used for metadata)
     # CI uploads to 'master/' on S3 for legacy QGC compatibility
-    if not tag_or_branch.startswith('release-'):
-        tag_or_branch = 'master'
+    यदि न चिह्नकम्_or_branch.startswith('release-'):
+        चिह्नकम्_or_branch = 'master'
 
-header += f"""
+शीर्षकम् += f"""
 #define PX4_GIT_VERSION_STR "{git_version}"
 #define PX4_GIT_VERSION_BINARY 0x{git_version_short}
 #define PX4_GIT_TAG_STR "{git_tag}"
@@ -115,57 +115,57 @@ header += f"""
 
 
 # Mavlink
-if (os.path.exists('src/modules/mavlink/mavlink/.git')):
-    mavlink_git_version = subprocess.check_output('git rev-parse --verify HEAD'.split(),
+यदि (os.मार्गः.exists('src/modules/mavlink/mavlink/.git')):
+    mavlink_git_संस्करणम् = subprocess.check_output('git rev-parse --verify HEAD'.विभज(),
                                       cwd='src/modules/mavlink/mavlink', stderr=subprocess.STDOUT).decode('utf-8').strip()
-    mavlink_git_version_short = mavlink_git_version[0:16]
+    mavlink_git_संस्करणम्_short = mavlink_git_संस्करणम्[0:16]
 
-    header += f"""
+    शीर्षकम् += f"""
 #define MAVLINK_LIB_GIT_VERSION_STR  "{mavlink_git_version}"
 #define MAVLINK_LIB_GIT_VERSION_BINARY 0x{mavlink_git_version_short}
 """
 
 
 # NuttX
-if (os.path.exists('platforms/nuttx/NuttX/nuttx/.git')):
+यदि (os.मार्गः.exists('platforms/nuttx/NuttX/nuttx/.git')):
     # The PX4/NuttX fork branch name recorded in .gitmodules is the
     # authoritative kernel version: px4_firmware_nuttx-X.Y.Z+ is updated
     # in the same commit as every kernel upgrade. Fall back to git
     # describe for checkouts that do not follow the fork convention
     # (e.g. upstream apache/nuttx directly, which carries release tags).
-    nuttx_git_tag = "v0.0.0"
-    try:
+    nuttx_git_चिह्नकम् = "v0.0.0"
+    यत्न:
         nuttx_branch = subprocess.check_output(
-            'git config -f .gitmodules submodule.platforms/nuttx/NuttX/nuttx.branch'.split(),
+            'git config -f .gitmodules submodule.platforms/nuttx/NuttX/nuttx.branch'.विभज(),
             stderr=subprocess.STDOUT).decode('utf-8').strip()
-        branch_version = re.match(r'^px4_firmware_nuttx-([0-9]+\.[0-9]+\.[0-9]+)\+?$', nuttx_branch)
-    except subprocess.CalledProcessError:
-        branch_version = None
-    if branch_version:
-        nuttx_git_tag = "v" + branch_version.group(1)
-    else:
-        try:
+        branch_संस्करणम् = re.मेलनम्(r'^px4_firmware_nuttx-([0-9]+\.[0-9]+\.[0-9]+)\+?$', nuttx_branch)
+    अपवाद subprocess.CalledProcessError:
+        branch_संस्करणम् = किमपि_न
+    यदि branch_संस्करणम्:
+        nuttx_git_चिह्नकम् = "v" + branch_संस्करणम्.गणः(1)
+    अन्यथा:
+        यत्न:
             nuttx_describe = subprocess.check_output(
-                'git describe --tags --match nuttx-*'.split(),
+                'git describe --tags --match nuttx-*'.विभज(),
                 cwd='platforms/nuttx/NuttX/nuttx', stderr=subprocess.STDOUT).decode('utf-8').strip()
-            describe_version = re.match(r'^nuttx-([0-9]+\.[0-9]+\.[0-9]+)', nuttx_describe)
-            if describe_version:
-                nuttx_git_tag = "v" + describe_version.group(1)
-        except subprocess.CalledProcessError:
-            pass
-    nuttx_git_version = subprocess.check_output('git rev-parse --verify HEAD'.split(),
+            describe_संस्करणम् = re.मेलनम्(r'^nuttx-([0-9]+\.[0-9]+\.[0-9]+)', nuttx_describe)
+            यदि describe_संस्करणम्:
+                nuttx_git_चिह्नकम् = "v" + describe_संस्करणम्.गणः(1)
+        अपवाद subprocess.CalledProcessError:
+            अतिक्रम
+    nuttx_git_संस्करणम् = subprocess.check_output('git rev-parse --verify HEAD'.विभज(),
                                       cwd='platforms/nuttx/NuttX/nuttx', stderr=subprocess.STDOUT).decode('utf-8').strip()
-    nuttx_git_version_short = nuttx_git_version[0:16]
+    nuttx_git_संस्करणम्_short = nuttx_git_संस्करणम्[0:16]
 
-    header += f"""
+    शीर्षकम् += f"""
 #define NUTTX_GIT_VERSION_STR  "{nuttx_git_version}"
 #define NUTTX_GIT_VERSION_BINARY 0x{nuttx_git_version_short}
 #define NUTTX_GIT_TAG_STR  "{nuttx_git_tag}"
 """
 
 
-if old_header != header:
-    if verbose:
-        print('Updating header {}'.format(filename))
-    fp_header = open(filename, 'w')
-    fp_header.write(header)
+यदि old_शीर्षकम् != शीर्षकम्:
+    यदि verbose:
+        मुद्रय('Updating header {}'.format(filename))
+    fp_शीर्षकम् = open(filename, 'w')
+    fp_शीर्षकम्.लिख(शीर्षकम्)

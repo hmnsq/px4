@@ -37,47 +37,47 @@
  * Controller library code
  */
 
-#pragma once
+#निर्देशः once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <float.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <assert.h>
+#अन्तर्भाव <time.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <float.h>
+#अन्तर्भाव <mathlib/math/test/test.hpp>
+#अन्तर्भाव <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#अन्तर्भाव "block/Block.hpp"
+#अन्तर्भाव "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#अन्तर्भाव "matrix/math.hpp"
 
-namespace control
+नामाकाश control
 {
 
 /**
  * A low pass filter as described here:
  * http://en.wikipedia.org/wiki/Low-pass_filter.
  */
-class __EXPORT BlockLowPass : public Block
+वर्ग __EXPORT खण्डम्_नीचः_Pass : सार्वजनिक खण्डम्
 {
-public:
+सार्वजनिक:
 // methods
-	BlockLowPass(SuperBlock *parent, const char *name) :
-		Block(parent, name),
-		_fCut(this, "") // only one parameter, no need to name
+	खण्डम्_नीचः_Pass(Super_खण्डम् *parent, ध्रुव वर्ण *name) :
+		खण्डम्(parent, name),
+		_fCut(एतत्, "") // only one parameter, no need to name
 	{}
-	virtual ~BlockLowPass() = default;
-	float update(float input);
+	आभास ~खण्डम्_नीचः_Pass() = स्वभाव;
+	भिन्न update(भिन्न निवेशः);
 // accessors
-	float getState() { return _state; }
-	float getFCut() { return _fCut.get(); }
-	void setState(float state) { _state = state; }
-protected:
-// attributes
-	float _state{NAN}; // initialize to invalid val, force into is_finite() check on first call
-	control::BlockParamFloat _fCut;
+	भिन्न getState() { प्रत्यागम _state; }
+	भिन्न getFCut() { प्रत्यागम _fCut.get(); }
+	शून्य समुच्चयः_State(भिन्न state) { _state = state; }
+रक्षित:
+//गुणाः
+	भिन्न _state{NAN}; // initialize to invalid val, force into is_finite() check on first call
+	control::खण्डम्_Param_Float _fCut;
 };
 
 } // namespace control

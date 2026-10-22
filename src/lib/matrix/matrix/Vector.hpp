@@ -6,183 +6,183 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#निर्देशः once
 
-#include "Matrix.hpp"
+#अन्तर्भाव "Matrix.hpp"
 
-namespace matrix
+नामाकाश matrix
 {
 
-template<typename Type, size_t M>
-class Vector : public Matrix<Type, M, 1>
+प्रतिरूपम्<प्रकारनाम Type, size_t M>
+वर्ग सदिशम् : सार्वजनिक Matrix<Type, M, 1>
 {
-public:
-	using MatrixM1 = Matrix<Type, M, 1>;
+सार्वजनिक:
+	उपयुज्य MatrixM1 = Matrix<Type, M, 1>;
 
-	Vector() = default;
+	सदिशम्() = स्वभाव;
 
-	Vector(const MatrixM1 &other) :
+	सदिशम्(ध्रुव MatrixM1 &other) :
 		MatrixM1(other)
 	{
 	}
 
-	explicit Vector(const Type data_[M]) :
-		MatrixM1(data_)
+	स्पष्ट सदिशम्(ध्रुव Type दत्त_2[M]) :
+		MatrixM1(दत्त_2)
 	{
 	}
 
-	template<size_t P, size_t Q>
-	Vector(const Slice<Type, M, 1, P, Q> &slice_in) :
-		Matrix<Type, M, 1>(slice_in)
+	प्रतिरूपम्<size_t P, size_t Q>
+	सदिशम्(ध्रुव खण्डिका_2<Type, M, 1, P, Q> &खण्डिका_अन्तर्) :
+		Matrix<Type, M, 1>(खण्डिका_अन्तर्)
 	{
 	}
 
-	template<size_t P, size_t Q, size_t DUMMY = 1>
-	Vector(const Slice<Type, 1, M, P, Q> &slice_in)
+	प्रतिरूपम्<size_t P, size_t Q, size_t DUMMY = 1>
+	सदिशम्(ध्रुव खण्डिका_2<Type, 1, M, P, Q> &खण्डिका_अन्तर्)
 	{
-		Vector &self(*this);
+		सदिशम् &self(*एतत्);
 
-		for (size_t i = 0; i < M; i++) {
-			self(i) = slice_in(0, i);
+		प्रति (size_t i = 0; i < M; i++) {
+			self(i) = खण्डिका_अन्तर्(0, i);
 		}
 	}
 
-	template<size_t P, size_t Q>
-	Vector(const ConstSlice<Type, M, 1, P, Q> &slice_in) :
-		Matrix<Type, M, 1>(slice_in)
+	प्रतिरूपम्<size_t P, size_t Q>
+	सदिशम्(ध्रुव Const_खण्डिका<Type, M, 1, P, Q> &खण्डिका_अन्तर्) :
+		Matrix<Type, M, 1>(खण्डिका_अन्तर्)
 	{
 	}
 
-	template<size_t P, size_t Q, size_t DUMMY = 1>
-	Vector(const ConstSlice<Type, 1, M, P, Q> &slice_in)
+	प्रतिरूपम्<size_t P, size_t Q, size_t DUMMY = 1>
+	सदिशम्(ध्रुव Const_खण्डिका<Type, 1, M, P, Q> &खण्डिका_अन्तर्)
 	{
-		Vector &self(*this);
+		सदिशम् &self(*एतत्);
 
-		for (size_t i = 0; i < M; i++) {
-			self(i) = slice_in(0, i);
+		प्रति (size_t i = 0; i < M; i++) {
+			self(i) = खण्डिका_अन्तर्(0, i);
 		}
 	}
 
-	inline const Type &operator()(size_t i) const
+	अन्तःस्थ ध्रुव Type &संक्रियकः()(size_t i) ध्रुव
 	{
-		assert(i < M);
+		प्रतिज्ञा(i < M);
 
-		const MatrixM1 &v = *this;
-		return v(i, 0);
+		ध्रुव MatrixM1 &v = *एतत्;
+		प्रत्यागम v(i, 0);
 	}
 
-	inline Type &operator()(size_t i)
+	अन्तःस्थ Type &संक्रियकः()(size_t i)
 	{
-		assert(i < M);
+		प्रतिज्ञा(i < M);
 
-		MatrixM1 &v = *this;
-		return v(i, 0);
+		MatrixM1 &v = *एतत्;
+		प्रत्यागम v(i, 0);
 	}
 
-	Type dot(const MatrixM1 &b) const
+	Type dot(ध्रुव MatrixM1 &b) ध्रुव
 	{
-		const Vector &a(*this);
+		ध्रुव सदिशम् &a(*एतत्);
 		Type r(0);
 
-		for (size_t i = 0; i < M; i++) {
+		प्रति (size_t i = 0; i < M; i++) {
 			r += a(i) * b(i, 0);
 		}
 
-		return r;
+		प्रत्यागम r;
 	}
 
-	inline Type operator*(const MatrixM1 &b) const
+	अन्तःस्थ Type संक्रियकः*(ध्रुव MatrixM1 &b) ध्रुव
 	{
-		const Vector &a(*this);
-		return a.dot(b);
+		ध्रुव सदिशम् &a(*एतत्);
+		प्रत्यागम a.dot(b);
 	}
 
-	inline Vector operator*(Type b) const
+	अन्तःस्थ सदिशम् संक्रियकः*(Type b) ध्रुव
 	{
-		return Vector(MatrixM1::operator*(b));
+		प्रत्यागम सदिशम्(MatrixM1::संक्रियकः*(b));
 	}
 
-	Type norm() const
+	Type norm() ध्रुव
 	{
-		const Vector &a(*this);
-		return Type(std::sqrt(a.dot(a)));
+		ध्रुव सदिशम् &a(*एतत्);
+		प्रत्यागम Type(std::वर्गमूलम्(a.dot(a)));
 	}
 
-	Type norm_squared() const
+	Type norm_squared() ध्रुव
 	{
-		const Vector &a(*this);
-		return a.dot(a);
+		ध्रुव सदिशम् &a(*एतत्);
+		प्रत्यागम a.dot(a);
 	}
 
-	inline Type length() const
+	अन्तःस्थ Type दीर्घता_2() ध्रुव
 	{
-		return norm();
+		प्रत्यागम norm();
 	}
 
-	inline void normalize()
+	अन्तःस्थ शून्य normalize()
 	{
-		(*this) /= norm();
+		(*एतत्) /= norm();
 	}
 
-	Vector unit() const
+	सदिशम् unit() ध्रुव
 	{
-		return (*this) / norm();
+		प्रत्यागम (*एतत्) / norm();
 	}
 
-	Vector unit_or_zero(const Type eps = Type(1e-5)) const
+	सदिशम् unit_or_zero(ध्रुव Type eps = Type(1e-5)) ध्रुव
 	{
-		const Type n = norm();
+		ध्रुव Type n = norm();
 
-		if (n > eps) {
-			return (*this) / n;
+		यदि (n > eps) {
+			प्रत्यागम (*एतत्) / n;
 		}
 
-		return Vector();
+		प्रत्यागम सदिशम्();
 	}
 
-	inline Vector normalized() const
+	अन्तःस्थ सदिशम् normalized() ध्रुव
 	{
-		return unit();
+		प्रत्यागम unit();
 	}
 
-	bool longerThan(Type testVal) const
+	तार्किक longerThan(Type testVal) ध्रुव
 	{
-		return norm_squared() > testVal * testVal;
+		प्रत्यागम norm_squared() > testVal * testVal;
 	}
 
-	Vector sqrt() const
+	सदिशम् वर्गमूलम्() ध्रुव
 	{
-		const Vector &a(*this);
-		Vector r;
+		ध्रुव सदिशम् &a(*एतत्);
+		सदिशम् r;
 
-		for (size_t i = 0; i < M; i++) {
-			r(i) = Type(std::sqrt(a(i)));
+		प्रति (size_t i = 0; i < M; i++) {
+			r(i) = Type(std::वर्गमूलम्(a(i)));
 		}
 
-		return r;
+		प्रत्यागम r;
 	}
 
-	void print() const
+	शून्य print() ध्रुव
 	{
-		(*this).transpose().print();
+		(*एतत्).transpose().print();
 	}
 
-	static size_t size()
+	स्थिर size_t आकार()
 	{
-		return M;
+		प्रत्यागम M;
 	}
 };
 
-template<typename OStream, typename Type, size_t M>
-OStream &operator<<(OStream &os, const matrix::Vector<Type, M> &vector)
+प्रतिरूपम्<प्रकारनाम OStream, प्रकारनाम Type, size_t M>
+OStream &संक्रियकः<<(OStream &os, ध्रुव matrix::सदिशम्<Type, M> &सदिशम्_2)
 {
 	os << "\n";
 	// element: tab, point, 8 digits, 4 scientific notation chars; row: newline; string: \0 end
 	constexpr size_t n = 15 * M * 1 + 1 + 1;
-	char string[n];
-	vector.transpose().write_string(string, n);
+	वर्ण string[n];
+	सदिशम्_2.transpose().write_string(string, n);
 	os << string;
-	return os;
+	प्रत्यागम os;
 }
 
 } // namespace matrix

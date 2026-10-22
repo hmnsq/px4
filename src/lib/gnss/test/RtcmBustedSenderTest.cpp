@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include "RtcmTestCommon.hpp"
+#अन्तर्भाव "RtcmTestCommon.hpp"
 
 TEST_F(RtcmTest, BustedSender_AllZeros)
 {
-	std::vector<uint8_t> garbage(1000, 0x00);
-	parser.addData(garbage.data(), garbage.size());
+	std::सदिशम्_2<uint8_t> garbage(1000, 0x00);
+	parser.सङ्कलय_दत्त(garbage.दत्त(), garbage.आकार());
 
 	size_t len;
-	EXPECT_EQ(parser.getNextMessage(&len), nullptr);
-	EXPECT_EQ(parser.getStats().bytes_discarded, 1000u);
-	EXPECT_EQ(parser.bufferedBytes(), 0u);
+	EXPECT_EQ(parser.get_अग्र_सन्देशः(&len), शून्यसूचकः);
+	EXPECT_EQ(parser.getStats().अष्टकानि_discarded_2, 1000u);
+	EXPECT_EQ(parser.buffered_अष्टकानि(), 0u);
 }
 
 TEST_F(RtcmTest, BustedSender_AllPreambles)
@@ -49,14 +49,14 @@ TEST_F(RtcmTest, BustedSender_AllPreambles)
 	// All preamble bytes (0xD3). The parser sees each 0xD3 as a potential frame start.
 	// Length extracted from 0xD3,0xD3 is ((0x03)<<8)|0xD3 = 979 bytes.
 	// Parser waits for full frame which never comes.
-	std::vector<uint8_t> preambles(500, RTCM3_PREAMBLE);
-	parser.addData(preambles.data(), preambles.size());
+	std::सदिशम्_2<uint8_t> preambles(500, RTCM3_PREAMBLE);
+	parser.सङ्कलय_दत्त(preambles.दत्त(), preambles.आकार());
 
 	size_t len;
 	// Parser should be stuck waiting for more data (incomplete frame)
-	EXPECT_EQ(parser.getNextMessage(&len), nullptr);
+	EXPECT_EQ(parser.get_अग्र_सन्देशः(&len), शून्यसूचकः);
 	// Buffer retains data waiting for frame completion
-	EXPECT_GT(parser.bufferedBytes(), 0u);
+	EXPECT_GT(parser.buffered_अष्टकानि(), 0u);
 }
 
 TEST_F(RtcmTest, BustedSender_RandomNoise)
@@ -64,61 +64,61 @@ TEST_F(RtcmTest, BustedSender_RandomNoise)
 	std::mt19937 rng(12345);
 	uint8_t noise[500];
 
-	for (size_t i = 0; i < sizeof(noise); i++) {
+	प्रति (size_t i = 0; i < परिमाण(noise); i++) {
 		noise[i] = rng() & 0xFF;
 	}
 
-	parser.addData(noise, sizeof(noise));
+	parser.सङ्कलय_दत्त(noise, परिमाण(noise));
 
 	size_t len;
 
 	// Consume any messages that might accidentally form (unlikely but possible)
-	while (parser.getNextMessage(&len) != nullptr) {
-		parser.consumeMessage(len);
+	यावत् (parser.get_अग्र_सन्देशः(&len) != शून्यसूचकः) {
+		parser.consume_सन्देशः(len);
 	}
 
 	// Most data should be discarded
-	auto stats = parser.getStats();
-	EXPECT_GT(stats.bytes_discarded + stats.crc_errors, 0u);
+	स्वचालित stats = parser.getStats();
+	EXPECT_GT(stats.अष्टकानि_discarded_2 + stats.crc_errors, 0u);
 }
 
-TEST_F(RtcmTest, BustedSender_ValidHeaderBadCrc)
+TEST_F(RtcmTest, Busted_Sender_Valid_शीर्षकम्_Bad_Crc)
 {
 	// Frame with valid header but bad CRC
-	std::vector<uint8_t> frame = {
+	std::सदिशम्_2<uint8_t> frame = {
 		RTCM3_PREAMBLE, 0x00, 0x04,  // Header: 4 byte payload
 		0x01, 0x02, 0x03, 0x04,      // Payload
 		0xDE, 0xAD, 0xBE             // Bad CRC
 	};
 
-	parser.addData(frame.data(), frame.size());
+	parser.सङ्कलय_दत्त(frame.दत्त(), frame.आकार());
 
 	size_t len;
-	EXPECT_EQ(parser.getNextMessage(&len), nullptr);
+	EXPECT_EQ(parser.get_अग्र_सन्देशः(&len), शून्यसूचकः);
 	EXPECT_EQ(parser.getStats().crc_errors, 1u);
 }
 
-TEST_F(RtcmTest, BustedSender_RepeatedBadCrcFrames)
+TEST_F(RtcmTest, Busted_Sender_Repeated_Bad_Crc_चौकटाः)
 {
-	for (int i = 0; i < 100; i++) {
-		auto bad = buildBadCrcFrame({static_cast<uint8_t>(i), 0x00});
-		parser.addData(bad.data(), bad.size());
+	प्रति (पूर्णाङ्क i = 0; i < 100; i++) {
+		स्वचालित bad = buildBadCrcFrame({static_cast<uint8_t>(i), 0x00});
+		parser.सङ्कलय_दत्त(bad.दत्त(), bad.आकार());
 	}
 
 	// Re-scanning after a failure can land on a byte that claims a frame longer
 	// than what is buffered, which parks the framer until the rest arrives (see
 	// BustedSender_AllPreambles). Feed a frame's worth of non-preamble filler so
 	// every pending candidate can be resolved, as a live stream would.
-	const std::vector<uint8_t> filler(CorrectionFramer::MAX_FRAME_LEN, 0x00);
-	parser.addData(filler.data(), filler.size());
+	ध्रुव std::सदिशम्_2<uint8_t> filler(CorrectionFramer::MAX_FRAME_LEN, 0x00);
+	parser.सङ्कलय_दत्त(filler.दत्त(), filler.आकार());
 
 	size_t len;
 
-	while (parser.getNextMessage(&len) != nullptr) {
-		parser.consumeMessage(len);
+	यावत् (parser.get_अग्र_सन्देशः(&len) != शून्यसूचकः) {
+		parser.consume_सन्देशः(len);
 	}
 
-	auto stats = parser.getStats();
+	स्वचालित stats = parser.getStats();
 	EXPECT_EQ(stats.messages_parsed, 0u);
 	// At least 100 CRC errors (may be more due to re-scanning after failures)
 	EXPECT_GE(stats.crc_errors, 100u);

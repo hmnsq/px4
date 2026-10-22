@@ -50,22 +50,22 @@
  *   Last 2:     CK_A, CK_B (8-bit Fletcher over class..end of payload)
  */
 
-#pragma once
+#निर्देशः once
 
-#include <cstdint>
-#include <cstddef>
+#अन्तर्भाव <cstdint>
+#अन्तर्भाव <cstddef>
 
 namespace gnss
 {
 
-static constexpr uint8_t  UBX_SYNC1            = 0xB5;
-static constexpr uint8_t  UBX_SYNC2            = 0x62;
-static constexpr size_t   UBX_HEADER_LEN       = 6;   // sync1, sync2, class, id, len_lo, len_hi
-static constexpr size_t   UBX_CK_LEN           = 2;
+स्थिर constexpr uint8_t  UBX_SYNC1            = 0xB5;
+स्थिर constexpr uint8_t  UBX_SYNC2            = 0x62;
+स्थिर constexpr size_t   UBX_शीर्षकम्_LEN       = 6;   // sync1, sync2, class, id, len_lo, len_hi
+स्थिर constexpr size_t   UBX_CK_LEN           = 2;
 // Cap below the protocol's 65535 payload bytes so a garbage length cannot pin
 // the shared framer buffer; MGA messages are well under this.
-static constexpr size_t   UBX_MAX_PAYLOAD_LEN  = 1024;
-static constexpr size_t   UBX_MAX_FRAME_LEN    = UBX_HEADER_LEN + UBX_MAX_PAYLOAD_LEN + UBX_CK_LEN;
+स्थिर constexpr size_t   UBX_MAX_PAYLOAD_LEN  = 1024;
+स्थिर constexpr size_t   UBX_MAX_FRAME_LEN    = UBX_शीर्षकम्_LEN + UBX_MAX_PAYLOAD_LEN + UBX_CK_LEN;
 
 /**
  * 8-bit Fletcher checksum used by UBX (CK_A, CK_B).
@@ -78,13 +78,13 @@ static constexpr size_t   UBX_MAX_FRAME_LEN    = UBX_HEADER_LEN + UBX_MAX_PAYLOA
  * @param ck_a Out: CK_A
  * @param ck_b Out: CK_B
  */
-inline void ubx_checksum(const uint8_t *data, size_t len, uint8_t *ck_a, uint8_t *ck_b)
+अन्तःस्थ शून्य ubx_checksum(ध्रुव uint8_t *दत्त, size_t len, uint8_t *ck_a, uint8_t *ck_b)
 {
 	uint8_t a = 0;
 	uint8_t b = 0;
 
-	for (size_t i = 0; i < len; i++) {
-		a = static_cast<uint8_t>(a + data[i]);
+	प्रति (size_t i = 0; i < len; i++) {
+		a = static_cast<uint8_t>(a + दत्त[i]);
 		b = static_cast<uint8_t>(b + a);
 	}
 

@@ -32,69 +32,69 @@
  ****************************************************************************/
 
 
-#include "PX4Gyroscope.hpp"
+#अन्तर्भाव "PX4Gyroscope.hpp"
 
-#include <lib/drivers/device/Device.hpp>
-#include <lib/parameters/param.h>
+#अन्तर्भाव <lib/drivers/device/Device.hpp>
+#अन्तर्भाव <lib/parameters/param.h>
 
-using namespace time_literals;
+उपयुज्य नामाकाश time_literals;
 
-static constexpr int32_t sum(const int16_t samples[], uint8_t len)
+स्थिर constexpr int32_t योग(ध्रुव int16_t samples[], uint8_t len)
 {
-	int32_t sum = 0;
+	int32_t योग = 0;
 
-	for (int n = 0; n < len; n++) {
-		sum += samples[n];
+	प्रति (पूर्णाङ्क n = 0; n < len; n++) {
+		योग += samples[n];
 	}
 
-	return sum;
+	प्रत्यागम योग;
 }
 
-static constexpr uint8_t clipping(const int16_t samples[], uint8_t len, int16_t clip_limit)
+स्थिर constexpr uint8_t clipping(ध्रुव int16_t samples[], uint8_t len, int16_t clip_सीमा)
 {
-	unsigned clip_count = 0;
+	अचिह्नित clip_गणनम् = 0;
 
-	for (int n = 0; n < len; n++) {
+	प्रति (पूर्णाङ्क n = 0; n < len; n++) {
 		// symmetric about zero: rotation negates samples and |INT16_MIN| = INT16_MAX + 1
-		if ((samples[n] <= -clip_limit) || (samples[n] >= clip_limit)) {
-			clip_count++;
+		यदि ((samples[n] <= -clip_सीमा) || (samples[n] >= clip_सीमा)) {
+			clip_गणनम्++;
 		}
 	}
 
-	return clip_count;
+	प्रत्यागम clip_गणनम्;
 }
 
-PX4Gyroscope::PX4Gyroscope(uint32_t device_id, enum Rotation rotation) :
+PX4Gyroscope::PX4Gyroscope(uint32_t device_id, गणना Rotation rotation) :
 	PX4Gyroscope(device_id, rotation, device::device_is_external(device_id))
 {
-	_external_forced = false;
+	_external_forced = असत्य;
 }
 
-PX4Gyroscope::PX4Gyroscope(uint32_t device_id, enum Rotation rotation, bool external) :
+PX4Gyroscope::PX4Gyroscope(uint32_t device_id, गणना Rotation rotation, तार्किक external) :
 	_device_id{device_id},
 	_rotation{rotation},
 	_is_external{external},
-	_external_forced{true}
+	_external_forced{सत्य}
 {
 	// advertise immediately to keep instance numbering in sync
 	_sensor_pub.advertise();
 
-	param_get(param_find("IMU_GYRO_RATEMAX"), &_imu_gyro_rate_max);
+	param_get(param_find("IMU_GYRO_RATEMAX"), &imu_gyro_दरः_max);
 }
 
-void PX4Gyroscope::set_device_id(uint32_t device_id)
+शून्य PX4Gyroscope::समुच्चयः_device_id(uint32_t device_id)
 {
 	_device_id = device_id;
 
-	if (!_external_forced) {
+	यदि (!_external_forced) {
 		_is_external = device::device_is_external(device_id);
 	}
 }
 
-void PX4Gyroscope::set_external(bool external)
+शून्य PX4Gyroscope::समुच्चयः_external(तार्किक external)
 {
 	_is_external = external;
-	_external_forced = true;
+	_external_forced = सत्य;
 }
 
 PX4Gyroscope::~PX4Gyroscope()
@@ -103,10 +103,10 @@ PX4Gyroscope::~PX4Gyroscope()
 	_sensor_fifo_pub.unadvertise();
 }
 
-void PX4Gyroscope::set_device_type(uint8_t devtype)
+शून्य PX4Gyroscope::समुच्चयः_device_type(uint8_t devtype)
 {
 	// current DeviceStructure
-	union device::Device::DeviceId device_id;
+	सङ्घ device::Device::DeviceId device_id;
 	device_id.devid = _device_id;
 
 	// update to new device type
@@ -116,23 +116,23 @@ void PX4Gyroscope::set_device_type(uint8_t devtype)
 	_device_id = device_id.devid;
 }
 
-void PX4Gyroscope::set_scale(float scale)
+शून्य PX4Gyroscope::समुच्चयः_scale(भिन्न scale)
 {
-	if (fabsf(scale - _scale) > FLT_EPSILON) {
+	यदि (fabsf(scale - _scale) > FLT_EPSILON) {
 		// rescale last sample on scale change
-		float rescale = _scale / scale;
+		भिन्न rescale = _scale / scale;
 
-		for (auto &s : _last_sample) {
+		प्रति (स्वचालित &s : चरमः_sample) {
 			s = roundf(s * rescale);
 		}
 
 		_scale = scale;
 
-		UpdateClipLimit();
+		Update_Clip_सीमा();
 	}
 }
 
-void PX4Gyroscope::update(const hrt_abstime &timestamp_sample, float x, float y, float z)
+शून्य PX4Gyroscope::update(ध्रुव hrt_abstime &timestamp_sample, भिन्न x, भिन्न y, भिन्न z)
 {
 	// Apply rotation (before scaling)
 	rotate_3f(_rotation, x, y, z);
@@ -143,30 +143,30 @@ void PX4Gyroscope::update(const hrt_abstime &timestamp_sample, float x, float y,
 	report.device_id = _device_id;
 	report.is_external = _is_external;
 	report.temperature = _temperature;
-	report.error_count = _error_count;
+	report.error_गणनम् = error_गणनम्_2;
 	report.x = x * _scale;
 	report.y = y * _scale;
 	report.z = z * _scale;
-	report.clip_counter[0] = (fabsf(x) >= _clip_limit);
-	report.clip_counter[1] = (fabsf(y) >= _clip_limit);
-	report.clip_counter[2] = (fabsf(z) >= _clip_limit);
+	report.clip_गणक[0] = (fabsf(x) >= clip_सीमा_2);
+	report.clip_गणक[1] = (fabsf(y) >= clip_सीमा_2);
+	report.clip_गणक[2] = (fabsf(z) >= clip_सीमा_2);
 	report.samples = 1;
 	report.timestamp = hrt_absolute_time();
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_GYRO,
+	यदि (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_GYRO,
 					_sensor_pub.get_instance(), report, _stuck)) {
-		return;
+		प्रत्यागम;
 	}
 
 	_sensor_pub.publish(report);
 }
 
-void PX4Gyroscope::updateFIFO(sensor_gyro_fifo_s &sample)
+शून्य PX4Gyroscope::updateFIFO(sensor_gyro_fifo_s &sample)
 {
 	// rotate all raw samples and publish fifo
-	for (int n = 0; n < sample.samples; n++) {
+	प्रति (पूर्णाङ्क n = 0; n < sample.samples; n++) {
 		rotate_3i(_rotation, sample.x[n], sample.y[n], sample.z[n]);
 	}
 
@@ -177,14 +177,14 @@ void PX4Gyroscope::updateFIFO(sensor_gyro_fifo_s &sample)
 
 	_failure_config.update();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_GYRO,
+	यदि (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_GYRO,
 					_sensor_pub.get_instance(), sample, _stuck_fifo)) {
-		return;
+		प्रत्यागम;
 	}
 
 	_sensor_fifo_pub.publish(sample);
 
-	const uint8_t N = sample.samples;
+	ध्रुव uint8_t N = sample.samples;
 
 	// publish
 	sensor_gyro_s report;
@@ -192,38 +192,38 @@ void PX4Gyroscope::updateFIFO(sensor_gyro_fifo_s &sample)
 	report.device_id = _device_id;
 	report.is_external = _is_external;
 	report.temperature = _temperature;
-	report.error_count = _error_count;
+	report.error_गणनम् = error_गणनम्_2;
 
 	// trapezoidal integration (equally spaced)
-	const float scale = _scale / (float)N;
-	report.x = (0.5f * (_last_sample[0] + sample.x[N - 1]) + sum(sample.x, N - 1)) * scale;
-	report.y = (0.5f * (_last_sample[1] + sample.y[N - 1]) + sum(sample.y, N - 1)) * scale;
-	report.z = (0.5f * (_last_sample[2] + sample.z[N - 1]) + sum(sample.z, N - 1)) * scale;
+	ध्रुव भिन्न scale = _scale / (भिन्न)N;
+	report.x = (0.5f * (चरमः_sample[0] + sample.x[N - 1]) + योग(sample.x, N - 1)) * scale;
+	report.y = (0.5f * (चरमः_sample[1] + sample.y[N - 1]) + योग(sample.y, N - 1)) * scale;
+	report.z = (0.5f * (चरमः_sample[2] + sample.z[N - 1]) + योग(sample.z, N - 1)) * scale;
 
-	_last_sample[0] = sample.x[N - 1];
-	_last_sample[1] = sample.y[N - 1];
-	_last_sample[2] = sample.z[N - 1];
+	चरमः_sample[0] = sample.x[N - 1];
+	चरमः_sample[1] = sample.y[N - 1];
+	चरमः_sample[2] = sample.z[N - 1];
 
 	// The declared range is not the int16 rail on every part (ST high-g and dps scales leave
 	// headroom in the word), so clip against range/scale like update() does. The 0.999 margin
 	// in _clip_limit also covers sensors that reuse the lowest bit for a sync flag.
-	const int16_t clip_limit = static_cast<int16_t>(math::min(_clip_limit, (float)(INT16_MAX - 1)));
-	report.clip_counter[0] = clipping(sample.x, N, clip_limit);
-	report.clip_counter[1] = clipping(sample.y, N, clip_limit);
-	report.clip_counter[2] = clipping(sample.z, N, clip_limit);
+	ध्रुव int16_t clip_सीमा = static_cast<int16_t>(math::min(clip_सीमा_2, (भिन्न)(INT16_MAX - 1)));
+	report.clip_गणक[0] = clipping(sample.x, N, clip_सीमा);
+	report.clip_गणक[1] = clipping(sample.y, N, clip_सीमा);
+	report.clip_गणक[2] = clipping(sample.z, N, clip_सीमा);
 	report.samples = N;
 	report.timestamp = hrt_absolute_time();
 
-	if (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_GYRO,
+	यदि (!failure_injection::process(_failure_config, failure_injection_s::FAILURE_UNIT_SENSOR_GYRO,
 					_sensor_pub.get_instance(), report, _stuck)) {
-		return;
+		प्रत्यागम;
 	}
 
 	_sensor_pub.publish(report);
 }
 
-void PX4Gyroscope::UpdateClipLimit()
+शून्य PX4Gyroscope::Update_Clip_सीमा()
 {
 	// 99.9% of potential max
-	_clip_limit = fabsf(_range / _scale * 0.999f);
+	clip_सीमा_2 = fabsf(_range / _scale * 0.999f);
 }

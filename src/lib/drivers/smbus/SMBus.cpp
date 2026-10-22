@@ -44,11 +44,11 @@
  *  - Add remaining SMBus protocol messages as needed
  */
 
-#include "SMBus.hpp"
-#include <mathlib/mathlib.h>
+#अन्तर्भाव "SMBus.hpp"
+#अन्तर्भाव <mathlib/mathlib.h>
 
-SMBus::SMBus(uint8_t device_id, int bus_num, uint16_t address) :
-	I2C(device_id, MODULE_NAME, bus_num, address, 100000)
+SMBus::SMBus(uint8_t device_id, पूर्णाङ्क bus_अङ्कः, uint16_t स्थानाङ्कः) :
+	I2C(device_id, MODULE_NAME, bus_अङ्कः, स्थानाङ्कः, 100000)
 {
 }
 
@@ -57,152 +57,152 @@ SMBus::~SMBus()
 	perf_free(_interface_errors);
 }
 
-int SMBus::read_word(const uint8_t cmd_code, uint16_t &data)
+पूर्णाङ्क SMBus::read_word(ध्रुव uint8_t cmd_संहिता, uint16_t &दत्त)
 {
 	uint8_t buf[6];
 	// 2 data bytes + pec byte
-	int result = transfer(&cmd_code, 1, buf + 3, 3);
+	पूर्णाङ्क परिणाम = transfer(&cmd_संहिता, 1, buf + 3, 3);
 
-	if (result == PX4_OK) {
-		data = buf[3] | ((uint16_t)buf[4] << 8);
+	यदि (परिणाम == PX4_OK) {
+		दत्त = buf[3] | ((uint16_t)buf[4] << 8);
 		// Check PEC.
-		uint8_t addr = get_device_address() << 1;
+		uint8_t addr = get_device_स्थानाङ्कः() << 1;
 		buf[0] = addr | 0x00;
-		buf[1] = cmd_code;
+		buf[1] = cmd_संहिता;
 		buf[2] = addr | 0x01;
 
-		uint8_t pec = get_pec(buf, sizeof(buf) - 1);
+		uint8_t pec = get_pec(buf, परिमाण(buf) - 1);
 
-		if (pec != buf[sizeof(buf) - 1]) {
-			result = -EINVAL;
-			perf_count(_interface_errors);
+		यदि (pec != buf[परिमाण(buf) - 1]) {
+			परिणाम = -EINVAL;
+			perf_गणनम्(_interface_errors);
 		}
 
-	} else {
-		perf_count(_interface_errors);
+	} अन्यथा {
+		perf_गणनम्(_interface_errors);
 	}
 
-	return result;
+	प्रत्यागम परिणाम;
 }
 
-int SMBus::write_word(const uint8_t cmd_code, uint16_t data)
+पूर्णाङ्क SMBus::write_word(ध्रुव uint8_t cmd_संहिता, uint16_t दत्त)
 {
 	// 2 data bytes + pec byte
 	uint8_t buf[5];
-	buf[0] = (get_device_address() << 1) | 0x10;
-	buf[1] = cmd_code;
-	buf[2] = data & 0xff;
-	buf[3] = (data >> 8) & 0xff;
+	buf[0] = (get_device_स्थानाङ्कः() << 1) | 0x10;
+	buf[1] = cmd_संहिता;
+	buf[2] = दत्त & 0xff;
+	buf[3] = (दत्त >> 8) & 0xff;
 
 	buf[4] = get_pec(buf, 4);
 
-	int result = transfer(&buf[1], 4, nullptr, 0);
+	पूर्णाङ्क परिणाम = transfer(&buf[1], 4, शून्यसूचकः, 0);
 
-	if (result != PX4_OK) {
-		perf_count(_interface_errors);
+	यदि (परिणाम != PX4_OK) {
+		perf_गणनम्(_interface_errors);
 	}
 
-	return result;
+	प्रत्यागम परिणाम;
 }
 
-int SMBus::block_read(const uint8_t cmd_code, void *data, const uint8_t length, const bool use_pec)
+पूर्णाङ्क SMBus::खण्डम्_read(ध्रुव uint8_t cmd_संहिता, शून्य *दत्त, ध्रुव uint8_t दीर्घता_2, ध्रुव तार्किक use_pec)
 {
-	uint8_t byte_count = 0;
+	uint8_t byte_गणनम् = 0;
 	// addr(wr), cmd_code, addr(r), byte_count, data (MAX_BLOCK_LEN bytes max), pec
-	uint8_t rx_data[MAX_BLOCK_LEN + 5];
+	uint8_t rx_दत्त[MAX_खण्डम्_LEN + 5];
 
-	if (length > MAX_BLOCK_LEN) {
-		return -EINVAL;
+	यदि (दीर्घता_2 > MAX_खण्डम्_LEN) {
+		प्रत्यागम -EINVAL;
 	}
 
-	int result = transfer(&cmd_code, 1, (uint8_t *)&rx_data[3], length + 2);
+	पूर्णाङ्क परिणाम = transfer(&cmd_संहिता, 1, (uint8_t *)&rx_दत्त[3], दीर्घता_2 + 2);
 
-	if (result != PX4_OK) {
-		perf_count(_interface_errors);
-		return result;
+	यदि (परिणाम != PX4_OK) {
+		perf_गणनम्(_interface_errors);
+		प्रत्यागम परिणाम;
 	}
 
-	uint8_t device_address = get_device_address();
-	rx_data[0] = (device_address << 1) | 0x00;
-	rx_data[1] = cmd_code;
-	rx_data[2] = (device_address << 1) | 0x01;
-	byte_count = math::min(rx_data[3], MAX_BLOCK_LEN);
+	uint8_t device_स्थानाङ्कः = get_device_स्थानाङ्कः();
+	rx_दत्त[0] = (device_स्थानाङ्कः << 1) | 0x00;
+	rx_दत्त[1] = cmd_संहिता;
+	rx_दत्त[2] = (device_स्थानाङ्कः << 1) | 0x01;
+	byte_गणनम् = math::min(rx_दत्त[3], MAX_खण्डम्_LEN);
 
 	// ensure data is not longer than given buffer
-	memcpy(data, &rx_data[4], math::min(byte_count, length));
+	स्मृतिं_प्रतिलिख(दत्त, &rx_दत्त[4], math::min(byte_गणनम्, दीर्घता_2));
 
-	if (use_pec) {
-		uint8_t pec = get_pec(rx_data, byte_count + 4);
+	यदि (use_pec) {
+		uint8_t pec = get_pec(rx_दत्त, byte_गणनम् + 4);
 
-		if (pec != rx_data[byte_count + 4]) {
-			result = -EIO;
-			perf_count(_interface_errors);
+		यदि (pec != rx_दत्त[byte_गणनम् + 4]) {
+			परिणाम = -EIO;
+			perf_गणनम्(_interface_errors);
 		}
 	}
 
-	return result;
+	प्रत्यागम परिणाम;
 }
 
-int SMBus::block_write(const uint8_t cmd_code, const void *data, uint8_t byte_count, const bool use_pec)
+पूर्णाङ्क SMBus::खण्डम्_write(ध्रुव uint8_t cmd_संहिता, ध्रुव शून्य *दत्त, uint8_t byte_गणनम्, ध्रुव तार्किक use_pec)
 {
 	// cmd code[1], byte count[1], data[byte_count] (MAX_BLOCK_LEN max), pec[1] (optional)
-	uint8_t buf[MAX_BLOCK_LEN + 2];
+	uint8_t buf[MAX_खण्डम्_LEN + 2];
 
-	if (byte_count > MAX_BLOCK_LEN) {
-		return -EINVAL;
+	यदि (byte_गणनम् > MAX_खण्डम्_LEN) {
+		प्रत्यागम -EINVAL;
 	}
 
-	buf[0] = cmd_code;
-	buf[1] = (uint8_t)byte_count;
-	memcpy(&buf[2], data, byte_count);
+	buf[0] = cmd_संहिता;
+	buf[1] = (uint8_t)byte_गणनम्;
+	स्मृतिं_प्रतिलिख(&buf[2], दत्त, byte_गणनम्);
 
-	if (use_pec) {
-		uint8_t pec = get_pec(buf, byte_count + 2);
-		buf[byte_count + 2] = pec;
-		byte_count++;
+	यदि (use_pec) {
+		uint8_t pec = get_pec(buf, byte_गणनम् + 2);
+		buf[byte_गणनम् + 2] = pec;
+		byte_गणनम्++;
 	}
 
-	unsigned i = 0;
-	int result = 0;
+	अचिह्नित i = 0;
+	पूर्णाङ्क परिणाम = 0;
 
 	// If block_write fails, try up to 10 times.
-	while (i < 10 && ((result = transfer((uint8_t *)buf, byte_count + 2, nullptr, 0)) != PX4_OK)) {
-		perf_count(_interface_errors);
+	यावत् (i < 10 && ((परिणाम = transfer((uint8_t *)buf, byte_गणनम् + 2, शून्यसूचकः, 0)) != PX4_OK)) {
+		perf_गणनम्(_interface_errors);
 		i++;
 	}
 
-	if (i == 10 || result) {
-		result = -EINVAL;
+	यदि (i == 10 || परिणाम) {
+		परिणाम = -EINVAL;
 	}
 
-	return result;
+	प्रत्यागम परिणाम;
 }
 
-uint8_t SMBus::get_pec(uint8_t *buff, const uint8_t len)
+uint8_t SMBus::get_pec(uint8_t *buff, ध्रुव uint8_t len)
 {
 	// TODO: use "return crc8ccitt(buff, len);"
 
 	// Initialise CRC to zero.
 	uint8_t crc = 0;
-	uint8_t shift_register = 0;
-	bool invert_crc;
+	uint8_t सरणम्_पञ्जिकाकोशः = 0;
+	तार्किक invert_crc;
 
 	// Calculate crc for each byte in the stream.
-	for (uint8_t i = 0; i < len; i++) {
+	प्रति (uint8_t i = 0; i < len; i++) {
 		// Load next data byte into the shift register
-		shift_register = buff[i];
+		सरणम्_पञ्जिकाकोशः = buff[i];
 
 		// Calculate crc for each bit in the current byte.
-		for (uint8_t j = 0; j < 8; j++) {
-			invert_crc = (crc ^ shift_register) & 0x80;
+		प्रति (uint8_t j = 0; j < 8; j++) {
+			invert_crc = (crc ^ सरणम्_पञ्जिकाकोशः) & 0x80;
 			crc <<= 1;
-			shift_register <<= 1;
+			सरणम्_पञ्जिकाकोशः <<= 1;
 
-			if (invert_crc) {
+			यदि (invert_crc) {
 				crc ^= SMBUS_PEC_POLYNOMIAL;
 			}
 		}
 	}
 
-	return crc;
+	प्रत्यागम crc;
 }

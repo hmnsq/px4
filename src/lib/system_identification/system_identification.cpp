@@ -37,65 +37,65 @@
  * @author Mathieu Bresciani <mathieu@auterion.com>
  */
 
-#include "system_identification.hpp"
+#अन्तर्भाव "system_identification.hpp"
 
-void SystemIdentification::reset(const matrix::Vector<float, 5> &id_state_init)
+शून्य SystemIdentification::reset(ध्रुव matrix::सदिशम्<भिन्न, 5> &id_state_init)
 {
 	_rls.reset(id_state_init);
 	_u_lpf.reset(0.f);
 	_u_lpf.reset(0.f);
 	_u_hpf = 0.f;
 	_y_hpf = 0.f;
-	_u_prev = 0.f;
-	_y_prev = 0.f;
+	u_पूर्व = 0.f;
+	y_पूर्व = 0.f;
 	_fitness_lpf.reset(10.f);
-	_are_filters_initialized = false;
+	_are_filters_initialized = असत्य;
 }
 
-void SystemIdentification::update(float u, float y)
+शून्य SystemIdentification::update(भिन्न u, भिन्न y)
 {
 	updateFilters(u, y);
 	update();
 }
 
-void SystemIdentification::update()
+शून्य SystemIdentification::update()
 {
 	_rls.update(_u_hpf, _y_hpf);
 	updateFitness();
 }
 
-void SystemIdentification::updateFilters(float u, float y)
+शून्य SystemIdentification::updateFilters(भिन्न u, भिन्न y)
 {
-	if (!_are_filters_initialized) {
+	यदि (!_are_filters_initialized) {
 		_u_lpf.reset(u);
 		_y_lpf.reset(y);
 		_u_hpf = 0.f;
 		_y_hpf = 0.f;
-		_u_prev = u;
-		_y_prev = y;
-		_are_filters_initialized = true;
-		return;
+		u_पूर्व = u;
+		y_पूर्व = y;
+		_are_filters_initialized = सत्य;
+		प्रत्यागम;
 	}
 
-	const float u_lpf = _u_lpf.apply(u);
-	const float y_lpf = _y_lpf.apply(y);
-	_u_hpf = _alpha_hpf * _u_hpf + _alpha_hpf * (u_lpf - _u_prev);
-	_y_hpf = _alpha_hpf * _y_hpf + _alpha_hpf * (y_lpf - _y_prev);
+	ध्रुव भिन्न u_lpf = _u_lpf.apply(u);
+	ध्रुव भिन्न y_lpf = _y_lpf.apply(y);
+	_u_hpf = _alpha_hpf * _u_hpf + _alpha_hpf * (u_lpf - u_पूर्व);
+	_y_hpf = _alpha_hpf * _y_hpf + _alpha_hpf * (y_lpf - y_पूर्व);
 
-	_u_prev = u_lpf;
-	_y_prev = y_lpf;
+	u_पूर्व = u_lpf;
+	y_पूर्व = y_lpf;
 }
 
-void SystemIdentification::updateFitness()
+शून्य SystemIdentification::updateFitness()
 {
-	const matrix::Vector<float, 5> &diff = _rls.getDiffEstimate();
-	float sum = 0.f;
+	ध्रुव matrix::सदिशम्<भिन्न, 5> &diff = _rls.getDiffEstimate();
+	भिन्न योग = 0.f;
 
-	for (size_t i = 0; i < 5; i++) {
-		sum += diff(i);
+	प्रति (size_t i = 0; i < 5; i++) {
+		योग += diff(i);
 	}
 
-	if (_dt > FLT_EPSILON) {
-		_fitness_lpf.update(sum / _dt);
+	यदि (_dt > FLT_EPSILON) {
+		_fitness_lpf.update(योग / _dt);
 	}
 }

@@ -38,101 +38,101 @@
  *
  */
 
-#include "SPI.hpp"
+#अन्तर्भाव "SPI.hpp"
 
-#if defined(CONFIG_SPI)
+#यदि defined(CONFIG_SPI)
 
-#ifdef __PX4_LINUX
+#यदि_परिभाषितम् __PX4_LINUX
 
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/ioctl.h>
-#include <linux/types.h>
-#include <linux/spi/spidev.h>
+#अन्तर्भाव <fcntl.h>
+#अन्तर्भाव <unistd.h>
+#अन्तर्भाव <sys/ioctl.h>
+#अन्तर्भाव <linux/types.h>
+#अन्तर्भाव <linux/spi/spidev.h>
 
-#include <px4_platform_common/i2c_spi_buses.h>
-#include <px4_platform_common/px4_config.h>
+#अन्तर्भाव <px4_platform_common/i2c_spi_buses.h>
+#अन्तर्भाव <px4_platform_common/px4_config.h>
 
-namespace device
+नामाकाश device
 {
 
-SPI::SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency) :
-	CDev(name, nullptr),
+SPI::SPI(uint8_t device_type, ध्रुव वर्ण *name, पूर्णाङ्क bus, uint32_t device, गणना spi_बहुलकम्_e बहुलकम्, uint32_t frequency) :
+	CDev(name, शून्यसूचकः),
 	_device(device),
-	_mode(mode),
+	_mode(बहुलकम्),
 	_frequency(frequency)
 {
 	_device_id.devid_s.devtype = device_type;
 	// fill in _device_id fields for a SPI device
 	_device_id.devid_s.bus_type = DeviceBusType_SPI;
 	_device_id.devid_s.bus = bus;
-	_device_id.devid_s.address = (uint8_t)device;
+	_device_id.devid_s.स्थानाङ्कः = (uint8_t)device;
 }
 
-SPI::SPI(const I2CSPIDriverConfig &config)
-	: SPI(config.devid_driver_index, config.module_name, config.bus, config.spi_devid, config.spi_mode,
+SPI::SPI(ध्रुव I2CSPIDriverConfig &config)
+	: SPI(config.devid_driver_सूचकांक, config.module_name, config.bus, config.spi_devid, config.spi_बहुलकम्,
 	      config.bus_frequency)
 {
-	set_external(config.external);
+	समुच्चयः_external(config.external);
 }
 
 SPI::~SPI()
 {
-	if (_fd >= 0) {
+	यदि (_fd >= 0) {
 		::close(_fd);
 		_fd = -1;
 	}
 }
 
-int
+पूर्णाङ्क
 SPI::init()
 {
 	// Open the actual SPI device
-	char dev_path[16];
-	snprintf(dev_path, sizeof(dev_path), "/dev/spidev%i.%i", get_device_bus(), PX4_SPI_DEV_ID(_device));
-	DEVICE_DEBUG("%s", dev_path);
-	_fd = ::open(dev_path, O_RDWR);
+	वर्ण dev_मार्गः[16];
+	snprintf(dev_मार्गः, परिमाण(dev_मार्गः), "/dev/spidev%i.%i", get_device_bus(), PX4_SPI_DEV_ID(_device));
+	DEVICE_DEBUG("%s", dev_मार्गः);
+	_fd = ::उद्घाटय(dev_मार्गः, O_RDWR);
 
-	if (_fd < 0) {
-		PX4_ERR("could not open %s", dev_path);
-		return PX4_ERROR;
+	यदि (_fd < 0) {
+		PX4_ERR("could not open %s", dev_मार्गः);
+		प्रत्यागम PX4_ERROR;
 	}
 
 	/* call the probe function to check whether the device is present */
-	int ret = probe();
+	पूर्णाङ्क ret = probe();
 
-	if (ret != OK) {
+	यदि (ret != OK) {
 		DEVICE_DEBUG("probe failed");
-		return ret;
+		प्रत्यागम ret;
 	}
 
 	/* do base class init, which will create the device node, etc. */
 	ret = CDev::init();
 
-	if (ret != OK) {
+	यदि (ret != OK) {
 		DEVICE_DEBUG("cdev init failed");
-		return ret;
+		प्रत्यागम ret;
 	}
 
 	/* tell the world where we are */
 	DEVICE_DEBUG("on SPI bus %d at %d (%u KHz)", get_device_bus(), PX4_SPI_DEV_ID(_device), _frequency / 1000);
 
-	return PX4_OK;
+	प्रत्यागम PX4_OK;
 }
 
-int
-SPI::transfer(uint8_t *send, uint8_t *recv, unsigned len)
+पूर्णाङ्क
+SPI::transfer(uint8_t *send, uint8_t *recv, अचिह्नित len)
 {
-	if ((send == nullptr) && (recv == nullptr)) {
-		return -EINVAL;
+	यदि ((send == शून्यसूचकः) && (recv == शून्यसूचकः)) {
+		प्रत्यागम -EINVAL;
 	}
 
 	// set write mode of SPI
-	int result = ::ioctl(_fd, SPI_IOC_WR_MODE, &_mode);
+	पूर्णाङ्क परिणाम = ::ioctl(_fd, SPI_IOC_WR_बहुलकम्, &_mode);
 
-	if (result == -1) {
+	यदि (परिणाम == -1) {
 		PX4_ERR("can’t set spi mode");
-		return PX4_ERROR;
+		प्रत्यागम PX4_ERROR;
 	}
 
 	spi_ioc_transfer spi_transfer{};
@@ -140,40 +140,40 @@ SPI::transfer(uint8_t *send, uint8_t *recv, unsigned len)
 	spi_transfer.tx_buf = (uint64_t)send;
 	spi_transfer.rx_buf = (uint64_t)recv;
 	spi_transfer.len = len;
-	spi_transfer.speed_hz = _frequency;
-	spi_transfer.bits_per_word = 8;
+	spi_transfer.जवः_hz = _frequency;
+	spi_transfer.द्वयङ्काः_प्रत्येकम्_word = 8;
 
-	result = ::ioctl(_fd, SPI_IOC_MESSAGE(1), &spi_transfer);
+	परिणाम = ::ioctl(_fd, SPI_IOC_सन्देशः(1), &spi_transfer);
 
-	if (result != (int)len) {
-		PX4_ERR("write failed. Reported %d bytes written (%s)", result, strerror(errno));
-		return PX4_ERROR;
+	यदि (परिणाम != (पूर्णाङ्क)len) {
+		PX4_ERR("write failed. Reported %d bytes written (%s)", परिणाम, strerror(errno));
+		प्रत्यागम PX4_ERROR;
 	}
 
-	return PX4_OK;
+	प्रत्यागम PX4_OK;
 }
 
-int
-SPI::transferhword(uint16_t *send, uint16_t *recv, unsigned len)
+पूर्णाङ्क
+SPI::transferhword(uint16_t *send, uint16_t *recv, अचिह्नित len)
 {
-	if ((send == nullptr) && (recv == nullptr)) {
-		return -EINVAL;
+	यदि ((send == शून्यसूचकः) && (recv == शून्यसूचकः)) {
+		प्रत्यागम -EINVAL;
 	}
 
 	// set write mode of SPI
-	int result = ::ioctl(_fd, SPI_IOC_WR_MODE, &_mode);
+	पूर्णाङ्क परिणाम = ::ioctl(_fd, SPI_IOC_WR_बहुलकम्, &_mode);
 
-	if (result == -1) {
+	यदि (परिणाम == -1) {
 		PX4_ERR("can’t set spi mode");
-		return PX4_ERROR;
+		प्रत्यागम PX4_ERROR;
 	}
 
-	int bits = 16;
-	result = ::ioctl(_fd, SPI_IOC_WR_BITS_PER_WORD, &bits);
+	पूर्णाङ्क द्वयङ्काः = 16;
+	परिणाम = ::ioctl(_fd, SPI_IOC_WR_द्वयङ्काः_प्रत्येकम्_WORD, &द्वयङ्काः);
 
-	if (result == -1) {
+	यदि (परिणाम == -1) {
 		PX4_ERR("can’t set 16 bit spi mode");
-		return PX4_ERROR;
+		प्रत्यागम PX4_ERROR;
 	}
 
 	spi_ioc_transfer spi_transfer[1] {};
@@ -181,22 +181,22 @@ SPI::transferhword(uint16_t *send, uint16_t *recv, unsigned len)
 	spi_transfer[0].tx_buf = (uint64_t)send;
 	spi_transfer[0].rx_buf = (uint64_t)recv;
 	spi_transfer[0].len = len * 2;
-	spi_transfer[0].speed_hz = _frequency;
+	spi_transfer[0].जवः_hz = _frequency;
 	//spi_transfer[0].bits_per_word = 8;
 	//spi_transfer[0].delay_usecs = 10;
-	spi_transfer[0].cs_change = true;
+	spi_transfer[0].cs_change = सत्य;
 
-	result = ::ioctl(_fd, SPI_IOC_MESSAGE(1), &spi_transfer);
+	परिणाम = ::ioctl(_fd, SPI_IOC_सन्देशः(1), &spi_transfer);
 
-	if (result != (int)(len * 2)) {
-		PX4_ERR("write failed. Reported %d bytes written (%s)", result, strerror(errno));
-		return PX4_ERROR;
+	यदि (परिणाम != (पूर्णाङ्क)(len * 2)) {
+		PX4_ERR("write failed. Reported %d bytes written (%s)", परिणाम, strerror(errno));
+		प्रत्यागम PX4_ERROR;
 	}
 
-	return PX4_OK;
+	प्रत्यागम PX4_OK;
 }
 
 } // namespace device
 
-#endif // __PX4_LINUX
-#endif // CONFIG_SPI
+#यदि_अन्तः // __PX4_LINUX
+#यदि_अन्तः // CONFIG_SPI

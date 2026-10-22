@@ -31,36 +31,36 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <matrix/math.hpp>
+#अन्तर्भाव <gtest/gtest.h>
+#अन्तर्भाव <matrix/math.hpp>
 
-using namespace matrix;
+उपयुज्य नामाकाश matrix;
 
-TEST(MatrixSetIdentityTest, SetIdentity)
+TEST(Matrix_समुच्चयः_तटस्थः_Test, समुच्चयः_तटस्थः_2)
 {
 	Matrix3f A;
-	A.setIdentity();
+	A.समुच्चयः_तटस्थः();
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
-			if (i == j) {
+	प्रति (size_t i = 0; i < 3; i++) {
+		प्रति (size_t j = 0; j < 3; j++) {
+			यदि (i == j) {
 				EXPECT_FLOAT_EQ(A(i, j), 1);
 
-			} else {
+			} अन्यथा {
 				EXPECT_FLOAT_EQ(A(i, j), 0);
 			}
 		}
 	}
 
 	Matrix3f B;
-	B.identity();
+	B.तटस्थः();
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
-			if (i == j) {
+	प्रति (size_t i = 0; i < 3; i++) {
+		प्रति (size_t j = 0; j < 3; j++) {
+			यदि (i == j) {
 				EXPECT_FLOAT_EQ(B(i, j), 1);
 
-			} else {
+			} अन्यथा {
 				EXPECT_FLOAT_EQ(B(i, j), 0);
 			}
 		}

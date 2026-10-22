@@ -31,22 +31,22 @@
  *
  ****************************************************************************/
 
-#include <lib/tinybson/tinybson.h>
-#include <px4_platform_common/module_params.h>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/obstacle_distance.h>
-#include <uORB/uORBManager.hpp>
+#अन्तर्भाव <lib/tinybson/tinybson.h>
+#अन्तर्भाव <px4_platform_common/module_params.h>
+#अन्तर्भाव <uORB/Subscription.hpp>
+#अन्तर्भाव <uORB/topics/obstacle_distance.h>
+#अन्तर्भाव <uORB/uORBManager.hpp>
 
-#include <gtest/gtest.h>
-#include <fcntl.h>
-#include <unistd.h>
+#अन्तर्भाव <gtest/gtest.h>
+#अन्तर्भाव <fcntl.h>
+#अन्तर्भाव <unistd.h>
 
-class ParameterTest : public ::testing::Test
+वर्ग ParameterTest : सार्वजनिक ::testing::Test
 {
-public:
-	void SetUp() override
+सार्वजनिक:
+	शून्य समुच्चयः_ऊर्ध्वम्() override
 	{
-		param_control_autosave(false);
+		param_control_autosave(असत्य);
 		param_reset_all();
 	}
 };
@@ -58,26 +58,26 @@ TEST_F(ParameterTest, testParamReadWrite)
 	param_t param = param_handle(px4::params::CP_DIST);
 
 	// WHEN: we get the parameter
-	float value = -999.f;
-	int status = param_get(param, &value);
+	भिन्न value = -999.f;
+	पूर्णाङ्क स्थितिः = param_get(param, &value);
 
 	// THEN it should be successful and have the default value
-	EXPECT_EQ(0, status);
+	EXPECT_EQ(0, स्थितिः);
 	EXPECT_FLOAT_EQ(-1.f, value);
 
 	// WHEN: we set the parameter
 	value = 42.f;
-	status = param_set(param, &value);
+	स्थितिः = param_समुच्चयः(param, &value);
 
 	// THEN: it should be successful
-	EXPECT_EQ(0, status);
+	EXPECT_EQ(0, स्थितिः);
 
 	// WHEN: we get the parameter again
-	float value2 = -1999.f;
-	status = param_get(param, &value2);
+	भिन्न value2 = -1999.f;
+	स्थितिः = param_get(param, &value2);
 
 	// THEN: it should be exactly the value we set
-	EXPECT_EQ(0, status);
+	EXPECT_EQ(0, स्थितिः);
 	EXPECT_FLOAT_EQ(42.f, value2);
 }
 
@@ -85,59 +85,59 @@ TEST_F(ParameterTest, testParamReadWrite)
 TEST_F(ParameterTest, testUorbSendReceive)
 {
 	// GIVEN: a uOrb message
-	obstacle_distance_s message;
-	memset(&message, 0xDEAD, sizeof(message));
-	message.min_distance = 1.f;
-	message.max_distance = 10.f;
+	obstacle_distance_s सन्देशः_3;
+	स्मृतिं_पूरय(&सन्देशः_3, 0xDEAD, परिमाण(सन्देशः_3));
+	सन्देशः_3.min_distance = 1.f;
+	सन्देशः_3.max_distance = 10.f;
 
 	// AND: a subscriber
-	uORB::SubscriptionData<obstacle_distance_s> sub_obstacle_distance{ORB_ID(obstacle_distance)};
+	uORB::Subscription_दत्त<obstacle_distance_s> sub_obstacle_distance{ORB_ID(obstacle_distance)};
 
 	// WHEN we send the message
-	orb_advert_t obstacle_distance_pub = orb_advertise(ORB_ID(obstacle_distance), &message);
-	ASSERT_TRUE(obstacle_distance_pub != nullptr);
+	orb_advert_t obstacle_distance_pub = orb_advertise(ORB_ID(obstacle_distance), &सन्देशः_3);
+	ASSERT_TRUE(obstacle_distance_pub != शून्यसूचकः);
 
 	// THEN: the subscriber should receive the message
 	sub_obstacle_distance.update();
-	const obstacle_distance_s &obstacle_distance = sub_obstacle_distance.get();
+	ध्रुव obstacle_distance_s &obstacle_distance = sub_obstacle_distance.get();
 
 	// AND: the values we got should be the same
-	EXPECT_EQ(message.timestamp, obstacle_distance.timestamp);
-	EXPECT_FLOAT_EQ(message.min_distance, obstacle_distance.min_distance);
-	EXPECT_FLOAT_EQ(message.max_distance, obstacle_distance.max_distance);
+	EXPECT_EQ(सन्देशः_3.timestamp, obstacle_distance.timestamp);
+	EXPECT_FLOAT_EQ(सन्देशः_3.min_distance, obstacle_distance.min_distance);
+	EXPECT_FLOAT_EQ(सन्देशः_3.max_distance, obstacle_distance.max_distance);
 
 	// AND: all the bytes should be equal
-	EXPECT_EQ(0, memcmp(&message, &obstacle_distance, sizeof(message)));
+	EXPECT_EQ(0, memcmp(&सन्देशः_3, &obstacle_distance, परिमाण(सन्देशः_3)));
 }
 
 // A BSON null in an import resets the param (a delta tombstone on flash boards).
 TEST_F(ParameterTest, testImportTombstoneResets)
 {
-	const param_t cp_dist = param_handle(px4::params::CP_DIST);
+	ध्रुव param_t cp_dist = param_handle(px4::params::CP_DIST);
 
-	float cp = 5.f;
-	ASSERT_EQ(0, param_set(cp_dist, &cp));
-	ASSERT_FALSE(param_value_is_default(cp_dist));
+	भिन्न cp = 5.f;
+	ASSERT_EQ(0, param_समुच्चयः(cp_dist, &cp));
+	ASSERT_FALSE(param_मानम्_is_default(cp_dist));
 
 	bson_encoder_s encoder{};
-	ASSERT_EQ(0, bson_encoder_init_buf(&encoder, nullptr, 0));
+	ASSERT_EQ(0, bson_encoder_init_buf(&encoder, शून्यसूचकः, 0));
 	ASSERT_EQ(0, bson_encoder_append_int32(&encoder, "RC1_REV", -1));
 	ASSERT_EQ(0, bson_encoder_append_null(&encoder, "CP_DIST"));
 	ASSERT_EQ(0, bson_encoder_fini(&encoder));
 
-	char path[] = "/tmp/param_tombstone_XXXXXX";
-	int fd = mkstemp(path);
+	वर्ण मार्गः[] = "/tmp/param_tombstone_XXXXXX";
+	पूर्णाङ्क fd = mkstemp(मार्गः);
 	ASSERT_GE(fd, 0);
-	ASSERT_EQ((ssize_t)bson_encoder_buf_size(&encoder), write(fd, bson_encoder_buf_data(&encoder),
-			bson_encoder_buf_size(&encoder)));
-	free(bson_encoder_buf_data(&encoder));
+	ASSERT_EQ((ssize_t)bson_encoder_buf_आकार(&encoder), लिख(fd, bson_encoder_buf_दत्त(&encoder),
+			bson_encoder_buf_आकार(&encoder)));
+	मुक्त(bson_encoder_buf_दत्त(&encoder));
 	ASSERT_EQ(0, lseek(fd, 0, SEEK_SET));
 
 	EXPECT_EQ(0, param_import(fd));
 	close(fd);
-	unlink(path);
+	unlink(मार्गः);
 
-	EXPECT_TRUE(param_value_is_default(cp_dist));
+	EXPECT_TRUE(param_मानम्_is_default(cp_dist));
 
 	int32_t rev = 0;
 	ASSERT_EQ(0, param_get(param_handle(px4::params::RC1_REV), &rev));

@@ -37,163 +37,163 @@
  * Protected build kernel space interface to global parameter store.
  */
 
-#define PARAM_IMPLEMENTATION
+#परिभाषय PARAM_IMPLEMENTATION
 
-#include <errno.h>
+#अन्तर्भाव <errno.h>
 
-#include "param.h"
-#include "parameters_ioctl.h"
-#include <px4_platform_common/defines.h>
+#अन्तर्भाव "param.h"
+#अन्तर्भाव "parameters_ioctl.h"
+#अन्तर्भाव <px4_platform_common/defines.h>
 
-int	param_ioctl(unsigned int cmd, unsigned long arg)
+पूर्णाङ्क	param_ioctl(अचिह्नित पूर्णाङ्क cmd, अचिह्नित दीर्घ arg)
 {
-	int ret = OK;
+	पूर्णाङ्क ret = OK;
 
-	switch (cmd) {
-	case PARAMIOCNOTIFY: {
+	विकल्प (cmd) {
+	पक्ष PARAMIOCNOTIFY: {
 			param_notify_changes();
 		}
-		break;
+		भङ्ग;
 
-	case PARAMIOCFIND: {
-			paramiocfind_t *data = (paramiocfind_t *)arg;
+	पक्ष PARAMIOCFIND: {
+			paramiocfind_t *दत्त = (paramiocfind_t *)arg;
 
-			if (data->notification) {
-				data->ret = param_find(data->name);
+			यदि (दत्त->notification) {
+				दत्त->ret = param_find(दत्त->name);
 
-			} else {
-				data->ret = param_find_no_notification(data->name);
+			} अन्यथा {
+				दत्त->ret = param_find_no_notification(दत्त->name);
 			}
 		}
-		break;
+		भङ्ग;
 
-	case PARAMIOCCOUNTUSED: {
-			paramioccountused_t *data = (paramioccountused_t *)arg;
-			data->ret = param_count_used();
+	पक्ष PARAMIOCCOUNTUSED: {
+			paramioccountused_t *दत्त = (paramioccountused_t *)arg;
+			दत्त->ret = param_गणनम्_प्रयुक्तम्();
 		}
-		break;
+		भङ्ग;
 
-	case PARAMIOCFORUSEDINDEX: {
-			paramiocforusedindex_t *data = (paramiocforusedindex_t *)arg;
-			data->ret =  param_for_used_index(data->index);
+	पक्ष PARAMIOCFORUSEDINDEX: {
+			paramiocforusedindex_t *दत्त = (paramiocforusedindex_t *)arg;
+			दत्त->ret =  param_for_प्रयुक्तम्_सूचकांक(दत्त->सूचकांक);
 		}
-		break;
+		भङ्ग;
 
-	case PARAMIOCGETUSEDINDEX: {
-			paramiocgetusedindex_t *data = (paramiocgetusedindex_t *)arg;
-			data->ret = param_get_used_index(data->param);
+	पक्ष PARAMIOCGETUSEDINDEX: {
+			paramiocgetusedindex_t *दत्त = (paramiocgetusedindex_t *)arg;
+			दत्त->ret = param_get_प्रयुक्तम्_सूचकांक(दत्त->param);
 		}
-		break;
+		भङ्ग;
 
-	case PARAMIOCUNSAVED: {
-			paramiocunsaved_t *data = (paramiocunsaved_t *)arg;
-			data->ret = param_value_unsaved(data->param);
+	पक्ष PARAMIOCUNSAVED: {
+			paramiocunsaved_t *दत्त = (paramiocunsaved_t *)arg;
+			दत्त->ret = param_मानम्_unsaved(दत्त->param);
 		}
-		break;
+		भङ्ग;
 
-	case PARAMIOCGET: {
-			paramiocget_t *data = (paramiocget_t *)arg;
+	पक्ष PARAMIOCGET: {
+			paramiocget_t *दत्त = (paramiocget_t *)arg;
 
-			if (data->deflt) {
-				data->ret = param_get_default_value(data->param, data->val);
+			यदि (दत्त->deflt) {
+				दत्त->ret = param_get_default_मानम्(दत्त->param, दत्त->val);
 
-			} else {
-				data->ret = param_get(data->param, data->val);
+			} अन्यथा {
+				दत्त->ret = param_get(दत्त->param, दत्त->val);
 			}
 		}
-		break;
+		भङ्ग;
 
-	case PARAMIOCAUTOSAVE: {
-			paramiocautosave_t *data = (paramiocautosave_t *)arg;
-			param_control_autosave(data->enable);
+	पक्ष PARAMIOCAUTOSAVE: {
+			paramiocautosave_t *दत्त = (paramiocautosave_t *)arg;
+			param_control_autosave(दत्त->enable);
 		}
-		break;
+		भङ्ग;
 
-	case PARAMIOCSET: {
-			paramiocset_t *data = (paramiocset_t *)arg;
+	पक्ष PARAMIOCSET: {
+			paramiocset_t *दत्त = (paramiocset_t *)arg;
 
-			if (data->notification) {
-				data->ret = param_set(data->param, data->val);
+			यदि (दत्त->notification) {
+				दत्त->ret = param_समुच्चयः(दत्त->param, दत्त->val);
 
-			} else {
-				data->ret = param_set_no_notification(data->param, data->val);
+			} अन्यथा {
+				दत्त->ret = param_समुच्चयः_no_notification(दत्त->param, दत्त->val);
 			}
 		}
-		break;
+		भङ्ग;
 
-	case PARAMIOCUSED: {
-			paramiocused_t *data = (paramiocused_t *)arg;
-			data->ret = param_used(data->param);
+	पक्ष PARAMIOCUSED: {
+			paramiocused_t *दत्त = (paramiocused_t *)arg;
+			दत्त->ret = param_प्रयुक्तम्(दत्त->param);
 		}
-		break;
+		भङ्ग;
 
-	case PARAMIOCSETUSED: {
-			paramiocsetused_t *data = (paramiocsetused_t *)arg;
-			param_set_used(data->param);
+	पक्ष PARAMIOCSETUSED: {
+			paramiocsetused_t *दत्त = (paramiocsetused_t *)arg;
+			param_समुच्चयः_प्रयुक्तम्(दत्त->param);
 		}
-		break;
+		भङ्ग;
 
-	case PARAMIOCSETDEFAULT: {
-			paramiocsetdefault_t *data = (paramiocsetdefault_t *)arg;
-			data->ret = param_set_default_value(data->param, data->val);
+	पक्ष PARAMIOCSETDEFAULT: {
+			paramiocsetdefault_t *दत्त = (paramiocsetdefault_t *)arg;
+			दत्त->ret = param_समुच्चयः_default_मानम्(दत्त->param, दत्त->val);
 		}
-		break;
+		भङ्ग;
 
-	case PARAMIOCRESET: {
-			paramiocreset_t *data = (paramiocreset_t *)arg;
+	पक्ष PARAMIOCRESET: {
+			paramiocreset_t *दत्त = (paramiocreset_t *)arg;
 
-			if (data->notification) {
-				data->ret = param_reset(data->param);
+			यदि (दत्त->notification) {
+				दत्त->ret = param_reset(दत्त->param);
 
-			} else {
-				data->ret = param_reset_no_notification(data->param);
+			} अन्यथा {
+				दत्त->ret = param_reset_no_notification(दत्त->param);
 			}
 		}
-		break;
+		भङ्ग;
 
-	case PARAMIOCRESETGROUP: {
-			paramiocresetgroup_t *data = (paramiocresetgroup_t *)arg;
+	पक्ष PARAMIOCRESETGROUP: {
+			paramiocresetgroup_t *दत्त = (paramiocresetgroup_t *)arg;
 
-			if (data->type == PARAM_RESET_EXCLUDES) {
-				param_reset_excludes(data->group, data->num_in_group);
+			यदि (दत्त->type == PARAM_RESET_EXCLUDES) {
+				param_reset_excludes(दत्त->गणः, दत्त->अङ्कः_अन्तर्_गणः);
 
-			} else if (data->type == PARAM_RESET_SPECIFIC) {
-				param_reset_specific(data->group, data->num_in_group);
+			} अन्यथा यदि (दत्त->type == PARAM_RESET_SPECIFIC) {
+				param_reset_specific(दत्त->गणः, दत्त->अङ्कः_अन्तर्_गणः);
 
-			} else {
+			} अन्यथा {
 				param_reset_all();
 			}
 		}
-		break;
+		भङ्ग;
 
-	case PARAMIOCSAVEDEFAULT: {
-			paramiocsavedefault_t *data = (paramiocsavedefault_t *)arg;
-			data->ret = param_save_default(data->blocking);
+	पक्ष PARAMIOCSAVEDEFAULT: {
+			paramiocsavedefault_t *दत्त = (paramiocsavedefault_t *)arg;
+			दत्त->ret = param_save_default(दत्त->blocking);
 		}
-		break;
+		भङ्ग;
 
-	case PARAMIOCLOADDEFAULT: {
-			paramiocloaddefault_t *data = (paramiocloaddefault_t *)arg;
-			data->ret = param_load_default();
+	पक्ष PARAMIOCLOADDEFAULT: {
+			paramiocloaddefault_t *दत्त = (paramiocloaddefault_t *)arg;
+			दत्त->ret = param_आरोपय_default();
 		}
-		break;
+		भङ्ग;
 
-	case PARAMIOCEXPORT: {
-			paramiocexport_t *data = (paramiocexport_t *)arg;
-			data->ret = param_export(data->filename, nullptr);
+	पक्ष PARAMIOCEXPORT: {
+			paramiocexport_t *दत्त = (paramiocexport_t *)arg;
+			दत्त->ret = param_export(दत्त->filename, शून्यसूचकः);
 		}
-		break;
+		भङ्ग;
 
-	case PARAMIOCHASH: {
-			paramiochash_t *data = (paramiochash_t *)arg;
-			data->ret = param_hash_check();
+	पक्ष PARAMIOCHASH: {
+			paramiochash_t *दत्त = (paramiochash_t *)arg;
+			दत्त->ret = param_hash_check();
 		}
-		break;
+		भङ्ग;
 
-	default:
+	स्वभाव:
 		ret = -ENOTTY;
-		break;
+		भङ्ग;
 	}
 
-	return ret;
+	प्रत्यागम ret;
 }

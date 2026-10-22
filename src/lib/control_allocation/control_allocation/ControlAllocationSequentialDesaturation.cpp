@@ -38,95 +38,95 @@
  * @author Beat Küng <beat-kueng@gmx.net>
  */
 
-#include "ControlAllocationSequentialDesaturation.hpp"
+#अन्तर्भाव "ControlAllocationSequentialDesaturation.hpp"
 
 
-void
-ControlAllocationSequentialDesaturation::allocate()
+शून्य
+Control_आवण्टनम्_Sequential_Desaturation::allocate()
 {
 	//Compute new gains if needed
 	updatePseudoInverse();
 
-	_prev_actuator_sp = _actuator_sp;
+	पूर्व_actuator_sp = _actuator_sp;
 
-	switch (_param_mc_airmode.get()) {
-	case 1:
+	विकल्प (_param_mc_airmode.get()) {
+	पक्ष 1:
 		mixAirmodeRP();
-		break;
+		भङ्ग;
 
-	case 2:
+	पक्ष 2:
 		mixAirmodeRPY();
-		break;
+		भङ्ग;
 
-	default:
+	स्वभाव:
 		mixAirmodeDisabled();
-		break;
+		भङ्ग;
 	}
 }
 
-void ControlAllocationSequentialDesaturation::desaturateActuators(
-	ActuatorVector &actuator_sp,
-	const ActuatorVector &desaturation_vector, bool increase_only)
+शून्य Control_आवण्टनम्_Sequential_Desaturation::desaturateActuators(
+	Actuator_सदिशम् &actuator_sp,
+	ध्रुव Actuator_सदिशम् &desaturation_सदिशम्, तार्किक increase_only)
 {
-	float gain = computeDesaturationGain(desaturation_vector, actuator_sp);
+	भिन्न gain = computeDesaturationGain(desaturation_सदिशम्, actuator_sp);
 
-	if (increase_only && gain < 0.f) {
-		return;
+	यदि (increase_only && gain < 0.f) {
+		प्रत्यागम;
 	}
 
-	for (int i = 0; i < _num_actuators; i++) {
-		actuator_sp(i) += gain * desaturation_vector(i);
+	प्रति (पूर्णाङ्क i = 0; i < अङ्कः_actuators_2; i++) {
+		actuator_sp(i) += gain * desaturation_सदिशम्(i);
 	}
 
-	gain = 0.5f * computeDesaturationGain(desaturation_vector, actuator_sp);
+	gain = 0.5f * computeDesaturationGain(desaturation_सदिशम्, actuator_sp);
 
-	for (int i = 0; i < _num_actuators; i++) {
-		actuator_sp(i) += gain * desaturation_vector(i);
+	प्रति (पूर्णाङ्क i = 0; i < अङ्कः_actuators_2; i++) {
+		actuator_sp(i) += gain * desaturation_सदिशम्(i);
 	}
 }
 
-float ControlAllocationSequentialDesaturation::computeDesaturationGain(const ActuatorVector &desaturation_vector,
-		const ActuatorVector &actuator_sp)
+भिन्न Control_आवण्टनम्_Sequential_Desaturation::computeDesaturationGain(ध्रुव Actuator_सदिशम् &desaturation_सदिशम्,
+		ध्रुव Actuator_सदिशम् &actuator_sp)
 {
-	float k_min = 0.f;
-	float k_max = 0.f;
+	भिन्न k_min = 0.f;
+	भिन्न k_max = 0.f;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	प्रति (पूर्णाङ्क i = 0; i < अङ्कः_actuators_2; i++) {
 		// Do not use try to desaturate using an actuator with weak effectiveness to avoid large desaturation gains
-		if (fabsf(desaturation_vector(i)) < 0.2f) {
-			continue;
+		यदि (fabsf(desaturation_सदिशम्(i)) < 0.2f) {
+			अनुवर्त;
 		}
 
-		if (actuator_sp(i) < _actuator_min(i)) {
-			float k = (_actuator_min(i) - actuator_sp(i)) / desaturation_vector(i);
+		यदि (actuator_sp(i) < _actuator_min(i)) {
+			भिन्न k = (_actuator_min(i) - actuator_sp(i)) / desaturation_सदिशम्(i);
 
-			if (k < k_min) { k_min = k; }
+			यदि (k < k_min) { k_min = k; }
 
-			if (k > k_max) { k_max = k; }
+			यदि (k > k_max) { k_max = k; }
 		}
 
-		if (actuator_sp(i) > _actuator_max(i)) {
-			float k = (_actuator_max(i) - actuator_sp(i)) / desaturation_vector(i);
+		यदि (actuator_sp(i) > _actuator_max(i)) {
+			भिन्न k = (_actuator_max(i) - actuator_sp(i)) / desaturation_सदिशम्(i);
 
-			if (k < k_min) { k_min = k; }
+			यदि (k < k_min) { k_min = k; }
 
-			if (k > k_max) { k_max = k; }
+			यदि (k > k_max) { k_max = k; }
 		}
 	}
 
 	// Reduce the saturation as much as possible
-	return k_min + k_max;
+	प्रत्यागम k_min + k_max;
 }
 
-void
-ControlAllocationSequentialDesaturation::mixAirmodeRP()
+शून्य
+Control_आवण्टनम्_Sequential_Desaturation::mixAirmodeRP()
 {
 	// Airmode for roll and pitch, but not yaw
 
 	// Mix without yaw
-	ActuatorVector thrust_z;
+	Actuator_सदिशम् thrust_z;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	प्रति (पूर्णाङ्क i = 0; i < अङ्कः_actuators_2; i++) {
 		_actuator_sp(i) = _actuator_trim(i) +
 				  _mix(i, ControlAxis::ROLL) * (_control_sp(ControlAxis::ROLL) - _control_trim(ControlAxis::ROLL)) +
 				  _mix(i, ControlAxis::PITCH) * (_control_sp(ControlAxis::PITCH) - _control_trim(ControlAxis::PITCH)) +
@@ -142,16 +142,16 @@ ControlAllocationSequentialDesaturation::mixAirmodeRP()
 	mixYaw();
 }
 
-void
-ControlAllocationSequentialDesaturation::mixAirmodeRPY()
+शून्य
+Control_आवण्टनम्_Sequential_Desaturation::mixAirmodeRPY()
 {
 	// Airmode for roll, pitch and yaw
 
 	// Do full mixing
-	ActuatorVector thrust_z;
-	ActuatorVector yaw;
+	Actuator_सदिशम् thrust_z;
+	Actuator_सदिशम् yaw;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	प्रति (पूर्णाङ्क i = 0; i < अङ्कः_actuators_2; i++) {
 		_actuator_sp(i) = _actuator_trim(i) +
 				  _mix(i, ControlAxis::ROLL) * (_control_sp(ControlAxis::ROLL) - _control_trim(ControlAxis::ROLL)) +
 				  _mix(i, ControlAxis::PITCH) * (_control_sp(ControlAxis::PITCH) - _control_trim(ControlAxis::PITCH)) +
@@ -170,17 +170,17 @@ ControlAllocationSequentialDesaturation::mixAirmodeRPY()
 	desaturateActuators(_actuator_sp, yaw);
 }
 
-void
-ControlAllocationSequentialDesaturation::mixAirmodeDisabled()
+शून्य
+Control_आवण्टनम्_Sequential_Desaturation::mixAirmodeDisabled()
 {
 	// Airmode disabled: never allow to increase the thrust to unsaturate a motor
 
 	// Mix without yaw
-	ActuatorVector thrust_z;
-	ActuatorVector roll;
-	ActuatorVector pitch;
+	Actuator_सदिशम् thrust_z;
+	Actuator_सदिशम् roll;
+	Actuator_सदिशम् pitch;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	प्रति (पूर्णाङ्क i = 0; i < अङ्कः_actuators_2; i++) {
 		_actuator_sp(i) = _actuator_trim(i) +
 				  _mix(i, ControlAxis::ROLL) * (_control_sp(ControlAxis::ROLL) - _control_trim(ControlAxis::ROLL)) +
 				  _mix(i, ControlAxis::PITCH) * (_control_sp(ControlAxis::PITCH) - _control_trim(ControlAxis::PITCH)) +
@@ -193,7 +193,7 @@ ControlAllocationSequentialDesaturation::mixAirmodeDisabled()
 	}
 
 	// only reduce thrust
-	desaturateActuators(_actuator_sp, thrust_z, true);
+	desaturateActuators(_actuator_sp, thrust_z, सत्य);
 
 	// Reduce roll/pitch acceleration if needed to unsaturate
 	desaturateActuators(_actuator_sp, roll);
@@ -203,14 +203,14 @@ ControlAllocationSequentialDesaturation::mixAirmodeDisabled()
 	mixYaw();
 }
 
-void
-ControlAllocationSequentialDesaturation::mixYaw()
+शून्य
+Control_आवण्टनम्_Sequential_Desaturation::mixYaw()
 {
 	// Add yaw to outputs
-	ActuatorVector yaw;
-	ActuatorVector thrust_z;
+	Actuator_सदिशम् yaw;
+	Actuator_सदिशम् thrust_z;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	प्रति (पूर्णाङ्क i = 0; i < अङ्कः_actuators_2; i++) {
 		_actuator_sp(i) += _mix(i, ControlAxis::YAW) * (_control_sp(ControlAxis::YAW) - _control_trim(ControlAxis::YAW));
 		yaw(i) = _mix(i, ControlAxis::YAW);
 		thrust_z(i) = _mix(i, ControlAxis::THRUST_Z);
@@ -218,17 +218,17 @@ ControlAllocationSequentialDesaturation::mixYaw()
 
 	// Change yaw acceleration to unsaturate the outputs if needed (do not change roll/pitch),
 	// and allow some yaw response at maximum thrust
-	ActuatorVector max_prev = _actuator_max;
+	Actuator_सदिशम् max_पूर्व = _actuator_max;
 	_actuator_max += (_actuator_max - _actuator_min) * MINIMUM_YAW_MARGIN;
 	desaturateActuators(_actuator_sp, yaw);
-	_actuator_max = max_prev;
+	_actuator_max = max_पूर्व;
 
 	// reduce thrust only
-	desaturateActuators(_actuator_sp, thrust_z, true);
+	desaturateActuators(_actuator_sp, thrust_z, सत्य);
 }
 
-void
-ControlAllocationSequentialDesaturation::updateParameters()
+शून्य
+Control_आवण्टनम्_Sequential_Desaturation::updateParameters()
 {
 	updateParams();
 }

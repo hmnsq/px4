@@ -36,88 +36,88 @@
  *
  */
 
-#pragma once
+#निर्देशः once
 
-#include <motion_planning/VelocitySmoothing.hpp>
+#अन्तर्भाव <motion_planning/VelocitySmoothing.hpp>
 
-class ManualVelocitySmoothingZ final
+वर्ग ManualVelocitySmoothingZ final
 {
-public:
-	ManualVelocitySmoothingZ() = default;
-	~ManualVelocitySmoothingZ() = default;
+सार्वजनिक:
+	ManualVelocitySmoothingZ() = स्वभाव;
+	~ManualVelocitySmoothingZ() = स्वभाव;
 
-	void reset(float accel, float vel, float pos);
-	void update(float dt, float velocity_target);
+	शून्य reset(भिन्न accel, भिन्न vel, भिन्न pos);
+	शून्य update(भिन्न dt, भिन्न velocity_target);
 
-	void setVelSpFeedback(const float fb) { _velocity_setpoint_feedback = fb; }
+	शून्य समुच्चयः_Vel_Sp_Feedback(ध्रुव भिन्न fb) { _velocity_setpoint_feedback = fb; }
 
-	void setMaxJerk(const float max_jerk)
+	शून्य समुच्चयः_Max_Jerk(ध्रुव भिन्न max_jerk)
 	{
-		_trajectory.setMaxJerk(max_jerk);
+		_trajectory.समुच्चयः_Max_Jerk(max_jerk);
 	}
-	void setMaxAccelUp(const float max_accel_up)
+	शून्य समुच्चयः_Max_Accel_ऊर्ध्वम्(ध्रुव भिन्न max_accel_ऊर्ध्वम्_2)
 	{
-		_max_accel_up = max_accel_up;
+		max_accel_ऊर्ध्वम् = max_accel_ऊर्ध्वम्_2;
 	}
-	void setMaxAccelDown(const float max_accel_down)
+	शून्य समुच्चयः_Max_Accel_अधस्तात्(ध्रुव भिन्न max_accel_अधस्तात्_2)
 	{
-		_max_accel_down = max_accel_down;
+		max_accel_अधस्तात् = max_accel_अधस्तात्_2;
 	}
-	void setMaxVelUp(const float max_vel_up)
+	शून्य समुच्चयः_Max_Vel_ऊर्ध्वम्(ध्रुव भिन्न max_vel_ऊर्ध्वम्_2)
 	{
-		_max_vel_up = max_vel_up;
+		max_vel_ऊर्ध्वम् = max_vel_ऊर्ध्वम्_2;
 	}
-	void setMaxVelDown(const float max_vel_down)
+	शून्य समुच्चयः_Max_Vel_अधस्तात्(ध्रुव भिन्न max_vel_अधस्तात्_2)
 	{
-		_max_vel_down = max_vel_down;
+		max_vel_अधस्तात् = max_vel_अधस्तात्_2;
 	}
 
-	float getCurrentJerk() const { return _state.j; }
-	float getCurrentAcceleration() const { return _state.a; }
-	void setCurrentVelocity(const float vel)
+	भिन्न getCurrentJerk() ध्रुव { प्रत्यागम _state.j; }
+	भिन्न getCurrentAcceleration() ध्रुव { प्रत्यागम _state.a; }
+	शून्य समुच्चयः_Current_Velocity(ध्रुव भिन्न vel)
 	{
 		_state.v = vel;
-		_trajectory.setCurrentVelocity(vel);
+		_trajectory.समुच्चयः_Current_Velocity(vel);
 	}
-	float getCurrentVelocity() const { return _state.v; }
-	void setCurrentPosition(const float pos)
+	भिन्न getCurrentVelocity() ध्रुव { प्रत्यागम _state.v; }
+	शून्य समुच्चयः_Current_Position(ध्रुव भिन्न pos)
 	{
 		_state.x = pos;
-		_trajectory.setCurrentPosition(pos);
+		_trajectory.समुच्चयः_Current_Position(pos);
 		_position_estimate = pos;
 
-		if (_position_lock_active) {
+		यदि (position_तालकम्_सक्रिय) {
 			_position_setpoint_locked = pos;
 		}
 	}
-	float getCurrentPosition() const { return _position_setpoint_locked; }
-	void setCurrentPositionEstimate(float pos) { _position_estimate = pos; }
+	भिन्न getCurrentPosition() ध्रुव { प्रत्यागम _position_setpoint_locked; }
+	शून्य समुच्चयः_Current_Position_Estimate(भिन्न pos) { _position_estimate = pos; }
 
-private:
-	void resetPositionLock();
-	void updateTrajectories(float dt);
-	void updateTrajConstraints(float vel_target);
-	void checkPositionLock(float velocity_target);
-	void updateTrajDurations(float velocity_target);
+गुप्त:
+	शून्य reset_Position_तालकम्();
+	शून्य updateTrajectories(भिन्न dt);
+	शून्य updateTrajConstraints(भिन्न vel_target);
+	शून्य check_Position_तालकम्(भिन्न velocity_target);
+	शून्य updateTrajDurations(भिन्न velocity_target);
 
 	VelocitySmoothing _trajectory; ///< Trajectory in z direction
 
-	bool _position_lock_active{false};
+	तार्किक position_तालकम्_सक्रिय{असत्य};
 
-	float _position_setpoint_locked{};
+	भिन्न _position_setpoint_locked{};
 
-	float _velocity_setpoint_feedback{};
-	float _position_estimate{};
+	भिन्न _velocity_setpoint_feedback{};
+	भिन्न _position_estimate{};
 
-	struct {
-		float j;
-		float a;
-		float v;
-		float x;
+	संरचना {
+		भिन्न j;
+		भिन्न a;
+		भिन्न v;
+		भिन्न x;
 	} _state{};
 
-	float _max_accel_up{0.f};
-	float _max_accel_down{0.f};
-	float _max_vel_up{0.f};
-	float _max_vel_down{0.f};
+	भिन्न max_accel_ऊर्ध्वम्{0.f};
+	भिन्न max_accel_अधस्तात्{0.f};
+	भिन्न max_vel_ऊर्ध्वम्{0.f};
+	भिन्न max_vel_अधस्तात्{0.f};
 };

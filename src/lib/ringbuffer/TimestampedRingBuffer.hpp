@@ -39,280 +39,280 @@
 * Note: This is not the same as `Ringbuffer` (byte FIFO) in `src/lib/ringbuffer/Ringbuffer.hpp`.
 */
 
-#pragma once
+#निर्देशः once
 
-#include <climits>
-#include <cstddef>
-#include <inttypes.h>
+#अन्तर्भाव <climits>
+#अन्तर्भाव <cstddef>
+#अन्तर्भाव <inttypes.h>
 
-template <typename data_type, size_t SIZE = 0>
-class TimestampedRingBuffer;
+प्रतिरूपम् <प्रकारनाम दत्त_type, size_t आकार_3 = 0>
+वर्ग Timestamped_Ring_बफर;
 
 /**
  * Static-size ring buffer specialization (SIZE > 0).
  */
-template <typename data_type, size_t SIZE>
-class TimestampedRingBuffer
+प्रतिरूपम् <प्रकारनाम दत्त_type, size_t आकार_3>
+वर्ग Timestamped_Ring_बफर
 {
-public:
-	static_assert(SIZE > 0, "SIZE must be > 0");
-	static_assert(SIZE <= UINT8_MAX, "SIZE must fit in uint8_t");
-	static constexpr uint8_t kSize = static_cast<uint8_t>(SIZE);
+सार्वजनिक:
+	static_assert(आकार_3 > 0, "SIZE must be > 0");
+	static_assert(आकार_3 <= UINT8_MAX, "SIZE must fit in uint8_t");
+	स्थिर constexpr uint8_t k_आकार = static_cast<uint8_t>(आकार_3);
 
-	TimestampedRingBuffer() = default;
-	~TimestampedRingBuffer() = default;
+	Timestamped_Ring_बफर() = स्वभाव;
+	~Timestamped_Ring_बफर() = स्वभाव;
 
 	// no copy, assignment, move, move assignment
-	TimestampedRingBuffer(const TimestampedRingBuffer &) = delete;
-	TimestampedRingBuffer &operator=(const TimestampedRingBuffer &) = delete;
-	TimestampedRingBuffer(TimestampedRingBuffer &&) = delete;
-	TimestampedRingBuffer &operator=(TimestampedRingBuffer &&) = delete;
+	Timestamped_Ring_बफर(ध्रुव Timestamped_Ring_बफर &) = विलोपय;
+	Timestamped_Ring_बफर &संक्रियकः=(ध्रुव Timestamped_Ring_बफर &) = विलोपय;
+	Timestamped_Ring_बफर(Timestamped_Ring_बफर &&) = विलोपय;
+	Timestamped_Ring_बफर &संक्रियकः=(Timestamped_Ring_बफर &&) = विलोपय;
 
-	bool allocate(size_t size) { return size == SIZE; }
+	तार्किक allocate(size_t आकार) { प्रत्यागम आकार == आकार_3; }
 
-	bool valid() const { return SIZE > 0; }
+	तार्किक valid() ध्रुव { प्रत्यागम आकार_3 > 0; }
 
-	void push(const data_type &sample)
+	शून्य प्रक्षिप(ध्रुव दत्त_type &sample)
 	{
-		_buffer[_head] = sample;
-		_head = next(_head);
+		बफर[शीर्ष] = sample;
+		शीर्ष = अग्र(शीर्ष);
 
-		if (_entries < kSize) {
+		यदि (_entries < k_आकार) {
 			_entries++;
 		}
 	}
 
-	uint8_t get_length() const { return kSize; }
+	uint8_t get_दीर्घता() ध्रुव { प्रत्यागम k_आकार; }
 
-	data_type &operator[](const uint8_t index) { return _buffer[index]; }
+	दत्त_type &संक्रियकः[](ध्रुव uint8_t सूचकांक) { प्रत्यागम बफर[सूचकांक]; }
 
-	const data_type &get_newest() const { return _buffer[get_newest_index()]; }
-	const data_type &get_oldest() const { return _buffer[get_oldest_index()]; }
+	ध्रुव दत्त_type &get_newest() ध्रुव { प्रत्यागम बफर[get_newest_सूचकांक()]; }
+	ध्रुव दत्त_type &get_oldest() ध्रुव { प्रत्यागम बफर[get_oldest_सूचकांक()]; }
 
-	uint8_t get_newest_index() const { return (_entries > 0) ? prev(_head) : 0; }
-	uint8_t get_oldest_index() const
+	uint8_t get_newest_सूचकांक() ध्रुव { प्रत्यागम (_entries > 0) ? पूर्व(शीर्ष) : 0; }
+	uint8_t get_oldest_सूचकांक() ध्रुव
 	{
-		if (_entries == 0) {
-			return 0;
+		यदि (_entries == 0) {
+			प्रत्यागम 0;
 		}
 
-		const uint16_t idx = static_cast<uint16_t>(_head) + static_cast<uint16_t>(kSize) - static_cast<uint16_t>(_entries);
-		return (idx >= kSize) ? static_cast<uint8_t>(idx - kSize) : static_cast<uint8_t>(idx);
+		ध्रुव uint16_t idx = static_cast<uint16_t>(शीर्ष) + static_cast<uint16_t>(k_आकार) - static_cast<uint16_t>(_entries);
+		प्रत्यागम (idx >= k_आकार) ? static_cast<uint8_t>(idx - k_आकार) : static_cast<uint8_t>(idx);
 	}
 
-	uint8_t next(uint8_t i) const { return (i + 1 >= kSize) ? 0 : i + 1; }
-	uint8_t prev(uint8_t i) const { return (i == 0) ? kSize - 1 : i - 1; }
+	uint8_t अग्र(uint8_t i) ध्रुव { प्रत्यागम (i + 1 >= k_आकार) ? 0 : i + 1; }
+	uint8_t पूर्व(uint8_t i) ध्रुव { प्रत्यागम (i == 0) ? k_आकार - 1 : i - 1; }
 
-	bool pop_first_older_than(const uint64_t &timestamp, data_type *sample)
+	तार्किक निष्कासय_first_older_than(ध्रुव uint64_t &timestamp, दत्त_type *sample)
 	{
 		// start looking from newest observation data
-		const uint8_t newest_idx = get_newest_index();
-		const uint8_t oldest_idx = get_oldest_index();
+		ध्रुव uint8_t newest_idx = get_newest_सूचकांक();
+		ध्रुव uint8_t oldest_idx = get_oldest_सूचकांक();
 
-		for (uint8_t i = 0; i < _entries; i++) {
-			int index = (newest_idx - i);
-			index = index < 0 ? kSize + index : index;
+		प्रति (uint8_t i = 0; i < _entries; i++) {
+			पूर्णाङ्क सूचकांक = (newest_idx - i);
+			सूचकांक = सूचकांक < 0 ? k_आकार + सूचकांक : सूचकांक;
 
-			if (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
-				*sample = _buffer[index];
+			यदि (timestamp >= बफर[सूचकांक].time_us && timestamp < बफर[सूचकांक].time_us + (uint64_t)1e5) {
+				*sample = बफर[सूचकांक];
 
 				// Now we can set the tail to the item which
 				// comes after the one we removed since we don't
 				// want to have any older data in the buffer
-				const uint8_t index_u = static_cast<uint8_t>(index);
-				const uint8_t distance = (index_u >= oldest_idx) ? (index_u - oldest_idx) : (index_u + kSize - oldest_idx);
-				const uint8_t discard_count = distance + 1;
-				_entries = (_entries > discard_count) ? (_entries - discard_count) : 0;
-				_buffer[index].time_us = 0;
+				ध्रुव uint8_t सूचकांक_u = static_cast<uint8_t>(सूचकांक);
+				ध्रुव uint8_t distance = (सूचकांक_u >= oldest_idx) ? (सूचकांक_u - oldest_idx) : (सूचकांक_u + k_आकार - oldest_idx);
+				ध्रुव uint8_t discard_गणनम् = distance + 1;
+				_entries = (_entries > discard_गणनम्) ? (_entries - discard_गणनम्) : 0;
+				बफर[सूचकांक].time_us = 0;
 
-				return true;
+				प्रत्यागम सत्य;
 			}
 		}
 
-		return false;
+		प्रत्यागम असत्य;
 	}
 
-	int get_total_size() const
+	पूर्णाङ्क get_योग_आकार() ध्रुव
 	{
-		static_assert(sizeof(TimestampedRingBuffer<data_type, SIZE>) <= static_cast<size_t>(INT_MAX),
+		static_assert(परिमाण(Timestamped_Ring_बफर<दत्त_type, आकार_3>) <= static_cast<size_t>(अधिकतम_पूर्णाङ्कः),
 			      "static ring buffer size must fit in int");
-		return static_cast<int>(sizeof(TimestampedRingBuffer<data_type, SIZE>));
+		प्रत्यागम static_cast<पूर्णाङ्क>(परिमाण(Timestamped_Ring_बफर<दत्त_type, आकार_3>));
 	}
 
-	int entries() const { return _entries; }
-	bool empty() const { return _entries == 0; }
+	पूर्णाङ्क entries() ध्रुव { प्रत्यागम _entries; }
+	तार्किक रिक्तानि() ध्रुव { प्रत्यागम _entries == 0; }
 
-	void reset()
+	शून्य reset()
 	{
-		for (uint8_t i = 0; i < kSize; i++) {
-			_buffer[i].time_us = 0;
+		प्रति (uint8_t i = 0; i < k_आकार; i++) {
+			बफर[i].time_us = 0;
 		}
 
-		_head = 0;
+		शीर्ष = 0;
 		_entries = 0;
 	}
 
-private:
-	data_type _buffer[SIZE] {};
+गुप्त:
+	दत्त_type बफर[आकार_3] {};
 
-	uint8_t _head{0};
+	uint8_t शीर्ष{0};
 	uint8_t _entries{0};
 };
 
 /**
  * Dynamic-size ring buffer specialization (SIZE == 0).
  */
-template <typename data_type>
-class TimestampedRingBuffer<data_type, 0>
+प्रतिरूपम् <प्रकारनाम दत्त_type>
+वर्ग Timestamped_Ring_बफर<दत्त_type, 0>
 {
-public:
-	explicit TimestampedRingBuffer(size_t size) { allocate(size); }
-	TimestampedRingBuffer() = delete;
-	~TimestampedRingBuffer() { delete[] _buffer; }
+सार्वजनिक:
+	स्पष्ट Timestamped_Ring_बफर(size_t आकार) { allocate(आकार); }
+	Timestamped_Ring_बफर() = विलोपय;
+	~Timestamped_Ring_बफर() { विलोपय[] बफर; }
 
 	// no copy, assignment, move, move assignment
-	TimestampedRingBuffer(const TimestampedRingBuffer &) = delete;
-	TimestampedRingBuffer &operator=(const TimestampedRingBuffer &) = delete;
-	TimestampedRingBuffer(TimestampedRingBuffer &&) = delete;
-	TimestampedRingBuffer &operator=(TimestampedRingBuffer &&) = delete;
+	Timestamped_Ring_बफर(ध्रुव Timestamped_Ring_बफर &) = विलोपय;
+	Timestamped_Ring_बफर &संक्रियकः=(ध्रुव Timestamped_Ring_बफर &) = विलोपय;
+	Timestamped_Ring_बफर(Timestamped_Ring_बफर &&) = विलोपय;
+	Timestamped_Ring_बफर &संक्रियकः=(Timestamped_Ring_बफर &&) = विलोपय;
 
-	bool allocate(size_t size)
+	तार्किक allocate(size_t आकार)
 	{
-		if (valid() && (size == _size)) {
+		यदि (valid() && (आकार == आकार_2)) {
 			// no change
-			return true;
+			प्रत्यागम सत्य;
 		}
 
-		if (size == 0 || size > UINT8_MAX) {
-			return false;
+		यदि (आकार == 0 || आकार > UINT8_MAX) {
+			प्रत्यागम असत्य;
 		}
 
-		delete[] _buffer;
+		विलोपय[] बफर;
 
-		_buffer = new data_type[size] {};
+		बफर = नूतन दत्त_type[आकार] {};
 
-		if (_buffer == nullptr) {
-			return false;
+		यदि (बफर == शून्यसूचकः) {
+			प्रत्यागम असत्य;
 		}
 
-		_size = static_cast<uint8_t>(size);
+		आकार_2 = static_cast<uint8_t>(आकार);
 
 		// new[]{} already zeroed time_us, only reset the indices
-		_head = 0;
-		_tail = 0;
-		_first_write = true;
+		शीर्ष = 0;
+		पुच्छ_2 = 0;
+		_first_write = सत्य;
 
-		return true;
+		प्रत्यागम सत्य;
 	}
 
-	bool valid() const { return (_buffer != nullptr) && (_size > 0); }
+	तार्किक valid() ध्रुव { प्रत्यागम (बफर != शून्यसूचकः) && (आकार_2 > 0); }
 
-	void push(const data_type &sample)
+	शून्य प्रक्षिप(ध्रुव दत्त_type &sample)
 	{
-		uint8_t head_new = _head;
+		uint8_t शीर्ष_new = शीर्ष;
 
-		if (!_first_write) {
-			head_new = next(_head);
+		यदि (!_first_write) {
+			शीर्ष_new = अग्र(शीर्ष);
 		}
 
-		_buffer[head_new] = sample;
-		_head = head_new;
+		बफर[शीर्ष_new] = sample;
+		शीर्ष = शीर्ष_new;
 
 		// move tail if we overwrite it
-		if (_head == _tail && !_first_write) {
-			_tail = next(_tail);
+		यदि (शीर्ष == पुच्छ_2 && !_first_write) {
+			पुच्छ_2 = अग्र(पुच्छ_2);
 
-		} else {
-			_first_write = false;
+		} अन्यथा {
+			_first_write = असत्य;
 		}
 	}
 
-	uint8_t get_length() const { return _size; }
+	uint8_t get_दीर्घता() ध्रुव { प्रत्यागम आकार_2; }
 
-	data_type &operator[](const uint8_t index) { return _buffer[index]; }
+	दत्त_type &संक्रियकः[](ध्रुव uint8_t सूचकांक) { प्रत्यागम बफर[सूचकांक]; }
 
-	const data_type &get_newest() const { return _buffer[_head]; }
-	const data_type &get_oldest() const { return _buffer[_tail]; }
+	ध्रुव दत्त_type &get_newest() ध्रुव { प्रत्यागम बफर[शीर्ष]; }
+	ध्रुव दत्त_type &get_oldest() ध्रुव { प्रत्यागम बफर[पुच्छ_2]; }
 
-	uint8_t get_newest_index() const { return _head; }
-	uint8_t get_oldest_index() const { return _tail; }
+	uint8_t get_newest_सूचकांक() ध्रुव { प्रत्यागम शीर्ष; }
+	uint8_t get_oldest_सूचकांक() ध्रुव { प्रत्यागम पुच्छ_2; }
 
-	uint8_t next(uint8_t i) const { return (_size > 0) ? ((i + 1 >= _size) ? 0 : i + 1) : 0; }
-	uint8_t prev(uint8_t i) const { return (_size > 0) ? ((i == 0) ? (_size - 1) : (i - 1)) : 0; }
+	uint8_t अग्र(uint8_t i) ध्रुव { प्रत्यागम (आकार_2 > 0) ? ((i + 1 >= आकार_2) ? 0 : i + 1) : 0; }
+	uint8_t पूर्व(uint8_t i) ध्रुव { प्रत्यागम (आकार_2 > 0) ? ((i == 0) ? (आकार_2 - 1) : (i - 1)) : 0; }
 
-	bool pop_first_older_than(const uint64_t &timestamp, data_type *sample)
+	तार्किक निष्कासय_first_older_than(ध्रुव uint64_t &timestamp, दत्त_type *sample)
 	{
 		// start looking from newest observation data
-		for (uint8_t i = 0; i < _size; i++) {
-			int index = (_head - i);
-			index = index < 0 ? _size + index : index;
+		प्रति (uint8_t i = 0; i < आकार_2; i++) {
+			पूर्णाङ्क सूचकांक = (शीर्ष - i);
+			सूचकांक = सूचकांक < 0 ? आकार_2 + सूचकांक : सूचकांक;
 
-			if (timestamp >= _buffer[index].time_us && timestamp < _buffer[index].time_us + (uint64_t)1e5) {
-				*sample = _buffer[index];
+			यदि (timestamp >= बफर[सूचकांक].time_us && timestamp < बफर[सूचकांक].time_us + (uint64_t)1e5) {
+				*sample = बफर[सूचकांक];
 
 				// Now we can set the tail to the item which
 				// comes after the one we removed since we don't
 				// want to have any older data in the buffer
-				if (index == _head) {
-					_tail = _head;
-					_first_write = true;
+				यदि (सूचकांक == शीर्ष) {
+					पुच्छ_2 = शीर्ष;
+					_first_write = सत्य;
 
-				} else {
-					_tail = next(static_cast<uint8_t>(index));
+				} अन्यथा {
+					पुच्छ_2 = अग्र(static_cast<uint8_t>(सूचकांक));
 				}
 
-				_buffer[index].time_us = 0;
+				बफर[सूचकांक].time_us = 0;
 
-				return true;
+				प्रत्यागम सत्य;
 			}
 
-			if (index == _tail) {
+			यदि (सूचकांक == पुच्छ_2) {
 				// we have reached the tail and haven't got a
-				// match
-				return false;
+				//मेलनम्
+				प्रत्यागम असत्य;
 			}
 		}
 
-		return false;
+		प्रत्यागम असत्य;
 	}
 
-	int get_used_size() const { return sizeof(*this) + sizeof(data_type) * entries(); }
-	int get_total_size() const { return sizeof(*this) + sizeof(data_type) * _size; }
+	पूर्णाङ्क get_प्रयुक्तम्_आकार() ध्रुव { प्रत्यागम परिमाण(*एतत्) + परिमाण(दत्त_type) * entries(); }
+	पूर्णाङ्क get_योग_आकार() ध्रुव { प्रत्यागम परिमाण(*एतत्) + परिमाण(दत्त_type) * आकार_2; }
 
-	int entries() const
+	पूर्णाङ्क entries() ध्रुव
 	{
-		int count = 0;
+		पूर्णाङ्क गणनम् = 0;
 
-		for (uint8_t i = 0; i < _size; i++) {
-			if (_buffer[i].time_us != 0) {
-				count++;
+		प्रति (uint8_t i = 0; i < आकार_2; i++) {
+			यदि (बफर[i].time_us != 0) {
+				गणनम्++;
 			}
 		}
 
-		return count;
+		प्रत्यागम गणनम्;
 	}
 
-	bool empty() const { return entries() == 0; }
+	तार्किक रिक्तानि() ध्रुव { प्रत्यागम entries() == 0; }
 
-	void reset()
+	शून्य reset()
 	{
-		if (_buffer) {
-			for (uint8_t i = 0; i < _size; i++) {
-				_buffer[i].time_us = 0;
+		यदि (बफर) {
+			प्रति (uint8_t i = 0; i < आकार_2; i++) {
+				बफर[i].time_us = 0;
 			}
 
-			_head = 0;
-			_tail = 0;
-			_first_write = true;
+			शीर्ष = 0;
+			पुच्छ_2 = 0;
+			_first_write = सत्य;
 		}
 	}
 
-private:
-	data_type *_buffer{nullptr};
+गुप्त:
+	दत्त_type *बफर{शून्यसूचकः};
 
-	uint8_t _head{0};
-	uint8_t _tail{0};
-	uint8_t _size{0};
+	uint8_t शीर्ष{0};
+	uint8_t पुच्छ_2{0};
+	uint8_t आकार_2{0};
 
-	bool _first_write{true};
+	तार्किक _first_write{सत्य};
 };

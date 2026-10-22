@@ -31,46 +31,46 @@
  *
  ****************************************************************************/
 
-#pragma once
+#निर्देशः once
 
-#include <uORB/topics/vehicle_status.h>
+#अन्तर्भाव <uORB/topics/vehicle_status.h>
 
-#include <stdint.h>
+#अन्तर्भाव <stdint.h>
 
-namespace mode_util
+नामाकाश बहुलकम्_util
 {
 
 /**
  * @return Bitmask with all valid modes
  */
-static inline uint32_t getValidNavStates(uint32_t mode_not_supported = 0)
+स्थिर अन्तःस्थ uint32_t get_Valid_Nav_अवस्थाः(uint32_t बहुलकम्_not_supported = 0)
 {
-	return ((1u << vehicle_status_s::NAVIGATION_STATE_MANUAL) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_ALTCTL) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_ALTITUDE_CRUISE) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_MANUAL_PARKING) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_POSCTL) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_GUIDED_COURSE) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_AUTO_RTL) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_POSITION_SLOW) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_ACRO) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_TERMINATION) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_OFFBOARD) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_STAB) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_AUTO_LAND) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_DESCEND) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_AUTO_FOLLOW_TARGET) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_AUTO_PRECLAND) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_ORBIT) |
-		(1u << vehicle_status_s::NAVIGATION_STATE_AUTO_VTOL_TAKEOFF)) & ~mode_not_supported;
+	प्रत्यागम ((1u << vehicle_स्थितिः_s::NAVIGATION_STATE_MANUAL) |
+		(1u << vehicle_स्थितिः_s::NAVIGATION_STATE_ALTCTL) |
+		(1u << vehicle_स्थितिः_s::NAVIGATION_STATE_ALTITUDE_CRUISE) |
+		(1u << vehicle_स्थितिः_s::NAVIGATION_STATE_MANUAL_PARKING) |
+		(1u << vehicle_स्थितिः_s::NAVIGATION_STATE_POSCTL) |
+		(1u << vehicle_स्थितिः_s::NAVIGATION_STATE_AUTO_MISSION) |
+		(1u << vehicle_स्थितिः_s::NAVIGATION_STATE_AUTO_LOITER) |
+		(1u << vehicle_स्थितिः_s::NAVIGATION_STATE_GUIDED_COURSE) |
+		(1u << vehicle_स्थितिः_s::NAVIGATION_STATE_AUTO_RTL) |
+		(1u << vehicle_स्थितिः_s::NAVIGATION_STATE_POSITION_SLOW) |
+		(1u << vehicle_स्थितिः_s::NAVIGATION_STATE_ACRO) |
+		(1u << vehicle_स्थितिः_s::NAVIGATION_STATE_TERMINATION) |
+		(1u << vehicle_स्थितिः_s::NAVIGATION_STATE_OFFBOARD) |
+		(1u << vehicle_स्थितिः_s::NAVIGATION_STATE_STAB) |
+		(1u << vehicle_स्थितिः_s::NAVIGATION_STATE_AUTO_TAKEOFF) |
+		(1u << vehicle_स्थितिः_s::NAVIGATION_STATE_AUTO_LAND) |
+		(1u << vehicle_स्थितिः_s::NAVIGATION_STATE_DESCEND) |
+		(1u << vehicle_स्थितिः_s::NAVIGATION_STATE_AUTO_FOLLOW_TARGET) |
+		(1u << vehicle_स्थितिः_s::NAVIGATION_STATE_AUTO_PRECLAND) |
+		(1u << vehicle_स्थितिः_s::NAVIGATION_STATE_ORBIT) |
+		(1u << vehicle_स्थितिः_s::NAVIGATION_STATE_AUTO_VTOL_TAKEOFF)) & ~बहुलकम्_not_supported;
 
-	static_assert(vehicle_status_s::NAVIGATION_STATE_MAX  == 31, "update valid nav states");
+	static_assert(vehicle_स्थितिः_s::NAVIGATION_STATE_MAX  == 31, "update valid nav states");
 }
 
-inline const char *const nav_state_names[vehicle_status_s::NAVIGATION_STATE_MAX] = {
+अन्तःस्थ ध्रुव वर्ण *ध्रुव nav_state_नामानि[vehicle_स्थितिः_s::NAVIGATION_STATE_MAX] = {
 	"Manual",
 	"Altitude",
 	"Position",
@@ -110,49 +110,49 @@ inline const char *const nav_state_names[vehicle_status_s::NAVIGATION_STATE_MAX]
  * The position control mode is shown as "Cruise" for fixed-wing vehicles (including VTOLs in
  * forward flight, which report VEHICLE_TYPE_FIXED_WING) and as "Position" for all other types.
  */
-static inline const char *nav_state_name(uint8_t nav_state, uint8_t vehicle_type)
+स्थिर अन्तःस्थ ध्रुव वर्ण *nav_state_name(uint8_t nav_state, uint8_t vehicle_type)
 {
-	if (nav_state >= vehicle_status_s::NAVIGATION_STATE_MAX) {
-		return "(unknown)";
+	यदि (nav_state >= vehicle_स्थितिः_s::NAVIGATION_STATE_MAX) {
+		प्रत्यागम "(unknown)";
 	}
 
-	if (nav_state == vehicle_status_s::NAVIGATION_STATE_POSCTL
-	    && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		return "Cruise";
+	यदि (nav_state == vehicle_स्थितिः_s::NAVIGATION_STATE_POSCTL
+	    && vehicle_type == vehicle_स्थितिः_s::VEHICLE_TYPE_FIXED_WING) {
+		प्रत्यागम "Cruise";
 	}
 
-	return nav_state_names[nav_state];
+	प्रत्यागम nav_state_नामानि[nav_state];
 }
 
 /**
  * @return returns true for advanced modes
  */
-static inline bool isAdvanced(uint8_t nav_state)
+स्थिर अन्तःस्थ तार्किक isAdvanced(uint8_t nav_state)
 {
-	switch (nav_state) {
-	case vehicle_status_s::NAVIGATION_STATE_ALTCTL: return false;
+	विकल्प (nav_state) {
+	पक्ष vehicle_स्थितिः_s::NAVIGATION_STATE_ALTCTL: प्रत्यागम असत्य;
 
-	case vehicle_status_s::NAVIGATION_STATE_POSCTL: return false;
+	पक्ष vehicle_स्थितिः_s::NAVIGATION_STATE_POSCTL: प्रत्यागम असत्य;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL1: return false;
+	पक्ष vehicle_स्थितिः_s::NAVIGATION_STATE_EXTERNAL1: प्रत्यागम असत्य;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL2: return false;
+	पक्ष vehicle_स्थितिः_s::NAVIGATION_STATE_EXTERNAL2: प्रत्यागम असत्य;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL3: return false;
+	पक्ष vehicle_स्थितिः_s::NAVIGATION_STATE_EXTERNAL3: प्रत्यागम असत्य;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL4: return false;
+	पक्ष vehicle_स्थितिः_s::NAVIGATION_STATE_EXTERNAL4: प्रत्यागम असत्य;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL5: return false;
+	पक्ष vehicle_स्थितिः_s::NAVIGATION_STATE_EXTERNAL5: प्रत्यागम असत्य;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL6: return false;
+	पक्ष vehicle_स्थितिः_s::NAVIGATION_STATE_EXTERNAL6: प्रत्यागम असत्य;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL7: return false;
+	पक्ष vehicle_स्थितिः_s::NAVIGATION_STATE_EXTERNAL7: प्रत्यागम असत्य;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL8: return false;
+	पक्ष vehicle_स्थितिः_s::NAVIGATION_STATE_EXTERNAL8: प्रत्यागम असत्य;
 
 	}
 
-	return true;
+	प्रत्यागम सत्य;
 }
 
 } // namespace mode_util

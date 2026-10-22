@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include "Barometer.hpp"
+#अन्तर्भाव "Barometer.hpp"
 
-#include "Utilities.hpp"
+#अन्तर्भाव "Utilities.hpp"
 
-#include <lib/drivers/device/Device.hpp>
-#include <lib/parameters/param.h>
+#अन्तर्भाव <lib/drivers/device/Device.hpp>
+#अन्तर्भाव <lib/parameters/param.h>
 
-using namespace matrix;
-using namespace time_literals;
+उपयुज्य नामाकाश matrix;
+उपयुज्य नामाकाश time_literals;
 
-namespace calibration
+नामाकाश calibration
 {
 
 Barometer::Barometer()
@@ -51,22 +51,22 @@ Barometer::Barometer()
 
 Barometer::Barometer(uint32_t device_id)
 {
-	set_device_id(device_id);
+	समुच्चयः_device_id(device_id);
 }
 
-Barometer::Barometer(uint32_t device_id, bool external)
+Barometer::Barometer(uint32_t device_id, तार्किक external)
 {
-	set_device_id(device_id, external);
+	समुच्चयः_device_id(device_id, external);
 }
 
-void Barometer::set_device_id(uint32_t device_id)
+शून्य Barometer::समुच्चयः_device_id(uint32_t device_id)
 {
-	set_device_id(device_id, device::device_is_external(device_id));
+	समुच्चयः_device_id(device_id, device::device_is_external(device_id));
 }
 
-void Barometer::set_device_id(uint32_t device_id, bool external)
+शून्य Barometer::समुच्चयः_device_id(uint32_t device_id, तार्किक external)
 {
-	if (_device_id != device_id || _external != external) {
+	यदि (_device_id != device_id || _external != external) {
 
 		_device_id = device_id;
 		_external = external;
@@ -74,181 +74,181 @@ void Barometer::set_device_id(uint32_t device_id, bool external)
 		Reset();
 
 		ParametersUpdate();
-		SensorCorrectionsUpdate(true);
+		SensorCorrectionsUpdate(सत्य);
 	}
 }
 
-void Barometer::SensorCorrectionsUpdate(bool force)
+शून्य Barometer::SensorCorrectionsUpdate(तार्किक force)
 {
 	// check if the selected sensor has updated
-	if (_sensor_correction_sub.updated() || force) {
+	यदि (_sensor_correction_sub.updated() || force) {
 
 		// valid device id required
-		if (_device_id == 0) {
-			return;
+		यदि (_device_id == 0) {
+			प्रत्यागम;
 		}
 
 		sensor_correction_s corrections;
 
-		if (_sensor_correction_sub.copy(&corrections)) {
+		यदि (_sensor_correction_sub.copy(&corrections)) {
 			// find sensor_corrections index
-			for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
-				if (corrections.baro_device_ids[i] == _device_id) {
-					switch (i) {
-					case 0:
-						_thermal_offset = corrections.baro_offset_0;
-						return;
+			प्रति (पूर्णाङ्क i = 0; i < MAX_SENSOR_गणनम्; i++) {
+				यदि (corrections.baro_device_ids[i] == _device_id) {
+					विकल्प (i) {
+					पक्ष 0:
+						thermal_विस्थापनम् = corrections.baro_विस्थापनम्_0;
+						प्रत्यागम;
 
-					case 1:
-						_thermal_offset = corrections.baro_offset_1;
-						return;
+					पक्ष 1:
+						thermal_विस्थापनम् = corrections.baro_विस्थापनम्_1;
+						प्रत्यागम;
 
-					case 2:
-						_thermal_offset = corrections.baro_offset_2;
-						return;
+					पक्ष 2:
+						thermal_विस्थापनम् = corrections.baro_विस्थापनम्_2;
+						प्रत्यागम;
 
-					case 3:
-						_thermal_offset = corrections.baro_offset_3;
-						return;
+					पक्ष 3:
+						thermal_विस्थापनम् = corrections.baro_विस्थापनम्_3;
+						प्रत्यागम;
 					}
 				}
 			}
 		}
 
 		// zero thermal offset if not found
-		_thermal_offset = 0;
+		thermal_विस्थापनम् = 0;
 	}
 }
 
-bool Barometer::set_offset(const float &offset)
+तार्किक Barometer::समुच्चयः_विस्थापनम्(ध्रुव भिन्न &विस्थापनम्)
 {
-	if (fabsf(_offset - offset) > 0.01f) {
-		if (PX4_ISFINITE(offset)) {
-			_offset = offset;
-			_calibration_count++;
-			return true;
+	यदि (fabsf(विस्थापनम्_2 - विस्थापनम्) > 0.01f) {
+		यदि (PX4_ISFINITE(विस्थापनम्)) {
+			विस्थापनम्_2 = विस्थापनम्;
+			calibration_गणनम्++;
+			प्रत्यागम सत्य;
 		}
 	}
 
-	return false;
+	प्रत्यागम असत्य;
 }
 
-bool Barometer::set_calibration_index(int calibration_index)
+तार्किक Barometer::समुच्चयः_calibration_सूचकांक(पूर्णाङ्क calibration_सूचकांक)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
-		_calibration_index = calibration_index;
-		return true;
+	यदि ((calibration_सूचकांक >= 0) && (calibration_सूचकांक < MAX_SENSOR_गणनम्)) {
+		calibration_सूचकांक_2 = calibration_सूचकांक;
+		प्रत्यागम सत्य;
 	}
 
-	return false;
+	प्रत्यागम असत्य;
 }
 
-void Barometer::ParametersUpdate()
+शून्य Barometer::ParametersUpdate()
 {
-	if (_device_id == 0) {
-		return;
+	यदि (_device_id == 0) {
+		प्रत्यागम;
 	}
 
-	_calibration_index = FindCurrentCalibrationIndex(SensorString(), _device_id);
+	calibration_सूचकांक_2 = Find_Current_Calibration_सूचकांक(SensorString(), _device_id);
 
-	if (_calibration_index == -1) {
+	यदि (calibration_सूचकांक_2 == -1) {
 		// no saved calibration available
 		Reset();
 
-	} else {
-		ParametersLoad();
+	} अन्यथा {
+		Parameters_आरोपय();
 	}
 }
 
-bool Barometer::ParametersLoad()
+तार्किक Barometer::Parameters_आरोपय()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	यदि (calibration_सूचकांक_2 >= 0 && calibration_सूचकांक_2 < MAX_SENSOR_गणनम्) {
 		// CAL_BAROx_PRIO
-		_priority = GetCalibrationParamInt32(SensorString(), "PRIO", _calibration_index);
+		प्राथमिकता_2 = GetCalibrationParamInt32(SensorString(), "PRIO", calibration_सूचकांक_2);
 
-		if ((_priority < 0) || (_priority > 100)) {
+		यदि ((प्राथमिकता_2 < 0) || (प्राथमिकता_2 > 100)) {
 			// reset to default, -1 is the uninitialized parameter value
-			static constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
+			स्थिर constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
 
-			if (_priority != CAL_PRIO_UNINITIALIZED) {
+			यदि (प्राथमिकता_2 != CAL_PRIO_UNINITIALIZED) {
 				PX4_ERR("%s %" PRIu32 " (%" PRId8 ") invalid priority %" PRId32 ", resetting", SensorString(), _device_id,
-					_calibration_index, _priority);
+					calibration_सूचकांक_2, प्राथमिकता_2);
 
-				SetCalibrationParam(SensorString(), "PRIO", _calibration_index, CAL_PRIO_UNINITIALIZED);
+				समुच्चयः_Calibration_Param(SensorString(), "PRIO", calibration_सूचकांक_2, CAL_PRIO_UNINITIALIZED);
 			}
 
-			_priority = _external ? DEFAULT_EXTERNAL_PRIORITY : DEFAULT_PRIORITY;
+			प्राथमिकता_2 = _external ? DEFAULT_EXTERNAL_प्राथमिकता : DEFAULT_प्राथमिकता;
 		}
 
 		// CAL_BAROx_OFF
-		set_offset(GetCalibrationParamFloat(SensorString(), "OFF", _calibration_index));
+		समुच्चयः_विस्थापनम्(GetCalibrationParamFloat(SensorString(), "OFF", calibration_सूचकांक_2));
 
-		return true;
+		प्रत्यागम सत्य;
 	}
 
-	return false;
+	प्रत्यागम असत्य;
 }
 
-void Barometer::Reset()
+शून्य Barometer::Reset()
 {
-	_offset = 0;
+	विस्थापनम्_2 = 0;
 
-	_thermal_offset = 0;
+	thermal_विस्थापनम् = 0;
 
-	_priority = _external ? DEFAULT_EXTERNAL_PRIORITY : DEFAULT_PRIORITY;
+	प्राथमिकता_2 = _external ? DEFAULT_EXTERNAL_प्राथमिकता : DEFAULT_प्राथमिकता;
 
-	_calibration_index = -1;
+	calibration_सूचकांक_2 = -1;
 
-	_calibration_count = 0;
+	calibration_गणनम् = 0;
 }
 
-bool Barometer::ParametersSave(int desired_calibration_index, bool force)
+तार्किक Barometer::ParametersSave(पूर्णाङ्क desired_calibration_सूचकांक, तार्किक force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
-		_calibration_index = desired_calibration_index;
+	यदि (force && desired_calibration_सूचकांक >= 0 && desired_calibration_सूचकांक < MAX_SENSOR_गणनम्) {
+		calibration_सूचकांक_2 = desired_calibration_सूचकांक;
 
-	} else if (!force || (_calibration_index < 0)
-		   || (desired_calibration_index != -1 && desired_calibration_index != _calibration_index)) {
+	} अन्यथा यदि (!force || (calibration_सूचकांक_2 < 0)
+		   || (desired_calibration_सूचकांक != -1 && desired_calibration_सूचकांक != calibration_सूचकांक_2)) {
 
 		// ensure we have a valid calibration slot (matching existing or first available slot)
-		int8_t calibration_index_prev = _calibration_index;
-		_calibration_index = FindAvailableCalibrationIndex(SensorString(), _device_id, desired_calibration_index);
+		int8_t calibration_सूचकांक_पूर्व = calibration_सूचकांक_2;
+		calibration_सूचकांक_2 = Find_उपलब्धम्_Calibration_सूचकांक(SensorString(), _device_id, desired_calibration_सूचकांक);
 
-		if (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
+		यदि (calibration_सूचकांक_पूर्व >= 0 && (calibration_सूचकांक_पूर्व != calibration_सूचकांक_2)) {
 			PX4_WARN("%s %" PRIu32 " calibration index changed %" PRIi8 " -> %" PRIi8, SensorString(), _device_id,
-				 calibration_index_prev, _calibration_index);
+				 calibration_सूचकांक_पूर्व, calibration_सूचकांक_2);
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	यदि (calibration_सूचकांक_2 >= 0 && calibration_सूचकांक_2 < MAX_SENSOR_गणनम्) {
 		// save calibration
-		bool success = true;
-		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
-		success &= SetCalibrationParam(SensorString(), "PRIO", _calibration_index, _priority);
-		success &= SetCalibrationParam(SensorString(), "OFF", _calibration_index, _offset);
+		तार्किक success = सत्य;
+		success &= समुच्चयः_Calibration_Param(SensorString(), "ID", calibration_सूचकांक_2, _device_id);
+		success &= समुच्चयः_Calibration_Param(SensorString(), "PRIO", calibration_सूचकांक_2, प्राथमिकता_2);
+		success &= समुच्चयः_Calibration_Param(SensorString(), "OFF", calibration_सूचकांक_2, विस्थापनम्_2);
 
-		return success;
+		प्रत्यागम success;
 	}
 
-	return false;
+	प्रत्यागम असत्य;
 }
 
-void Barometer::PrintStatus()
+शून्य Barometer::Print_स्थितिः()
 {
-	if (external()) {
+	यदि (external()) {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: %05.3f, Ext\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset);
+			     (द्विगुण)विस्थापनम्_2);
 
-	} else {
+	} अन्यथा {
 		PX4_INFO_RAW("%s %" PRIu32 " EN: %d, offset: %05.3f, Internal\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset);
+			     (द्विगुण)विस्थापनम्_2);
 	}
 
-	if (fabsf(_thermal_offset) > 0.f) {
-		PX4_INFO_RAW("%s %" PRIu32 " temperature offset: %.4f\n", SensorString(), _device_id, (double)_thermal_offset);
+	यदि (fabsf(thermal_विस्थापनम्) > 0.f) {
+		PX4_INFO_RAW("%s %" PRIu32 " temperature offset: %.4f\n", SensorString(), _device_id, (द्विगुण)thermal_विस्थापनम्);
 	}
 }
 

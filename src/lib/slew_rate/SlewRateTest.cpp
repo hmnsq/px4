@@ -31,42 +31,42 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include "SlewRate.hpp"
+#अन्तर्भाव <gtest/gtest.h>
+#अन्तर्भाव "SlewRate.hpp"
 
-TEST(SlewRateTest, SlewUpLimited)
+TEST(Slew_दरः_Test, Slew_ऊर्ध्वम्_Limited)
 {
-	SlewRate<float> _slew_rate;
-	_slew_rate.setSlewRate(.1f);
-	_slew_rate.setForcedValue(-5.5f);
+	Slew_दरः<भिन्न> slew_दरः_2;
+	slew_दरः_2.समुच्चयः_Slew_दरः(.1f);
+	slew_दरः_2.समुच्चयः_Forced_मानम्(-5.5f);
 
-	for (int i = 1; i <= 10; i++) {
-		EXPECT_FLOAT_EQ(_slew_rate.update(20.f, .2f), -5.5f + i * .02f);
+	प्रति (पूर्णाङ्क i = 1; i <= 10; i++) {
+		EXPECT_FLOAT_EQ(slew_दरः_2.update(20.f, .2f), -5.5f + i * .02f);
 	}
 }
 
-TEST(SlewRateTest, SlewDownLimited)
+TEST(Slew_दरः_Test, Slew_अधस्तात्_Limited)
 {
-	SlewRate<float> _slew_rate;
-	_slew_rate.setSlewRate(1.1f);
-	_slew_rate.setForcedValue(17.3f);
+	Slew_दरः<भिन्न> slew_दरः_2;
+	slew_दरः_2.समुच्चयः_Slew_दरः(1.1f);
+	slew_दरः_2.समुच्चयः_Forced_मानम्(17.3f);
 
-	for (int i = 1; i <= 10; i++) {
-		EXPECT_FLOAT_EQ(_slew_rate.update(-50.f, .3f), 17.3f - i * .33f);
+	प्रति (पूर्णाङ्क i = 1; i <= 10; i++) {
+		EXPECT_FLOAT_EQ(slew_दरः_2.update(-50.f, .3f), 17.3f - i * .33f);
 	}
 }
 
-TEST(SlewRateTest, ReachValueSlewed)
+TEST(Slew_दरः_Test, प्रापणम्_मानम्_Slewed)
 {
-	SlewRate<float> _slew_rate;
-	_slew_rate.setSlewRate(.2f);
-	_slew_rate.setForcedValue(8.f);
+	Slew_दरः<भिन्न> slew_दरः_2;
+	slew_दरः_2.समुच्चयः_Slew_दरः(.2f);
+	slew_दरः_2.समुच्चयः_Forced_मानम्(8.f);
 
-	for (int i = 1; i <= 10; i++) {
-		EXPECT_FLOAT_EQ(_slew_rate.update(10.f, 1.f), 8.f + i * .2f);
+	प्रति (पूर्णाङ्क i = 1; i <= 10; i++) {
+		EXPECT_FLOAT_EQ(slew_दरः_2.update(10.f, 1.f), 8.f + i * .2f);
 	}
 
-	for (int i = 1; i <= 10; i++) {
-		EXPECT_FLOAT_EQ(_slew_rate.update(10.f, 1.f), 10.f);
+	प्रति (पूर्णाङ्क i = 1; i <= 10; i++) {
+		EXPECT_FLOAT_EQ(slew_दरः_2.update(10.f, 1.f), 10.f);
 	}
 }

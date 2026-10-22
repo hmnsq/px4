@@ -39,16 +39,16 @@
  * @author Matthias Grob <maetugr@gmail.com>
  */
 
-#pragma once
+#निर्देशः once
 
-#include "SlewRate.hpp"
+#अन्तर्भाव "SlewRate.hpp"
 
-template<typename Type>
-class SlewRateYaw : public SlewRate<Type>
+प्रतिरूपम्<प्रकारनाम Type>
+वर्ग Slew_दरः_Yaw : सार्वजनिक Slew_दरः<Type>
 {
-public:
-	SlewRateYaw() = default;
-	~SlewRateYaw() = default;
+सार्वजनिक:
+	Slew_दरः_Yaw() = स्वभाव;
+	~Slew_दरः_Yaw() = स्वभाव;
 
 	/**
 	 * Update slewrate with yaw wrapping [-pi,pi]
@@ -56,9 +56,9 @@ public:
 	 * @param deltatime time in seconds since last update
 	 * @return actual value that complies with the slew rate
 	 */
-	Type update(const Type new_value, const float deltatime)
+	Type update(ध्रुव Type new_मानम्, ध्रुव भिन्न deltatime)
 	{
-		const Type d_wrapped = matrix::wrap_pi(new_value - this->_value);
-		return matrix::wrap_pi(SlewRate<Type>::update(this->_value + d_wrapped, deltatime));
+		ध्रुव Type d_wrapped = matrix::wrap_pi(new_मानम् - एतत्->मानम्_2);
+		प्रत्यागम matrix::wrap_pi(Slew_दरः<Type>::update(एतत्->मानम्_2 + d_wrapped, deltatime));
 	}
 };

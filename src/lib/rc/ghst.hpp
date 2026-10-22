@@ -40,76 +40,76 @@
  * @author Juraj Ciberlin <jciberlin1@gmail.com>
  */
 
-#pragma once
+#निर्देशः once
 
-#include <stdint.h>
-#include <px4_platform_common/defines.h>
+#अन्तर्भाव <stdint.h>
+#अन्तर्भाव <px4_platform_common/defines.h>
 
 __BEGIN_DECLS
 
-#define GHST_BAUDRATE		(420000u)
-#define GHST_PAYLOAD_MAX_SIZE	(14u)
+#परिभाषय GHST_BAUDRATE		(420000u)
+#परिभाषय GHST_PAYLOAD_MAX_आकार	(14u)
 
-enum class ghstAddress {
-	rxAddress = 0x89	// Rx address
+गणना वर्ग ghst_स्थानाङ्कः {
+	rx_स्थानाङ्कः = 0x89	// Rx address
 };
 
-enum class ghstFrameType {
+गणना वर्ग ghstFrameType {
 	frameTypeFirst	= 0x10,	// first frame type
 	frameType5to8	= 0x10,	// channel 5-8
 	frameType9to12	= 0x11,	// channel 9-12
 	frameType13to16 = 0x12,	// channel 13-16
 	frameTypeRssi	= 0x13,	// RSSI frame type, contains LQ, RSSI, RF mode, Tx power
-	frameTypeLast	= 0x1f	// last frame type
+	frame_Type_चरमः	= 0x1f	// last frame type
 };
 
-enum class ghstTelemetryType {
+गणना वर्ग ghstTelemetryType {
 	batteryPack = 0x23,	// battery pack status frame type
 	gpsPrimary = 0x25,	// GPS primary data (lat/long/alt)
 	gpsSecondary = 0x26	// GPS secondary data (course, dist, flags)
 };
 
-struct ghst_frame_header_t {
-	uint8_t device_address;			// device address
-	uint8_t length;				// length
+संरचना ghst_frame_शीर्षकम्_t {
+	uint8_t device_स्थानाङ्कः;			// device address
+	uint8_t दीर्घता_2;				//दीर्घता
 };
 
-struct ghst_frame_t {
-	ghst_frame_header_t header;			// header
+संरचना ghst_frame_t {
+	ghst_frame_शीर्षकम्_t शीर्षकम्;			//शीर्षकम्
 	uint8_t type;					// frame type
-	uint8_t payload[GHST_PAYLOAD_MAX_SIZE + 1U];	// payload data including 1 byte CRC at the end
+	uint8_t payload[GHST_PAYLOAD_MAX_आकार + 1U];	// payload data including 1 byte CRC at the end
 };
 
 // Channel data (1-4)
-typedef struct {
-	unsigned int chan1: 12;
-	unsigned int chan2: 12;
-	unsigned int chan3: 12;
-	unsigned int chan4: 12;
-} __attribute__((__packed__)) ghstChannelData_t;
+प्रकारनिर्देश संरचना {
+	अचिह्नित पूर्णाङ्क chan1: 12;
+	अचिह्नित पूर्णाङ्क chan2: 12;
+	अचिह्नित पूर्णाङ्क chan3: 12;
+	अचिह्नित पूर्णाङ्क chan4: 12;
+} __attribute__((__packed__)) ghst_Channel_दत्त_t;
 
 // Payload data
-typedef struct {
-	ghstChannelData_t chan1to4;
-	unsigned int chanA: 8;
-	unsigned int chanB: 8;
-	unsigned int chanC: 8;
-	unsigned int chanD: 8;
-} __attribute__((__packed__)) ghstPayloadData_t;
+प्रकारनिर्देश संरचना {
+	ghst_Channel_दत्त_t chan1to4;
+	अचिह्नित पूर्णाङ्क chanA: 8;
+	अचिह्नित पूर्णाङ्क chanB: 8;
+	अचिह्नित पूर्णाङ्क chanC: 8;
+	अचिह्नित पूर्णाङ्क chanD: 8;
+} __attribute__((__packed__)) ghst_Payload_दत्त_t;
 
 // Payload data - RSSI frame type
-typedef struct {
-	ghstChannelData_t chan1to4;
-	unsigned int lq: 8;		// link quality
-	unsigned int rssidBm: 8;	// RSSI [dBm]
-	unsigned int rfMode: 8;		// RF mode
-	int txPowerdBm: 8;		// Tx power [dBm]
+प्रकारनिर्देश संरचना {
+	ghst_Channel_दत्त_t chan1to4;
+	अचिह्नित पूर्णाङ्क lq: 8;		// link quality
+	अचिह्नित पूर्णाङ्क rssidBm: 8;	// RSSI [dBm]
+	अचिह्नित पूर्णाङ्क rf_बहुलकम्: 8;		// RF mode
+	पूर्णाङ्क txPowerdBm: 8;		// Tx power [dBm]
 } __attribute__((__packed__)) ghstPayloadRssi_t;
 
 // Link statistics for internal transport
-typedef struct {
+प्रकारनिर्देश संरचना {
 	int8_t rssi_pct;
-	float rssi_dbm;
+	भिन्न rssi_dbm;
 	int8_t link_quality;
 } ghstLinkStatistics_t;
 
@@ -118,7 +118,7 @@ typedef struct {
  * @param uart_fd UART file descriptor
  * @return 0 on success, -errno otherwise
  */
-__EXPORT int ghst_config(int uart_fd);
+__EXPORT पूर्णाङ्क ghst_config(पूर्णाङ्क uart_fd);
 
 
 /**
@@ -133,8 +133,8 @@ __EXPORT int ghst_config(int uart_fd);
  * @param max_channels maximum length of values
  * @return true if channels successfully decoded
  */
-__EXPORT bool ghst_parse(const uint64_t now, const uint8_t *frame, unsigned len, uint16_t *values,
-			 ghstLinkStatistics_t *link_stats, uint16_t *num_values, uint16_t max_channels);
+__EXPORT तार्किक ghst_parse(ध्रुव uint64_t now, ध्रुव uint8_t *frame, अचिह्नित len, uint16_t *मानानि_2,
+			 ghstLinkStatistics_t *link_stats, uint16_t *अङ्कः_मानानि, uint16_t max_channels);
 
 
 /**
@@ -145,8 +145,8 @@ __EXPORT bool ghst_parse(const uint64_t now, const uint8_t *frame, unsigned len,
  * @param fuel_in_10mAh Fuel [10 mAh]
  * @return true on success
  */
-__EXPORT bool ghst_send_telemetry_battery_status(int uart_fd, uint16_t voltage_in_10mV,
-		uint16_t current_in_10mA, uint16_t fuel_in_10mAh);
+__EXPORT तार्किक ghst_send_telemetry_battery_स्थितिः(पूर्णाङ्क uart_fd, uint16_t voltage_अन्तर्_10m_V,
+		uint16_t current_अन्तर्_10m_A, uint16_t fuel_अन्तर्_10m_Ah);
 
 /**
  * Send primary GPS information
@@ -156,7 +156,7 @@ __EXPORT bool ghst_send_telemetry_battery_status(int uart_fd, uint16_t voltage_i
  * @param altitude GPS altitude [1m]
  * @return true on success
  */
-__EXPORT bool ghst_send_telemetry_gps1_status(int uart_fd, uint32_t latitude, uint32_t longitude, uint16_t altitude);
+__EXPORT तार्किक ghst_send_telemetry_gps1_स्थितिः(पूर्णाङ्क uart_fd, uint32_t latitude, uint32_t longitude, uint16_t altitude);
 
 /**
  * Send secondary GPS information
@@ -169,6 +169,6 @@ __EXPORT bool ghst_send_telemetry_gps1_status(int uart_fd, uint32_t latitude, ui
  * @param flags GPS Flags
  * @return true on success
  */
-__EXPORT bool ghst_send_telemetry_gps2_status(int uart_fd, uint16_t ground_speed, uint16_t ground_course,
-		uint8_t num_sats, uint16_t home_dist, uint16_t home_dir, uint8_t flags);
+__EXPORT तार्किक ghst_send_telemetry_gps2_स्थितिः(पूर्णाङ्क uart_fd, uint16_t ground_जवः, uint16_t ground_course,
+		uint8_t अङ्कः_sats, uint16_t home_dist, uint16_t home_dir, uint8_t flags);
 __END_DECLS

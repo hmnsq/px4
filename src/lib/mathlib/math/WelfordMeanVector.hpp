@@ -37,124 +37,124 @@
  * Welford's online algorithm for computing mean and covariance of a vector.
  */
 
-#pragma once
+#निर्देशः once
 
-namespace math
+नामाकाश math
 {
 
-template <typename Type, size_t N>
-class WelfordMeanVector
+प्रतिरूपम् <प्रकारनाम Type, size_t N>
+वर्ग Welford_माध्यम्_सदिशम्
 {
-public:
+सार्वजनिक:
 	// For a new value, compute the new count, new mean, the new M2.
-	bool update(const matrix::Vector<Type, N> &new_value)
+	तार्किक update(ध्रुव matrix::सदिशम्<Type, N> &new_मानम्)
 	{
-		if (_count == 0) {
+		यदि (गणनम्_3 == 0) {
 			reset();
-			_count = 1;
-			_mean = new_value;
-			return false;
+			गणनम्_3 = 1;
+			माध्यम्_2 = new_मानम्;
+			प्रत्यागम असत्य;
 
-		} else if (_count == UINT16_MAX) {
+		} अन्यथा यदि (गणनम्_3 == UINT16_MAX) {
 			// count overflow
 			//  reset count, but maintain mean and variance
-			_M2 = _M2 / _count;
+			_M2 = _M2 / गणनम्_3;
 			_M2_accum.zero();
 
-			_count = 1;
+			गणनम्_3 = 1;
 
-		} else {
-			_count++;
+		} अन्यथा {
+			गणनम्_3++;
 		}
 
-		// mean
+		//माध्यम्
 		//  accumulates the mean of the entire dataset
 		//  use Kahan summation because delta can be very small compared to the mean
-		const matrix::Vector<Type, N> delta{new_value - _mean};
+		ध्रुव matrix::सदिशम्<Type, N> delta{new_मानम् - माध्यम्_2};
 		{
-			const matrix::Vector<Type, N> y = (delta / _count) - _mean_accum;
-			const matrix::Vector<Type, N> t = _mean + y;
-			_mean_accum = (t - _mean) - y;
-			_mean = t;
+			ध्रुव matrix::सदिशम्<Type, N> y = (delta / गणनम्_3) - माध्यम्_accum;
+			ध्रुव matrix::सदिशम्<Type, N> t = माध्यम्_2 + y;
+			माध्यम्_accum = (t - माध्यम्_2) - y;
+			माध्यम्_2 = t;
 		}
 
-		if (!_mean.isAllFinite()) {
+		यदि (!माध्यम्_2.isAllFinite()) {
 			reset();
-			return false;
+			प्रत्यागम असत्य;
 		}
 
 		// covariance
 		//  Kahan summation (upper triangle only)
 		{
 			// eg C(x,y) += dx * (y - mean_y)
-			matrix::SquareMatrix<Type, N> m2_change{};
+			matrix::वर्गफलम्_Matrix<Type, N> m2_change{};
 
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r; c < N; c++) {
-					m2_change(r, c) = delta(r) * (new_value(c) - _mean(c));
+			प्रति (size_t r = 0; r < N; r++) {
+				प्रति (size_t c = r; c < N; c++) {
+					m2_change(r, c) = delta(r) * (new_मानम्(c) - माध्यम्_2(c));
 				}
 			}
 
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r; c < N; c++) {
+			प्रति (size_t r = 0; r < N; r++) {
+				प्रति (size_t c = r; c < N; c++) {
 
-					const Type y = m2_change(r, c) - _M2_accum(r, c);
-					const Type t = _M2(r, c) + y;
+					ध्रुव Type y = m2_change(r, c) - _M2_accum(r, c);
+					ध्रुव Type t = _M2(r, c) + y;
 					_M2_accum(r, c) = (t - _M2(r, c)) - y;
 
 					_M2(r, c) = t;
 				}
 
 				// protect against floating point precision causing negative variances
-				if (_M2(r, r) < 0) {
+				यदि (_M2(r, r) < 0) {
 					_M2(r, r) = 0;
 				}
 			}
 
 			// make symmetric
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r + 1; c < N; c++) {
+			प्रति (size_t r = 0; r < N; r++) {
+				प्रति (size_t c = r + 1; c < N; c++) {
 					_M2(c, r) = _M2(r, c);
 				}
 			}
 		}
 
-		if (!_M2.isAllFinite()) {
+		यदि (!_M2.isAllFinite()) {
 			reset();
-			return false;
+			प्रत्यागम असत्य;
 		}
 
-		return valid();
+		प्रत्यागम valid();
 	}
 
-	bool valid() const { return _count > 2; }
-	auto count() const { return _count; }
+	तार्किक valid() ध्रुव { प्रत्यागम गणनम्_3 > 2; }
+	स्वचालित गणनम्() ध्रुव { प्रत्यागम गणनम्_3; }
 
-	void reset()
+	शून्य reset()
 	{
-		_count = 0;
-		_mean.zero();
+		गणनम्_3 = 0;
+		माध्यम्_2.zero();
 		_M2.zero();
 
-		_mean_accum.zero();
+		माध्यम्_accum.zero();
 		_M2_accum.zero();
 	}
 
-	matrix::Vector<Type, N> mean() const { return _mean; }
-	matrix::Vector<Type, N> variance() const { return _M2.diag() / (_count - 1); }
-	matrix::SquareMatrix<Type, N> covariance() const { return _M2 / (_count - 1); }
+	matrix::सदिशम्<Type, N> माध्यम्() ध्रुव { प्रत्यागम माध्यम्_2; }
+	matrix::सदिशम्<Type, N> variance() ध्रुव { प्रत्यागम _M2.diag() / (गणनम्_3 - 1); }
+	matrix::वर्गफलम्_Matrix<Type, N> covariance() ध्रुव { प्रत्यागम _M2 / (गणनम्_3 - 1); }
 
-	Type covariance(int x, int y) const { return _M2(x, y) / (_count - 1); }
+	Type covariance(पूर्णाङ्क x, पूर्णाङ्क y) ध्रुव { प्रत्यागम _M2(x, y) / (गणनम्_3 - 1); }
 
-private:
+गुप्त:
 
-	matrix::Vector<Type, N> _mean{};
-	matrix::Vector<Type, N> _mean_accum{};  ///< kahan summation algorithm accumulator for mean
+	matrix::सदिशम्<Type, N> माध्यम्_2{};
+	matrix::सदिशम्<Type, N> माध्यम्_accum{};  ///< kahan summation algorithm accumulator for mean
 
-	matrix::SquareMatrix<Type, N> _M2{};
-	matrix::SquareMatrix<Type, N> _M2_accum{};    ///< kahan summation algorithm accumulator for M2
+	matrix::वर्गफलम्_Matrix<Type, N> _M2{};
+	matrix::वर्गफलम्_Matrix<Type, N> _M2_accum{};    ///< kahan summation algorithm accumulator for M2
 
-	uint16_t _count{0};
+	uint16_t गणनम्_3{0};
 };
 
 } // namespace math

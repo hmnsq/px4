@@ -31,51 +31,51 @@
  *
  ****************************************************************************/
 
-#pragma once
+#निर्देशः once
 
-#include <gtest/gtest.h>
-#include "correction_framer.h"
-#include <vector>
-#include <cstring>
-#include <numeric>
-#include <random>
+#अन्तर्भाव <gtest/gtest.h>
+#अन्तर्भाव "correction_framer.h"
+#अन्तर्भाव <vector>
+#अन्तर्भाव <cstring>
+#अन्तर्भाव <numeric>
+#अन्तर्भाव <random>
 
-using namespace gnss;
+उपयुज्य नामाकाश gnss;
 
-class RtcmTest : public ::testing::Test
+वर्ग RtcmTest : सार्वजनिक ::testing::Test
 {
-protected:
+रक्षित:
 	CorrectionFramer parser;
-	GpsRtcmMessageAssembler gps_rtcm_assembler;
+	Gps_Rtcm_सन्देशः_Assembler gps_rtcm_assembler;
 
-	uint8_t buildGpsRtcmFlags(bool fragmented, uint8_t fragment_id = 0, uint8_t sequence_id = 0)
+	uint8_t buildGpsRtcmFlags(तार्किक fragmented, uint8_t fragment_id = 0, uint8_t sequence_id = 0)
 	{
 		uint8_t flags = fragmented ? GPS_RTCM_FLAG_FRAGMENTED : 0;
-		flags |= (fragment_id & GPS_RTCM_FLAG_FRAGMENT_ID_MASK) << GPS_RTCM_FLAG_FRAGMENT_ID_SHIFT;
-		flags |= (sequence_id & GPS_RTCM_FLAG_SEQUENCE_ID_MASK) << GPS_RTCM_FLAG_SEQUENCE_ID_SHIFT;
-		return flags;
+		flags |= (fragment_id & GPS_RTCM_FLAG_FRAGMENT_ID_आवरणम्) << GPS_RTCM_FLAG_FRAGMENT_ID_सरणम्;
+		flags |= (sequence_id & GPS_RTCM_FLAG_SEQUENCE_ID_आवरणम्) << GPS_RTCM_FLAG_SEQUENCE_ID_सरणम्;
+		प्रत्यागम flags;
 	}
 
 	// Helper to build a valid RTCM3 frame with proper CRC
-	std::vector<uint8_t> buildValidFrame(uint16_t msg_type, const std::vector<uint8_t> &payload_data)
+	std::सदिशम्_2<uint8_t> buildValidFrame(uint16_t सन्देशः_type_2, ध्रुव std::सदिशम्_2<uint8_t> &payload_दत्त)
 	{
 		// Payload = 12-bit message type + rest of payload_data
 		// Message type is stored in first 12 bits of payload
-		std::vector<uint8_t> payload;
-		payload.push_back((msg_type >> 4) & 0xFF);
-		payload.push_back(((msg_type & 0x0F) << 4) | (payload_data.empty() ? 0 : (payload_data[0] >> 4)));
+		std::सदिशम्_2<uint8_t> payload;
+		payload.push_back((सन्देशः_type_2 >> 4) & 0xFF);
+		payload.push_back(((सन्देशः_type_2 & 0x0F) << 4) | (payload_दत्त.रिक्तानि() ? 0 : (payload_दत्त[0] >> 4)));
 
-		for (size_t i = 0; i < payload_data.size(); i++) {
-			uint8_t current = (payload_data[i] << 4) & 0xF0;
+		प्रति (size_t i = 0; i < payload_दत्त.आकार(); i++) {
+			uint8_t current = (payload_दत्त[i] << 4) & 0xF0;
 
-			if (i + 1 < payload_data.size()) {
-				current |= (payload_data[i + 1] >> 4) & 0x0F;
+			यदि (i + 1 < payload_दत्त.आकार()) {
+				current |= (payload_दत्त[i + 1] >> 4) & 0x0F;
 			}
 
 			payload.push_back(current);
 		}
 
-		return buildRawFrame(payload);
+		प्रत्यागम buildRawFrame(payload);
 	}
 
 	// Helper to build a frame with raw payload bytes (no message type encoding)
@@ -83,10 +83,10 @@ protected:
 	// Keep this helper out-of-line to avoid a GCC false positive on the
 	// inlined std::vector::push_back.
 	// See https://github.com/PX4/PX4-Autopilot/issues/26875 for details.
-	__attribute__((noinline)) std::vector<uint8_t> buildRawFrame(const std::vector<uint8_t> &payload)
+	__attribute__((noinline)) std::सदिशम्_2<uint8_t> buildRawFrame(ध्रुव std::सदिशम्_2<uint8_t> &payload)
 	{
-		std::vector<uint8_t> frame;
-		size_t payload_len = payload.size();
+		std::सदिशम्_2<uint8_t> frame;
+		size_t payload_len = payload.आकार();
 
 		// Header: preamble + length
 		frame.push_back(RTCM3_PREAMBLE);
@@ -94,23 +94,23 @@ protected:
 		frame.push_back(payload_len & 0xFF);         // Lower 8 bits of length
 
 		// Payload
-		frame.insert(frame.end(), payload.begin(), payload.end());
+		frame.निवेशय(frame.अन्तः_2(), payload.begin(), payload.अन्तः_2());
 
 		// CRC
-		uint32_t crc = rtcm3_crc24q(frame.data(), frame.size());
+		uint32_t crc = rtcm3_crc24q(frame.दत्त(), frame.आकार());
 		frame.push_back((crc >> 16) & 0xFF);
 		frame.push_back((crc >> 8) & 0xFF);
 		frame.push_back(crc & 0xFF);
 
-		return frame;
+		प्रत्यागम frame;
 	}
 
 	// Helper to build a frame with bad CRC
-	std::vector<uint8_t> buildBadCrcFrame(const std::vector<uint8_t> &payload)
+	std::सदिशम्_2<uint8_t> buildBadCrcFrame(ध्रुव std::सदिशम्_2<uint8_t> &payload)
 	{
-		auto frame = buildRawFrame(payload);
+		स्वचालित frame = buildRawFrame(payload);
 		// Corrupt the CRC
-		frame[frame.size() - 1] ^= 0xFF;
-		return frame;
+		frame[frame.आकार() - 1] ^= 0xFF;
+		प्रत्यागम frame;
 	}
 };

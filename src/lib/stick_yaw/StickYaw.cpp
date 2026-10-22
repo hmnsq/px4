@@ -31,108 +31,108 @@
  *
  ****************************************************************************/
 
-#include "StickYaw.hpp"
+#अन्तर्भाव "StickYaw.hpp"
 
-#include <px4_platform_common/defines.h>
+#अन्तर्भाव <px4_platform_common/defines.h>
 
-using matrix::wrap_pi;
+उपयुज्य matrix::wrap_pi;
 
 StickYaw::StickYaw(ModuleParams *parent) :
 	ModuleParams(parent)
 {}
 
-void StickYaw::reset(const float yaw, const float unaided_yaw)
+शून्य StickYaw::reset(ध्रुव भिन्न yaw, ध्रुव भिन्न unaided_yaw)
 {
 	// The filter state outlives deactivation; a reset means there is no stick history to carry over.
 	resetYawspeed();
 
-	if (PX4_ISFINITE(unaided_yaw)) {
+	यदि (PX4_ISFINITE(unaided_yaw)) {
 		_yaw_error_lpf.reset(wrap_pi(yaw - unaided_yaw));
 	}
 }
 
-void StickYaw::ekfResetHandler(const float delta_yaw)
+शून्य StickYaw::ekfResetHandler(ध्रुव भिन्न delta_yaw)
 {
 	_yaw_error_lpf.reset(wrap_pi(_yaw_error_lpf.getState() + delta_yaw));
 	_yaw_error_ref = wrap_pi(_yaw_error_ref + delta_yaw);
 }
 
-void StickYaw::generateYawSetpoint(float &yawspeed_setpoint, float &yaw_setpoint, const float stick_yaw,
-				   const float yaw, const float deltatime, const float unaided_yaw)
+शून्य StickYaw::generateYawSetpoint(भिन्न &yawspeed_setpoint, भिन्न &yaw_setpoint, ध्रुव भिन्न stick_yaw,
+				   ध्रुव भिन्न yaw, ध्रुव भिन्न deltatime, ध्रुव भिन्न unaided_yaw)
 {
-	const float yaw_correction_prev = _yaw_correction;
-	const bool reset_setpoint = updateYawCorrection(yaw, unaided_yaw, deltatime);
+	ध्रुव भिन्न yaw_correction_पूर्व = _yaw_correction;
+	ध्रुव तार्किक reset_setpoint = updateYawCorrection(yaw, unaided_yaw, deltatime);
 
-	if (reset_setpoint) {
+	यदि (reset_setpoint) {
 		yaw_setpoint = NAN;
 	}
 
-	_yawspeed_filter.setParameters(deltatime, _param_mpc_man_y_tau.get());
-	const float yawspeed_scale = math::min(math::radians(_param_mpc_man_y_max.get()), _yawspeed_constraint);
+	_yawspeed_filter.समुच्चयः_Parameters(deltatime, _param_mpc_man_y_tau.get());
+	ध्रुव भिन्न yawspeed_scale = math::min(math::radians(_param_mpc_man_y_max.get()), _yawspeed_constraint);
 	yawspeed_setpoint = _yawspeed_filter.update(stick_yaw * yawspeed_scale);
-	yaw_setpoint = updateYawLock(yaw, yawspeed_setpoint, yaw_setpoint, yaw_correction_prev);
+	yaw_setpoint = update_Yaw_तालकम्(yaw, yawspeed_setpoint, yaw_setpoint, yaw_correction_पूर्व);
 }
 
-bool StickYaw::updateYawCorrection(const float yaw, const float unaided_yaw, const float deltatime)
+तार्किक StickYaw::updateYawCorrection(ध्रुव भिन्न yaw, ध्रुव भिन्न unaided_yaw, ध्रुव भिन्न deltatime)
 {
-	if (!PX4_ISFINITE(unaided_yaw)) {
-		_unaided_yaw_was_invalid = true;
+	यदि (!PX4_ISFINITE(unaided_yaw)) {
+		_unaided_yaw_was_invalid = सत्य;
 		// If unaided yaw is not available we leave yaw_correction_ unchanged
 		// Meaning yaw_setpoint - yaw_correction_prev + _yaw_correction = yaw_setpoint
-		return false;
+		प्रत्यागम असत्य;
 	}
 
 	// Detect the convergence phase of the yaw estimate by monitoring its relative
 	// distance from an unaided yaw source.
-	const float yaw_error = wrap_pi(yaw - unaided_yaw);
+	ध्रुव भिन्न yaw_error = wrap_pi(yaw - unaided_yaw);
 
-	if (_unaided_yaw_was_invalid) {
-		_unaided_yaw_was_invalid = false;
+	यदि (_unaided_yaw_was_invalid) {
+		_unaided_yaw_was_invalid = असत्य;
 		_yaw_error_lpf.reset(yaw_error);
 		_yaw_error_ref = yaw_error;
 		_yaw_correction = 0.f;
-		_yaw_estimate_converging = false;
-		return true;
+		_yaw_estimate_converging = असत्य;
+		प्रत्यागम सत्य;
 	}
 
 	// Run it through a high-pass filter to detect transients
-	const float yaw_error_hpf = wrap_pi(yaw_error - _yaw_error_lpf.getState());
+	ध्रुव भिन्न yaw_error_hpf = wrap_pi(yaw_error - _yaw_error_lpf.getState());
 	_yaw_error_lpf.update(yaw_error, deltatime);
 
-	const bool was_converging = _yaw_estimate_converging;
-	_yaw_estimate_converging = fabsf(yaw_error_hpf) > _kYawErrorChangeThreshold;
+	ध्रुव तार्किक was_converging = _yaw_estimate_converging;
+	_yaw_estimate_converging = fabsf(yaw_error_hpf) > k_Yaw_Error_Change_देहली;
 
-	bool reset_setpoint = false;
+	तार्किक reset_setpoint = असत्य;
 
-	if (!_yaw_estimate_converging) {
+	यदि (!_yaw_estimate_converging) {
 		_yaw_error_ref = yaw_error;
 
-		if (was_converging) {
+		यदि (was_converging) {
 			// Force a reset of the locking mechanism
-			reset_setpoint = true;
+			reset_setpoint = सत्य;
 		}
 	}
 
 	_yaw_correction = wrap_pi(yaw_error - _yaw_error_ref);
 
-	return reset_setpoint;
+	प्रत्यागम reset_setpoint;
 }
 
-float StickYaw::updateYawLock(const float yaw, const float yawspeed_setpoint, const float yaw_setpoint,
-			      const float yaw_correction_prev) const
+भिन्न StickYaw::update_Yaw_तालकम्(ध्रुव भिन्न yaw, ध्रुव भिन्न yawspeed_setpoint, ध्रुव भिन्न yaw_setpoint,
+			      ध्रुव भिन्न yaw_correction_पूर्व) ध्रुव
 {
 	// Yaw-lock depends on desired yawspeed input. If not locked, yaw_sp is set to NAN.
-	if (fabsf(yawspeed_setpoint) > FLT_EPSILON) {
+	यदि (fabsf(yawspeed_setpoint) > FLT_EPSILON) {
 		// no fixed heading when rotating around yaw by stick
-		return NAN;
+		प्रत्यागम NAN;
 
-	} else {
+	} अन्यथा {
 		// slow down and hold the current heading when no more rotation commanded
-		if (!PX4_ISFINITE(yaw_setpoint)) {
-			return yaw;
+		यदि (!PX4_ISFINITE(yaw_setpoint)) {
+			प्रत्यागम yaw;
 
-		} else {
-			return wrap_pi(yaw_setpoint - yaw_correction_prev + _yaw_correction);
+		} अन्यथा {
+			प्रत्यागम wrap_pi(yaw_setpoint - yaw_correction_पूर्व + _yaw_correction);
 		}
 	}
 }

@@ -6,109 +6,109 @@
  * @author James Goppert <james.goppert@gmail.com>
  */
 
-#pragma once
+#निर्देशः once
 
-#include "Vector.hpp"
+#अन्तर्भाव "Vector.hpp"
 
-namespace matrix
+नामाकाश matrix
 {
 
-template <typename Type>
-class Dcm;
+प्रतिरूपम् <प्रकारनाम Type>
+वर्ग Dcm;
 
-template<typename Type>
-class Vector3 : public Vector<Type, 3>
+प्रतिरूपम्<प्रकारनाम Type>
+वर्ग Vector3 : सार्वजनिक सदिशम्<Type, 3>
 {
-public:
+सार्वजनिक:
 
-	using Matrix31 = Matrix<Type, 3, 1>;
+	उपयुज्य Matrix31 = Matrix<Type, 3, 1>;
 
-	Vector3() = default;
+	Vector3() = स्वभाव;
 
-	Vector3(const Matrix31 &other) :
-		Vector<Type, 3>(other)
+	Vector3(ध्रुव Matrix31 &other) :
+		सदिशम्<Type, 3>(other)
 	{
 	}
 
-	explicit Vector3(const Type data_[3]) :
-		Vector<Type, 3>(data_)
+	स्पष्ट Vector3(ध्रुव Type दत्त_2[3]) :
+		सदिशम्<Type, 3>(दत्त_2)
 	{
 	}
 
 	Vector3(Type x, Type y, Type z)
 	{
-		Vector3 &v(*this);
+		Vector3 &v(*एतत्);
 		v(0) = x;
 		v(1) = y;
 		v(2) = z;
 	}
 
-	using base = Vector<Type, 3>;
-	using base::base;
+	उपयुज्य base = सदिशम्<Type, 3>;
+	उपयुज्य base::base;
 
-	Vector3 cross(const Matrix31 &b) const
+	Vector3 cross(ध्रुव Matrix31 &b) ध्रुव
 	{
-		const Vector3 &a(*this);
-		return {a(1) *b(2, 0) - a(2) *b(1, 0), -a(0) *b(2, 0) + a(2) *b(0, 0), a(0) *b(1, 0) - a(1) *b(0, 0)};
+		ध्रुव Vector3 &a(*एतत्);
+		प्रत्यागम {a(1) *b(2, 0) - a(2) *b(1, 0), -a(0) *b(2, 0) + a(2) *b(0, 0), a(0) *b(1, 0) - a(1) *b(0, 0)};
 	}
 
 	/**
 	 * Override matrix ops so Vector3 type is returned
 	 */
 
-	inline Vector3 operator+(Vector3 other) const
+	अन्तःस्थ Vector3 संक्रियकः+(Vector3 other) ध्रुव
 	{
-		return Matrix31::operator+(other);
+		प्रत्यागम Matrix31::संक्रियकः+(other);
 	}
 
-	inline Vector3 operator+(Type scalar) const
+	अन्तःस्थ Vector3 संक्रियकः+(Type scalar) ध्रुव
 	{
-		return Matrix31::operator+(scalar);
+		प्रत्यागम Matrix31::संक्रियकः+(scalar);
 	}
 
-	inline Vector3 operator-(Vector3 other) const
+	अन्तःस्थ Vector3 संक्रियकः-(Vector3 other) ध्रुव
 	{
-		return Matrix31::operator-(other);
+		प्रत्यागम Matrix31::संक्रियकः-(other);
 	}
 
-	inline Vector3 operator-(Type scalar) const
+	अन्तःस्थ Vector3 संक्रियकः-(Type scalar) ध्रुव
 	{
-		return Matrix31::operator-(scalar);
+		प्रत्यागम Matrix31::संक्रियकः-(scalar);
 	}
 
-	inline Vector3 operator-() const
+	अन्तःस्थ Vector3 संक्रियकः-() ध्रुव
 	{
-		return Matrix31::operator-();
+		प्रत्यागम Matrix31::संक्रियकः-();
 	}
 
-	inline Vector3 operator*(Type scalar) const
+	अन्तःस्थ Vector3 संक्रियकः*(Type scalar) ध्रुव
 	{
-		return Matrix31::operator*(scalar);
+		प्रत्यागम Matrix31::संक्रियकः*(scalar);
 	}
 
-	inline Type operator*(Vector3 b) const
+	अन्तःस्थ Type संक्रियकः*(Vector3 b) ध्रुव
 	{
-		return Vector<Type, 3>::operator*(b);
+		प्रत्यागम सदिशम्<Type, 3>::संक्रियकः*(b);
 	}
 
-	inline Vector3 operator%(const Matrix31 &b) const
+	अन्तःस्थ Vector3 संक्रियकः%(ध्रुव Matrix31 &b) ध्रुव
 	{
-		return (*this).cross(b);
+		प्रत्यागम (*एतत्).cross(b);
 	}
 
-	ConstSlice<Type, 2, 1, 3, 1> xy() const
+	Const_खण्डिका<Type, 2, 1, 3, 1> xy() ध्रुव
 	{
-		return {0, 0, this};
+		प्रत्यागम {0, 0, एतत्};
 	}
 
-	Slice<Type, 2, 1, 3, 1> xy()
+	खण्डिका_2<Type, 2, 1, 3, 1> xy()
 	{
-		return {0, 0, this};
+		प्रत्यागम {0, 0, एतत्};
 	}
 
-	Dcm<Type> hat() const      // inverse to Dcm.vee() operation
+	Dcm<Type> hat() ध्रुव      // inverse to Dcm.vee() operation
 	{
-		const Vector3 &v(*this);
+		ध्रुव Vector3 &v(*एतत्);
 		Dcm<Type> A;
 		A(0, 0) = 0;
 		A(0, 1) = -v(2);
@@ -119,12 +119,12 @@ public:
 		A(2, 0) = -v(1);
 		A(2, 1) = v(0);
 		A(2, 2) = 0;
-		return A;
+		प्रत्यागम A;
 	}
 
 };
 
-using Vector3f = Vector3<float>;
-using Vector3d = Vector3<double>;
+उपयुज्य Vector3f = Vector3<भिन्न>;
+उपयुज्य Vector3d = Vector3<द्विगुण>;
 
 } // namespace matrix

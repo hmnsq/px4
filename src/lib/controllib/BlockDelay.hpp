@@ -37,78 +37,78 @@
  * Controller library code
  */
 
-#pragma once
+#निर्देशः once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <assert.h>
+#अन्तर्भाव <time.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <mathlib/math/test/test.hpp>
+#अन्तर्भाव <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#अन्तर्भाव "block/Block.hpp"
+#अन्तर्भाव "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#अन्तर्भाव "matrix/math.hpp"
 
-namespace control
+नामाकाश control
 {
 
-template<class Type, size_t M, size_t N, size_t LEN>
-class __EXPORT BlockDelay: public Block
+प्रतिरूपम्<वर्ग Type, size_t M, size_t N, size_t LEN>
+वर्ग __EXPORT खण्डम्_Delay: सार्वजनिक खण्डम्
 {
-public:
+सार्वजनिक:
 // methods
-	BlockDelay(SuperBlock *parent, const char *name) :
-		Block(parent, name),
+	खण्डम्_Delay(Super_खण्डम् *parent, ध्रुव वर्ण *name) :
+		खण्डम्(parent, name),
 		_h(),
-		_index(0),
+		सूचकांक_2(0),
 		_delay(-1)
 	{}
-	virtual ~BlockDelay() = default;
-	matrix::Matrix<Type, M, N> update(const matrix::Matrix<Type, M, N> &u)
+	आभास ~खण्डम्_Delay() = स्वभाव;
+	matrix::Matrix<Type, M, N> update(ध्रुव matrix::Matrix<Type, M, N> &u)
 	{
 		// store current value
-		_h[_index] = u;
+		_h[सूचकांक_2] = u;
 
 		// delay starts at zero, then increases to LEN
 		_delay += 1;
 
-		if (_delay > (int)(LEN - 1)) {
+		यदि (_delay > (पूर्णाङ्क)(LEN - 1)) {
 			_delay = LEN - 1;
 		}
 
 		// compute position of delayed value
-		int j = _index - _delay;
+		पूर्णाङ्क j = सूचकांक_2 - _delay;
 
-		if (j < 0) {
+		यदि (j < 0) {
 			j += LEN;
 		}
 
 		// increment storage position
-		_index += 1;
+		सूचकांक_2 += 1;
 
-		if (_index > (LEN - 1)) {
-			_index  = 0;
+		यदि (सूचकांक_2 > (LEN - 1)) {
+			सूचकांक_2  = 0;
 		}
 
 		// get delayed value
-		return _h[j];
+		प्रत्यागम _h[j];
 	}
 	matrix::Matrix<Type, M, N> get(size_t delay)
 	{
-		int j = _index - delay;
+		पूर्णाङ्क j = सूचकांक_2 - delay;
 
-		if (j < 0) { j += LEN; }
+		यदि (j < 0) { j += LEN; }
 
-		return _h[j];
+		प्रत्यागम _h[j];
 	}
-private:
-// attributes
+गुप्त:
+//गुणाः
 	matrix::Matrix<Type, M, N> _h[LEN];
-	size_t _index;
-	int _delay;
+	size_t सूचकांक_2;
+	पूर्णाङ्क _delay;
 };
 
 } // namespace control

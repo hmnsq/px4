@@ -31,182 +31,182 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  ****************************************************************************/
-#pragma once
+#निर्देशः once
 /****************************************************************************
  * Included Files
  ****************************************************************************/
-#include <px4_platform_common/px4_config.h>
-#include <px4_arch/micro_hal.h>
-#include <systemlib/px4_macros.h>
-#include <nuttx/irq.h>
+#अन्तर्भाव <px4_platform_common/px4_config.h>
+#अन्तर्भाव <px4_arch/micro_hal.h>
+#अन्तर्भाव <systemlib/px4_macros.h>
+#अन्तर्भाव <nuttx/irq.h>
 
 /****************************************************************************
  * Pre-processor Definitions
  ****************************************************************************/
 
-#if defined(HAS_BBSRAM)
+#यदि defined(HAS_BBSRAM)
 
-#include <stm32_bbsram.h>
-typedef struct bbsramd_s dump_s;
+#अन्तर्भाव <stm32_bbsram.h>
+प्रकारनिर्देश संरचना bbsramd_s dump_s;
 
-#define HARDFAULT_REBOOT_FILENO 0
-#define HARDFAULT_REBOOT_PATH BBSRAM_PATH "" STRINGIFY(HARDFAULT_REBOOT_FILENO)
-#define HARDFAULT_ULOG_FILENO 3
-#define HARDFAULT_ULOG_PATH BBSRAM_PATH "" STRINGIFY(HARDFAULT_ULOG_FILENO)
-#define HARDFAULT_FILENO 4
-#define HARDFAULT_PATH BBSRAM_PATH "" STRINGIFY(HARDFAULT_FILENO)
+#परिभाषय HARDFAULT_REBOOT_FILENO 0
+#परिभाषय HARDFAULT_REBOOT_मार्गः BBSRAM_मार्गः "" STRINGIFY(HARDFAULT_REBOOT_FILENO)
+#परिभाषय HARDFAULT_ULOG_FILENO 3
+#परिभाषय HARDFAULT_ULOG_मार्गः BBSRAM_मार्गः "" STRINGIFY(HARDFAULT_ULOG_FILENO)
+#परिभाषय HARDFAULT_FILENO 4
+#परिभाषय HARDFAULT_मार्गः BBSRAM_मार्गः "" STRINGIFY(HARDFAULT_FILENO)
 
-#define HARDFAULT_MAX_ULOG_FILE_LEN 64 /* must be large enough to store the full path to the log file */
+#परिभाषय HARDFAULT_MAX_ULOG_FILE_LEN 64 /* must be large enough to store the full path to the log file */
 
-#define BBSRAM_SIZE_FN0 (sizeof(int))
-#define BBSRAM_SIZE_FN1 384     /* greater then 2.5 times the size of vehicle_status_s */
-#define BBSRAM_SIZE_FN2 384     /* greater then 2.5 times the size of vehicle_status_s */
-#define BBSRAM_SIZE_FN3 HARDFAULT_MAX_ULOG_FILE_LEN
-#define BBSRAM_SIZE_FN4 -1
-
-/* The following guides in the amount of the user and interrupt stack
- * data we can save. The amount of storage left will dictate the actual
- * number of entries of the user stack data saved. If it is too big
- * It will be truncated by the call to stm32_bbsram_savepanic
- */
-#define BBSRAM_HEADER_SIZE 20 /* This is an assumption */
-#define BBSRAM_USED ((5*BBSRAM_HEADER_SIZE)+(BBSRAM_SIZE_FN0+BBSRAM_SIZE_FN1+BBSRAM_SIZE_FN2+BBSRAM_SIZE_FN3))
-#define BBSRAM_REAMINING (PX4_BBSRAM_SIZE-BBSRAM_USED)
-#if CONFIG_ARCH_INTERRUPTSTACK <= 3
-#  define BBSRAM_NUMBER_STACKS 1
-#else
-#  define BBSRAM_NUMBER_STACKS 2
-#endif
-#define BBSRAM_FIXED_ELEMENTS_SIZE (sizeof(info_s))
-#define BBSRAM_LEFTOVER (BBSRAM_REAMINING-BBSRAM_FIXED_ELEMENTS_SIZE)
-
-#define CONFIG_ISTACK_SIZE (BBSRAM_LEFTOVER/BBSRAM_NUMBER_STACKS/sizeof(stack_word_t))
-#define CONFIG_USTACK_SIZE (BBSRAM_LEFTOVER/BBSRAM_NUMBER_STACKS/sizeof(stack_word_t))
-
-/* The path to the Battery Backed up SRAM */
-#define BBSRAM_PATH "/fs/bbr"
-/* The sizes of the files to create (-1) use rest of BBSRAM memory */
-#define BSRAM_FILE_SIZES { \
-		BBSRAM_SIZE_FN0,   /* For Time stamp only */                  \
-		BBSRAM_SIZE_FN1,   /* For Current Flight Parameters Copy A */ \
-		BBSRAM_SIZE_FN2,   /* For Current Flight Parameters Copy B */ \
-		BBSRAM_SIZE_FN3,   /* For the latest ULog file path */        \
-		BBSRAM_SIZE_FN4,   /* For the Panic Log use rest of space */  \
-		0                  /* End of table marker */                  \
-	}
-#elif defined(HAS_PROGMEM)
-
-typedef struct progmem_s dump_s;
-
-#if CONFIG_ARCH_INTERRUPTSTACK <= 3
-#  define PROGMEM_NUMBER_STACKS 1
-#else
-#  define PROGMEM_NUMBER_STACKS 2
-#endif
-#define PROGMEM_DUMP_FIXED_ELEMENTS_SIZE (sizeof(info_s))
-#define PROGMEM_DUMP_LEFTOVER (PROGMEM_DUMP_STACK_SIZE-PROGMEM_DUMP_FIXED_ELEMENTS_SIZE)
-
-#define CONFIG_ISTACK_SIZE (PROGMEM_DUMP_LEFTOVER/PROGMEM_NUMBER_STACKS/sizeof(stack_word_t))
-#define CONFIG_USTACK_SIZE (PROGMEM_DUMP_LEFTOVER/PROGMEM_NUMBER_STACKS/sizeof(stack_word_t))
-
-#define HARDFAULT_ULOG_FILENO 2
-#define HARDFAULT_ULOG_PATH PROGMEM_PATH "" STRINGIFY(HARDFAULT_ULOG_FILENO)
-#define HARDFAULT_FILENO 3
-#define HARDFAULT_PATH PROGMEM_PATH "" STRINGIFY(HARDFAULT_FILENO)
-
-#define HARDFAULT_MAX_ULOG_FILE_LEN 64 /* must be large enough to store the full path to the log file */
-
-#define PROGMEM_SIZE_FN0 384     /* greater then 2.5 times the size of vehicle_status_s */
-#define PROGMEM_SIZE_FN1 384     /* greater then 2.5 times the size of vehicle_status_s */
-#define PROGMEM_SIZE_FN2 HARDFAULT_MAX_ULOG_FILE_LEN
-#define PROGMEM_SIZE_FN3 -1
+#परिभाषय BBSRAM_आकार_FN0 (परिमाण(पूर्णाङ्क))
+#परिभाषय BBSRAM_आकार_FN1 384     /* greater then 2.5 times the size of vehicle_status_s */
+#परिभाषय BBSRAM_आकार_FN2 384     /* greater then 2.5 times the size of vehicle_status_s */
+#परिभाषय BBSRAM_आकार_FN3 HARDFAULT_MAX_ULOG_FILE_LEN
+#परिभाषय BBSRAM_आकार_FN4 -1
 
 /* The following guides in the amount of the user and interrupt stack
  * data we can save. The amount of storage left will dictate the actual
  * number of entries of the user stack data saved. If it is too big
  * It will be truncated by the call to stm32_bbsram_savepanic
  */
+#परिभाषय BBSRAM_शीर्षकम्_आकार 20 /* This is an assumption */
+#परिभाषय BBSRAM_प्रयुक्तम् ((5*BBSRAM_शीर्षकम्_आकार)+(BBSRAM_आकार_FN0+BBSRAM_आकार_FN1+BBSRAM_आकार_FN2+BBSRAM_आकार_FN3))
+#परिभाषय BBSRAM_REAMINING (PX4_BBSRAM_आकार-BBSRAM_प्रयुक्तम्)
+#यदि CONFIG_ARCH_INTERRUPTSTACK <= 3
+#  define BBSRAM_सङ्ख्या_STACKS 1
+#अन्यथा
+#  define BBSRAM_सङ्ख्या_STACKS 2
+#यदि_अन्तः
+#परिभाषय BBSRAM_FIXED_ELEMENTS_आकार (परिमाण(info_s))
+#परिभाषय BBSRAM_LEFTOVER (BBSRAM_REAMINING-BBSRAM_FIXED_ELEMENTS_आकार)
 
-#define PROGMEM_USED ((5*PROGMEM_HEADER_SIZE)+(PROGMEM_SIZE_FN0+PROGMEM_SIZE_FN1+PROGMEM_SIZE_FN2+PROGMEM_SIZE_FN3))
-#define PROGMEM_REAMINING (PX4_PROGMEM_SIZE-PROGMEM_USED)
-#if CONFIG_ARCH_INTERRUPTSTACK <= 3
-#  define PROGMEM_NUMBER_STACKS 1
-#else
-#  define PROGMEM_NUMBER_STACKS 2
-#endif
-#define PROGMEM_FIXED_ELEMENTS_SIZE (sizeof(info_s))
-#define PROGMEM_LEFTOVER (PROGMEM_REAMINING-PROGMEM_FIXED_ELEMENTS_SIZE)
+#परिभाषय CONFIG_ISTACK_आकार (BBSRAM_LEFTOVER/BBSRAM_सङ्ख्या_STACKS/परिमाण(राशिः_word_t))
+#परिभाषय CONFIG_USTACK_आकार (BBSRAM_LEFTOVER/BBSRAM_सङ्ख्या_STACKS/परिमाण(राशिः_word_t))
 
-#define PROGMEM_FILE_COUNT 4
 /* The path to the Battery Backed up SRAM */
-#define PROGMEM_PATH "/mnt/hardfault"
+#परिभाषय BBSRAM_मार्गः "/fs/bbr"
 /* The sizes of the files to create (-1) use rest of BBSRAM memory */
-#define PROGMEM_FILE_SIZES { \
-		PROGMEM_SIZE_FN0,   /* For Current Flight Parameters Copy A */ \
-		PROGMEM_SIZE_FN1,   /* For Current Flight Parameters Copy B */ \
-		PROGMEM_SIZE_FN2,  /* For the latest ULog file path */        \
-		PROGMEM_SIZE_FN3,   /* For the Panic Log use rest of space */  \
+#परिभाषय BSRAM_FILE_SIZES { \
+		BBSRAM_आकार_FN0,   /* For Time stamp only */                  \
+		BBSRAM_आकार_FN1,   /* For Current Flight Parameters Copy A */ \
+		BBSRAM_आकार_FN2,   /* For Current Flight Parameters Copy B */ \
+		BBSRAM_आकार_FN3,   /* For the latest ULog file path */        \
+		BBSRAM_आकार_FN4,   /* For the Panic Log use rest of space */  \
 		0                  /* End of table marker */                  \
 	}
-#elif defined(HAS_SSARC)
+#नोचेद्यदि defined(HAS_PROGMEM)
 
-typedef struct ssarc_s dump_s;
+प्रकारनिर्देश संरचना progmem_s dump_s;
 
-#define HARDFAULT_REBOOT_FILENO 0
-#define HARDFAULT_REBOOT_PATH SSARC_DUMP_PATH "" STRINGIFY(HARDFAULT_REBOOT_FILENO)
-#define HARDFAULT_ULOG_FILENO 3
-#define HARDFAULT_ULOG_PATH SSARC_DUMP_PATH "" STRINGIFY(HARDFAULT_ULOG_FILENO)
-#define HARDFAULT_FILENO 4
-#define HARDFAULT_PATH SSARC_DUMP_PATH "" STRINGIFY(HARDFAULT_FILENO)
+#यदि CONFIG_ARCH_INTERRUPTSTACK <= 3
+#  define PROGMEM_सङ्ख्या_STACKS 1
+#अन्यथा
+#  define PROGMEM_सङ्ख्या_STACKS 2
+#यदि_अन्तः
+#परिभाषय PROGMEM_DUMP_FIXED_ELEMENTS_आकार (परिमाण(info_s))
+#परिभाषय PROGMEM_DUMP_LEFTOVER (PROGMEM_DUMP_राशिः_आकार-PROGMEM_DUMP_FIXED_ELEMENTS_आकार)
 
-#define HARDFAULT_MAX_ULOG_FILE_LEN 64 /* must be large enough to store the full path to the log file */
+#परिभाषय CONFIG_ISTACK_आकार (PROGMEM_DUMP_LEFTOVER/PROGMEM_सङ्ख्या_STACKS/परिमाण(राशिः_word_t))
+#परिभाषय CONFIG_USTACK_आकार (PROGMEM_DUMP_LEFTOVER/PROGMEM_सङ्ख्या_STACKS/परिमाण(राशिः_word_t))
 
-#define SSARC_DUMP_SIZE_FN0 ((((sizeof(int)) / PX4_SSARC_BLOCK_DATA) + 1) * PX4_SSARC_BLOCK_DATA)
-#define SSARC_DUMP_SIZE_FN1 (((384 / PX4_SSARC_BLOCK_DATA) + 1) * PX4_SSARC_BLOCK_DATA)     /* greater then 2.5 times the size of vehicle_status_s */
-#define SSARC_DUMP_SIZE_FN2 (((384 / PX4_SSARC_BLOCK_DATA) + 1) * PX4_SSARC_BLOCK_DATA)     /* greater then 2.5 times the size of vehicle_status_s */
-#define SSARC_DUMP_SIZE_FN3 (((HARDFAULT_MAX_ULOG_FILE_LEN / PX4_SSARC_BLOCK_DATA) + 1) * PX4_SSARC_BLOCK_DATA)
-#define SSARC_DUMP_SIZE_FN4 -1
+#परिभाषय HARDFAULT_ULOG_FILENO 2
+#परिभाषय HARDFAULT_ULOG_मार्गः PROGMEM_मार्गः "" STRINGIFY(HARDFAULT_ULOG_FILENO)
+#परिभाषय HARDFAULT_FILENO 3
+#परिभाषय HARDFAULT_मार्गः PROGMEM_मार्गः "" STRINGIFY(HARDFAULT_FILENO)
+
+#परिभाषय HARDFAULT_MAX_ULOG_FILE_LEN 64 /* must be large enough to store the full path to the log file */
+
+#परिभाषय PROGMEM_आकार_FN0 384     /* greater then 2.5 times the size of vehicle_status_s */
+#परिभाषय PROGMEM_आकार_FN1 384     /* greater then 2.5 times the size of vehicle_status_s */
+#परिभाषय PROGMEM_आकार_FN2 HARDFAULT_MAX_ULOG_FILE_LEN
+#परिभाषय PROGMEM_आकार_FN3 -1
+
+/* The following guides in the amount of the user and interrupt stack
+ * data we can save. The amount of storage left will dictate the actual
+ * number of entries of the user stack data saved. If it is too big
+ * It will be truncated by the call to stm32_bbsram_savepanic
+ */
+
+#परिभाषय PROGMEM_प्रयुक्तम् ((5*PROGMEM_शीर्षकम्_आकार)+(PROGMEM_आकार_FN0+PROGMEM_आकार_FN1+PROGMEM_आकार_FN2+PROGMEM_आकार_FN3))
+#परिभाषय PROGMEM_REAMINING (PX4_PROGMEM_आकार-PROGMEM_प्रयुक्तम्)
+#यदि CONFIG_ARCH_INTERRUPTSTACK <= 3
+#  define PROGMEM_सङ्ख्या_STACKS 1
+#अन्यथा
+#  define PROGMEM_सङ्ख्या_STACKS 2
+#यदि_अन्तः
+#परिभाषय PROGMEM_FIXED_ELEMENTS_आकार (परिमाण(info_s))
+#परिभाषय PROGMEM_LEFTOVER (PROGMEM_REAMINING-PROGMEM_FIXED_ELEMENTS_आकार)
+
+#परिभाषय PROGMEM_FILE_गणनम् 4
+/* The path to the Battery Backed up SRAM */
+#परिभाषय PROGMEM_मार्गः "/mnt/hardfault"
+/* The sizes of the files to create (-1) use rest of BBSRAM memory */
+#परिभाषय PROGMEM_FILE_SIZES { \
+		PROGMEM_आकार_FN0,   /* For Current Flight Parameters Copy A */ \
+		PROGMEM_आकार_FN1,   /* For Current Flight Parameters Copy B */ \
+		PROGMEM_आकार_FN2,  /* For the latest ULog file path */        \
+		PROGMEM_आकार_FN3,   /* For the Panic Log use rest of space */  \
+		0                  /* End of table marker */                  \
+	}
+#नोचेद्यदि defined(HAS_SSARC)
+
+प्रकारनिर्देश संरचना ssarc_s dump_s;
+
+#परिभाषय HARDFAULT_REBOOT_FILENO 0
+#परिभाषय HARDFAULT_REBOOT_मार्गः SSARC_DUMP_मार्गः "" STRINGIFY(HARDFAULT_REBOOT_FILENO)
+#परिभाषय HARDFAULT_ULOG_FILENO 3
+#परिभाषय HARDFAULT_ULOG_मार्गः SSARC_DUMP_मार्गः "" STRINGIFY(HARDFAULT_ULOG_FILENO)
+#परिभाषय HARDFAULT_FILENO 4
+#परिभाषय HARDFAULT_मार्गः SSARC_DUMP_मार्गः "" STRINGIFY(HARDFAULT_FILENO)
+
+#परिभाषय HARDFAULT_MAX_ULOG_FILE_LEN 64 /* must be large enough to store the full path to the log file */
+
+#परिभाषय SSARC_DUMP_आकार_FN0 ((((परिमाण(पूर्णाङ्क)) / PX4_SSARC_खण्डम्_दत्त) + 1) * PX4_SSARC_खण्डम्_दत्त)
+#परिभाषय SSARC_DUMP_आकार_FN1 (((384 / PX4_SSARC_खण्डम्_दत्त) + 1) * PX4_SSARC_खण्डम्_दत्त)     /* greater then 2.5 times the size of vehicle_status_s */
+#परिभाषय SSARC_DUMP_आकार_FN2 (((384 / PX4_SSARC_खण्डम्_दत्त) + 1) * PX4_SSARC_खण्डम्_दत्त)     /* greater then 2.5 times the size of vehicle_status_s */
+#परिभाषय SSARC_DUMP_आकार_FN3 (((HARDFAULT_MAX_ULOG_FILE_LEN / PX4_SSARC_खण्डम्_दत्त) + 1) * PX4_SSARC_खण्डम्_दत्त)
+#परिभाषय SSARC_DUMP_आकार_FN4 -1
 
 /* The following guides in the amount of the user and interrupt stack
  * data we can save. The amount of storage left will dictate the actual
  * number of entries of the user stack data saved. If it is too big
  * It will be truncated by the call to savepanic
  */
-#define SSARC_DUMP_HEADER_SIZE PX4_SSARC_HEADER_SIZE + 32 /* This is an assumption */
-#define SSARC_DUMP_USED ((5*SSARC_DUMP_HEADER_SIZE)+(SSARC_DUMP_SIZE_FN0+SSARC_DUMP_SIZE_FN1+SSARC_DUMP_SIZE_FN2+SSARC_DUMP_SIZE_FN3))
-#define SSARC_DUMP_REMAINING (PX4_SSARC_DUMP_SIZE-SSARC_DUMP_USED)
-#if CONFIG_ARCH_INTERRUPTSTACK <= 3
-#  define SSARC_DUMP_NUMBER_STACKS 1
-#else
-#  define SSARC_DUMP_NUMBER_STACKS 2
-#endif
-#define SSARC_DUMP_FIXED_ELEMENTS_SIZE (sizeof(info_s))
-#define SSARC_DUMP_LEFTOVER (SSARC_DUMP_REMAINING-SSARC_DUMP_FIXED_ELEMENTS_SIZE)
+#परिभाषय SSARC_DUMP_शीर्षकम्_आकार PX4_SSARC_शीर्षकम्_आकार + 32 /* This is an assumption */
+#परिभाषय SSARC_DUMP_प्रयुक्तम् ((5*SSARC_DUMP_शीर्षकम्_आकार)+(SSARC_DUMP_आकार_FN0+SSARC_DUMP_आकार_FN1+SSARC_DUMP_आकार_FN2+SSARC_DUMP_आकार_FN3))
+#परिभाषय SSARC_DUMP_REMAINING (PX4_SSARC_DUMP_आकार-SSARC_DUMP_प्रयुक्तम्)
+#यदि CONFIG_ARCH_INTERRUPTSTACK <= 3
+#  define SSARC_DUMP_सङ्ख्या_STACKS 1
+#अन्यथा
+#  define SSARC_DUMP_सङ्ख्या_STACKS 2
+#यदि_अन्तः
+#परिभाषय SSARC_DUMP_FIXED_ELEMENTS_आकार (परिमाण(info_s))
+#परिभाषय SSARC_DUMP_LEFTOVER (SSARC_DUMP_REMAINING-SSARC_DUMP_FIXED_ELEMENTS_आकार)
 
-#define CONFIG_ISTACK_SIZE (SSARC_DUMP_LEFTOVER/SSARC_DUMP_NUMBER_STACKS/sizeof(stack_word_t))
-#define CONFIG_USTACK_SIZE (SSARC_DUMP_LEFTOVER/SSARC_DUMP_NUMBER_STACKS/sizeof(stack_word_t))
+#परिभाषय CONFIG_ISTACK_आकार (SSARC_DUMP_LEFTOVER/SSARC_DUMP_सङ्ख्या_STACKS/परिमाण(राशिः_word_t))
+#परिभाषय CONFIG_USTACK_आकार (SSARC_DUMP_LEFTOVER/SSARC_DUMP_सङ्ख्या_STACKS/परिमाण(राशिः_word_t))
 
-#define SSARC_DUMP_FILE_COUNT 5
+#परिभाषय SSARC_DUMP_FILE_गणनम् 5
 /* The path to the Battery Backed up SRAM */
-#define SSARC_DUMP_PATH "/fs/ssarc"
+#परिभाषय SSARC_DUMP_मार्गः "/fs/ssarc"
 /* The sizes of the files to create (-1) use rest of BBSRAM memory */
-#define SSARC_DUMP_FILE_SIZES { \
-		SSARC_DUMP_SIZE_FN0,   /* For Time stamp only */                  \
-		SSARC_DUMP_SIZE_FN1,   /* For Current Flight Parameters Copy A */ \
-		SSARC_DUMP_SIZE_FN2,   /* For Current Flight Parameters Copy B */ \
-		SSARC_DUMP_SIZE_FN3,   /* For the latest ULog file path */        \
-		SSARC_DUMP_SIZE_FN4,   /* For the Panic Log use rest of space */  \
+#परिभाषय SSARC_DUMP_FILE_SIZES { \
+		SSARC_DUMP_आकार_FN0,   /* For Time stamp only */                  \
+		SSARC_DUMP_आकार_FN1,   /* For Current Flight Parameters Copy A */ \
+		SSARC_DUMP_आकार_FN2,   /* For Current Flight Parameters Copy B */ \
+		SSARC_DUMP_आकार_FN3,   /* For the latest ULog file path */        \
+		SSARC_DUMP_आकार_FN4,   /* For the Panic Log use rest of space */  \
 		0                  /* End of table marker */                  \
 	}
-#else /* HAS_SSARC */
+#अन्यथा /* HAS_SSARC */
 
-#define CONFIG_ISTACK_SIZE 0
-#define CONFIG_USTACK_SIZE 0
+#परिभाषय CONFIG_ISTACK_आकार 0
+#परिभाषय CONFIG_USTACK_आकार 0
 
-#endif
+#यदि_अन्तः
 
 /* For Assert keep this much of the file name*/
-#define MAX_FILE_PATH_LENGTH 40
+#परिभाषय MAX_FILE_मार्गः_दीर्घता 40
 
 
 /* Fixed size strings
@@ -214,56 +214,56 @@ typedef struct ssarc_s dump_s;
  * Specifier to the xxxx_NUM definei.e %Y is YYYY so add 2 and %s is -2
  * Also xxxxTIME_FMT need to match in size. See CCASERT in hardfault_log.c
  */
-#define LOG_PATH_BASE       CONFIG_BOARD_ROOT_PATH "/"
-#define LOG_PATH_BASE_LEN    ((arraySize(LOG_PATH_BASE))-1)
+#परिभाषय LOG_मार्गः_आधारः       CONFIG_BOARD_मूलम्_मार्गः "/"
+#परिभाषय LOG_मार्गः_आधारः_LEN    ((array_आकार(LOG_मार्गः_आधारः))-1)
 
-#define LOG_NAME_FMT        "fault_%s.log"
-#define LOG_NAME_NUM         (     -2    )
-#define LOG_NAME_LEN         ((arraySize(LOG_NAME_FMT)-1) + LOG_NAME_NUM)
+#परिभाषय LOG_NAME_FMT        "fault_%s.log"
+#परिभाषय LOG_NAME_अङ्कः         (     -2    )
+#परिभाषय LOG_NAME_LEN         ((array_आकार(LOG_NAME_FMT)-1) + LOG_NAME_अङ्कः)
 
-#define TIME_FMT             "%Y_%m_%d_%H_%M_%S"
-#define TIME_FMT_NUM         (2+ 0+ 0+ 0+ 0+ 0)
-#define TIME_FMT_LEN         (((arraySize(TIME_FMT)-1) + TIME_FMT_NUM))
+#परिभाषय TIME_FMT             "%Y_%m_%d_%H_%M_%S"
+#परिभाषय TIME_FMT_अङ्कः         (2+ 0+ 0+ 0+ 0+ 0)
+#परिभाषय TIME_FMT_LEN         (((array_आकार(TIME_FMT)-1) + TIME_FMT_अङ्कः))
 
-#define LOG_PATH_LEN         ((LOG_PATH_BASE_LEN + LOG_NAME_LEN + TIME_FMT_LEN))
+#परिभाषय LOG_मार्गः_LEN         ((LOG_मार्गः_आधारः_LEN + LOG_NAME_LEN + TIME_FMT_LEN))
 
-#define HEADER_TIME_FMT      "%Y-%m-%d-%H:%M:%S"
-#define HEADER_TIME_FMT_NUM  (2+ 0+ 0+ 0+ 0+ 0)
-#define HEADER_TIME_FMT_LEN  (((arraySize(HEADER_TIME_FMT)-1) + HEADER_TIME_FMT_NUM))
+#परिभाषय शीर्षकम्_TIME_FMT      "%Y-%m-%d-%H:%M:%S"
+#परिभाषय शीर्षकम्_TIME_FMT_अङ्कः  (2+ 0+ 0+ 0+ 0+ 0)
+#परिभाषय शीर्षकम्_TIME_FMT_LEN  (((array_आकार(शीर्षकम्_TIME_FMT)-1) + शीर्षकम्_TIME_FMT_अङ्कः))
 
 /* Select which format to use. On a terminal the details are at the bottom
  * and in a file they are at the top
  */
-#define HARDFAULT_DISPLAY_FORMAT 1
-#define HARDFAULT_FILE_FORMAT    0
+#परिभाषय HARDFAULT_DISPLAY_FORMAT 1
+#परिभाषय HARDFAULT_FILE_FORMAT    0
 
 /****************************************************************************
  * Public Types
  ****************************************************************************/
 
 /* Used for stack frame storage */
-typedef uint32_t stack_word_t;
+प्रकारनिर्देश uint32_t राशिः_word_t;
 
 /* Stack related data */
 
-typedef struct {
+प्रकारनिर्देश संरचना {
 	uint32_t sp;
-	uint32_t top;
-	uint32_t size;
+	uint32_t शिखरम्;
+	uint32_t आकार;
 
-} _stack_s;
+} राशिः_s;
 
-typedef struct {
-	_stack_s user;
-#if CONFIG_ARCH_INTERRUPTSTACK > 3
-	_stack_s interrupt;
-#endif
+प्रकारनिर्देश संरचना {
+	राशिः_s user;
+#यदि CONFIG_ARCH_INTERRUPTSTACK > 3
+	राशिः_s व्यवधानम्;
+#यदि_अन्तः
 
-} px4_stack_t;
+} px4_राशिः_t;
 
 /* Not Used for reference only */
 
-typedef struct {
+प्रकारनिर्देश संरचना {
 	uint32_t r0;
 	uint32_t r1;
 	uint32_t r2;
@@ -343,55 +343,55 @@ typedef struct {
 
 
 /* Flags to identify what is in the dump */
-typedef enum {
+प्रकारनिर्देश गणना {
 	eRegsPresent          = 0x01,
-	eUserStackPresent     = 0x02,
-	eIntStackPresent      = 0x04,
+	e_User_राशिः_Present     = 0x02,
+	e_Int_राशिः_Present      = 0x04,
 	eFaultRegPresent      = 0x08,
-	eInvalidUserStackPtr  = 0x20,
-	eInvalidIntStackPrt   = 0x40,
+	e_Invalid_User_राशिः_Ptr  = 0x20,
+	e_Invalid_Int_राशिः_Prt   = 0x40,
 } fault_flags_t;
 
-typedef struct {
+प्रकारनिर्देश संरचना {
 	uint32_t              cfsr;  /* 0x0d28 Configurable fault status register */
 	uint32_t              hfsr;  /* 0x0d2c Hard fault status register */
 	uint32_t              dfsr;  /* 0x0d30 Debug fault status register */
 	uint32_t              mmfsr; /* 0x0d34 Mem manage address register */
 	uint32_t              bfsr;  /* 0x0d38 Bus fault address register */
 	uint32_t              afsr;  /* 0x0d3c Auxiliary fault status register */
-#if defined(CONFIG_ARCH_CORTEXM7)
+#यदि defined(CONFIG_ARCH_CORTEXM7)
 	uint32_t              abfsr; /* 0x0fa8 Auxiliary Bus Fault Status Register */
-#endif
+#यदि_अन्तः
 
 } fault_regs_s;
 
-typedef struct {
+प्रकारनिर्देश संरचना {
 	fault_flags_t         flags;                  /* What is in the dump */
 	uintptr_t             current_regs;           /* Used to validate the dump */
-	int                   lineno;                 /* __LINE__ to up_assert */
-	int                   pid;                    /* Process ID */
+	पूर्णाङ्क                   lineno;                 /* __LINE__ to up_assert */
+	पूर्णाङ्क                   pid;                    /* Process ID */
 	uint32_t              regs[XCPTCONTEXT_REGS]; /* Interrupt register save area */
 	fault_regs_s          fault_regs;             /* NVIC status */
-	px4_stack_t           stacks;                 /* Stack info */
-#if CONFIG_TASK_NAME_SIZE > 0
-	char                  name[CONFIG_TASK_NAME_SIZE + 1]; /* Task name (with NULL
+	px4_राशिः_t           stacks;                 /* Stack info */
+#यदि CONFIG_TASK_NAME_आकार > 0
+	वर्ण                  name[CONFIG_TASK_NAME_आकार + 1]; /* Task name (with NULL
 													* terminator) */
-#endif
-	char                  filename[MAX_FILE_PATH_LENGTH]; /* the Last of chars in
+#यदि_अन्तः
+	वर्ण                  filename[MAX_FILE_मार्गः_दीर्घता]; /* the Last of chars in
 												  * __FILE__ to up_assert */
 } info_s;
 
-typedef struct {
+प्रकारनिर्देश संरचना {
 	info_s    info;                       /* The info */
-#if CONFIG_ARCH_INTERRUPTSTACK > 3      /* The amount of stack data is compile time
+#यदि CONFIG_ARCH_INTERRUPTSTACK > 3      /* The amount of stack data is compile time
 									 * sized backed on what is left after the
 									 * other BBSRAM files are defined
 									 * The order is such that only the
 									 * ustack should be truncated
 									 */
-	stack_word_t istack[CONFIG_USTACK_SIZE];
-#endif
-	stack_word_t ustack[CONFIG_ISTACK_SIZE];
+	राशिः_word_t istack[CONFIG_USTACK_आकार];
+#यदि_अन्तः
+	राशिः_word_t ustack[CONFIG_ISTACK_आकार];
 } fullcontext_s;
 
 __BEGIN_DECLS
@@ -417,7 +417,7 @@ __BEGIN_DECLS
  *   -  Any < 0 Broken - Should not happen
  *
  ****************************************************************************/
-int hardfault_check_status(char *caller) weak_function;
+पूर्णाङ्क hardfault_check_स्थितिः(वर्ण *caller) weak_function;
 
 /****************************************************************************
  * Name: hardfault_write
@@ -446,7 +446,7 @@ int hardfault_check_status(char *caller) weak_function;
  *
  *
  ****************************************************************************/
-int hardfault_write(char *caller, int fd, int format, bool rearm) weak_function;
+पूर्णाङ्क hardfault_write(वर्ण *caller, पूर्णाङ्क fd, पूर्णाङ्क format, bool rearm) weak_function;
 
 /****************************************************************************
  * Name: hardfault_rearm
@@ -464,7 +464,7 @@ int hardfault_write(char *caller, int fd, int format, bool rearm) weak_function;
  *
  *
  ****************************************************************************/
-int hardfault_rearm(char *caller) weak_function;
+पूर्णाङ्क hardfault_rearm(वर्ण *caller) weak_function;
 
 /****************************************************************************
  * Name: hardfault_increment_reboot
@@ -484,6 +484,6 @@ int hardfault_rearm(char *caller) weak_function;
  *
  *
  ****************************************************************************/
-int hardfault_increment_reboot(char *caller, bool reset) weak_function;
+पूर्णाङ्क hardfault_increment_reboot(वर्ण *caller, bool reset) weak_function;
 
 __END_DECLS

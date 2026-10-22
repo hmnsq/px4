@@ -30,30 +30,30 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  ****************************************************************************/
-#pragma once
+#निर्देशः once
 
-#include <uORB/uORB.h>
-#include <uORB/Publication.hpp>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/dataman_request.h>
-#include <uORB/topics/dataman_response.h>
-#include <dataman/dataman.h>
-#include <lib/perf/perf_counter.h>
-#include <px4_platform_common/posix.h>
+#अन्तर्भाव <uORB/uORB.h>
+#अन्तर्भाव <uORB/Publication.hpp>
+#अन्तर्भाव <uORB/Subscription.hpp>
+#अन्तर्भाव <uORB/topics/dataman_request.h>
+#अन्तर्भाव <uORB/topics/dataman_response.h>
+#अन्तर्भाव <dataman/dataman.h>
+#अन्तर्भाव <lib/perf/perf_counter.h>
+#अन्तर्भाव <px4_platform_common/posix.h>
 
-using namespace time_literals;
+उपयुज्य नामाकाश time_literals;
 
-class DatamanClientTestPeer;
-class DatamanCacheTestPeer;
+वर्ग DatamanClientTestPeer;
+वर्ग DatamanCacheTestPeer;
 
-class DatamanClient
+वर्ग DatamanClient
 {
-public:
+सार्वजनिक:
 	DatamanClient();
 	~DatamanClient();
 
-	DatamanClient(const DatamanClient &) = delete;
-	DatamanClient &operator=(const DatamanClient &) = delete;
+	DatamanClient(ध्रुव DatamanClient &) = विलोपय;
+	DatamanClient &संक्रियकः=(ध्रुव DatamanClient &) = विलोपय;
 
 	/**
 	 * @brief Reads data synchronously from the dataman for the specified item and index.
@@ -66,7 +66,7 @@ public:
 	 *
 	 * @return true if data was read successfully within the timeout, false otherwise.
 	 */
-	bool readSync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout = 5000_ms);
+	तार्किक readSync(dm_item_t item, uint32_t सूचकांक, uint8_t *बफर_2, uint32_t दीर्घता_2, hrt_abstime timeout = 5000_ms);
 
 	/**
 	 * @brief Write data to the dataman synchronously.
@@ -79,7 +79,7 @@ public:
 	 *
 	 * @return True if the write operation succeeded, false otherwise.
 	 */
-	bool writeSync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout = 5000_ms);
+	तार्किक writeSync(dm_item_t item, uint32_t सूचकांक, uint8_t *बफर_2, uint32_t दीर्घता_2, hrt_abstime timeout = 5000_ms);
 
 	/**
 	 * @brief Clears the data in the specified dataman item.
@@ -89,7 +89,7 @@ public:
 	 *
 	 * @return True if the operation was successful, false otherwise.
 	 */
-	bool clearSync(dm_item_t item, hrt_abstime timeout = 5000_ms);
+	तार्किक clearSync(dm_item_t item, hrt_abstime timeout = 5000_ms);
 
 	/**
 	 * @brief Initiates an asynchronous request to read the data from dataman for a specific item and index.
@@ -105,7 +105,7 @@ public:
 	 *       The completion status of the request can be obtained with the
 	 *       lastOperationCompleted() function.
 	 */
-	bool readAsync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length);
+	तार्किक readAsync(dm_item_t item, uint32_t सूचकांक, uint8_t *बफर_2, uint32_t दीर्घता_2);
 
 	/**
 	 * @brief Initiates an asynchronous request to write the data to dataman for a specific item and index.
@@ -121,7 +121,7 @@ public:
 	 *       The completion status of the request can be obtained with the
 	 *       lastOperationCompleted() function.
 	 */
-	bool writeAsync(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length);
+	तार्किक writeAsync(dm_item_t item, uint32_t सूचकांक, uint8_t *बफर_2, uint32_t दीर्घता_2);
 
 	/**
 	 * @brief Initiates an asynchronous request to clear an item in dataman.
@@ -131,7 +131,7 @@ public:
 	 * @param[in] item The item to clear.
 	 * @return True if the request was successfully initiated, false otherwise.
 	 */
-	bool clearAsync(dm_item_t item);
+	तार्किक clearAsync(dm_item_t item);
 
 	/**
 	 * @brief Updates the state of the dataman client for asynchronous functions.
@@ -142,7 +142,7 @@ public:
 	 *
 	 * @see readAsync(), writeAsync(), clearAsync(), lastOperationCompleted()
 	 */
-	void update();
+	शून्य update();
 
 	/**
 	 * @brief Check if the last dataman operation has completed and whether it was successful.
@@ -150,12 +150,12 @@ public:
 	 * @param[out] success Output parameter indicating whether the last operation was successful.
 	 * @return true if the last operation has completed, false otherwise.
 	 */
-	bool lastOperationCompleted(bool &success);
+	तार्किक चरमः_Operation_Completed(तार्किक &success);
 
 	/**
 	 * Abort any async operation currently in progress
 	 */
-	void abortCurrentOperation();
+	शून्य abortCurrentOperation();
 
 	/**
 	 * @brief Get the subscription fd used for Dataman responses.
@@ -164,53 +164,53 @@ public:
 	 * to a poll set must only do so while they have an outstanding operation whose
 	 * update() path will consume the notification.
 	 */
-	orb_sub_t responseSubscription() const { return _dataman_response_sub; }
+	orb_sub_t responseSubscription() ध्रुव { प्रत्यागम _dataman_response_sub; }
 
-private:
-	friend class DatamanClientTestPeer;
+गुप्त:
+	मित्रम् वर्ग DatamanClientTestPeer;
 
-	enum class State {
+	गणना वर्ग State {
 		Idle,
-		RequestSent,
+		Request_प्रेषितम्,
 		ResponseReceived
 	};
 
-	struct Request {
+	संरचना Request {
 		hrt_abstime timestamp;
 		dm_function_t request_type;
 		dm_item_t item;
-		uint32_t index;
-		uint8_t *buffer;
-		uint32_t length;
+		uint32_t सूचकांक;
+		uint8_t *बफर_2;
+		uint32_t दीर्घता_2;
 	};
 
 	/* Synchronous response/request handler */
-	bool syncHandler(const dataman_request_s &request, dataman_response_s &response,
-			 const hrt_abstime &start_time, hrt_abstime timeout);
+	तार्किक syncHandler(ध्रुव dataman_request_s &request, dataman_response_s &response,
+			 ध्रुव hrt_abstime &start_time, hrt_abstime timeout);
 	/* Drain any queued stale replies before a new request starts. */
-	void clearPendingResponse();
+	शून्य clearPendingResponse();
 
 	State _state{State::Idle};
-	Request _active_request{};
-	uint8_t _response_status{};
+	Request सक्रिय_request{};
+	uint8_t response_स्थितिः{};
 
 	orb_sub_t _dataman_response_sub{ORB_SUB_INVALID};
 	uORB::Publication<dataman_request_s> _dataman_request_pub{ORB_ID(dataman_request)};
 
 	px4_pollfd_struct_t _fds;
 
-	static constexpr uint16_t CLIENT_ID_NOT_SET{0};
+	स्थिर constexpr uint16_t CLIENT_ID_NOT_समुच्चयः{0};
 
-	uint16_t _client_id{CLIENT_ID_NOT_SET};
+	uint16_t _client_id{CLIENT_ID_NOT_समुच्चयः};
 
-	perf_counter_t _sync_perf{nullptr};
+	perf_गणक_t _sync_perf{शून्यसूचकः};
 };
 
 
-class DatamanCache
+वर्ग DatamanCache
 {
-public:
-	DatamanCache(const char *cache_miss_perf_counter_name, uint32_t num_items);
+सार्वजनिक:
+	DatamanCache(ध्रुव वर्ण *cache_अलब्धिः_perf_गणक_name, uint32_t अङ्कः_वस्तूनि);
 	~DatamanCache();
 
 	/**
@@ -218,12 +218,12 @@ public:
 	 *
 	 * @param[in] num_items The number of items the cache should hold.
 	 */
-	void resize(uint32_t num_items);
+	शून्य resize(uint32_t अङ्कः_वस्तूनि);
 
 	/**
 	 * @brief Invalidates all cached items in the cache by resetting their cache_state to Idle.
 	 */
-	void invalidate();
+	शून्य invalidate();
 
 	/**
 	 * @brief Adds an index for items to be cached.
@@ -236,7 +236,7 @@ public:
 	 *
 	 * @return true if the item was added to be cached, false otherwise if the size of the cache is reached.
 	 */
-	bool load(dm_item_t item, uint32_t index);
+	तार्किक आरोपय(dm_item_t item, uint32_t सूचकांक);
 
 	/**
 	 * @brief Loads for a specific item from the cache or acquires and wait for it if not found in the cache.
@@ -251,7 +251,7 @@ public:
 	 *
 	 * @note This function will block if timeout is set differently than 0 and data doesn't exist in cache.
 	 */
-	bool loadWait(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout = 0);
+	तार्किक आरोपय_Wait(dm_item_t item, uint32_t सूचकांक, uint8_t *बफर_2, uint32_t दीर्घता_2, hrt_abstime timeout = 0);
 
 	/**
 	 * @brief Write data back and update it in the cache if stored.
@@ -264,7 +264,7 @@ public:
 	 *
 	 * @return True if the write operation succeeded, false otherwise.
 	 */
-	bool writeWait(dm_item_t item, uint32_t index, uint8_t *buffer, uint32_t length, hrt_abstime timeout = 5000_ms);
+	तार्किक writeWait(dm_item_t item, uint32_t सूचकांक, uint8_t *बफर_2, uint32_t दीर्घता_2, hrt_abstime timeout = 5000_ms);
 
 	/**
 	 * @brief Update a cached item in-place without issuing a new dataman request.
@@ -274,7 +274,7 @@ public:
 	 *
 	 * @return true if the item was fully cached and has been updated.
 	 */
-	bool updateCachedItem(dm_item_t item, uint32_t index, const uint8_t *buffer, uint32_t length);
+	तार्किक updateCachedItem(dm_item_t item, uint32_t सूचकांक, ध्रुव uint8_t *बफर_2, uint32_t दीर्घता_2);
 
 	/**
 	 * @brief Updates the dataman cache by checking for responses from the DatamanClient and processing them.
@@ -285,50 +285,50 @@ public:
 	 * to the next item in the cache. This function does not block and returns immediately.
 	 * The data can be acquired with the 'loadWait()' function after it has been cached.
 	 */
-	void update();
+	शून्य update();
 
 	/**
 	 * @brief Function providing info if there items to be loaded to dataman cache.
 	 *
 	 * @return true if there are items to be processed.
 	 */
-	bool isLoading() const { return (_item_counter > 0); }
+	तार्किक isLoading() ध्रुव { प्रत्यागम (item_गणक > 0); }
 
 	/**
 	 * @brief Returns a reference to the DatamanClient instance used by the DatamanCache.
 	 *
 	 * @return A reference to the DatamanClient instance used by the DatamanCache.
 	 */
-	DatamanClient &client() { return _client; }
+	DatamanClient &client() { प्रत्यागम _client; }
 
-	int size() const { return _num_items; }
+	पूर्णाङ्क आकार() ध्रुव { प्रत्यागम अङ्कः_वस्तूनि_2; }
 
-private:
-	friend class DatamanCacheTestPeer;
+गुप्त:
+	मित्रम् वर्ग DatamanCacheTestPeer;
 
-	enum class State {
+	गणना वर्ग State {
 		Idle,
 		RequestPrepared,
-		RequestSent,
+		Request_प्रेषितम्,
 		ResponseReceived,
 		Error
 	};
 
-	struct Item {
+	संरचना Item {
 		dataman_response_s response;
 		State cache_state;
 	};
 
-	void resetCacheState();
-	inline void changeUpdateIndex();
+	शून्य resetCacheState();
+	अन्तःस्थ शून्य change_Update_सूचकांक();
 
-	Item *_items{nullptr};
-	uint32_t _load_index{0};	///< index for tracking last index used by load function
-	uint32_t _update_index{0};	///< index for tracking last index used by update function
-	uint32_t _item_counter{0};	///< number of items to process with update function
-	uint32_t _num_items{0};		///< number of items that cache can store
+	Item *वस्तूनि{शून्यसूचकः};
+	uint32_t आरोपय_सूचकांक{0};	///< index for tracking last index used by load function
+	uint32_t update_सूचकांक{0};	///< index for tracking last index used by update function
+	uint32_t item_गणक{0};	///< number of items to process with update function
+	uint32_t अङ्कः_वस्तूनि_2{0};		///< number of items that cache can store
 
 	DatamanClient _client{};
 
-	perf_counter_t	_cache_miss_perf;
+	perf_गणक_t	cache_अलब्धिः_perf;
 };

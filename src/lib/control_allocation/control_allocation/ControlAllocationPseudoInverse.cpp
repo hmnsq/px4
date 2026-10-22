@@ -39,215 +39,215 @@
  * @author Julien Lecoeur <julien.lecoeur@gmail.com>
  */
 
-#include "ControlAllocationPseudoInverse.hpp"
+#अन्तर्भाव "ControlAllocationPseudoInverse.hpp"
 
-void
-ControlAllocationPseudoInverse::setEffectivenessMatrix(
-	const matrix::Matrix<float, ControlAllocation::NUM_AXES, ControlAllocation::NUM_ACTUATORS> &effectiveness,
-	const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, int num_actuators,
-	bool update_normalization_scale)
+शून्य
+Control_आवण्टनम्_Pseudo_Inverse::समुच्चयः_Effectiveness_Matrix(
+	ध्रुव matrix::Matrix<भिन्न, Control_आवण्टनम्::अङ्कः_AXES, Control_आवण्टनम्::अङ्कः_ACTUATORS> &effectiveness,
+	ध्रुव Actuator_सदिशम् &actuator_trim, ध्रुव Actuator_सदिशम् &linearization_point, पूर्णाङ्क अङ्कः_actuators,
+	तार्किक update_normalization_scale)
 {
-	ControlAllocation::setEffectivenessMatrix(effectiveness, actuator_trim, linearization_point, num_actuators,
+	Control_आवण्टनम्::समुच्चयः_Effectiveness_Matrix(effectiveness, actuator_trim, linearization_point, अङ्कः_actuators,
 			update_normalization_scale);
 
 	// in place on the stored copy: no second matrix on the (small work queue) stack
 	_dropped_axes = dropDependentAxes(_effectiveness);
 
-	_mix_update_needed = true;
+	_mix_update_needed = सत्य;
 	_normalization_needs_update = update_normalization_scale;
 
-	if (_metric_allocation && update_normalization_scale) {
+	यदि (metric_आवण्टनम् && update_normalization_scale) {
 		// adding #include <px4_platform_common/log.h> + PX4_WARN leads to failed linking on test
-		_normalization_needs_update = false;
+		_normalization_needs_update = असत्य;
 	}
 }
 
-void
-ControlAllocationPseudoInverse::updatePseudoInverse()
+शून्य
+Control_आवण्टनम्_Pseudo_Inverse::updatePseudoInverse()
 {
-	if (_mix_update_needed) {
+	यदि (_mix_update_needed) {
 		matrix::geninv(_effectiveness, _mix);
 
-		if (!_metric_allocation) {
-			if (_normalization_needs_update && !_had_actuator_failure) {
-				updateControlAllocationMatrixScale();
-				_normalization_needs_update = false;
+		यदि (!metric_आवण्टनम्) {
+			यदि (_normalization_needs_update && !_had_actuator_failure) {
+				update_Control_आवण्टनम्_Matrix_Scale();
+				_normalization_needs_update = असत्य;
 			}
 
-			normalizeControlAllocationMatrix();
+			normalize_Control_आवण्टनम्_Matrix();
 		}
 
-		_mix_update_needed = false;
+		_mix_update_needed = असत्य;
 	}
 }
 
-void
-ControlAllocationPseudoInverse::updateControlAllocationMatrixScale()
+शून्य
+Control_आवण्टनम्_Pseudo_Inverse::update_Control_आवण्टनम्_Matrix_Scale()
 {
 	// Same scale on roll and pitch
-	if (_normalize_rpy) {
+	यदि (_normalize_rpy) {
 
-		int num_non_zero_roll_torque = 0;
-		int num_non_zero_pitch_torque = 0;
+		पूर्णाङ्क अङ्कः_non_zero_roll_torque = 0;
+		पूर्णाङ्क अङ्कः_non_zero_pitch_torque = 0;
 
-		for (int i = 0; i < _num_actuators; i++) {
+		प्रति (पूर्णाङ्क i = 0; i < अङ्कः_actuators_2; i++) {
 
-			if (fabsf(_mix(i, 0)) > 1e-3f) {
-				++num_non_zero_roll_torque;
+			यदि (fabsf(_mix(i, 0)) > 1e-3f) {
+				++अङ्कः_non_zero_roll_torque;
 			}
 
-			if (fabsf(_mix(i, 1)) > 1e-3f) {
-				++num_non_zero_pitch_torque;
+			यदि (fabsf(_mix(i, 1)) > 1e-3f) {
+				++अङ्कः_non_zero_pitch_torque;
 			}
 		}
 
-		float roll_norm_scale = 1.f;
+		भिन्न roll_norm_scale = 1.f;
 
-		if (num_non_zero_roll_torque > 0) {
-			roll_norm_scale = sqrtf(_mix.col(0).norm_squared() / (num_non_zero_roll_torque / 2.f));
+		यदि (अङ्कः_non_zero_roll_torque > 0) {
+			roll_norm_scale = sqrtf(_mix.col(0).norm_squared() / (अङ्कः_non_zero_roll_torque / 2.f));
 		}
 
-		float pitch_norm_scale = 1.f;
+		भिन्न pitch_norm_scale = 1.f;
 
-		if (num_non_zero_pitch_torque > 0) {
-			pitch_norm_scale = sqrtf(_mix.col(1).norm_squared() / (num_non_zero_pitch_torque / 2.f));
+		यदि (अङ्कः_non_zero_pitch_torque > 0) {
+			pitch_norm_scale = sqrtf(_mix.col(1).norm_squared() / (अङ्कः_non_zero_pitch_torque / 2.f));
 		}
 
-		_control_allocation_scale(0) = fmaxf(roll_norm_scale, pitch_norm_scale);
-		_control_allocation_scale(1) = _control_allocation_scale(0);
+		control_आवण्टनम्_scale(0) = fmaxf(roll_norm_scale, pitch_norm_scale);
+		control_आवण्टनम्_scale(1) = control_आवण्टनम्_scale(0);
 
 		// Scale yaw separately
-		_control_allocation_scale(2) = _mix.col(2).max();
+		control_आवण्टनम्_scale(2) = _mix.col(2).max();
 
-	} else {
-		_control_allocation_scale(0) = 1.f;
-		_control_allocation_scale(1) = 1.f;
-		_control_allocation_scale(2) = 1.f;
+	} अन्यथा {
+		control_आवण्टनम्_scale(0) = 1.f;
+		control_आवण्टनम्_scale(1) = 1.f;
+		control_आवण्टनम्_scale(2) = 1.f;
 	}
 
 	// Scale thrust by the sum of the individual thrust axes, and use the scaling for the Z axis if there's no actuators
 	// (for tilted actuators)
-	_control_allocation_scale(THRUST_Z) = 1.f;
+	control_आवण्टनम्_scale(THRUST_Z) = 1.f;
 
-	for (int axis_idx = 2; axis_idx >= 0; --axis_idx) {
-		int num_non_zero_thrust = 0;
-		float norm_sum = 0.f;
+	प्रति (पूर्णाङ्क axis_idx = 2; axis_idx >= 0; --axis_idx) {
+		पूर्णाङ्क अङ्कः_non_zero_thrust = 0;
+		भिन्न norm_योग = 0.f;
 
-		for (int i = 0; i < _num_actuators; i++) {
-			float norm = fabsf(_mix(i, 3 + axis_idx));
-			norm_sum += norm;
+		प्रति (पूर्णाङ्क i = 0; i < अङ्कः_actuators_2; i++) {
+			भिन्न norm = fabsf(_mix(i, 3 + axis_idx));
+			norm_योग += norm;
 
-			if (norm > FLT_EPSILON) {
-				++num_non_zero_thrust;
+			यदि (norm > FLT_EPSILON) {
+				++अङ्कः_non_zero_thrust;
 			}
 		}
 
-		if (num_non_zero_thrust > 0) {
-			_control_allocation_scale(3 + axis_idx) = norm_sum / num_non_zero_thrust;
+		यदि (अङ्कः_non_zero_thrust > 0) {
+			control_आवण्टनम्_scale(3 + axis_idx) = norm_योग / अङ्कः_non_zero_thrust;
 
-		} else {
-			_control_allocation_scale(3 + axis_idx) = _control_allocation_scale(THRUST_Z);
+		} अन्यथा {
+			control_आवण्टनम्_scale(3 + axis_idx) = control_आवण्टनम्_scale(THRUST_Z);
 		}
 	}
 }
 
-void
-ControlAllocationPseudoInverse::normalizeControlAllocationMatrix()
+शून्य
+Control_आवण्टनम्_Pseudo_Inverse::normalize_Control_आवण्टनम्_Matrix()
 {
-	if (_control_allocation_scale(0) > FLT_EPSILON) {
-		_mix.col(0) /= _control_allocation_scale(0);
-		_mix.col(1) /= _control_allocation_scale(1);
+	यदि (control_आवण्टनम्_scale(0) > FLT_EPSILON) {
+		_mix.col(0) /= control_आवण्टनम्_scale(0);
+		_mix.col(1) /= control_आवण्टनम्_scale(1);
 	}
 
-	if (_control_allocation_scale(2) > FLT_EPSILON) {
-		_mix.col(2) /= _control_allocation_scale(2);
+	यदि (control_आवण्टनम्_scale(2) > FLT_EPSILON) {
+		_mix.col(2) /= control_आवण्टनम्_scale(2);
 	}
 
-	if (_control_allocation_scale(3) > FLT_EPSILON) {
-		_mix.col(3) /= _control_allocation_scale(3);
-		_mix.col(4) /= _control_allocation_scale(4);
-		_mix.col(5) /= _control_allocation_scale(5);
+	यदि (control_आवण्टनम्_scale(3) > FLT_EPSILON) {
+		_mix.col(3) /= control_आवण्टनम्_scale(3);
+		_mix.col(4) /= control_आवण्टनम्_scale(4);
+		_mix.col(5) /= control_आवण्टनम्_scale(5);
 	}
 
 	// Set all the small elements to 0 to avoid issues
 	// in the control allocation algorithms
-	for (int i = 0; i < _num_actuators; i++) {
-		for (int j = 0; j < NUM_AXES; j++) {
-			if (fabsf(_mix(i, j)) < 1e-3f) {
+	प्रति (पूर्णाङ्क i = 0; i < अङ्कः_actuators_2; i++) {
+		प्रति (पूर्णाङ्क j = 0; j < अङ्कः_AXES; j++) {
+			यदि (fabsf(_mix(i, j)) < 1e-3f) {
 				_mix(i, j) = 0.f;
 			}
 		}
 	}
 }
 
-void
-ControlAllocationPseudoInverse::allocate()
+शून्य
+Control_आवण्टनम्_Pseudo_Inverse::allocate()
 {
 	//Compute new gains if needed
 	updatePseudoInverse();
 
-	_prev_actuator_sp = _actuator_sp;
+	पूर्व_actuator_sp = _actuator_sp;
 
 	// Allocate
 	_actuator_sp = _actuator_trim + _mix * (_control_sp - _control_trim);
 }
 
 uint8_t
-ControlAllocationPseudoInverse::dropDependentAxes(matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> &effectiveness)
+Control_आवण्टनम्_Pseudo_Inverse::dropDependentAxes(matrix::Matrix<भिन्न, अङ्कः_AXES, अङ्कः_ACTUATORS> &effectiveness)
 {
 	// highest priority first
-	static constexpr ControlAxis kPriority[NUM_AXES] = {THRUST_Z, ROLL, PITCH, THRUST_X, THRUST_Y, YAW};
+	स्थिर constexpr ControlAxis k_प्राथमिकता[अङ्कः_AXES] = {THRUST_Z, ROLL, PITCH, THRUST_X, THRUST_Y, YAW};
 
 	// Gram-Schmidt through the Cholesky factor of the Gram matrix of the accepted unit rows:
 	// equivalent to orthogonalizing the rows, without keeping NUM_ACTUATORS-long vectors on the
 	// (small work queue) stack
-	float chol[NUM_AXES][NUM_AXES] {};
-	float inv_norm[NUM_AXES];
-	ControlAxis accepted[NUM_AXES];
-	int num_accepted = 0;
+	भिन्न chol[अङ्कः_AXES][अङ्कः_AXES] {};
+	भिन्न inv_norm[अङ्कः_AXES];
+	ControlAxis accepted[अङ्कः_AXES];
+	पूर्णाङ्क अङ्कः_accepted = 0;
 	uint8_t dropped = 0;
 
-	for (const ControlAxis axis : kPriority) {
-		const float norm_squared = effectiveness.row(axis).norm_squared();
+	प्रति (ध्रुव ControlAxis axis : k_प्राथमिकता) {
+		ध्रुव भिन्न norm_squared = effectiveness.row(axis).norm_squared();
 
-		if (norm_squared < FLT_EPSILON) {
-			continue; // unused axis
+		यदि (norm_squared < FLT_EPSILON) {
+			अनुवर्त; // unused axis
 		}
 
-		const float inv = 1.f / sqrtf(norm_squared);
+		ध्रुव भिन्न inv = 1.f / sqrtf(norm_squared);
 
 		// projection of the unit row onto the orthonormal basis of the accepted rows
-		float projection[NUM_AXES];
-		float projected_norm_squared = 0.f;
+		भिन्न projection[अङ्कः_AXES];
+		भिन्न projected_norm_squared = 0.f;
 
-		for (int i = 0; i < num_accepted; i++) {
-			float sum = effectiveness.row(axis).dot(effectiveness.row(accepted[i])) * inv * inv_norm[i];
+		प्रति (पूर्णाङ्क i = 0; i < अङ्कः_accepted; i++) {
+			भिन्न योग = effectiveness.row(axis).dot(effectiveness.row(accepted[i])) * inv * inv_norm[i];
 
-			for (int j = 0; j < i; j++) {
-				sum -= chol[i][j] * projection[j];
+			प्रति (पूर्णाङ्क j = 0; j < i; j++) {
+				योग -= chol[i][j] * projection[j];
 			}
 
-			projection[i] = sum / chol[i][i];
+			projection[i] = योग / chol[i][i];
 			projected_norm_squared += projection[i] * projection[i];
 		}
 
-		const float independence = 1.f - projected_norm_squared;
+		ध्रुव भिन्न independence = 1.f - projected_norm_squared;
 
-		if (independence < kMinAxisIndependence) {
+		यदि (independence < kMinAxisIndependence) {
 			effectiveness.row(axis) = 0.f;
 			dropped |= static_cast<uint8_t>(1u << axis);
 
-		} else {
-			for (int j = 0; j < num_accepted; j++) {
-				chol[num_accepted][j] = projection[j];
+		} अन्यथा {
+			प्रति (पूर्णाङ्क j = 0; j < अङ्कः_accepted; j++) {
+				chol[अङ्कः_accepted][j] = projection[j];
 			}
 
-			chol[num_accepted][num_accepted] = sqrtf(independence);
-			inv_norm[num_accepted] = inv;
-			accepted[num_accepted] = axis;
-			num_accepted++;
+			chol[अङ्कः_accepted][अङ्कः_accepted] = sqrtf(independence);
+			inv_norm[अङ्कः_accepted] = inv;
+			accepted[अङ्कः_accepted] = axis;
+			अङ्कः_accepted++;
 		}
 	}
 
-	return dropped;
+	प्रत्यागम dropped;
 }

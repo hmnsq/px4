@@ -31,11 +31,11 @@
  *
  ****************************************************************************/
 
-#pragma once
+#निर्देशः once
 
-#define PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) name,
-enum class TuneID {
-#include "tune_definition.desc"
+#परिभाषय PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) name,
+गणना class TuneID {
+#अन्तर्भाव "tune_definition.desc"
 	NONE = -1
 };
-#undef PX4_DEFINE_TUNE
+#अपरिभाषय PX4_DEFINE_TUNE

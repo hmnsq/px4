@@ -38,22 +38,22 @@
  * @author Jonas Perolini <jonspero@me.com>
  */
 
-#include "ConflictTracker.h"
+#अन्तर्भाव "ConflictTracker.h"
 
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <px4_platform_common/log.h>
 
-namespace
+नामाकाश
 {
 
-void append_change(conflict_tracker_changes_s &changes, const conflict_tracker_change_s &change)
+शून्य append_change(conflict_tracker_changes_s &changes, ध्रुव conflict_tracker_change_s &change)
 {
-	if (!changes.push_back(change)) {
+	यदि (!changes.push_back(change)) {
 		PX4_ERR("DAA: conflict changes overflow");
 	}
 }
 
-void record_ignored(conflict_tracker_changes_s &changes, const conflict_info_s &conflict, const IgnoreTrafficCause cause)
+शून्य लेखः_ignored(conflict_tracker_changes_s &changes, ध्रुव conflict_info_s &conflict, ध्रुव IgnoreTrafficCause cause)
 {
 	conflict_tracker_change_s change{};
 	change.type = ConflictTrackerChangeType::kReportIgnored;
@@ -62,7 +62,7 @@ void record_ignored(conflict_tracker_changes_s &changes, const conflict_info_s &
 	append_change(changes, change);
 }
 
-void record_removed(conflict_tracker_changes_s &changes, const conflict_info_s &conflict, const RemoveBufferCause cause)
+शून्य लेखः_removed(conflict_tracker_changes_s &changes, ध्रुव conflict_info_s &conflict, ध्रुव Remove_बफर_Cause cause)
 {
 	conflict_tracker_change_s change{};
 	change.type = ConflictTrackerChangeType::kConflictRemoved;
@@ -73,211 +73,211 @@ void record_removed(conflict_tracker_changes_s &changes, const conflict_info_s &
 
 } // namespace
 
-bool ConflictTracker::apply_conflict(const conflict_info_s &conflict, conflict_tracker_changes_s &changes)
+तार्किक ConflictTracker::apply_conflict(ध्रुव conflict_info_s &conflict, conflict_tracker_changes_s &changes)
 {
-	if (conflict.encoded_id.id == 0
+	यदि (conflict.encoded_id.id == 0
 	    || conflict.conflict_level > detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL
 	    || !PX4_ISFINITE(conflict.aircraft_dist)
 	    || conflict.aircraft_dist < 0.f) {
 		PX4_ERR("DAA: invalid conflict");
-		return false;
+		प्रत्यागम असत्य;
 	}
 
-	const int conflict_idx = find_conflict_idx(conflict.encoded_id);
+	ध्रुव पूर्णाङ्क conflict_idx = find_conflict_idx(conflict.encoded_id);
 
-	if (conflict_idx < 0) {
-		if (conflict.conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE) {
-			return false;
+	यदि (conflict_idx < 0) {
+		यदि (conflict.conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE) {
+			प्रत्यागम असत्य;
 		}
 
-		return add_conflict(conflict, changes);
+		प्रत्यागम सङ्कलय_conflict(conflict, changes);
 	}
 
-	return update_conflict(conflict, conflict_idx, changes);
+	प्रत्यागम update_conflict(conflict, conflict_idx, changes);
 }
 
-bool ConflictTracker::add_conflict(const conflict_info_s &conflict, conflict_tracker_changes_s &changes)
+तार्किक ConflictTracker::सङ्कलय_conflict(ध्रुव conflict_info_s &conflict, conflict_tracker_changes_s &changes)
 {
-	if (_buffer.size() < _buffer.max_size()) {
-		_buffer.push_back(conflict);
+	यदि (बफर.आकार() < बफर.max_आकार()) {
+		बफर.push_back(conflict);
 
 		conflict_tracker_change_s change{};
 		change.type = ConflictTrackerChangeType::kConflictAdded;
 		change.conflict = conflict;
 		append_change(changes, change);
-		return true;
+		प्रत्यागम सत्य;
 	}
 
-	const int least_urgent_conflict_idx = find_conflict_idx_by_priority(ConflictPriority::kLeastUrgent);
+	ध्रुव पूर्णाङ्क न्यूनतमम्_आत्ययिकम्_conflict_idx = find_conflict_idx_by_प्राथमिकता(Conflict_प्राथमिकता::k_न्यूनतमम्_आत्ययिकम्);
 
-	if (!is_conflict_more_important(conflict, _buffer[least_urgent_conflict_idx])) {
+	यदि (!is_conflict_अधिकम्_important(conflict, बफर[न्यूनतमम्_आत्ययिकम्_conflict_idx])) {
 		PX4_DEBUG("DAA: new conflict does not outrank tracked conflicts, ignoring.");
-		record_ignored(changes, conflict, IgnoreTrafficCause::kBufferFull);
-		return false;
+		लेखः_ignored(changes, conflict, IgnoreTrafficCause::k_बफर_पूर्णम्);
+		प्रत्यागम असत्य;
 	}
 
-	const conflict_info_s removed_conflict = _buffer[least_urgent_conflict_idx];
-	_buffer[least_urgent_conflict_idx] = conflict;
-	record_removed(changes, removed_conflict, RemoveBufferCause::kBufferFull);
+	ध्रुव conflict_info_s removed_conflict = बफर[न्यूनतमम्_आत्ययिकम्_conflict_idx];
+	बफर[न्यूनतमम्_आत्ययिकम्_conflict_idx] = conflict;
+	लेखः_removed(changes, removed_conflict, Remove_बफर_Cause::k_बफर_पूर्णम्);
 
 	conflict_tracker_change_s change{};
 	change.type = ConflictTrackerChangeType::kConflictAdded;
 	change.conflict = conflict;
 	append_change(changes, change);
-	return true;
+	प्रत्यागम सत्य;
 }
 
-bool ConflictTracker::update_conflict(const conflict_info_s &conflict, const int conflict_idx,
+तार्किक ConflictTracker::update_conflict(ध्रुव conflict_info_s &conflict, ध्रुव पूर्णाङ्क conflict_idx,
 				      conflict_tracker_changes_s &changes)
 {
-	const uint8_t previous_conflict_level = _buffer[conflict_idx].conflict_level;
+	ध्रुव uint8_t previous_conflict_level = बफर[conflict_idx].conflict_level;
 
-	if (conflict.conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE) {
+	यदि (conflict.conflict_level == detect_and_avoid_s::DAA_CONFLICT_LVL_NONE) {
 		PX4_DEBUG("DAA: Conflict avoided");
-		_buffer.remove(conflict_idx);
+		बफर.remove(conflict_idx);
 
-	} else {
-		_buffer[conflict_idx] = conflict;
+	} अन्यथा {
+		बफर[conflict_idx] = conflict;
 	}
 
-	if (conflict.conflict_level != previous_conflict_level) {
+	यदि (conflict.conflict_level != previous_conflict_level) {
 		conflict_tracker_change_s change{};
-		change.type = ConflictTrackerChangeType::kConflictLevelChanged;
+		change.type = ConflictTrackerChangeType::k_Conflict_Level_परिवर्तितम्;
 		change.conflict = conflict;
 		change.previous_level = previous_conflict_level;
 
-		const int most_urgent_idx = find_conflict_idx_by_priority(ConflictPriority::kMostUrgent);
-		change.conflict_is_most_urgent = (_most_urgent.encoded_id == conflict.encoded_id)
-						 || (is_valid_idx(most_urgent_idx)
-						     && _buffer[most_urgent_idx].encoded_id == conflict.encoded_id);
+		ध्रुव पूर्णाङ्क most_आत्ययिकम्_idx = find_conflict_idx_by_प्राथमिकता(Conflict_प्राथमिकता::k_Most_आत्ययिकम्);
+		change.conflict_is_most_आत्ययिकम् = (most_आत्ययिकम्.encoded_id == conflict.encoded_id)
+						 || (is_valid_idx(most_आत्ययिकम्_idx)
+						     && बफर[most_आत्ययिकम्_idx].encoded_id == conflict.encoded_id);
 
 		append_change(changes, change);
 	}
 
-	return true;
+	प्रत्यागम सत्य;
 }
 
-bool ConflictTracker::remove_stale_conflicts(const hrt_abstime now, const hrt_abstime timeout_us,
+तार्किक ConflictTracker::remove_stale_conflicts(ध्रुव hrt_abstime now, ध्रुव hrt_abstime timeout_us,
 		conflict_tracker_changes_s &changes)
 {
-	int nb_conflicts_removed = 0;
+	पूर्णाङ्क nb_conflicts_removed = 0;
 
 	// Iterate backwards because Array::remove() shifts later entries left.
-	for (int idx = (static_cast<int>(_buffer.size()) - 1); idx >= 0; --idx) {
-		const hrt_abstime latest_update = _buffer[idx].latest_update_timestamp;
+	प्रति (पूर्णाङ्क idx = (static_cast<पूर्णाङ्क>(बफर.आकार()) - 1); idx >= 0; --idx) {
+		ध्रुव hrt_abstime latest_update = बफर[idx].latest_update_timestamp;
 
-		if (latest_update == 0 || latest_update > now || (now - latest_update) > timeout_us) {
-			const conflict_info_s removed_conflict = _buffer[idx];
-			_buffer.remove(idx);
-			record_removed(changes, removed_conflict, RemoveBufferCause::kStaleConflict);
+		यदि (latest_update == 0 || latest_update > now || (now - latest_update) > timeout_us) {
+			ध्रुव conflict_info_s removed_conflict = बफर[idx];
+			बफर.remove(idx);
+			लेखः_removed(changes, removed_conflict, Remove_बफर_Cause::kStaleConflict);
 			nb_conflicts_removed++;
 		}
 	}
 
-	if (nb_conflicts_removed > 0) {
+	यदि (nb_conflicts_removed > 0) {
 		PX4_DEBUG("DAA: removed %d stale conflicts from buffer", nb_conflicts_removed);
 	}
 
-	return nb_conflicts_removed > 0;
+	प्रत्यागम nb_conflicts_removed > 0;
 }
 
-void ConflictTracker::clear()
+शून्य ConflictTracker::clear()
 {
-	_buffer.clear();
-	reset_most_urgent();
+	बफर.clear();
+	reset_most_आत्ययिकम्();
 }
 
-void ConflictTracker::reset_most_urgent()
+शून्य ConflictTracker::reset_most_आत्ययिकम्()
 {
-	static constexpr float kNoConflictDistance{9999.f};
+	स्थिर constexpr भिन्न kNoConflictDistance{9999.f};
 	PX4_DEBUG("DAA: reset most urgent buffer to null.");
-	_most_urgent = {};
-	_most_urgent.aircraft_dist = kNoConflictDistance;
+	most_आत्ययिकम् = {};
+	most_आत्ययिकम्.aircraft_dist = kNoConflictDistance;
 }
 
-void ConflictTracker::refresh_most_urgent()
+शून्य ConflictTracker::refresh_most_आत्ययिकम्()
 {
-	if (_buffer.empty()) {
+	यदि (बफर.रिक्तानि()) {
 		PX4_DEBUG("DAA: refresh_most_urgent empty buffer.");
-		reset_most_urgent();
-		return;
+		reset_most_आत्ययिकम्();
+		प्रत्यागम;
 	}
 
-	_most_urgent = find_most_urgent();
+	most_आत्ययिकम् = find_most_आत्ययिकम्();
 }
 
-conflict_info_s ConflictTracker::find_most_urgent() const
+conflict_info_s ConflictTracker::find_most_आत्ययिकम्() ध्रुव
 {
-	const int most_urgent_conflict_idx = find_conflict_idx_by_priority(ConflictPriority::kMostUrgent);
+	ध्रुव पूर्णाङ्क most_आत्ययिकम्_conflict_idx = find_conflict_idx_by_प्राथमिकता(Conflict_प्राथमिकता::k_Most_आत्ययिकम्);
 
-	if (!is_valid_idx(most_urgent_conflict_idx)) {
-		return {};
+	यदि (!is_valid_idx(most_आत्ययिकम्_conflict_idx)) {
+		प्रत्यागम {};
 	}
 
-	return _buffer[most_urgent_conflict_idx];
+	प्रत्यागम बफर[most_आत्ययिकम्_conflict_idx];
 }
 
-conflict_info_s ConflictTracker::get_conflict(const DaaEncodedId &encoded_id) const
+conflict_info_s ConflictTracker::get_conflict(ध्रुव DaaEncodedId &encoded_id) ध्रुव
 {
-	const int conflict_idx = find_conflict_idx(encoded_id);
+	ध्रुव पूर्णाङ्क conflict_idx = find_conflict_idx(encoded_id);
 
-	if (!is_valid_idx(conflict_idx)) {
-		return {};
+	यदि (!is_valid_idx(conflict_idx)) {
+		प्रत्यागम {};
 	}
 
-	return _buffer[conflict_idx];
+	प्रत्यागम बफर[conflict_idx];
 }
 
-int ConflictTracker::find_conflict_idx_by_priority(const ConflictPriority priority) const
+पूर्णाङ्क ConflictTracker::find_conflict_idx_by_प्राथमिकता(ध्रुव Conflict_प्राथमिकता प्राथमिकता) ध्रुव
 {
-	const int buff_size = static_cast<int>(_buffer.size());
+	ध्रुव पूर्णाङ्क buff_आकार = static_cast<पूर्णाङ्क>(बफर.आकार());
 
-	if (buff_size < 1) {
-		return -1;
+	यदि (buff_आकार < 1) {
+		प्रत्यागम -1;
 	}
 
-	int best_idx = 0;
+	पूर्णाङ्क best_idx = 0;
 
-	for (int i = 1; i < buff_size; ++i) {
-		const bool is_better = (priority == ConflictPriority::kMostUrgent)
-				       ? is_conflict_more_important(_buffer[i], _buffer[best_idx])
-				       : is_conflict_less_important(_buffer[i], _buffer[best_idx]);
+	प्रति (पूर्णाङ्क i = 1; i < buff_आकार; ++i) {
+		ध्रुव तार्किक is_better = (प्राथमिकता == Conflict_प्राथमिकता::k_Most_आत्ययिकम्)
+				       ? is_conflict_अधिकम्_important(बफर[i], बफर[best_idx])
+				       : is_conflict_less_important(बफर[i], बफर[best_idx]);
 
-		if (is_better) {
+		यदि (is_better) {
 			best_idx = i;
 		}
 	}
 
-	return best_idx;
+	प्रत्यागम best_idx;
 }
 
-int ConflictTracker::find_conflict_idx(const DaaEncodedId &encoded_id) const
+पूर्णाङ्क ConflictTracker::find_conflict_idx(ध्रुव DaaEncodedId &encoded_id) ध्रुव
 {
-	for (size_t i = 0; i < _buffer.size(); i++) {
-		if (_buffer[i].encoded_id == encoded_id) {
-			return static_cast<int>(i);
+	प्रति (size_t i = 0; i < बफर.आकार(); i++) {
+		यदि (बफर[i].encoded_id == encoded_id) {
+			प्रत्यागम static_cast<पूर्णाङ्क>(i);
 		}
 	}
 
-	return -1;
+	प्रत्यागम -1;
 }
 
-bool ConflictTracker::is_conflict_less_important(const conflict_info_s &new_conflict,
-		const conflict_info_s &base_conflict)
+तार्किक ConflictTracker::is_conflict_less_important(ध्रुव conflict_info_s &new_conflict,
+		ध्रुव conflict_info_s &आधारः_conflict)
 {
-	if (new_conflict.conflict_level != base_conflict.conflict_level) {
-		return new_conflict.conflict_level < base_conflict.conflict_level;
+	यदि (new_conflict.conflict_level != आधारः_conflict.conflict_level) {
+		प्रत्यागम new_conflict.conflict_level < आधारः_conflict.conflict_level;
 	}
 
-	return new_conflict.aircraft_dist > base_conflict.aircraft_dist;
+	प्रत्यागम new_conflict.aircraft_dist > आधारः_conflict.aircraft_dist;
 }
 
-bool ConflictTracker::is_conflict_more_important(const conflict_info_s &new_conflict,
-		const conflict_info_s &base_conflict)
+तार्किक ConflictTracker::is_conflict_अधिकम्_important(ध्रुव conflict_info_s &new_conflict,
+		ध्रुव conflict_info_s &आधारः_conflict)
 {
-	if (new_conflict.conflict_level != base_conflict.conflict_level) {
-		return new_conflict.conflict_level > base_conflict.conflict_level;
+	यदि (new_conflict.conflict_level != आधारः_conflict.conflict_level) {
+		प्रत्यागम new_conflict.conflict_level > आधारः_conflict.conflict_level;
 	}
 
-	return new_conflict.aircraft_dist < base_conflict.aircraft_dist;
+	प्रत्यागम new_conflict.aircraft_dist < आधारः_conflict.aircraft_dist;
 }

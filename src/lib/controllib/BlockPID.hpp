@@ -37,60 +37,60 @@
  * Controller library code
  */
 
-#pragma once
+#निर्देशः once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <assert.h>
+#अन्तर्भाव <time.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <mathlib/math/test/test.hpp>
+#अन्तर्भाव <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#अन्तर्भाव "block/Block.hpp"
+#अन्तर्भाव "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#अन्तर्भाव "matrix/math.hpp"
 
-namespace control
+नामाकाश control
 {
 
 /**
  * A proportional-integral-derivative controller.
  * @link http://en.wikipedia.org/wiki/PID_controller
  */
-class __EXPORT BlockPID: public SuperBlock
+वर्ग __EXPORT खण्डम्_PID: सार्वजनिक Super_खण्डम्
 {
-public:
+सार्वजनिक:
 // methods
-	BlockPID(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
-		_integral(this, "I"),
-		_derivative(this, "D"),
-		_kP(this, "P"),
-		_kI(this, "I"),
-		_kD(this, "D")
+	खण्डम्_PID(Super_खण्डम् *parent, ध्रुव वर्ण *name) :
+		Super_खण्डम्(parent, name),
+		_integral(एतत्, "I"),
+		_derivative(एतत्, "D"),
+		_kP(एतत्, "P"),
+		_kI(एतत्, "I"),
+		_kD(एतत्, "D")
 	{}
-	virtual ~BlockPID() = default;
-	float update(float input)
+	आभास ~खण्डम्_PID() = स्वभाव;
+	भिन्न update(भिन्न निवेशः)
 	{
-		return getKP() * input +
-		       getKI() * getIntegral().update(input) +
-		       getKD() * getDerivative().update(input);
+		प्रत्यागम getKP() * निवेशः +
+		       getKI() * getIntegral().update(निवेशः) +
+		       getKD() * getDerivative().update(निवेशः);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKI() { return _kI.get(); }
-	float getKD() { return _kD.get(); }
-	BlockIntegral &getIntegral() { return _integral; }
-	BlockDerivative &getDerivative() { return _derivative; }
-private:
-// attributes
-	BlockIntegral _integral;
-	BlockDerivative _derivative;
-	control::BlockParamFloat _kP;
-	control::BlockParamFloat _kI;
-	control::BlockParamFloat _kD;
+	भिन्न getKP() { प्रत्यागम _kP.get(); }
+	भिन्न getKI() { प्रत्यागम _kI.get(); }
+	भिन्न getKD() { प्रत्यागम _kD.get(); }
+	खण्डम्_Integral &getIntegral() { प्रत्यागम _integral; }
+	खण्डम्_Derivative &getDerivative() { प्रत्यागम _derivative; }
+गुप्त:
+//गुणाः
+	खण्डम्_Integral _integral;
+	खण्डम्_Derivative _derivative;
+	control::खण्डम्_Param_Float _kP;
+	control::खण्डम्_Param_Float _kI;
+	control::खण्डम्_Param_Float _kD;
 };
 
 } // namespace control

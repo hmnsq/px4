@@ -40,72 +40,72 @@
  *
  */
 
-#pragma once
+#निर्देशः once
 
-#include <float.h>
+#अन्तर्भाव <float.h>
 
-#include <commander/px4_custom_mode.h>
-#include <drivers/drv_hrt.h>
-#include <mathlib/mathlib.h>
-#include <matrix/matrix/math.hpp>
-#include <px4_platform_common/module_params.h>
-#include <systemlib/mavlink_log.h>
-#include <uORB/Publication.hpp>
-#include <uORB/Subscription.hpp>
-#include <uORB/SubscriptionMultiArray.hpp>
-#include <uORB/topics/collision_constraints.h>
-#include <uORB/topics/distance_sensor.h>
-#include <uORB/topics/mavlink_log.h>
-#include <uORB/topics/obstacle_distance.h>
-#include <uORB/topics/vehicle_attitude.h>
-#include <uORB/topics/vehicle_command.h>
+#अन्तर्भाव <commander/px4_custom_mode.h>
+#अन्तर्भाव <drivers/drv_hrt.h>
+#अन्तर्भाव <mathlib/mathlib.h>
+#अन्तर्भाव <matrix/matrix/math.hpp>
+#अन्तर्भाव <px4_platform_common/module_params.h>
+#अन्तर्भाव <systemlib/mavlink_log.h>
+#अन्तर्भाव <uORB/Publication.hpp>
+#अन्तर्भाव <uORB/Subscription.hpp>
+#अन्तर्भाव <uORB/SubscriptionMultiArray.hpp>
+#अन्तर्भाव <uORB/topics/collision_constraints.h>
+#अन्तर्भाव <uORB/topics/distance_sensor.h>
+#अन्तर्भाव <uORB/topics/mavlink_log.h>
+#अन्तर्भाव <uORB/topics/obstacle_distance.h>
+#अन्तर्भाव <uORB/topics/vehicle_attitude.h>
+#अन्तर्भाव <uORB/topics/vehicle_command.h>
 
-using namespace time_literals;
+उपयुज्य नामाकाश time_literals;
 
-class CollisionPrevention : public ModuleParams
+वर्ग CollisionPrevention : सार्वजनिक ModuleParams
 {
-public:
+सार्वजनिक:
 	CollisionPrevention(ModuleParams *parent);
-	~CollisionPrevention() override = default;
+	~CollisionPrevention() override = स्वभाव;
 
 	/**
 	 * Returns true if Collision Prevention is running
 	 */
-	bool is_active();
+	तार्किक is_सक्रिय();
 
 	/**
 	 * Computes collision free setpoints
 	 * @param setpoint_accel setpoint purely based on sticks, to be modified
 	 * @param setpoint_vel current velocity setpoint as information to be able to stop in time, does not get changed
 	 */
-	void modifySetpoint(matrix::Vector2f &setpoint_accel, const matrix::Vector2f &setpoint_vel);
+	शून्य modifySetpoint(matrix::Vector2f &setpoint_accel, ध्रुव matrix::Vector2f &setpoint_vel);
 
-	static constexpr int BIN_COUNT =
-		sizeof(obstacle_distance_s::distances) / sizeof(obstacle_distance_s::distances[0]); // 72
-	static constexpr int BIN_SIZE = 360 / BIN_COUNT; // cannot be lower than 5 degrees, should divide 360 evenly
+	स्थिर constexpr पूर्णाङ्क BIN_गणनम् =
+		परिमाण(obstacle_distance_s::distances) / परिमाण(obstacle_distance_s::distances[0]); // 72
+	स्थिर constexpr पूर्णाङ्क BIN_आकार = 360 / BIN_गणनम्; // cannot be lower than 5 degrees, should divide 360 evenly
 
-protected:
+रक्षित:
 	/** Aggregates the sensor data into an internal obstacle map in body frame */
-	void _updateObstacleMap();
+	शून्य _updateObstacleMap();
 
 	/** Updates the obstacle data based on stale data and calculates values from the map */
-	void _updateObstacleData();
+	शून्य update_Obstacle_दत्त();
 
 	/** Calculate the constrained setpoint considering the current obstacle distances, acceleration setpoint and velocity setpoint */
-	void _calculateConstrainedSetpoint(matrix::Vector2f &setpoint_accel, const matrix::Vector2f &setpoint_vel);
+	शून्य _calculateConstrainedSetpoint(matrix::Vector2f &setpoint_accel, ध्रुव matrix::Vector2f &setpoint_vel);
 
 	obstacle_distance_s _obstacle_map_body_frame{};
-	bool _data_fov[BIN_COUNT] {};
-	uint64_t _data_timestamps[BIN_COUNT] {};
-	uint16_t _data_maxranges[BIN_COUNT] {}; /**< in cm */
+	तार्किक दत्त_fov[BIN_गणनम्] {};
+	uint64_t दत्त_timestamps[BIN_गणनम्] {};
+	uint16_t दत्त_maxranges[BIN_गणनम्] {}; /**< in cm */
 
-	void _addDistanceSensorData(distance_sensor_s &distance_sensor, const matrix::Quatf &vehicle_attitude);
+	शून्य सङ्कलय_Distance_Sensor_दत्त(distance_sensor_s &distance_sensor, ध्रुव matrix::Quatf &vehicle_attitude);
 
 	/**
 	 * Updates obstacle distance message with measurement from offboard
 	 * @param obstacle, obstacle_distance message to be updated
 	 */
-	void _addObstacleSensorData(const obstacle_distance_s &obstacle, const float vehicle_yaw);
+	शून्य सङ्कलय_Obstacle_Sensor_दत्त(ध्रुव obstacle_distance_s &obstacle, ध्रुव भिन्न vehicle_yaw);
 
 	/**
 	 * Computes an adaption to the setpoint direction to guide towards free space
@@ -113,7 +113,7 @@ protected:
 	 * @param setpoint_index, index of the setpoint in the internal obstacle map
 	 * @param vehicle_yaw_angle_rad, vehicle orientation
 	 */
-	void _adaptSetpointDirection(matrix::Vector2f &setpoint_dir, int &setpoint_index, float vehicle_yaw_angle_rad);
+	शून्य _adaptSetpointDirection(matrix::Vector2f &setpoint_dir, पूर्णाङ्क &setpoint_सूचकांक_2, भिन्न vehicle_yaw_angle_rad);
 
 	/**
 	 * Constrain the acceleration setpoint based on the distance to the obstacle
@@ -134,14 +134,14 @@ protected:
 	 * └─┘/     │
 	 *           -1
 	 */
-	matrix::Vector2f _constrainAccelerationSetpoint(const float &setpoint_length);
+	matrix::Vector2f _constrainAccelerationSetpoint(ध्रुव भिन्न &setpoint_दीर्घता);
 
-	void _getVelocityCompensationAcceleration(const float vehicle_yaw_angle_rad, const matrix::Vector2f &setpoint_vel,
-			const hrt_abstime now, float &vel_comp_accel, matrix::Vector2f &vel_comp_accel_dir);
+	शून्य _getVelocityCompensationAcceleration(ध्रुव भिन्न vehicle_yaw_angle_rad, ध्रुव matrix::Vector2f &setpoint_vel,
+			ध्रुव hrt_abstime now, भिन्न &vel_comp_accel, matrix::Vector2f &vel_comp_accel_dir);
 
-	float _getObstacleDistance(const matrix::Vector2f &direction);
+	भिन्न _getObstacleDistance(ध्रुव matrix::Vector2f &direction);
 
-	float _getScale(const float &reference_distance);
+	भिन्न _getScale(ध्रुव भिन्न &reference_distance);
 
 	/**
 	 * Determines whether a new sensor measurement is used
@@ -149,54 +149,54 @@ protected:
 	 * @param sensor_range, max range of the sensor in meters
 	 * @param sensor_reading, distance measurement in meters
 	 */
-	bool _enterData(int map_index, float sensor_range, float sensor_reading);
+	तार्किक enter_दत्त(पूर्णाङ्क map_सूचकांक, भिन्न sensor_range, भिन्न sensor_reading);
 
-	bool _checkSetpointDirectionFeasability();
+	तार्किक _checkSetpointDirectionFeasability();
 
-	void _transformSetpoint(const matrix::Vector2f &setpoint);
+	शून्य _transformSetpoint(ध्रुव matrix::Vector2f &setpoint);
 
 
 	//Timing functions. Necessary to mock time in the tests
-	virtual hrt_abstime getTime();
-	virtual hrt_abstime getElapsedTime(const hrt_abstime *ptr);
+	आभास hrt_abstime getTime();
+	आभास hrt_abstime getElapsedTime(ध्रुव hrt_abstime *ptr);
 
-private:
-	bool _data_stale{true}; 		/**< states if the data is stale */
-	bool _was_active{false};		/**< states if the collision prevention interferes with the user input */
-	bool _obstacle_data_present{false};	/**< states if obstacle data is present */
+गुप्त:
+	तार्किक दत्त_stale{सत्य}; 		/**< states if the data is stale */
+	तार्किक was_सक्रिय{असत्य};		/**< states if the collision prevention interferes with the user input */
+	तार्किक obstacle_दत्त_present{असत्य};	/**< states if obstacle data is present */
 
-	int _setpoint_index{};			/**< index of the setpoint*/
+	पूर्णाङ्क setpoint_सूचकांक{};			/**< index of the setpoint*/
 	matrix::Vector2f _setpoint_dir{};		/**< direction of the setpoint*/
 
-	float _closest_dist{};			/**< closest distance to an obstacle  */
+	भिन्न _closest_dist{};			/**< closest distance to an obstacle  */
 	matrix::Vector2f _closest_dist_dir{NAN, NAN};	/**< direction of the closest obstacle  */
 
-	float _min_dist_to_keep{};
+	भिन्न min_dist_गन्तव्यम्_keep{};
 
-	orb_advert_t _mavlink_log_pub{nullptr};	 	/**< Mavlink log uORB handle */
+	orb_advert_t _mavlink_log_pub{शून्यसूचकः};	 	/**< Mavlink log uORB handle */
 
 	uORB::Subscription _vehicle_attitude_sub{ORB_ID(vehicle_attitude)};
 	matrix::Quatf _vehicle_attitude{};
-	float _vehicle_yaw{0.f};
+	भिन्न _vehicle_yaw{0.f};
 
 	uORB::Publication<collision_constraints_s>	_constraints_pub{ORB_ID(collision_constraints)};		/**< constraints publication */
 	uORB::Publication<obstacle_distance_s>		_obstacle_distance_fused_pub{ORB_ID(obstacle_distance_fused)};	/**< obstacle_distance publication */
 	uORB::Publication<vehicle_command_s>	_vehicle_command_pub{ORB_ID(vehicle_command)};			/**< vehicle command do publication */
 
-	uORB::SubscriptionData<obstacle_distance_s> _sub_obstacle_distance{ORB_ID(obstacle_distance)}; /**< obstacle distances received form a range sensor */
+	uORB::Subscription_दत्त<obstacle_distance_s> _sub_obstacle_distance{ORB_ID(obstacle_distance)}; /**< obstacle distances received form a range sensor */
 	uORB::SubscriptionMultiArray<distance_sensor_s> _distance_sensor_subs{ORB_ID::distance_sensor};
 
-	static constexpr uint64_t RANGE_STREAM_TIMEOUT_US{500_ms};
-	static constexpr uint64_t TIMEOUT_HOLD_US{5_s};
+	स्थिर constexpr uint64_t RANGE_प्रवाहः_TIMEOUT_US{500_ms};
+	स्थिर constexpr uint64_t TIMEOUT_HOLD_US{5_s};
 
-	hrt_abstime	_last_timeout_warning{0};
+	hrt_abstime	चरमः_timeout_warning{0};
 	hrt_abstime	_time_activated{0};
 
 	DEFINE_PARAMETERS(
 		(ParamFloat<px4::params::CP_DIST>) _param_cp_dist, 		/**< collision prevention keep minimum distance */
 		(ParamFloat<px4::params::CP_DELAY>) _param_cp_delay, 		/**< delay of the range measurement data*/
 		(ParamFloat<px4::params::CP_GUIDE_ANG>) _param_cp_guide_ang, 	/**< collision prevention change setpoint angle */
-		(ParamBool<px4::params::CP_GO_NO_DATA>) _param_cp_go_no_data, 	/**< movement allowed where no data*/
+		(ParamBool<px4::params::CP_GO_NO_दत्त>) param_cp_go_no_दत्त, 	/**< movement allowed where no data*/
 		(ParamFloat<px4::params::MPC_XY_P>) _param_mpc_xy_p, 		/**< p gain from position controller*/
 		(ParamFloat<px4::params::MPC_JERK_MAX>) _param_mpc_jerk_max, 	/**< vehicle maximum jerk*/
 		(ParamFloat<px4::params::MPC_ACC_HOR>) _param_mpc_acc_hor, 	/**< vehicle maximum horizontal acceleration*/
@@ -210,25 +210,25 @@ private:
 	 * @param curr_pos, current vehicle position
 	 * @param curr_vel, current vehicle velocity
 	 */
-	void _calculateConstrainedSetpoint(matrix::Vector2f &setpoint, const matrix::Vector2f &curr_pos,
-					   const matrix::Vector2f &curr_vel);
+	शून्य _calculateConstrainedSetpoint(matrix::Vector2f &setpoint, ध्रुव matrix::Vector2f &curr_pos,
+					   ध्रुव matrix::Vector2f &curr_vel);
 
 	/**
 	 * Publishes collision_constraints message
 	 * @param original_setpoint, setpoint before collision prevention intervention
 	 * @param adapted_setpoint, collision prevention adaped setpoint
 	 */
-	void _publishConstrainedSetpoint(const matrix::Vector2f &original_setpoint, const matrix::Vector2f &adapted_setpoint);
+	शून्य _publishConstrainedSetpoint(ध्रुव matrix::Vector2f &original_setpoint, ध्रुव matrix::Vector2f &adapted_setpoint);
 
 	/**
 	 * Publishes obstacle_distance message with fused data from offboard and from distance sensors
 	 * @param obstacle, obstacle_distance message to be publsihed
 	 */
-	void _publishObstacleDistance(obstacle_distance_s &obstacle);
+	शून्य _publishObstacleDistance(obstacle_distance_s &obstacle);
 
 	/**
 	 * Publishes vehicle command.
 	 */
-	void _publishVehicleCmdDoLoiter();
+	शून्य _publishVehicleCmdDoLoiter();
 
 };

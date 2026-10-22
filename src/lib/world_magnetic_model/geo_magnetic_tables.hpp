@@ -31,16 +31,16 @@
  *
  ****************************************************************************/
 
-#include <stdint.h>
+#अन्तर्भाव <stdint.h>
 
-static constexpr float SAMPLING_RES = 10;
-static constexpr float SAMPLING_MIN_LAT = -90;
-static constexpr float SAMPLING_MAX_LAT = 90;
-static constexpr float SAMPLING_MIN_LON = -180;
-static constexpr float SAMPLING_MAX_LON = 180;
+स्थिर constexpr भिन्न SAMPLING_RES = 10;
+स्थिर constexpr भिन्न SAMPLING_MIN_LAT = -90;
+स्थिर constexpr भिन्न SAMPLING_MAX_LAT = 90;
+स्थिर constexpr भिन्न SAMPLING_MIN_LON = -180;
+स्थिर constexpr भिन्न SAMPLING_MAX_LON = 180;
 
-static constexpr int LAT_DIM = 19;
-static constexpr int LON_DIM = 37;
+स्थिर constexpr पूर्णाङ्क LAT_DIM = 19;
+स्थिर constexpr पूर्णाङ्क LON_DIM = 37;
 
 
 // *INDENT-OFF*
@@ -51,7 +51,7 @@ static constexpr int LON_DIM = 37;
 // Model: WMM-2020,
 // Version: 0.5.1.11,
 // Date: 2024.41257,
-static constexpr const int16_t declination_table[19][37] {
+स्थिर constexpr ध्रुव int16_t declination_सारणी[19][37] {
 	//    LONGITUDE:   -180,  -170,  -160,  -150,  -140,  -130,  -120,  -110,  -100,   -90,   -80,   -70,   -60,   -50,   -40,   -30,   -20,   -10,     0,    10,    20,    30,    40,    50,    60,    70,    80,    90,   100,   110,   120,   130,   140,   150,   160,   170,   180,
 	/* LAT: -90 */ {  27264, 25429, 23595, 21761, 19926, 18092, 16258, 14423, 12589, 10754,  8920,  7086,  5251,  3417,  1583,  -252, -2086, -3921, -5755, -7589, -9424,-11258,-13092,-14927,-16761,-18596,-20430,-22264,-24099,-25933,-27768,-29602,-31436, 32767, 30933, 29098, 27264, },
 	/* LAT: -80 */ {  23650, 21416, 19382, 17521, 15799, 14184, 12647, 11165,  9721,  8303,  6904,  5519,  4143,  2772,  1397,     9, -1403, -2848, -4333, -5863, -7437, -9056,-10718,-12423,-14175,-15984,-17864,-19835,-21922,-24152,-26545,-29105,-31803, 31464, 28718, 26092, 23650, },
@@ -73,16 +73,16 @@ static constexpr const int16_t declination_table[19][37] {
 	/* LAT:  80 */ {  -1054,   -90,   801,  1527,  1946,  1812,   731, -1632, -4654, -6842, -7732, -7698, -7114, -6204, -5096, -3864, -2554, -1197,   184,  1572,  2947,  4292,  5581,  6779,  7828,  8630,  8988,  8486,  6313,  2026, -1910, -3677, -4009, -3636, -2914, -2019, -1054, }, // WARNING! black out zone
 	/* LAT:  90 */ { -30607,-28773,-26938,-25104,-23269,-21435,-19601,-17766,-15932,-14097,-12263,-10429, -8594, -6760, -4926, -3091, -1257,   578,  2412,  4246,  6081,  7915,  9749, 11584, 13418, 15253, 17087, 18921, 20756, 22590, 24424, 26259, 28093, 29928, 31762,-32441,-30607, }, // WARNING! black out zone
 };
-static constexpr float WMM_DECLINATION_SCALE_TO_DEGREES = 0.00545143529f;
-static constexpr float WMM_DECLINATION_MIN_DEGREES = -176.9f; // latitude: 90, longitude: 170
-static constexpr float WMM_DECLINATION_MAX_DEGREES = 178.6f; // latitude: -90, longitude: 150
+स्थिर constexpr भिन्न WMM_DECLINATION_SCALE_गन्तव्यम्_DEGREES = 0.00545143529f;
+स्थिर constexpr भिन्न WMM_DECLINATION_MIN_DEGREES = -176.9f; // latitude: 90, longitude: 170
+स्थिर constexpr भिन्न WMM_DECLINATION_MAX_DEGREES = 178.6f; // latitude: -90, longitude: 150
 
 
 // Magnetic inclination data in 0.002699 degrees
 // Model: WMM-2020,
 // Version: 0.5.1.11,
 // Date: 2024.41257,
-static constexpr const int16_t inclination_table[19][37] {
+स्थिर constexpr ध्रुव int16_t inclination_सारणी[19][37] {
 	//    LONGITUDE:   -180,  -170,  -160,  -150,  -140,  -130,  -120,  -110,  -100,   -90,   -80,   -70,   -60,   -50,   -40,   -30,   -20,   -10,     0,    10,    20,    30,    40,    50,    60,    70,    80,    90,   100,   110,   120,   130,   140,   150,   160,   170,   180,
 	/* LAT: -90 */ { -26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663,-26663, },
 	/* LAT: -80 */ { -28959,-28675,-28333,-27951,-27540,-27113,-26682,-26258,-25854,-25482,-25150,-24867,-24633,-24450,-24315,-24226,-24183,-24188,-24245,-24361,-24539,-24783,-25092,-25462,-25884,-26346,-26833,-27328,-27812,-28262,-28656,-28973,-29191,-29297,-29287,-29170,-28959, },
@@ -104,16 +104,16 @@ static constexpr const int16_t inclination_table[19][37] {
 	/* LAT:  80 */ {  31820, 31841, 31914, 32033, 32188, 32362, 32524, 32622, 32598, 32449, 32224, 31969, 31713, 31474, 31265, 31093, 30963, 30878, 30840, 30850, 30908, 31015, 31169, 31368, 31607, 31878, 32167, 32450, 32679, 32767, 32672, 32479, 32271, 32087, 31945, 31855, 31820, }, // WARNING! black out zone
 	/* LAT:  90 */ {  32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, 32694, }, // WARNING! black out zone
 };
-static constexpr float WMM_INCLINATION_SCALE_TO_DEGREES = 0.00269892697f;
-static constexpr float WMM_INCLINATION_MIN_DEGREES = -87.4f; // latitude: -60, longitude: 130
-static constexpr float WMM_INCLINATION_MAX_DEGREES = 88.4f; // latitude: 80, longitude: 110
+स्थिर constexpr भिन्न WMM_INCLINATION_SCALE_गन्तव्यम्_DEGREES = 0.00269892697f;
+स्थिर constexpr भिन्न WMM_INCLINATION_MIN_DEGREES = -87.4f; // latitude: -60, longitude: 130
+स्थिर constexpr भिन्न WMM_INCLINATION_MAX_DEGREES = 88.4f; // latitude: 80, longitude: 110
 
 
 // Magnetic totalintensity data in 2.042 nanoTesla
 // Model: WMM-2020,
 // Version: 0.5.1.11,
 // Date: 2024.41257,
-static constexpr const int16_t totalintensity_table[19][37] {
+स्थिर constexpr ध्रुव int16_t totalintensity_सारणी[19][37] {
 	//    LONGITUDE:   -180,  -170,  -160,  -150,  -140,  -130,  -120,  -110,  -100,   -90,   -80,   -70,   -60,   -50,   -40,   -30,   -20,   -10,     0,    10,    20,    30,    40,    50,    60,    70,    80,    90,   100,   110,   120,   130,   140,   150,   160,   170,   180,
 	/* LAT: -90 */ {  26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, 26644, },
 	/* LAT: -80 */ {  29615, 29299, 28908, 28453, 27945, 27395, 26815, 26218, 25619, 25032, 24474, 23959, 23502, 23115, 22808, 22592, 22476, 22469, 22578, 22807, 23157, 23621, 24187, 24836, 25543, 26279, 27014, 27716, 28358, 28914, 29365, 29700, 29913, 30004, 29979, 29846, 29615, },
@@ -135,6 +135,6 @@ static constexpr const int16_t totalintensity_table[19][37] {
 	/* LAT:  80 */ {  28358, 28266, 28189, 28125, 28072, 28025, 27977, 27922, 27854, 27769, 27667, 27549, 27422, 27295, 27178, 27083, 27020, 26999, 27025, 27102, 27229, 27402, 27613, 27847, 28090, 28324, 28531, 28697, 28813, 28875, 28885, 28848, 28776, 28680, 28572, 28462, 28358, }, // WARNING! black out zone
 	/* LAT:  90 */ {  27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, 27849, }, // WARNING! black out zone
 };
-static constexpr float WMM_TOTALINTENSITY_SCALE_TO_NANOTESLA = 2.04183477f;
-static constexpr float WMM_TOTALINTENSITY_MIN_NANOTESLA = 22226.9f; // latitude: -30, longitude: -60
-static constexpr float WMM_TOTALINTENSITY_MAX_NANOTESLA = 66904.8f; // latitude: -60, longitude: 130
+स्थिर constexpr भिन्न WMM_TOTALINTENSITY_SCALE_गन्तव्यम्_NANOTESLA = 2.04183477f;
+स्थिर constexpr भिन्न WMM_TOTALINTENSITY_MIN_NANOTESLA = 22226.9f; // latitude: -30, longitude: -60
+स्थिर constexpr भिन्न WMM_TOTALINTENSITY_MAX_NANOTESLA = 66904.8f; // latitude: -60, longitude: 130

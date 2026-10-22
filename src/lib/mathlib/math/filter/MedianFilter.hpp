@@ -38,83 +38,83 @@
  *
  */
 
-#pragma once
+#निर्देशः once
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
+#अन्तर्भाव <stdio.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <stdint.h>
+#अन्तर्भाव <string.h>
 
-namespace math
+नामाकाश math
 {
 
-template<typename U> struct is_floating_point { static constexpr bool value = false; };
-template<> struct is_floating_point<float> { static constexpr bool value = true; };
-template<> struct is_floating_point<double> { static constexpr bool value = true; };
-template<> struct is_floating_point<long double> { static constexpr bool value = true; };
+प्रतिरूपम्<प्रकारनाम U> संरचना is_floating_point { स्थिर constexpr तार्किक value = असत्य; };
+प्रतिरूपम्<> संरचना is_floating_point<भिन्न> { स्थिर constexpr तार्किक value = सत्य; };
+प्रतिरूपम्<> संरचना is_floating_point<द्विगुण> { स्थिर constexpr तार्किक value = सत्य; };
+प्रतिरूपम्<> संरचना is_floating_point<दीर्घ द्विगुण> { स्थिर constexpr तार्किक value = सत्य; };
 
-template<typename T, int WINDOW = 3>
-class MedianFilter
+प्रतिरूपम्<प्रकारनाम T, पूर्णाङ्क गवाक्षः = 3>
+वर्ग MedianFilter
 {
-public:
-	static_assert(WINDOW >= 3, "MedianFilter window size must be >= 3");
-	static_assert(WINDOW % 2, "MedianFilter window size must be odd"); // odd
+सार्वजनिक:
+	static_assert(गवाक्षः >= 3, "MedianFilter window size must be >= 3");
+	static_assert(गवाक्षः % 2, "MedianFilter window size must be odd"); // odd
 
-	MedianFilter() = default;
+	MedianFilter() = स्वभाव;
 
-	void insert(const T &sample)
+	शून्य निवेशय(ध्रुव T &sample)
 	{
-		_head = (_head + 1) % WINDOW;
-		_buffer[_head] = sample;
+		शीर्ष = (शीर्ष + 1) % गवाक्षः;
+		बफर[शीर्ष] = sample;
 	}
 
 	T median()
 	{
-		T sorted[WINDOW];
-		memcpy(sorted, _buffer, sizeof(_buffer));
-		qsort(&sorted, WINDOW, sizeof(T), cmp);
+		T sorted[गवाक्षः];
+		स्मृतिं_प्रतिलिख(sorted, बफर, परिमाण(बफर));
+		शीघ्रं_क्रमय(&sorted, गवाक्षः, परिमाण(T), cmp);
 
-		return sorted[WINDOW / 2];
+		प्रत्यागम sorted[गवाक्षः / 2];
 	}
 
-	T apply(const T &sample)
+	T apply(ध्रुव T &sample)
 	{
-		insert(sample);
-		return median();
+		निवेशय(sample);
+		प्रत्यागम median();
 	}
 
-private:
+गुप्त:
 
-	static int cmp(const void *a, const void *b)
+	स्थिर पूर्णाङ्क cmp(ध्रुव शून्य *a, ध्रुव शून्य *b)
 	{
-		const T va = *(const T *)a;
-		const T vb = *(const T *)b;
+		ध्रुव T va = *(ध्रुव T *)a;
+		ध्रुव T vb = *(ध्रुव T *)b;
 
-		if constexpr(is_floating_point<T>::value) {
-			if (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
-				return 0;
+		यदि constexpr(is_floating_point<T>::value) {
+			यदि (!__builtin_isfinite(va) && !__builtin_isfinite(vb)) {
+				प्रत्यागम 0;
 
-			} else if (!__builtin_isfinite(va)) {
-				return  1;
+			} अन्यथा यदि (!__builtin_isfinite(va)) {
+				प्रत्यागम  1;
 
-			} else if (!__builtin_isfinite(vb)) {
-				return -1;
+			} अन्यथा यदि (!__builtin_isfinite(vb)) {
+				प्रत्यागम -1;
 			}
 		}
 
-		if (va < vb) {
-			return -1;
+		यदि (va < vb) {
+			प्रत्यागम -1;
 		}
 
-		if (va > vb) {
-			return  1;
+		यदि (va > vb) {
+			प्रत्यागम  1;
 		}
 
-		return 0;
+		प्रत्यागम 0;
 	}
 
-	T _buffer[WINDOW] {};
-	uint8_t _head{0};
+	T बफर[गवाक्षः] {};
+	uint8_t शीर्ष{0};
 };
 
 } // namespace math

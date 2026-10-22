@@ -31,22 +31,22 @@
  *
  ****************************************************************************/
 
-#pragma once
+#निर्देशः once
 
 namespace bl_update
 {
 
-enum class Result {
+गणना class परिणाम_2 {
 	Updated,
 	Unchanged,
 	NotSupported,
 	OpenFailed,
 	TooLarge,
-	NoMemory,
+	No_स्मृतिः,
 	ReadFailed,
 	InvalidImage,
 	EraseFailed,
-	ProgramFailed,
+	क्रमादेशः_Failed,
 	VerifyFailed,
 };
 
@@ -55,8 +55,8 @@ enum class Result {
  * already holds that image. Other tasks do not run while flash is erased
  * and programmed.
  */
-Result flash(const char *path);
+परिणाम_2 flash(ध्रुव वर्ण *मार्गः);
 
-const char *result_str(Result result);
+ध्रुव वर्ण *परिणाम_str(परिणाम_2 परिणाम);
 
 } // namespace bl_update

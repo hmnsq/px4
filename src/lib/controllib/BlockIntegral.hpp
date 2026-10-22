@@ -37,16 +37,16 @@
  * Controller library code
  */
 
-#pragma once
+#निर्देशः once
 
-#include "BlockLimitSym.hpp"
+#अन्तर्भाव "BlockLimitSym.hpp"
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#अन्तर्भाव "block/Block.hpp"
+#अन्तर्भाव "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#अन्तर्भाव "matrix/math.hpp"
 
-namespace control
+नामाकाश control
 {
 
 /**
@@ -56,24 +56,24 @@ namespace control
  * for windup protection.
  * @see Limit
  */
-class __EXPORT BlockIntegral: public SuperBlock
+वर्ग __EXPORT खण्डम्_Integral: सार्वजनिक Super_खण्डम्
 {
-public:
+सार्वजनिक:
 // methods
-	BlockIntegral(SuperBlock *parent, const char *name) :
-		SuperBlock(parent, name),
+	खण्डम्_Integral(Super_खण्डम् *parent, ध्रुव वर्ण *name) :
+		Super_खण्डम्(parent, name),
 		_y(0),
-		_limit(this, "") {}
-	virtual ~BlockIntegral() = default;
-	float update(float input);
+		सीमा(एतत्, "") {}
+	आभास ~खण्डम्_Integral() = स्वभाव;
+	भिन्न update(भिन्न निवेशः);
 // accessors
-	float getY() {return _y;}
-	float getMax() {return _limit.getMax();}
-	void setY(float y) {_y = y;}
-protected:
-// attributes
-	float _y; /**< previous output */
-	BlockLimitSym _limit; /**< limiter */
+	भिन्न getY() {प्रत्यागम _y;}
+	भिन्न getMax() {प्रत्यागम सीमा.getMax();}
+	शून्य समुच्चयः_Y(भिन्न y) {_y = y;}
+रक्षित:
+//गुणाः
+	भिन्न _y; /**< previous output */
+	खण्डम्_सीमा_Sym सीमा; /**< limiter */
 };
 
 } // namespace control

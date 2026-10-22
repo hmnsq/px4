@@ -31,31 +31,31 @@
  *
  ****************************************************************************/
 
-#pragma once
+#निर्देशः once
 
-#include <px4_defines.h>
+#अन्तर्भाव <px4_defines.h>
 
-#include <matrix/math.hpp>
-#include <mathlib/mathlib.h>
+#अन्तर्भाव <matrix/math.hpp>
+#अन्तर्भाव <mathlib/mathlib.h>
 
-namespace math
+नामाकाश math
 {
-namespace trajectory
+नामाकाश trajectory
 {
-using matrix::Vector3f;
-using matrix::Vector2f;
+उपयुज्य matrix::Vector3f;
+उपयुज्य matrix::Vector2f;
 
-struct VehicleDynamicLimits {
-	float z_accept_rad;
-	float xy_accept_rad;
+संरचना VehicleDynamicLimits {
+	भिन्न z_accept_rad;
+	भिन्न xy_accept_rad;
 
-	float max_acc_xy;
-	float max_jerk;
+	भिन्न max_acc_xy;
+	भिन्न max_jerk;
 
-	float max_speed_xy;
+	भिन्न max_जवः_xy;
 
 	// TODO: remove this
-	float max_acc_xy_radius_scale;
+	भिन्न max_acc_xy_radius_scale;
 };
 
 /*
@@ -67,33 +67,33 @@ struct VehicleDynamicLimits {
  * the real acceptance radius is smaller.
  *
  */
-inline float computeStartXYSpeedFromWaypoints(const Vector3f &start_position, const Vector3f &target,
-		const Vector3f &next_target, float exit_speed, const VehicleDynamicLimits &config)
+अन्तःस्थ भिन्न computeStartXYSpeedFromWaypoints(ध्रुव Vector3f &start_position, ध्रुव Vector3f &target,
+		ध्रुव Vector3f &अग्र_target, भिन्न exit_जवः, ध्रुव VehicleDynamicLimits &config)
 {
-	const float distance_target_next = (target - next_target).xy().norm();
+	ध्रुव भिन्न distance_target_अग्र = (target - अग्र_target).xy().norm();
 
-	const bool target_next_different = distance_target_next  > 0.001f;
-	const bool waypoint_overlap = distance_target_next < config.xy_accept_rad;
+	ध्रुव तार्किक target_अग्र_different = distance_target_अग्र  > 0.001f;
+	ध्रुव तार्किक waypoint_overlap = distance_target_अग्र < config.xy_accept_rad;
 
-	float speed_at_target = 0.0f;
+	भिन्न जवः_at_target = 0.0f;
 
-	if (target_next_different &&
+	यदि (target_अग्र_different &&
 	    !waypoint_overlap
 	   ) {
 		// rounding can push the dot product of two unit vectors past 1, which acosf turns into NaN
-		const float cos_alpha = constrain(Vector2f((target - start_position).xy()).unit_or_zero().dot(
-				Vector2f((target - next_target).xy()).unit_or_zero()), -1.f, 1.f);
-		const float alpha = acosf(cos_alpha);
-		const float safe_alpha = constrain(alpha, 0.f, M_PI_F - FLT_EPSILON);
-		float accel_tmp = config.max_acc_xy_radius_scale * config.max_acc_xy;
-		float max_speed_in_turn = computeMaxSpeedInWaypoint(safe_alpha, accel_tmp, config.xy_accept_rad);
-		speed_at_target = min(max_speed_in_turn, exit_speed, config.max_speed_xy);
+		ध्रुव भिन्न cos_alpha = constrain(Vector2f((target - start_position).xy()).unit_or_zero().dot(
+				Vector2f((target - अग्र_target).xy()).unit_or_zero()), -1.f, 1.f);
+		ध्रुव भिन्न alpha = acosf(cos_alpha);
+		ध्रुव भिन्न safe_alpha = constrain(alpha, 0.f, M_PI_F - FLT_EPSILON);
+		भिन्न accel_tmp = config.max_acc_xy_radius_scale * config.max_acc_xy;
+		भिन्न max_जवः_अन्तर्_turn = compute_Max_जवः_अन्तर्_Waypoint(safe_alpha, accel_tmp, config.xy_accept_rad);
+		जवः_at_target = min(max_जवः_अन्तर्_turn, exit_जवः, config.max_जवः_xy);
 	}
 
-	float start_to_target = (start_position - target).xy().norm();
-	float max_speed = computeMaxSpeedFromDistance(config.max_jerk, config.max_acc_xy, start_to_target, speed_at_target);
+	भिन्न start_गन्तव्यम्_target = (start_position - target).xy().norm();
+	भिन्न max_जवः = compute_Max_जवः_From_Distance(config.max_jerk, config.max_acc_xy, start_गन्तव्यम्_target, जवः_at_target);
 
-	return min(config.max_speed_xy, max_speed);
+	प्रत्यागम min(config.max_जवः_xy, max_जवः);
 }
 
 /*
@@ -106,22 +106,22 @@ inline float computeStartXYSpeedFromWaypoints(const Vector3f &start_position, co
  *
  * @return the maximum speed at waypoint[0] which allows it to follow the trajectory while respecting the dynamic limits
  */
-template <int N>
-float computeXYSpeedFromWaypoints(const Vector3f waypoints[N], const VehicleDynamicLimits &config)
+प्रतिरूपम् <पूर्णाङ्क N>
+भिन्न computeXYSpeedFromWaypoints(ध्रुव Vector3f waypoints[N], ध्रुव VehicleDynamicLimits &config)
 {
 	static_assert(N >= 2, "Need at least 2 points to compute speed");
 
-	float max_speed = 0.f;
+	भिन्न max_जवः = 0.f;
 
 	// go backwards through the waypoints
-	for (int i = (N - 2); i >= 0; i--) {
-		max_speed = computeStartXYSpeedFromWaypoints(waypoints[i],
+	प्रति (पूर्णाङ्क i = (N - 2); i >= 0; i--) {
+		max_जवः = computeStartXYSpeedFromWaypoints(waypoints[i],
 				waypoints[i + 1],
 				waypoints[min(i + 2, N - 1)],
-				max_speed, config);
+				max_जवः, config);
 	}
 
-	return max_speed;
+	प्रत्यागम max_जवः;
 }
 
 /*
@@ -132,19 +132,19 @@ float computeXYSpeedFromWaypoints(const Vector3f waypoints[N], const VehicleDyna
  * only the XY components are scaled down to avoid affecting
  * Z in case of numerical issues
  */
-inline void clampToXYNorm(Vector3f &target, float max_xy_norm, float accuracy = FLT_EPSILON)
+अन्तःस्थ शून्य clamp_गन्तव्यम्_XYNorm(Vector3f &target, भिन्न max_xy_norm, भिन्न accuracy = FLT_EPSILON)
 {
-	const float xynorm = target.xy().norm();
-	const float scale_factor = (xynorm > FLT_EPSILON)
+	ध्रुव भिन्न xynorm = target.xy().norm();
+	ध्रुव भिन्न scale_गुणकः = (xynorm > FLT_EPSILON)
 				   ? max_xy_norm / xynorm
 				   : 1.f;
 
-	if (scale_factor < 1.f) {
-		if (max_xy_norm < accuracy && xynorm < accuracy) {
-			target.xy() = Vector2f(target) * scale_factor;
+	यदि (scale_गुणकः < 1.f) {
+		यदि (max_xy_norm < accuracy && xynorm < accuracy) {
+			target.xy() = Vector2f(target) * scale_गुणकः;
 
-		} else {
-			target *= scale_factor;
+		} अन्यथा {
+			target *= scale_गुणकः;
 		}
 	}
 }
@@ -157,19 +157,19 @@ inline void clampToXYNorm(Vector3f &target, float max_xy_norm, float accuracy = 
  * only the Z component is scaled down to avoid affecting
  * XY in case of numerical issues
  */
-inline void clampToZNorm(Vector3f &target, float max_z_norm, float accuracy = FLT_EPSILON)
+अन्तःस्थ शून्य clamp_गन्तव्यम्_ZNorm(Vector3f &target, भिन्न max_z_norm, भिन्न accuracy = FLT_EPSILON)
 {
-	const float znorm = fabs(target(2));
-	const float scale_factor = (znorm > FLT_EPSILON)
+	ध्रुव भिन्न znorm = fabs(target(2));
+	ध्रुव भिन्न scale_गुणकः = (znorm > FLT_EPSILON)
 				   ? max_z_norm / znorm
 				   : 1.f;
 
-	if (scale_factor < 1.f) {
-		if (max_z_norm < accuracy && znorm < accuracy) {
-			target(2) *= scale_factor;
+	यदि (scale_गुणकः < 1.f) {
+		यदि (max_z_norm < accuracy && znorm < accuracy) {
+			target(2) *= scale_गुणकः;
 
-		} else {
-			target *= scale_factor;
+		} अन्यथा {
+			target *= scale_गुणकः;
 		}
 	}
 }

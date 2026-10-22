@@ -31,58 +31,58 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <stdint.h>
-#include <string.h>
+#अन्तर्भाव <gtest/gtest.h>
+#अन्तर्भाव <stdint.h>
+#अन्तर्भाव <string.h>
 
 
-#include "Ringbuffer.hpp"
+#अन्तर्भाव "Ringbuffer.hpp"
 
-class TempData
+वर्ग अस्थायी_दत्त
 {
-public:
-	TempData(size_t len)
+सार्वजनिक:
+	अस्थायी_दत्त(size_t len)
 	{
-		_size = len;
-		_buf = new uint8_t[_size];
+		आकार_2 = len;
+		_buf = नूतन uint8_t[आकार_2];
 	}
 
-	~TempData()
+	~अस्थायी_दत्त()
 	{
-		delete[] _buf;
-		_buf = nullptr;
+		विलोपय[] _buf;
+		_buf = शून्यसूचकः;
 	}
 
-	uint8_t *buf() const
+	uint8_t *buf() ध्रुव
 	{
-		return _buf;
+		प्रत्यागम _buf;
 	}
 
-	size_t size() const
+	size_t आकार() ध्रुव
 	{
-		return _size;
+		प्रत्यागम आकार_2;
 	}
 
-	void paint(unsigned offset = 0)
+	शून्य paint(अचिह्नित विस्थापनम् = 0)
 	{
-		for (size_t i = 0; i < _size; ++i) {
-			_buf[i] = (uint8_t)((i + offset) % UINT8_MAX);
+		प्रति (size_t i = 0; i < आकार_2; ++i) {
+			_buf[i] = (uint8_t)((i + विस्थापनम्) % UINT8_MAX);
 		}
 	}
 
-private:
-	uint8_t *_buf {nullptr};
-	size_t _size{0};
+गुप्त:
+	uint8_t *_buf {शून्यसूचकः};
+	size_t आकार_2{0};
 
 };
 
-bool operator==(const TempData &lhs, const TempData &rhs)
+तार्किक संक्रियकः==(ध्रुव अस्थायी_दत्त &lhs, ध्रुव अस्थायी_दत्त &rhs)
 {
-	if (lhs.size() != rhs.size()) {
-		return false;
+	यदि (lhs.आकार() != rhs.आकार()) {
+		प्रत्यागम असत्य;
 	}
 
-	return memcmp(lhs.buf(), rhs.buf(), lhs.size()) == 0;
+	प्रत्यागम memcmp(lhs.buf(), rhs.buf(), lhs.आकार()) == 0;
 }
 
 
@@ -96,48 +96,48 @@ TEST(Ringbuffer, AllocateAndDeallocate)
 	// The second time we forget to clean up, but we expect no leak.
 }
 
-class RingbufferReallocation : public ::testing::TestWithParam<size_t>
+वर्ग RingbufferReallocation : सार्वजनिक ::testing::TestWithParam<size_t>
 {
-protected:
-	void check_reallocated(Ringbuffer &buf)
+रक्षित:
+	शून्य check_reallocated(Ringbuffer &buf)
 	{
-		const size_t capacity = GetParam();
+		ध्रुव size_t क्षमता = GetParam();
 		buf.deallocate();
-		ASSERT_TRUE(buf.allocate(capacity));
+		ASSERT_TRUE(buf.allocate(क्षमता));
 		// Keep these non-fatal so stale indices still reach the sanitizer-backed
 		// write/read below, which catches out-of-bounds reuse after shrinking.
-		EXPECT_EQ(buf.space_used(), 0u);
-		EXPECT_EQ(buf.space_available(), capacity - 1);
+		EXPECT_EQ(buf.space_प्रयुक्तम्(), 0u);
+		EXPECT_EQ(buf.space_उपलब्धम्(), क्षमता - 1);
 
 		uint8_t byte = 0;
-		EXPECT_EQ(buf.pop_front(&byte, sizeof(byte)), 0u);
+		EXPECT_EQ(buf.निष्कासय_front(&byte, परिमाण(byte)), 0u);
 
-		TempData data{capacity - 1};
-		data.paint(41);
-		ASSERT_TRUE(buf.push_back(data.buf(), data.size()));
-		EXPECT_EQ(buf.space_used(), data.size());
-		EXPECT_EQ(buf.space_available(), 0u);
-		EXPECT_FALSE(buf.push_back(&byte, sizeof(byte)));
+		अस्थायी_दत्त दत्त{क्षमता - 1};
+		दत्त.paint(41);
+		ASSERT_TRUE(buf.push_back(दत्त.buf(), दत्त.आकार()));
+		EXPECT_EQ(buf.space_प्रयुक्तम्(), दत्त.आकार());
+		EXPECT_EQ(buf.space_उपलब्धम्(), 0u);
+		EXPECT_FALSE(buf.push_back(&byte, परिमाण(byte)));
 
-		TempData out{data.size()};
-		ASSERT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
-		EXPECT_EQ(data, out);
-		EXPECT_EQ(buf.space_used(), 0u);
-		EXPECT_EQ(buf.space_available(), capacity - 1);
-		EXPECT_EQ(buf.pop_front(&byte, sizeof(byte)), 0u);
+		अस्थायी_दत्त बहिर्गमनम्{दत्त.आकार()};
+		ASSERT_EQ(buf.निष्कासय_front(बहिर्गमनम्.buf(), बहिर्गमनम्.आकार()), बहिर्गमनम्.आकार());
+		EXPECT_EQ(दत्त, बहिर्गमनम्);
+		EXPECT_EQ(buf.space_प्रयुक्तम्(), 0u);
+		EXPECT_EQ(buf.space_उपलब्धम्(), क्षमता - 1);
+		EXPECT_EQ(buf.निष्कासय_front(&byte, परिमाण(byte)), 0u);
 	}
 };
 
-TEST_P(RingbufferReallocation, PartiallyUsed)
+TEST_P(RingbufferReallocation, Partially_प्रयुक्तम्)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(16));
-	TempData data{4};
-	data.paint();
-	ASSERT_TRUE(buf.push_back(data.buf(), data.size()));
-	TempData out{2};
-	ASSERT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
-	ASSERT_EQ(buf.space_used(), 2u);
+	अस्थायी_दत्त दत्त{4};
+	दत्त.paint();
+	ASSERT_TRUE(buf.push_back(दत्त.buf(), दत्त.आकार()));
+	अस्थायी_दत्त बहिर्गमनम्{2};
+	ASSERT_EQ(buf.निष्कासय_front(बहिर्गमनम्.buf(), बहिर्गमनम्.आकार()), बहिर्गमनम्.आकार());
+	ASSERT_EQ(buf.space_प्रयुक्तम्(), 2u);
 
 	check_reallocated(buf);
 }
@@ -146,13 +146,13 @@ TEST_P(RingbufferReallocation, Drained)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(16));
-	TempData data{12};
-	data.paint();
-	ASSERT_TRUE(buf.push_back(data.buf(), data.size()));
-	TempData out{data.size()};
-	ASSERT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
-	ASSERT_EQ(data, out);
-	ASSERT_EQ(buf.space_used(), 0u);
+	अस्थायी_दत्त दत्त{12};
+	दत्त.paint();
+	ASSERT_TRUE(buf.push_back(दत्त.buf(), दत्त.आकार()));
+	अस्थायी_दत्त बहिर्गमनम्{दत्त.आकार()};
+	ASSERT_EQ(buf.निष्कासय_front(बहिर्गमनम्.buf(), बहिर्गमनम्.आकार()), बहिर्गमनम्.आकार());
+	ASSERT_EQ(दत्त, बहिर्गमनम्);
+	ASSERT_EQ(buf.space_प्रयुक्तम्(), 0u);
 
 	check_reallocated(buf);
 }
@@ -161,146 +161,146 @@ TEST_P(RingbufferReallocation, Wrapped)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(16));
-	TempData first{12};
+	अस्थायी_दत्त first{12};
 	first.paint();
-	ASSERT_TRUE(buf.push_back(first.buf(), first.size()));
-	TempData out{10};
-	ASSERT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
+	ASSERT_TRUE(buf.push_back(first.buf(), first.आकार()));
+	अस्थायी_दत्त बहिर्गमनम्{10};
+	ASSERT_EQ(buf.निष्कासय_front(बहिर्गमनम्.buf(), बहिर्गमनम्.आकार()), बहिर्गमनम्.आकार());
 
 	// Wrap the tail while the head is still near the end of the old allocation.
-	TempData second{8};
+	अस्थायी_दत्त second{8};
 	second.paint(12);
-	ASSERT_TRUE(buf.push_back(second.buf(), second.size()));
-	ASSERT_EQ(buf.space_used(), 10u);
+	ASSERT_TRUE(buf.push_back(second.buf(), second.आकार()));
+	ASSERT_EQ(buf.space_प्रयुक्तम्(), 10u);
 
 	check_reallocated(buf);
 }
 
-INSTANTIATE_TEST_SUITE_P(NewCapacity, RingbufferReallocation, ::testing::Values(size_t{8}, size_t{32}));
+INSTANTIATE_TEST_SUITE_P(New_क्षमता, RingbufferReallocation, ::testing::मानानि(size_t{8}, size_t{32}));
 
-TEST(Ringbuffer, PushATooBigMessage)
+TEST(Ringbuffer, प्रक्षिप_AToo_Big_सन्देशः)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	TempData data{200};
+	अस्थायी_दत्त दत्त{200};
 
 	// A message that doesn't fit should get rejected.
-	EXPECT_FALSE(buf.push_back(data.buf(), data.size()));
+	EXPECT_FALSE(buf.push_back(दत्त.buf(), दत्त.आकार()));
 }
 
-TEST(Ringbuffer, PushAndPopOne)
+TEST(Ringbuffer, प्रक्षिप_And_निष्कासय_One)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	TempData data{20};
-	data.paint();
+	अस्थायी_दत्त दत्त{20};
+	दत्त.paint();
 
-	EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
+	EXPECT_TRUE(buf.push_back(दत्त.buf(), दत्त.आकार()));
 
-	EXPECT_EQ(buf.space_used(), 20);
-	EXPECT_EQ(buf.space_available(), 79);
+	EXPECT_EQ(buf.space_प्रयुक्तम्(), 20);
+	EXPECT_EQ(buf.space_उपलब्धम्(), 79);
 
 	// Get everything
-	TempData out{20};
-	EXPECT_EQ(buf.pop_front(out.buf(), out.size()), 20);
-	EXPECT_EQ(data, out);
+	अस्थायी_दत्त बहिर्गमनम्{20};
+	EXPECT_EQ(buf.निष्कासय_front(बहिर्गमनम्.buf(), बहिर्गमनम्.आकार()), 20);
+	EXPECT_EQ(दत्त, बहिर्गमनम्);
 
 	// Nothing remaining
-	EXPECT_EQ(buf.pop_front(out.buf(), out.size()), 0);
+	EXPECT_EQ(buf.निष्कासय_front(बहिर्गमनम्.buf(), बहिर्गमनम्.आकार()), 0);
 }
 
-TEST(Ringbuffer, PushAndPopSeveral)
+TEST(Ringbuffer, प्रक्षिप_And_निष्कासय_Several)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	TempData data{90};
-	data.paint();
+	अस्थायी_दत्त दत्त{90};
+	दत्त.paint();
 
 	// 9 little chunks in
-	for (unsigned i = 0; i < 9; ++i) {
-		EXPECT_TRUE(buf.push_back(data.buf() + i * 10, 10));
+	प्रति (अचिह्नित i = 0; i < 9; ++i) {
+		EXPECT_TRUE(buf.push_back(दत्त.buf() + i * 10, 10));
 	}
 
 	// 10 won't because of overhead inside the buffer
-	EXPECT_FALSE(buf.push_back(data.buf(), 10));
+	EXPECT_FALSE(buf.push_back(दत्त.buf(), 10));
 
-	TempData out{90};
+	अस्थायी_दत्त बहिर्गमनम्{90};
 	// Take it back out in 2 big steps
-	EXPECT_EQ(buf.pop_front(out.buf(), 50), 50);
-	EXPECT_EQ(buf.pop_front(out.buf() + 50, 40), 40);
-	EXPECT_EQ(data, out);
+	EXPECT_EQ(buf.निष्कासय_front(बहिर्गमनम्.buf(), 50), 50);
+	EXPECT_EQ(buf.निष्कासय_front(बहिर्गमनम्.buf() + 50, 40), 40);
+	EXPECT_EQ(दत्त, बहिर्गमनम्);
 }
 
-TEST(Ringbuffer, PushAndTryToPopMore)
+TEST(Ringbuffer, प्रक्षिप_And_Try_गन्तव्यम्_निष्कासय_अधिकम्)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	TempData data1{50};
+	अस्थायी_दत्त data1{50};
 	data1.paint();
-	EXPECT_TRUE(buf.push_back(data1.buf(), data1.size()));
+	EXPECT_TRUE(buf.push_back(data1.buf(), data1.आकार()));
 
-	TempData out1{80};
-	EXPECT_EQ(buf.pop_front(out1.buf(), out1.size()), data1.size());
+	अस्थायी_दत्त out1{80};
+	EXPECT_EQ(buf.निष्कासय_front(out1.buf(), out1.आकार()), data1.आकार());
 }
 
-TEST(Ringbuffer, PushAndPopSeveralInterleaved)
+TEST(Ringbuffer, प्रक्षिप_And_निष्कासय_Several_Interleaved)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	TempData data1{50};
+	अस्थायी_दत्त data1{50};
 	data1.paint();
-	EXPECT_TRUE(buf.push_back(data1.buf(), data1.size()));
+	EXPECT_TRUE(buf.push_back(data1.buf(), data1.आकार()));
 
-	TempData data2{30};
+	अस्थायी_दत्त data2{30};
 	data2.paint(50);
-	EXPECT_TRUE(buf.push_back(data2.buf(), data2.size()));
+	EXPECT_TRUE(buf.push_back(data2.buf(), data2.आकार()));
 
-	TempData out12{80};
-	EXPECT_EQ(buf.pop_front(out12.buf(), out12.size()), out12.size());
+	अस्थायी_दत्त out12{80};
+	EXPECT_EQ(buf.निष्कासय_front(out12.buf(), out12.आकार()), out12.आकार());
 
-	TempData out12_ref{80};
+	अस्थायी_दत्त out12_ref{80};
 	out12_ref.paint();
 	EXPECT_EQ(out12_ref, out12);
 
-	TempData data3{50};
+	अस्थायी_दत्त data3{50};
 	data3.paint(33);
-	EXPECT_TRUE(buf.push_back(data3.buf(), data3.size()));
+	EXPECT_TRUE(buf.push_back(data3.buf(), data3.आकार()));
 
-	TempData out3{50};
-	EXPECT_EQ(buf.pop_front(out3.buf(), out3.size()), data3.size());
+	अस्थायी_दत्त out3{50};
+	EXPECT_EQ(buf.निष्कासय_front(out3.buf(), out3.आकार()), data3.आकार());
 	EXPECT_EQ(data3, out3);
 }
 
-TEST(Ringbuffer, PushEmpty)
+TEST(Ringbuffer, प्रक्षिप_रिक्तानि)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	EXPECT_FALSE(buf.push_back(nullptr, 0));
+	EXPECT_FALSE(buf.push_back(शून्यसूचकः, 0));
 }
 
-TEST(Ringbuffer, PopWithoutBuffer)
+TEST(Ringbuffer, निष्कासय_Without_बफर)
 {
 	Ringbuffer buf;
 	ASSERT_TRUE(buf.allocate(100));
 
-	EXPECT_FALSE(buf.push_back(nullptr, 0));
+	EXPECT_FALSE(buf.push_back(शून्यसूचकः, 0));
 
-	TempData data{50};
-	data.paint();
+	अस्थायी_दत्त दत्त{50};
+	दत्त.paint();
 
-	EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
+	EXPECT_TRUE(buf.push_back(दत्त.buf(), दत्त.आकार()));
 
 
-	EXPECT_EQ(buf.pop_front(nullptr, 50), 0);
+	EXPECT_EQ(buf.निष्कासय_front(शून्यसूचकः, 50), 0);
 }
 
-TEST(Ringbuffer, EmptyAndNoSpaceForHeader)
+TEST(Ringbuffer, रिक्तानि_And_No_Space_For_शीर्षकम्)
 {
 	// Addressing a corner case where start and end are at the end
 	// and the same.
@@ -310,20 +310,20 @@ TEST(Ringbuffer, EmptyAndNoSpaceForHeader)
 	ASSERT_TRUE(buf.allocate(21));
 
 	{
-		TempData data{20};
-		data.paint();
-		EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
-		TempData out{20};
-		EXPECT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
-		EXPECT_EQ(data, out);
+		अस्थायी_दत्त दत्त{20};
+		दत्त.paint();
+		EXPECT_TRUE(buf.push_back(दत्त.buf(), दत्त.आकार()));
+		अस्थायी_दत्त बहिर्गमनम्{20};
+		EXPECT_EQ(buf.निष्कासय_front(बहिर्गमनम्.buf(), बहिर्गमनम्.आकार()), बहिर्गमनम्.आकार());
+		EXPECT_EQ(दत्त, बहिर्गमनम्);
 	}
 
 	{
-		TempData data{10};
-		data.paint();
-		EXPECT_TRUE(buf.push_back(data.buf(), data.size()));
-		TempData out{10};
-		EXPECT_EQ(buf.pop_front(out.buf(), out.size()), out.size());
-		EXPECT_EQ(data, out);
+		अस्थायी_दत्त दत्त{10};
+		दत्त.paint();
+		EXPECT_TRUE(buf.push_back(दत्त.buf(), दत्त.आकार()));
+		अस्थायी_दत्त बहिर्गमनम्{10};
+		EXPECT_EQ(buf.निष्कासय_front(बहिर्गमनम्.buf(), बहिर्गमनम्.आकार()), बहिर्गमनम्.आकार());
+		EXPECT_EQ(दत्त, बहिर्गमनम्);
 	}
 }

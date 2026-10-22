@@ -35,21 +35,21 @@
  * @file default_tunes.cpp
  */
 
-#include "tunes.h"
+#अन्तर्भाव "tunes.h"
 
-#define PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) tune,
+#परिभाषय PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) tune,
 // Initialize default tunes
-const char *const Tunes::_default_tunes[] = {
-#include "tune_definition.desc"
+ध्रुव वर्ण *ध्रुव Tunes::_default_tunes[] = {
+#अन्तर्भाव "tune_definition.desc"
 };
-#undef PX4_DEFINE_TUNE
+#अपरिभाषय PX4_DEFINE_TUNE
 
-#define PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) interruptable,
+#परिभाषय PX4_DEFINE_TUNE(ordinal,name,tune,interruptable) interruptable,
 // Initialize default tunes
-const bool Tunes::_default_tunes_interruptable[] = {
-#include "tune_definition.desc"
+ध्रुव तार्किक Tunes::_default_tunes_interruptable[] = {
+#अन्तर्भाव "tune_definition.desc"
 };
-#undef PX4_DEFINE_TUNE
+#अपरिभाषय PX4_DEFINE_TUNE
 
 // set default_tunes array size
-const unsigned int Tunes::_default_tunes_size =  sizeof(_default_tunes) / sizeof(_default_tunes[0]);
+ध्रुव अचिह्नित पूर्णाङ्क Tunes::default_tunes_आकार =  परिमाण(_default_tunes) / परिमाण(_default_tunes[0]);

@@ -38,25 +38,25 @@
  *
  */
 
-#include "SPI.hpp"
+#अन्तर्भाव "SPI.hpp"
 
-#if defined(CONFIG_SPI)
+#यदि defined(CONFIG_SPI)
 
-#include <px4_platform_common/i2c_spi_buses.h>
-#include <px4_platform_common/px4_config.h>
-#include <nuttx/arch.h>
+#अन्तर्भाव <px4_platform_common/i2c_spi_buses.h>
+#अन्तर्भाव <px4_platform_common/px4_config.h>
+#अन्तर्भाव <nuttx/arch.h>
 
-#ifndef CONFIG_SPI_EXCHANGE
+#यदि_अपरिभाषितम् CONFIG_SPI_EXCHANGE
 # error This driver requires CONFIG_SPI_EXCHANGE
-#endif
+#यदि_अन्तः
 
-namespace device
+नामाकाश device
 {
 
-SPI::SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum spi_mode_e mode, uint32_t frequency) :
-	CDev(name, nullptr),
+SPI::SPI(uint8_t device_type, ध्रुव वर्ण *name, पूर्णाङ्क bus, uint32_t device, गणना spi_बहुलकम्_e बहुलकम्, uint32_t frequency) :
+	CDev(name, शून्यसूचकः),
 	_device(device),
-	_mode(mode),
+	_mode(बहुलकम्),
 	_frequency(frequency)
 {
 	_device_id.devid_s.devtype = device_type;
@@ -64,18 +64,18 @@ SPI::SPI(uint8_t device_type, const char *name, int bus, uint32_t device, enum s
 	_device_id.devid_s.bus_type = DeviceBusType_SPI;
 	_device_id.devid_s.bus = bus;
 	// Use the 2. LSB byte as SPI address, which is non-zero for multiple instances of the same device on a bus
-	_device_id.devid_s.address = (uint8_t)(device >> 8);
+	_device_id.devid_s.स्थानाङ्कः = (uint8_t)(device >> 8);
 
-	if (!px4_spi_bus_requires_locking(bus)) {
-		_locking_mode = LOCK_NONE;
+	यदि (!px4_spi_bus_requires_locking(bus)) {
+		locking_बहुलकम् = तालकम्_NONE;
 	}
 }
 
-SPI::SPI(const I2CSPIDriverConfig &config)
-	: SPI(config.devid_driver_index, config.module_name, config.bus, config.spi_devid, config.spi_mode,
+SPI::SPI(ध्रुव I2CSPIDriverConfig &config)
+	: SPI(config.devid_driver_सूचकांक, config.module_name, config.bus, config.spi_devid, config.spi_बहुलकम्,
 	      config.bus_frequency)
 {
-	set_external(config.external);
+	समुच्चयः_external(config.external);
 }
 
 SPI::~SPI()
@@ -83,154 +83,154 @@ SPI::~SPI()
 	// XXX no way to let go of the bus...
 }
 
-int
+पूर्णाङ्क
 SPI::init()
 {
 	/* attach to the spi bus */
-	if (_dev == nullptr) {
-		int bus = get_device_bus();
+	यदि (_dev == शून्यसूचकः) {
+		पूर्णाङ्क bus = get_device_bus();
 
-		if (!board_has_bus(BOARD_SPI_BUS, bus)) {
-			return -ENOENT;
+		यदि (!board_has_bus(BOARD_SPI_BUS, bus)) {
+			प्रत्यागम -ENOENT;
 		}
 
 		_dev = px4_spibus_initialize(bus);
 	}
 
-	if (_dev == nullptr) {
+	यदि (_dev == शून्यसूचकः) {
 		DEVICE_DEBUG("failed to init SPI");
-		return -ENOENT;
+		प्रत्यागम -ENOENT;
 	}
 
 	/* deselect device to ensure high to low transition of pin select */
-	SPI_SELECT(_dev, _device, false);
+	SPI_SELECT(_dev, _device, असत्य);
 
 	/* call the probe function to check whether the device is present */
-	int ret = probe();
+	पूर्णाङ्क ret = probe();
 
-	if (ret != OK) {
+	यदि (ret != OK) {
 		DEVICE_DEBUG("probe failed");
-		return ret;
+		प्रत्यागम ret;
 	}
 
 	/* do base class init, which will create the device node, etc. */
 	ret = CDev::init();
 
-	if (ret != OK) {
+	यदि (ret != OK) {
 		DEVICE_DEBUG("cdev init failed");
-		return ret;
+		प्रत्यागम ret;
 	}
 
 	/* tell the world where we are */
 	DEVICE_DEBUG("on SPI bus %d at %"  PRId32 " (%"  PRId32 " KHz)", get_device_bus(), PX4_SPI_DEV_ID(_device),
 		     _frequency / 1000);
 
-	return PX4_OK;
+	प्रत्यागम PX4_OK;
 }
 
-int
-SPI::transfer(uint8_t *send, uint8_t *recv, unsigned len)
+पूर्णाङ्क
+SPI::transfer(uint8_t *send, uint8_t *recv, अचिह्नित len)
 {
-	int result;
+	पूर्णाङ्क परिणाम;
 
-	if ((send == nullptr) && (recv == nullptr)) {
-		return -EINVAL;
+	यदि ((send == शून्यसूचकः) && (recv == शून्यसूचकः)) {
+		प्रत्यागम -EINVAL;
 	}
 
-	LockMode mode = up_interrupt_context() ? LOCK_NONE : _locking_mode;
+	तालकम्_बहुलकम् बहुलकम् = ऊर्ध्वम्_व्यवधानम्_context() ? तालकम्_NONE : locking_बहुलकम्;
 
 	/* lock the bus as required */
-	switch (mode) {
-	default:
-	case LOCK_PREEMPTION: {
+	विकल्प (बहुलकम्) {
+	स्वभाव:
+	पक्ष तालकम्_PREEMPTION: {
 			irqstate_t state = px4_enter_critical_section();
-			result = _transfer(send, recv, len);
+			परिणाम = _transfer(send, recv, len);
 			px4_leave_critical_section(state);
 		}
-		break;
+		भङ्ग;
 
-	case LOCK_THREADS:
-		SPI_LOCK(_dev, true);
-		result = _transfer(send, recv, len);
-		SPI_LOCK(_dev, false);
-		break;
+	पक्ष तालकम्_तन्तवः:
+		SPI_तालकम्(_dev, सत्य);
+		परिणाम = _transfer(send, recv, len);
+		SPI_तालकम्(_dev, असत्य);
+		भङ्ग;
 
-	case LOCK_NONE:
-		result = _transfer(send, recv, len);
-		break;
+	पक्ष तालकम्_NONE:
+		परिणाम = _transfer(send, recv, len);
+		भङ्ग;
 	}
 
-	return result;
+	प्रत्यागम परिणाम;
 }
 
-int
-SPI::_transfer(uint8_t *send, uint8_t *recv, unsigned len)
+पूर्णाङ्क
+SPI::_transfer(uint8_t *send, uint8_t *recv, अचिह्नित len)
 {
 	SPI_SETFREQUENCY(_dev, _frequency);
 	SPI_SETMODE(_dev, _mode);
 	SPI_SETBITS(_dev, 8);
-	SPI_SELECT(_dev, _device, true);
+	SPI_SELECT(_dev, _device, सत्य);
 
 	/* do the transfer */
 	SPI_EXCHANGE(_dev, send, recv, len);
 
 	/* and clean up */
-	SPI_SELECT(_dev, _device, false);
+	SPI_SELECT(_dev, _device, असत्य);
 
-	return PX4_OK;
+	प्रत्यागम PX4_OK;
 }
 
-int
-SPI::transferhword(uint16_t *send, uint16_t *recv, unsigned len)
+पूर्णाङ्क
+SPI::transferhword(uint16_t *send, uint16_t *recv, अचिह्नित len)
 {
-	int result;
+	पूर्णाङ्क परिणाम;
 
-	if ((send == nullptr) && (recv == nullptr)) {
-		return -EINVAL;
+	यदि ((send == शून्यसूचकः) && (recv == शून्यसूचकः)) {
+		प्रत्यागम -EINVAL;
 	}
 
-	LockMode mode = up_interrupt_context() ? LOCK_NONE : _locking_mode;
+	तालकम्_बहुलकम् बहुलकम् = ऊर्ध्वम्_व्यवधानम्_context() ? तालकम्_NONE : locking_बहुलकम्;
 
 	/* lock the bus as required */
-	switch (mode) {
-	default:
-	case LOCK_PREEMPTION: {
+	विकल्प (बहुलकम्) {
+	स्वभाव:
+	पक्ष तालकम्_PREEMPTION: {
 			irqstate_t state = px4_enter_critical_section();
-			result = _transferhword(send, recv, len);
+			परिणाम = _transferhword(send, recv, len);
 			px4_leave_critical_section(state);
 		}
-		break;
+		भङ्ग;
 
-	case LOCK_THREADS:
-		SPI_LOCK(_dev, true);
-		result = _transferhword(send, recv, len);
-		SPI_LOCK(_dev, false);
-		break;
+	पक्ष तालकम्_तन्तवः:
+		SPI_तालकम्(_dev, सत्य);
+		परिणाम = _transferhword(send, recv, len);
+		SPI_तालकम्(_dev, असत्य);
+		भङ्ग;
 
-	case LOCK_NONE:
-		result = _transferhword(send, recv, len);
-		break;
+	पक्ष तालकम्_NONE:
+		परिणाम = _transferhword(send, recv, len);
+		भङ्ग;
 	}
 
-	return result;
+	प्रत्यागम परिणाम;
 }
 
-int
-SPI::_transferhword(uint16_t *send, uint16_t *recv, unsigned len)
+पूर्णाङ्क
+SPI::_transferhword(uint16_t *send, uint16_t *recv, अचिह्नित len)
 {
 	SPI_SETFREQUENCY(_dev, _frequency);
 	SPI_SETMODE(_dev, _mode);
 	SPI_SETBITS(_dev, 16);			/* 16 bit transfer */
-	SPI_SELECT(_dev, _device, true);
+	SPI_SELECT(_dev, _device, सत्य);
 
 	/* do the transfer */
 	SPI_EXCHANGE(_dev, send, recv, len);
 
 	/* and clean up */
-	SPI_SELECT(_dev, _device, false);
+	SPI_SELECT(_dev, _device, असत्य);
 
-	return PX4_OK;
+	प्रत्यागम PX4_OK;
 }
 
 } // namespace device
-#endif // CONFIG_SPI
+#यदि_अन्तः // CONFIG_SPI

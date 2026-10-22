@@ -33,41 +33,41 @@
 #
 ############################################################################
 
-import argparse
-import builtins
-import pathlib
-import sys
+आनयन argparse
+आनयन builtins
+आनयन pathlib
+आनयन sys
 
-from rosidl_adapter.msg import convert_msg_to_idl
+तः rosidl_adapter.सन्देशः_2 आनयन convert_सन्देशः_गन्तव्यम्_idl
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
+यदि __name__ == '__main__':
+    parser = argparse.तर्कः_Parser(
         description=f'Convert px4 .msg files to .idl')
-    parser.add_argument(
+    parser.सङ्कलय_तर्कः(
         'interface_files', nargs='+',
         help='The interface files to convert')
-    args = parser.parse_args(sys.argv[1:])
+    तर्काः = parser.parse_तर्काः(sys.argv[1:])
 
     # convert_msg_to_idl prints a Reading/Writing line per file. Filter those
     # via builtins.print instead of redirecting stdout, which the empy template
     # engine relies on and breaks if replaced. Errors still surface on stderr.
-    real_print = builtins.print
+    real_print = builtins.मुद्रय
 
-    def quiet_print(*pargs, **kwargs):
-        if pargs and isinstance(pargs[0], str) and \
+    परिभाषा quiet_print(*pargs, **kwargs):
+        यदि pargs च isinstance(pargs[0], str) च \
                 pargs[0].startswith(('Reading input file:', 'Writing output file:')):
-            return
+            प्रत्यागम
         real_print(*pargs, **kwargs)
 
-    builtins.print = quiet_print
-    try:
-        for interface_file in args.interface_files:
-            interface_file = pathlib.Path(interface_file)
+    builtins.मुद्रय = quiet_print
+    यत्न:
+        प्रति interface_file अन्तः तर्काः.interface_files:
+            interface_file = pathlib.मार्गः_2(interface_file)
             package_dir = interface_file.parent.absolute()
 
-            convert_msg_to_idl(
+            convert_सन्देशः_गन्तव्यम्_idl(
                 package_dir, 'px4_msgs',
-                interface_file.absolute().relative_to(package_dir),
+                interface_file.absolute().relative_गन्तव्यम्(package_dir),
                 interface_file.parent)
-    finally:
-        builtins.print = real_print
+    अन्ततः:
+        builtins.मुद्रय = real_print
