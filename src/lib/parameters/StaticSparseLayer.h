@@ -33,136 +33,136 @@
 
 #pragma once
 
-#include <stdlib.h>
-#include "ParamLayer.h"
+#ضمن <stdlib.h>
+#ضمن "ParamLayer.h"
 
-template <int N_SLOTS>
-class StaticSparseLayer : public ParamLayer
+template <صحيح N_SLOTS>
+class StaticSparseLayer : عام ParamLayer
 {
-public:
+عام:
 	StaticSparseLayer(ParamLayer *parent) : ParamLayer(parent)
 	{
-		for (int i = 0; i < N_SLOTS; i++) {
-			_slots[i] = {UINT16_MAX, param_value_u{}};
+		لكل (صحيح i = 0; i < N_SLOTS; i++) {
+			_slots[i] = {UINT16_MAX, param_قىممەت_u{}};
 		}
 	}
 
-	virtual ~StaticSparseLayer() = default;
+	virtual ~StaticSparseLayer() = افتراضي;
 
-	bool store(param_t param, param_value_u value) override
+	bool store(param_t param, param_قىممەت_u قىممەت) override
 	{
-		const AtomicTransaction transaction;
-		const int index = _getIndex(param);
+		ثابت AtomicTransaction transaction;
+		ثابت صحيح index = _getIndex(param);
 
-		if (index < _next_slot) { // already exists
-			_slots[index].value = value;
+		إذا (index < _next_slot) { // already exists
+			_slots[index].قىممەت = قىممەت;
 
-		} else if (_next_slot < N_SLOTS) {
-			_slots[_next_slot++] = {param, value};
+		} وإلا إذا (_next_slot < N_SLOTS) {
+			_slots[_next_slot++] = {param, قىممەت};
 			_sort();
 
-		} else {
-			return false;
+		} وإلا {
+			أرجع false;
 		}
 
-		return true;
+		أرجع true;
 	}
 
-	bool contains(param_t param) const override
+	bool contains(param_t param) ثابت override
 	{
-		const AtomicTransaction transaction;
-		return _getIndex(param) < _next_slot;
+		ثابت AtomicTransaction transaction;
+		أرجع _getIndex(param) < _next_slot;
 	}
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_سانى> containedAsBitset() ثابت override
 	{
-		px4::AtomicBitset<PARAM_COUNT> set;
-		const AtomicTransaction transaction;
+		px4::AtomicBitset<PARAM_سانى> set;
+		ثابت AtomicTransaction transaction;
 
-		for (int i = 0; i < _next_slot; i++) {
+		لكل (صحيح i = 0; i < _next_slot; i++) {
 			set.set(_slots[i].param);
 		}
 
-		return set;
+		أرجع set;
 	}
 
-	param_value_u get(param_t param) const override
+	param_قىممەت_u get(param_t param) ثابت override
 	{
-		const AtomicTransaction transaction;
-		const int index = _getIndex(param);
+		ثابت AtomicTransaction transaction;
+		ثابت صحيح index = _getIndex(param);
 
-		if (index < _next_slot) { // exists in this layer
-			return _slots[index].value;
+		إذا (index < _next_slot) { // exists in this layer
+			أرجع _slots[index].قىممەت;
 		}
 
-		return _parent->get(param);
+		أرجع _parent->get(param);
 	}
 
-	void reset(param_t param) override
+	فراغ reset(param_t param) override
 	{
-		const AtomicTransaction transaction;
-		int index = _getIndex(param);
+		ثابت AtomicTransaction transaction;
+		صحيح index = _getIndex(param);
 
-		if (index < _next_slot) {
-			_slots[index] = {UINT16_MAX, param_value_u{}};
+		إذا (index < _next_slot) {
+			_slots[index] = {UINT16_MAX, param_قىممەت_u{}};
 			_sort();
 			_next_slot--;
 		}
 	}
 
-	void refresh(param_t param) override
+	فراغ refresh(param_t param) override
 	{
 		_parent->refresh(param);
 	}
 
-	int size() const override
+	صحيح size() ثابت override
 	{
-		return _next_slot;
+		أرجع _next_slot;
 	}
 
-	int byteSize() const override
+	صحيح byteSize() ثابت override
 	{
-		return N_SLOTS * sizeof(Slot);
+		أرجع N_SLOTS * حجم(Slot);
 	}
 
-private:
-	struct Slot {
+خاص:
+	بنية Slot {
 		param_t param;
-		param_value_u value;
+		param_قىممەت_u قىممەت;
 	};
 
-	static int _slotCompare(const void *a, const void *b)
+	ساكن صحيح _slotCompare(ثابت فراغ *a, ثابت فراغ *b)
 	{
-		return ((int)((Slot *)a)->param) - ((int)((Slot *)b)->param);
+		أرجع ((صحيح)((Slot *)a)->param) - ((صحيح)((Slot *)b)->param);
 	}
 
-	void _sort()
+	فراغ _sort()
 	{
-		qsort(_slots, N_SLOTS, sizeof(Slot), &_slotCompare);
+		qsort(_slots, N_SLOTS, حجم(Slot), &_slotCompare);
 	}
 
-	int _getIndex(param_t param) const
+	صحيح _getIndex(param_t param) ثابت
 	{
-		int left = 0;
-		int right = _next_slot - 1;
+		صحيح سول = 0;
+		صحيح ئوڭ = _next_slot - 1;
 
-		while (left <= right) {
-			int mid = (left + right) / 2;
+		طالما (سول <= ئوڭ) {
+			صحيح mid = (سول + ئوڭ) / 2;
 
-			if (_slots[mid].param == param) {
-				return mid;
+			إذا (_slots[mid].param == param) {
+				أرجع mid;
 
-			} else if (_slots[mid].param < param) {
-				left = mid + 1;
+			} وإلا إذا (_slots[mid].param < param) {
+				سول = mid + 1;
 
-			} else {
-				right = mid - 1;
+			} وإلا {
+				ئوڭ = mid - 1;
 			}
 		}
 
-		return _next_slot;
+		أرجع _next_slot;
 	}
 
 	Slot _slots[N_SLOTS];
-	int _next_slot = 0;
+	صحيح _next_slot = 0;
 };

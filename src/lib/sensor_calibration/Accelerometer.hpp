@@ -33,79 +33,79 @@
 
 #pragma once
 
-#include <lib/conversion/rotation.h>
-#include <lib/matrix/matrix/math.hpp>
-#include <px4_platform_common/px4_config.h>
-#include <px4_platform_common/log.h>
-#include <uORB/Subscription.hpp>
-#include <uORB/topics/sensor_correction.h>
+#ضمن <lib/conversion/rotation.h>
+#ضمن <lib/matrix/matrix/math.hpp>
+#ضمن <px4_platform_common/px4_config.h>
+#ضمن <px4_platform_common/log.h>
+#ضمن <uORB/Subscription.hpp>
+#ضمن <uORB/topics/sensor_correction.h>
 
-namespace calibration
+نطاق calibration
 {
-class Accelerometer
+صنف Accelerometer
 {
-public:
-	static constexpr int MAX_SENSOR_COUNT = 4;
+عام:
+	ساكن constexpr صحيح MAX_SENSOR_سانى = 4;
 
-	static constexpr uint8_t DEFAULT_PRIORITY = 50;
+	ساكن constexpr uint8_t DEFAULT_PRIORITY = 50;
 
 	// Unlike a magnetometer, an external IMU is never a better primary than the
 	// on-board one: it is behind a bus with its own clock and transport latency
 	// and is not thermally managed, so it must not win the vote uncalibrated.
-	static constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 25;
+	ساكن constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 25;
 
-	static constexpr const char *SensorString() { return "ACC"; }
+	ساكن constexpr ثابت حرف *SensorString() { أرجع "ACC"; }
 
 	Accelerometer();
 	explicit Accelerometer(uint32_t device_id);
-	Accelerometer(uint32_t device_id, bool external);
+	Accelerometer(uint32_t device_id, منطقي external);
 
-	~Accelerometer() = default;
+	~Accelerometer() = افتراضي;
 
-	void PrintStatus();
+	فراغ PrintStatus();
 
-	bool set_calibration_index(int calibration_index);
-	void set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
-	void set_device_id(uint32_t device_id, bool external);
-	bool set_offset(const matrix::Vector3f &offset);
-	bool set_scale(const matrix::Vector3f &scale);
-	void set_rotation(Rotation rotation);
+	منطقي set_calibration_index(صحيح calibration_index);
+	فراغ set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
+	فراغ set_device_id(uint32_t device_id, منطقي external);
+	منطقي set_offset(ثابت matrix::Vector3f &offset);
+	منطقي set_scale(ثابت matrix::Vector3f &scale);
+	فراغ set_rotation(Rotation rotation);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool enabled() const { return (_priority > 0); }
-	bool external() const { return _external; }
-	const matrix::Vector3f &offset() const { return _offset; }
-	const int32_t &priority() const { return _priority; }
-	const matrix::Dcmf &rotation() const { return _rotation; }
-	const Rotation &rotation_enum() const { return _rotation_enum; }
-	const matrix::Vector3f &scale() const { return _scale; }
+	منطقي calibrated() ثابت { أرجع (_device_id != 0) && (_calibration_index >= 0); }
+	uint8_t calibration_سانى_2() ثابت { أرجع calibration_سانى; }
+	int8_t calibration_index() ثابت { أرجع _calibration_index; }
+	uint32_t device_id() ثابت { أرجع _device_id; }
+	منطقي enabled() ثابت { أرجع (_priority > 0); }
+	منطقي external() ثابت { أرجع _external; }
+	ثابت matrix::Vector3f &offset() ثابت { أرجع _offset; }
+	ثابت int32_t &priority() ثابت { أرجع _priority; }
+	ثابت matrix::Dcmf &rotation() ثابت { أرجع _rotation; }
+	ثابت Rotation &rotation_enum() ثابت { أرجع _rotation_enum; }
+	ثابت matrix::Vector3f &scale() ثابت { أرجع _scale; }
 
 	// apply offsets and scale
 	// rotate corrected measurements from sensor to body frame
-	inline matrix::Vector3f Correct(const matrix::Vector3f &data) const
+	مضمن matrix::Vector3f Correct(ثابت matrix::Vector3f &data) ثابت
 	{
-		return _rotation * matrix::Vector3f{(data - _thermal_offset - _offset).emult(_scale)};
+		أرجع _rotation * matrix::Vector3f{(data - _thermal_offset - _offset).emult(_scale)};
 	}
 
 	// Compute sensor offset from bias (board frame)
-	matrix::Vector3f BiasCorrectedSensorOffset(const matrix::Vector3f &bias) const
+	matrix::Vector3f BiasCorrectedSensorOffset(ثابت matrix::Vector3f &bias) ثابت
 	{
 		// updated calibration offset = existing offset + bias rotated to sensor frame and unscaled
-		return _offset + (_rotation.T() * bias).edivide(_scale);
+		أرجع _offset + (_rotation.T() * bias).edivide(_scale);
 	}
 
-	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
-	void ParametersUpdate();
+	منطقي ParametersLoad();
+	منطقي ParametersSave(صحيح desired_calibration_index = -1, منطقي force = خطأ);
+	فراغ ParametersUpdate();
 
-	void Reset();
+	فراغ Reset();
 
-	void SensorCorrectionsUpdate(bool force = false);
+	فراغ SensorCorrectionsUpdate(منطقي force = خطأ);
 
-private:
+خاص:
 	uORB::Subscription _sensor_correction_sub{ORB_ID(sensor_correction)};
 
 	Rotation _rotation_enum{ROTATION_NONE};
@@ -119,8 +119,8 @@ private:
 	uint32_t _device_id{0};
 	int32_t _priority{-1};
 
-	bool _external{false};
+	منطقي _external{خطأ};
 
-	uint8_t _calibration_count{0};
+	uint8_t calibration_سانى{0};
 };
 } // namespace calibration

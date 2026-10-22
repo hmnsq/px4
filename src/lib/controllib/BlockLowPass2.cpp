@@ -37,26 +37,26 @@
  * Controller library code
  */
 
-#include <math.h>
-#include <float.h>
+#ضمن <math.h>
+#ضمن <float.h>
 
-#include "blocks.hpp"
+#ضمن "blocks.hpp"
 
-namespace control
+نطاق control
 {
 
-float BlockLowPass2::update(float input)
+عائم Block_تۆۋەن_Pass2::update(عائم كىرگۈزۈش)
 {
-	if (!PX4_ISFINITE(getState())) {
-		setState(input);
+	إذا (!PX4_ISFINITE(getState())) {
+		setState(كىرگۈزۈش);
 	}
 
-	if (fabsf(_lp.get_cutoff_freq() - getFCutParam()) > FLT_EPSILON) {
+	إذا (fabsf(_lp.get_cutoff_freq() - getFCutParam()) > FLT_EPSILON) {
 		_lp.set_cutoff_frequency(_fs, getFCutParam());
 	}
 
-	_state = _lp.apply(input);
-	return _state;
+	_state = _lp.apply(كىرگۈزۈش);
+	أرجع _state;
 }
 
 } // namespace control

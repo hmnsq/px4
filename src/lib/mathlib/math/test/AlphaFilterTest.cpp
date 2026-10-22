@@ -37,11 +37,11 @@
  * @brief Unit tests for the alpha filter class
  */
 
-#include <gtest/gtest.h>
-#include <cmath>
-#include <matrix/math.hpp>
+#ضمن <gtest/gtest.h>
+#ضمن <cmath>
+#ضمن <matrix/math.hpp>
 
-#include <lib/mathlib/math/filter/AlphaFilter.hpp>
+#ضمن <lib/mathlib/math/filter/AlphaFilter.hpp>
 
 using matrix::Vector3f;
 using matrix::Quatf;
@@ -49,40 +49,40 @@ using matrix::Eulerf;
 
 TEST(AlphaFilterTest, initializeToZero)
 {
-	AlphaFilter<float> filter_float{};
+	AlphaFilter<عائم> filter_float{};
 	ASSERT_EQ(filter_float.getState(), 0.f);
 }
 
-TEST(AlphaFilterTest, resetToValue)
+TEST(AlphaFilterTest, reset_To_قىممەت)
 {
-	AlphaFilter<float> filter_float{};
-	const float reset_value = 42.42f;
-	filter_float.reset(reset_value);
-	ASSERT_EQ(filter_float.getState(), reset_value);
+	AlphaFilter<عائم> filter_float{};
+	ثابت عائم reset_قىممەت = 42.42f;
+	filter_float.reset(reset_قىممەت);
+	ASSERT_EQ(filter_float.getState(), reset_قىممەت);
 }
 
 TEST(AlphaFilterTest, runZero)
 {
-	AlphaFilter<float> filter_float{};
-	const float input = 0.f;
+	AlphaFilter<عائم> filter_float{};
+	ثابت عائم كىرگۈزۈش = 0.f;
 
-	for (int i = 0; i < 10; i++) {
-		filter_float.update(input);
+	لكل (صحيح i = 0; i < 10; i++) {
+		filter_float.update(كىرگۈزۈش);
 	}
 
-	ASSERT_EQ(filter_float.getState(), input);
+	ASSERT_EQ(filter_float.getState(), كىرگۈزۈش);
 }
 
 TEST(AlphaFilterTest, runPositive)
 {
 	// GIVEN an input of 1 in a filter with a default time constant of 9 (alpha = 0.1)
-	AlphaFilter<float> filter_float{};
-	const float input = 1.f;
+	AlphaFilter<عائم> filter_float{};
+	ثابت عائم كىرگۈزۈش = 1.f;
 	filter_float.setAlpha(.1f);
 
 	// WHEN we run the filter 9 times
-	for (int i = 0; i < 9; i++) {
-		filter_float.update(input);
+	لكل (صحيح i = 0; i < 9; i++) {
+		filter_float.update(كىرگۈزۈش);
 	}
 
 	// THEN the state of the filter should have reached 63%
@@ -92,13 +92,13 @@ TEST(AlphaFilterTest, runPositive)
 TEST(AlphaFilterTest, runNegative)
 {
 	// GIVEN an input of 1 in a filter with a default time constant of 9 (alpha = 0.1)
-	AlphaFilter<float> filter_float{};
-	const float input = -1.f;
+	AlphaFilter<عائم> filter_float{};
+	ثابت عائم كىرگۈزۈش = -1.f;
 	filter_float.setAlpha(.1f);
 
 	// WHEN we run the filter 9 times
-	for (int i = 0; i < 9; i++) {
-		filter_float.update(input);
+	لكل (صحيح i = 0; i < 9; i++) {
+		filter_float.update(كىرگۈزۈش);
 	}
 
 	// THEN the state of the filter should have reached 63%
@@ -108,13 +108,13 @@ TEST(AlphaFilterTest, runNegative)
 TEST(AlphaFilterTest, riseTime)
 {
 	// GIVEN an input of 1 in a filter with a default time constant of 9 (alpha = 0.1)
-	AlphaFilter<float> filter_float{};
-	const float input = 1.f;
+	AlphaFilter<عائم> filter_float{};
+	ثابت عائم كىرگۈزۈش = 1.f;
 	filter_float.setAlpha(.1f);
 
 	// WHEN we run the filter 27 times (3 * time constant)
-	for (int i = 0; i < 3 * 9; i++) {
-		filter_float.update(input);
+	لكل (صحيح i = 0; i < 3 * 9; i++) {
+		filter_float.update(كىرگۈزۈش);
 	}
 
 	// THEN the state of the filter should have reached 95%
@@ -124,13 +124,13 @@ TEST(AlphaFilterTest, riseTime)
 TEST(AlphaFilterTest, convergence)
 {
 	// GIVEN an input of 1 in a filter with a default time constant of 9 (alpha = 0.1)
-	AlphaFilter<float> filter_float{};
-	const float input = 1.f;
+	AlphaFilter<عائم> filter_float{};
+	ثابت عائم كىرگۈزۈش = 1.f;
 	filter_float.setAlpha(.1f);
 
 	// WHEN we run the filter 45 times (5 * time constant)
-	for (int i = 0; i < 5 * 9; i++) {
-		filter_float.update(input);
+	لكل (صحيح i = 0; i < 5 * 9; i++) {
+		filter_float.update(كىرگۈزۈش);
 	}
 
 	// THEN the state of the filter should have converged to the input
@@ -141,19 +141,19 @@ TEST(AlphaFilterTest, convergenceVector3f)
 {
 	// GIVEN an Vector3f input in a filter with a default time constant of 9 (alpha = 0.1)
 	AlphaFilter<Vector3f> filter_v3{};
-	const Vector3f input = {3.f, 7.f, -11.f};
+	ثابت Vector3f كىرگۈزۈش = {3.f, 7.f, -11.f};
 	filter_v3.setAlpha(.1f);
 
 	// WHEN we run the filter 45 times (5 * time constant)
-	for (int i = 0; i < 5 * 9; i++) {
-		filter_v3.update(input);
+	لكل (صحيح i = 0; i < 5 * 9; i++) {
+		filter_v3.update(كىرگۈزۈش);
 	}
 
 	// THEN the state of the filter should have converged to the input (1% error allowed)
 	Vector3f output = filter_v3.getState();
 
-	for (int i = 0; i < 3; i++) {
-		ASSERT_NEAR(output(i), input(i), fabsf(0.01f * input(i)));
+	لكل (صحيح i = 0; i < 3; i++) {
+		ASSERT_NEAR(output(i), كىرگۈزۈش(i), fabsf(0.01f * كىرگۈزۈش(i)));
 	}
 }
 
@@ -161,21 +161,21 @@ TEST(AlphaFilterTest, convergenceVector3fAlpha)
 {
 	// GIVEN a Vector3f input in a filter with a defined time constant and the default sampling time
 	AlphaFilter<Vector3f> filter_v3{};
-	const Vector3f input = {3.f, 7.f, -11.f};
-	const float tau = 18.f;
-	const float dt = 1.f;
+	ثابت Vector3f كىرگۈزۈش = {3.f, 7.f, -11.f};
+	ثابت عائم tau = 18.f;
+	ثابت عائم dt = 1.f;
 	filter_v3.setParameters(dt, tau);
 
 	// WHEN we run the filter 18 times (1 * time constant)
-	for (int i = 0; i < 18; i++) {
-		filter_v3.update(input); // dt is assumed equal to 1
+	لكل (صحيح i = 0; i < 18; i++) {
+		filter_v3.update(كىرگۈزۈش); // dt is assumed equal to 1
 	}
 
 	// THEN the state of the filter should have reached 65% (2% error allowed)
 	Vector3f output = filter_v3.getState();
 
-	for (int i = 0; i < 3; i++) {
-		ASSERT_NEAR(output(i), 0.63f * input(i), fabsf(0.02f * input(i)));
+	لكل (صحيح i = 0; i < 3; i++) {
+		ASSERT_NEAR(output(i), 0.63f * كىرگۈزۈش(i), fabsf(0.02f * كىرگۈزۈش(i)));
 	}
 }
 
@@ -183,49 +183,49 @@ TEST(AlphaFilterTest, convergenceVector3fTauDt)
 {
 	// GIVEN a Vector3f input in a filter with a defined time constant and sampling time
 	AlphaFilter<Vector3f> filter_v3{};
-	const Vector3f input = {51.f, 7.f, -11.f};
-	const float tau = 2.f;
-	const float dt = 0.1f;
+	ثابت Vector3f كىرگۈزۈش = {51.f, 7.f, -11.f};
+	ثابت عائم tau = 2.f;
+	ثابت عائم dt = 0.1f;
 	filter_v3.setParameters(dt, tau);
 
 	// WHEN we run the filter (1 * time constant)
-	const float n = tau / dt;
+	ثابت عائم n = tau / dt;
 
-	for (int i = 0; i < n; i++) {
-		filter_v3.update(input);
+	لكل (صحيح i = 0; i < n; i++) {
+		filter_v3.update(كىرگۈزۈش);
 	}
 
 	// THEN the state of the filter should have reached 65% (2% error allowed)
 	Vector3f output = filter_v3.getState();
 
-	for (int i = 0; i < 3; i++) {
-		ASSERT_NEAR(output(i), 0.63f * input(i), fabsf(0.02f * input(i)));
+	لكل (صحيح i = 0; i < 3; i++) {
+		ASSERT_NEAR(output(i), 0.63f * كىرگۈزۈش(i), fabsf(0.02f * كىرگۈزۈش(i)));
 	}
 
 	// ALSO when the filter is reset to a specified value
-	const Vector3f reset_vector = {-1.f, 71.f, -42.f};
+	ثابت Vector3f reset_vector = {-1.f, 71.f, -42.f};
 	filter_v3.reset(reset_vector);
 	output = filter_v3.getState();
 
 	// THEN the filter should exactly contain those values
-	for (int i = 0; i < 3; i++) {
+	لكل (صحيح i = 0; i < 3; i++) {
 		ASSERT_EQ(output(i), reset_vector(i));
 	}
 }
 
 TEST(AlphaFilterTest, AllZeroTest)
 {
-	AlphaFilter<float> _alpha_filter;
+	AlphaFilter<عائم> _alpha_filter;
 	_alpha_filter.update(0.f);
 	EXPECT_FLOAT_EQ(_alpha_filter.getState(), 0.f);
 }
 
 TEST(AlphaFilterTest, AlphaZeroTest)
 {
-	AlphaFilter<float> _alpha_filter;
+	AlphaFilter<عائم> _alpha_filter;
 	_alpha_filter.setParameters(1e-5f, 1e5f);
 
-	for (int i = 0; i < 100; i++) {
+	لكل (صحيح i = 0; i < 100; i++) {
 		_alpha_filter.update(1.f);
 		EXPECT_NEAR(_alpha_filter.getState(), 0.f, 1e-4f);
 	}
@@ -233,11 +233,11 @@ TEST(AlphaFilterTest, AlphaZeroTest)
 
 TEST(AlphaFilterTest, AlphaOneTest)
 {
-	AlphaFilter<float> _alpha_filter;
+	AlphaFilter<عائم> _alpha_filter;
 	_alpha_filter.setParameters(.1f, 0.f);
 
-	for (int i = 0; i < 100; i++) {
-		const float new_smaple = static_cast<float>(i);
+	لكل (صحيح i = 0; i < 100; i++) {
+		ثابت عائم new_smaple = static_cast<عائم>(i);
 		_alpha_filter.update(new_smaple);
 		EXPECT_FLOAT_EQ(_alpha_filter.getState(), new_smaple);
 	}
@@ -245,8 +245,8 @@ TEST(AlphaFilterTest, AlphaOneTest)
 
 TEST(AlphaFilterTest, SetFrequencyTest)
 {
-	AlphaFilter<float> _alpha_filter;
-	const float fs = .1f;
+	AlphaFilter<عائم> _alpha_filter;
+	ثابت عائم fs = .1f;
 
 	EXPECT_FALSE(_alpha_filter.setCutoffFreq(fs, 0.f));
 	EXPECT_FALSE(_alpha_filter.setCutoffFreq(fs, fs)); // Cutoff above Nyquist freq
@@ -261,41 +261,41 @@ TEST(AlphaFilterTest, SetFrequencyTest)
 
 TEST(AlphaFilterTest, ConvergenceTest)
 {
-	AlphaFilter<float> _alpha_filter;
+	AlphaFilter<عائم> _alpha_filter;
 	_alpha_filter.setParameters(.1f, 1.f);
 
-	float last_value{0.f};
+	عائم last_قىممەت{0.f};
 
-	for (int i = 0; i < 100; i++) {
+	لكل (صحيح i = 0; i < 100; i++) {
 		_alpha_filter.update(1.f);
-		EXPECT_GE(_alpha_filter.getState(), last_value);
-		last_value = _alpha_filter.getState();
+		EXPECT_GE(_alpha_filter.getState(), last_قىممەت);
+		last_قىممەت = _alpha_filter.getState();
 	}
 
-	EXPECT_NEAR(last_value, 1.f, 1e-4f);
+	EXPECT_NEAR(last_قىممەت, 1.f, 1e-4f);
 
-	for (int i = 0; i < 1000; i++) {
+	لكل (صحيح i = 0; i < 1000; i++) {
 		_alpha_filter.update(-100.f);
-		EXPECT_LE(_alpha_filter.getState(), last_value);
-		last_value = _alpha_filter.getState();
+		EXPECT_LE(_alpha_filter.getState(), last_قىممەت);
+		last_قىممەت = _alpha_filter.getState();
 	}
 
-	EXPECT_NEAR(last_value, -100.f, 1e-4f);
+	EXPECT_NEAR(last_قىممەت, -100.f, 1e-4f);
 }
 
 TEST(AlphaFilterTest, runPositiveRot3)
 {
 	// GIVEN a filter with a default time constant of 9 (alpha = 0.1)
-	const Quatf q_init(Eulerf(0.f, 0.f, -0.01f));
-	const Quatf input(Eulerf(0.f, 0.f, M_PI_F / 2.f));
+	ثابت Quatf q_init(Eulerf(0.f, 0.f, -0.01f));
+	ثابت Quatf كىرگۈزۈش(Eulerf(0.f, 0.f, M_PI_F / 2.f));
 
 	AlphaFilter<Quatf> filter{};
 	filter.setAlpha(.1f);
 	filter.reset(q_init);
 
 	// WHEN we run the filter 9 times
-	for (int i = 0; i < 9; i++) {
-		filter.update(input);
+	لكل (صحيح i = 0; i < 9; i++) {
+		filter.update(كىرگۈزۈش);
 	}
 
 	// THEN the state of the filter should have reached 63%
@@ -308,24 +308,24 @@ TEST(AlphaFilterTest, runPositiveRot3)
 TEST(AlphaFilterTest, runNecgativeRot3)
 {
 	// GIVEN a filter with a default time constant of 9 (alpha = 0.1)
-	const float roll = -M_PI_F;
-	const float pitch = 0.f;
-	const float yaw_init = 0.01f;
-	const float yaw_input = -M_PI_F / 2.f;
-	const Quatf q_init(Eulerf(roll, pitch, yaw_init));
-	const Quatf input(Eulerf(roll, pitch, yaw_input));
+	ثابت عائم roll = -M_PI_F;
+	ثابت عائم pitch = 0.f;
+	ثابت عائم yaw_init = 0.01f;
+	ثابت عائم yaw_كىرگۈزۈش = -M_PI_F / 2.f;
+	ثابت Quatf q_init(Eulerf(roll, pitch, yaw_init));
+	ثابت Quatf كىرگۈزۈش(Eulerf(roll, pitch, yaw_كىرگۈزۈش));
 
 	AlphaFilter<Quatf> filter{};
 	filter.setAlpha(.1f);
 	filter.reset(q_init);
 
 	// WHEN we run the filter 9 times
-	for (int i = 0; i < 9; i++) {
-		filter.update(input);
+	لكل (صحيح i = 0; i < 9; i++) {
+		filter.update(كىرگۈزۈش);
 	}
 
 	// THEN the state of the filter should have reached 63%
-	EXPECT_NEAR(Eulerf(filter.getState()).psi(), 0.63f * (yaw_input + yaw_init), 0.03);
+	EXPECT_NEAR(Eulerf(filter.getState()).psi(), 0.63f * (yaw_كىرگۈزۈش + yaw_init), 0.03);
 
 	EXPECT_TRUE(matrix::wrap_pi(Eulerf(filter.getState()).phi() - roll) < FLT_EPSILON);
 	EXPECT_TRUE(matrix::wrap_pi(Eulerf(filter.getState()).theta() - pitch) < FLT_EPSILON);

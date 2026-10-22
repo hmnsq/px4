@@ -38,10 +38,10 @@
  * @author Beat Küng <beat-kueng@gmx.net>
  */
 
-#include "ControlAllocationSequentialDesaturation.hpp"
+#ضمن "ControlAllocationSequentialDesaturation.hpp"
 
 
-void
+فراغ
 ControlAllocationSequentialDesaturation::allocate()
 {
 	//Compute new gains if needed
@@ -49,76 +49,76 @@ ControlAllocationSequentialDesaturation::allocate()
 
 	_prev_actuator_sp = _actuator_sp;
 
-	switch (_param_mc_airmode.get()) {
-	case 1:
+	بدل (_param_mc_airmode.get()) {
+	حالة 1:
 		mixAirmodeRP();
-		break;
+		اكسر;
 
-	case 2:
+	حالة 2:
 		mixAirmodeRPY();
-		break;
+		اكسر;
 
-	default:
+	افتراضي:
 		mixAirmodeDisabled();
-		break;
+		اكسر;
 	}
 }
 
-void ControlAllocationSequentialDesaturation::desaturateActuators(
+فراغ ControlAllocationSequentialDesaturation::desaturateActuators(
 	ActuatorVector &actuator_sp,
-	const ActuatorVector &desaturation_vector, bool increase_only)
+	ثابت ActuatorVector &desaturation_vector, منطقي increase_only)
 {
-	float gain = computeDesaturationGain(desaturation_vector, actuator_sp);
+	عائم gain = computeDesaturationGain(desaturation_vector, actuator_sp);
 
-	if (increase_only && gain < 0.f) {
-		return;
+	إذا (increase_only && gain < 0.f) {
+		أرجع;
 	}
 
-	for (int i = 0; i < _num_actuators; i++) {
+	لكل (صحيح i = 0; i < رەقەم_actuators_2; i++) {
 		actuator_sp(i) += gain * desaturation_vector(i);
 	}
 
 	gain = 0.5f * computeDesaturationGain(desaturation_vector, actuator_sp);
 
-	for (int i = 0; i < _num_actuators; i++) {
+	لكل (صحيح i = 0; i < رەقەم_actuators_2; i++) {
 		actuator_sp(i) += gain * desaturation_vector(i);
 	}
 }
 
-float ControlAllocationSequentialDesaturation::computeDesaturationGain(const ActuatorVector &desaturation_vector,
-		const ActuatorVector &actuator_sp)
+عائم ControlAllocationSequentialDesaturation::computeDesaturationGain(ثابت ActuatorVector &desaturation_vector,
+		ثابت ActuatorVector &actuator_sp)
 {
-	float k_min = 0.f;
-	float k_max = 0.f;
+	عائم k_min = 0.f;
+	عائم k_max = 0.f;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	لكل (صحيح i = 0; i < رەقەم_actuators_2; i++) {
 		// Do not use try to desaturate using an actuator with weak effectiveness to avoid large desaturation gains
-		if (fabsf(desaturation_vector(i)) < 0.2f) {
-			continue;
+		إذا (fabsf(desaturation_vector(i)) < 0.2f) {
+			استمر;
 		}
 
-		if (actuator_sp(i) < _actuator_min(i)) {
-			float k = (_actuator_min(i) - actuator_sp(i)) / desaturation_vector(i);
+		إذا (actuator_sp(i) < _actuator_min(i)) {
+			عائم k = (_actuator_min(i) - actuator_sp(i)) / desaturation_vector(i);
 
-			if (k < k_min) { k_min = k; }
+			إذا (k < k_min) { k_min = k; }
 
-			if (k > k_max) { k_max = k; }
+			إذا (k > k_max) { k_max = k; }
 		}
 
-		if (actuator_sp(i) > _actuator_max(i)) {
-			float k = (_actuator_max(i) - actuator_sp(i)) / desaturation_vector(i);
+		إذا (actuator_sp(i) > _actuator_max(i)) {
+			عائم k = (_actuator_max(i) - actuator_sp(i)) / desaturation_vector(i);
 
-			if (k < k_min) { k_min = k; }
+			إذا (k < k_min) { k_min = k; }
 
-			if (k > k_max) { k_max = k; }
+			إذا (k > k_max) { k_max = k; }
 		}
 	}
 
 	// Reduce the saturation as much as possible
-	return k_min + k_max;
+	أرجع k_min + k_max;
 }
 
-void
+فراغ
 ControlAllocationSequentialDesaturation::mixAirmodeRP()
 {
 	// Airmode for roll and pitch, but not yaw
@@ -126,7 +126,7 @@ ControlAllocationSequentialDesaturation::mixAirmodeRP()
 	// Mix without yaw
 	ActuatorVector thrust_z;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	لكل (صحيح i = 0; i < رەقەم_actuators_2; i++) {
 		_actuator_sp(i) = _actuator_trim(i) +
 				  _mix(i, ControlAxis::ROLL) * (_control_sp(ControlAxis::ROLL) - _control_trim(ControlAxis::ROLL)) +
 				  _mix(i, ControlAxis::PITCH) * (_control_sp(ControlAxis::PITCH) - _control_trim(ControlAxis::PITCH)) +
@@ -142,7 +142,7 @@ ControlAllocationSequentialDesaturation::mixAirmodeRP()
 	mixYaw();
 }
 
-void
+فراغ
 ControlAllocationSequentialDesaturation::mixAirmodeRPY()
 {
 	// Airmode for roll, pitch and yaw
@@ -151,7 +151,7 @@ ControlAllocationSequentialDesaturation::mixAirmodeRPY()
 	ActuatorVector thrust_z;
 	ActuatorVector yaw;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	لكل (صحيح i = 0; i < رەقەم_actuators_2; i++) {
 		_actuator_sp(i) = _actuator_trim(i) +
 				  _mix(i, ControlAxis::ROLL) * (_control_sp(ControlAxis::ROLL) - _control_trim(ControlAxis::ROLL)) +
 				  _mix(i, ControlAxis::PITCH) * (_control_sp(ControlAxis::PITCH) - _control_trim(ControlAxis::PITCH)) +
@@ -170,7 +170,7 @@ ControlAllocationSequentialDesaturation::mixAirmodeRPY()
 	desaturateActuators(_actuator_sp, yaw);
 }
 
-void
+فراغ
 ControlAllocationSequentialDesaturation::mixAirmodeDisabled()
 {
 	// Airmode disabled: never allow to increase the thrust to unsaturate a motor
@@ -180,7 +180,7 @@ ControlAllocationSequentialDesaturation::mixAirmodeDisabled()
 	ActuatorVector roll;
 	ActuatorVector pitch;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	لكل (صحيح i = 0; i < رەقەم_actuators_2; i++) {
 		_actuator_sp(i) = _actuator_trim(i) +
 				  _mix(i, ControlAxis::ROLL) * (_control_sp(ControlAxis::ROLL) - _control_trim(ControlAxis::ROLL)) +
 				  _mix(i, ControlAxis::PITCH) * (_control_sp(ControlAxis::PITCH) - _control_trim(ControlAxis::PITCH)) +
@@ -203,14 +203,14 @@ ControlAllocationSequentialDesaturation::mixAirmodeDisabled()
 	mixYaw();
 }
 
-void
+فراغ
 ControlAllocationSequentialDesaturation::mixYaw()
 {
 	// Add yaw to outputs
 	ActuatorVector yaw;
 	ActuatorVector thrust_z;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	لكل (صحيح i = 0; i < رەقەم_actuators_2; i++) {
 		_actuator_sp(i) += _mix(i, ControlAxis::YAW) * (_control_sp(ControlAxis::YAW) - _control_trim(ControlAxis::YAW));
 		yaw(i) = _mix(i, ControlAxis::YAW);
 		thrust_z(i) = _mix(i, ControlAxis::THRUST_Z);
@@ -227,7 +227,7 @@ ControlAllocationSequentialDesaturation::mixYaw()
 	desaturateActuators(_actuator_sp, thrust_z, true);
 }
 
-void
+فراغ
 ControlAllocationSequentialDesaturation::updateParameters()
 {
 	updateParams();

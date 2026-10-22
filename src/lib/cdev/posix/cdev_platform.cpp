@@ -32,198 +32,198 @@
  *
  ****************************************************************************/
 
-#include "cdev_platform.hpp"
+#ضمن "cdev_platform.hpp"
 
-#include "../CDev.hpp"
+#ضمن "../CDev.hpp"
 
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/posix.h>
-#include <px4_platform_common/time.h>
+#ضمن <px4_platform_common/log.h>
+#ضمن <px4_platform_common/posix.h>
+#ضمن <px4_platform_common/time.h>
 
-#include <stdlib.h>
+#ضمن <stdlib.h>
 
-static const cdev::px4_file_operations_t g_fops = {};
-const cdev::px4_file_operations_t &cdev::CDev::fops_ref() { return g_fops; }
+ساكن ثابت cdev::px4_file_operations_t g_fops = {};
+ثابت cdev::px4_file_operations_t &cdev::CDev::fops_ref() { أرجع g_fops; }
 
 pthread_mutex_t devmutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t filemutex = PTHREAD_MUTEX_INITIALIZER;
 
-struct px4_dev_t {
-	char *name{nullptr};
+بنية px4_dev_t {
+	حرف *name{nullptr};
 	cdev::CDev *cdev{nullptr};
 
-	px4_dev_t(const char *n, cdev::CDev *c) : cdev(c)
+	px4_dev_t(ثابت حرف *n, cdev::CDev *c) : cdev(c)
 	{
 		name = strdup(n);
 	}
 
 	~px4_dev_t()
 	{
-		free(name);
+		حرر(name);
 	}
-private:
-	px4_dev_t() = default;
+خاص:
+	px4_dev_t() = افتراضي;
 };
 
 #define PX4_MAX_FD 512
-static px4_dev_t *devmap[PX4_MAX_FD] {};
-static cdev::file_t filemap[PX4_MAX_FD] {};
+ساكن px4_dev_t *devmap[PX4_MAX_FD] {};
+ساكن cdev::file_t filemap[PX4_MAX_FD] {};
 
-class VFile : public cdev::CDev
+صنف VFile : عام cdev::CDev
 {
-public:
-	VFile(const char *fname, mode_t mode) : cdev::CDev(fname) {}
-	~VFile() override = default;
+عام:
+	VFile(ثابت حرف *fname, mode_t mode) : cdev::CDev(fname) {}
+	~VFile() override = افتراضي;
 
-	ssize_t write(cdev::file_t *handlep, const char *buffer, size_t buflen) override
+	ssize_t اكتب(cdev::file_t *handlep, ثابت حرف *buffer, size_t buflen) override
 	{
 		// ignore what was written, but let pollers know something was written
 		poll_notify(POLLIN);
-		return buflen;
+		أرجع buflen;
 	}
 };
 
-static cdev::CDev *getDev(const char *path)
+ساكن cdev::CDev *getDev(ثابت حرف *path)
 {
 	pthread_mutex_lock(&devmutex);
 
-	for (const auto &dev : devmap) {
-		if (dev && (strcmp(dev->name, path) == 0)) {
+	لكل (ثابت auto &dev : devmap) {
+		إذا (dev && (strcmp(dev->name, path) == 0)) {
 			pthread_mutex_unlock(&devmutex);
-			return dev->cdev;
+			أرجع dev->cdev;
 		}
 	}
 
 	pthread_mutex_unlock(&devmutex);
 
-	return nullptr;
+	أرجع nullptr;
 }
 
-static cdev::CDev *getFile(int fd)
+ساكن cdev::CDev *getFile(صحيح fd)
 {
 	pthread_mutex_lock(&filemutex);
 	cdev::CDev *dev = nullptr;
 
-	if (fd < PX4_MAX_FD && fd >= 0) {
+	إذا (fd < PX4_MAX_FD && fd >= 0) {
 		dev = filemap[fd].cdev;
 	}
 
 	pthread_mutex_unlock(&filemutex);
-	return dev;
+	أرجع dev;
 }
 
-extern "C" {
+خارجي "C" {
 
-	int register_driver(const char *name, const cdev::px4_file_operations_t *fops, cdev::mode_t mode, void *data)
+	صحيح register_driver(ثابت حرف *name, ثابت cdev::px4_file_operations_t *fops, cdev::mode_t mode, فراغ *data)
 	{
 		PX4_DEBUG("CDev::register_driver %s", name);
-		int ret = -ENOSPC;
+		صحيح ret = -ENOSPC;
 
-		if (name == nullptr || data == nullptr) {
-			return -EINVAL;
+		إذا (name == nullptr || data == nullptr) {
+			أرجع -EINVAL;
 		}
 
 		pthread_mutex_lock(&devmutex);
 
 		// Make sure the device does not already exist
-		for (const auto &dev : devmap) {
-			if (dev && (strcmp(dev->name, name) == 0)) {
+		لكل (ثابت auto &dev : devmap) {
+			إذا (dev && (strcmp(dev->name, name) == 0)) {
 				pthread_mutex_unlock(&devmutex);
-				return -EEXIST;
+				أرجع -EEXIST;
 			}
 		}
 
-		for (auto &dev : devmap) {
-			if (dev == nullptr) {
-				dev = new px4_dev_t(name, (cdev::CDev *)data);
+		لكل (auto &dev : devmap) {
+			إذا (dev == nullptr) {
+				dev = جديد px4_dev_t(name, (cdev::CDev *)data);
 				PX4_DEBUG("Registered DEV %s", name);
 				ret = PX4_OK;
-				break;
+				اكسر;
 			}
 		}
 
 		pthread_mutex_unlock(&devmutex);
 
-		if (ret != PX4_OK) {
+		إذا (ret != PX4_OK) {
 			PX4_ERR("No free devmap entries - increase devmap size");
 		}
 
-		return ret;
+		أرجع ret;
 	}
 
-	int unregister_driver(const char *name)
+	صحيح unregister_driver(ثابت حرف *name)
 	{
 		PX4_DEBUG("CDev::unregister_driver %s", name);
-		int ret = -EINVAL;
+		صحيح ret = -EINVAL;
 
-		if (name == nullptr) {
-			return -EINVAL;
+		إذا (name == nullptr) {
+			أرجع -EINVAL;
 		}
 
 		pthread_mutex_lock(&devmutex);
 
-		for (auto &dev : devmap) {
-			if (dev && (strcmp(name, dev->name) == 0)) {
+		لكل (auto &dev : devmap) {
+			إذا (dev && (strcmp(name, dev->name) == 0)) {
 				delete dev;
 				dev = nullptr;
 				PX4_DEBUG("Unregistered DEV %s", name);
 				ret = PX4_OK;
-				break;
+				اكسر;
 			}
 		}
 
 		pthread_mutex_unlock(&devmutex);
 
-		return ret;
+		أرجع ret;
 	}
 
-	int px4_open(const char *path, int flags, ...)
+	صحيح px4_open(ثابت حرف *path, صحيح flags, ...)
 	{
 		PX4_DEBUG("px4_open");
 		cdev::CDev *dev = getDev(path);
-		int ret = 0;
-		int i;
+		صحيح ret = 0;
+		صحيح i;
 		mode_t mode;
 
-		if (!dev && (flags & PX4_F_WRONLY) != 0 &&
+		إذا (!dev && (flags & PX4_F_WRONLY) != 0 &&
 		    strncmp(path, "/obj/", 5) != 0 &&
 		    strncmp(path, "/dev/", 5) != 0) {
 			va_list p;
 			va_start(p, flags);
-			mode = va_arg(p, int);
+			mode = va_arg(p, صحيح);
 			va_end(p);
 
 			// Create the file
 			PX4_DEBUG("Creating virtual file %s", path);
-			dev = new VFile(path, mode);
-			register_driver(path, nullptr, 0666, (void *)dev);
+			dev = جديد VFile(path, mode);
+			register_driver(path, nullptr, 0666, (فراغ *)dev);
 		}
 
-		if (dev) {
+		إذا (dev) {
 			pthread_mutex_lock(&filemutex);
 
-			for (i = 0; i < PX4_MAX_FD; ++i) {
-				if (filemap[i].cdev == nullptr) {
+			لكل (i = 0; i < PX4_MAX_FD; ++i) {
+				إذا (filemap[i].cdev == nullptr) {
 					filemap[i] = cdev::file_t(flags, dev);
-					break;
+					اكسر;
 				}
 			}
 
 			pthread_mutex_unlock(&filemutex);
 
-			if (i < PX4_MAX_FD) {
+			إذا (i < PX4_MAX_FD) {
 				ret = dev->open(&filemap[i]);
 
-			} else {
+			} وإلا {
 
-				const unsigned NAMELEN = 32;
-				char thread_name[NAMELEN] {};
+				ثابت unsigned NAMELEN = 32;
+				حرف thread_name[NAMELEN] {};
 
 				PX4_WARN("%s: exceeded maximum number of file descriptors, accessing %s", thread_name, path);
 #ifndef __PX4_QURT
-				int nret = pthread_getname_np(pthread_self(), thread_name, NAMELEN);
+				صحيح nret = pthread_getname_np(pthread_self(), thread_name, NAMELEN);
 
-				if (nret || thread_name[0] == 0) {
+				إذا (nret || thread_name[0] == 0) {
 					PX4_WARN("failed getting thread name");
 				}
 
@@ -232,26 +232,26 @@ extern "C" {
 				ret = -ENOENT;
 			}
 
-		} else {
+		} وإلا {
 			ret = -EINVAL;
 		}
 
-		if (ret < 0) {
+		إذا (ret < 0) {
 			errno = -ret;
-			return -1;
+			أرجع -1;
 		}
 
 		PX4_DEBUG("px4_open fd = %d", i);
-		return i;
+		أرجع i;
 	}
 
-	int px4_close(int fd)
+	صحيح px4_close(صحيح fd)
 	{
-		int ret;
+		صحيح ret;
 
 		cdev::CDev *dev = getFile(fd);
 
-		if (dev) {
+		إذا (dev) {
 			pthread_mutex_lock(&filemutex);
 			ret = dev->close(&filemap[fd]);
 
@@ -260,94 +260,94 @@ extern "C" {
 			pthread_mutex_unlock(&filemutex);
 			PX4_DEBUG("px4_close fd = %d", fd);
 
-		} else {
+		} وإلا {
 			ret = -EINVAL;
 		}
 
-		if (ret < 0) {
+		إذا (ret < 0) {
 			ret = PX4_ERROR;
 		}
 
-		return ret;
+		أرجع ret;
 	}
 
-	ssize_t px4_read(int fd, void *buffer, size_t buflen)
+	ssize_t px4_read(صحيح fd, فراغ *buffer, size_t buflen)
 	{
-		int ret;
+		صحيح ret;
 
 		cdev::CDev *dev = getFile(fd);
 
-		if (dev) {
+		إذا (dev) {
 			PX4_DEBUG("px4_read fd = %d", fd);
-			ret = dev->read(&filemap[fd], (char *)buffer, buflen);
+			ret = dev->اقرأ(&filemap[fd], (حرف *)buffer, buflen);
 
-		} else {
+		} وإلا {
 			ret = -EINVAL;
 		}
 
-		if (ret < 0) {
+		إذا (ret < 0) {
 			ret = PX4_ERROR;
 		}
 
-		return ret;
+		أرجع ret;
 	}
 
-	ssize_t px4_write(int fd, const void *buffer, size_t buflen)
+	ssize_t px4_write(صحيح fd, ثابت فراغ *buffer, size_t buflen)
 	{
-		int ret;
+		صحيح ret;
 
 		cdev::CDev *dev = getFile(fd);
 
-		if (dev) {
+		إذا (dev) {
 			PX4_DEBUG("px4_write fd = %d", fd);
-			ret = dev->write(&filemap[fd], (const char *)buffer, buflen);
+			ret = dev->اكتب(&filemap[fd], (ثابت حرف *)buffer, buflen);
 
-		} else {
+		} وإلا {
 			ret = -EINVAL;
 		}
 
-		if (ret < 0) {
+		إذا (ret < 0) {
 			ret = PX4_ERROR;
 		}
 
-		return ret;
+		أرجع ret;
 	}
 
-	int px4_ioctl(int fd, int cmd, unsigned long arg)
+	صحيح px4_ioctl(صحيح fd, صحيح cmd, unsigned long arg)
 	{
 		PX4_DEBUG("px4_ioctl fd = %d", fd);
-		int ret = 0;
+		صحيح ret = 0;
 
 		cdev::CDev *dev = getFile(fd);
 
-		if (dev) {
+		إذا (dev) {
 			ret = dev->ioctl(&filemap[fd], cmd, arg);
 
-		} else {
+		} وإلا {
 			ret = -EINVAL;
 		}
 
-		return ret;
+		أرجع ret;
 	}
 
-	int px4_poll(px4_pollfd_struct_t *fds, unsigned int nfds, int timeout)
+	صحيح px4_poll(px4_pollfd_struct_t *fds, unsigned صحيح nfds, صحيح timeout)
 	{
-		if (nfds == 0) {
+		إذا (nfds == 0) {
 			PX4_WARN("px4_poll with no fds");
-			return -1;
+			أرجع -1;
 		}
 
 		px4_sem_t sem;
-		int count = 0;
-		int ret = -1;
+		صحيح سانى = 0;
+		صحيح ret = -1;
 
-		const unsigned NAMELEN = 32;
-		char thread_name[NAMELEN] {};
+		ثابت unsigned NAMELEN = 32;
+		حرف thread_name[NAMELEN] {};
 
 #ifndef __PX4_QURT
-		int nret = pthread_getname_np(pthread_self(), thread_name, NAMELEN);
+		صحيح nret = pthread_getname_np(pthread_self(), thread_name, NAMELEN);
 
-		if (nret || thread_name[0] == 0) {
+		إذا (nret || thread_name[0] == 0) {
 			PX4_WARN("failed getting thread name");
 		}
 
@@ -361,9 +361,9 @@ extern "C" {
 		px4_sem_setprotocol(&sem, SEM_PRIO_NONE);
 
 		// Go through all fds and check them for a pollable state
-		bool fd_pollable = false;
+		منطقي fd_pollable = خطأ;
 
-		for (unsigned int i = 0; i < nfds; ++i) {
+		لكل (unsigned صحيح i = 0; i < nfds; ++i) {
 			fds[i].sem     = &sem;
 			fds[i].revents = 0;
 			fds[i].priv    = nullptr;
@@ -371,16 +371,16 @@ extern "C" {
 			cdev::CDev *dev = getFile(fds[i].fd);
 
 			// If fd is valid
-			if (dev) {
+			إذا (dev) {
 				PX4_DEBUG("%s: px4_poll: CDev->poll(setup) %d", thread_name, fds[i].fd);
 				ret = dev->poll(&filemap[fds[i].fd], &fds[i], true);
 
-				if (ret < 0) {
+				إذا (ret < 0) {
 					PX4_WARN("%s: px4_poll() error: %s", thread_name, strerror(errno));
-					break;
+					اكسر;
 				}
 
-				if (ret >= 0) {
+				إذا (ret >= 0) {
 					fd_pollable = true;
 				}
 			}
@@ -388,24 +388,24 @@ extern "C" {
 
 		// If any FD can be polled, lock the semaphore and
 		// check for new data
-		if (fd_pollable) {
-			if (timeout > 0) {
+		إذا (fd_pollable) {
+			إذا (timeout > 0) {
 				// Get the current time
-				struct timespec ts;
-#if defined(__PX4_DARWIN) && !defined(ENABLE_LOCKSTEP_SCHEDULER)
+				بنية timespec ts;
+#إذا defined(__PX4_DARWIN) && !defined(ENABLE_LOCKSTEP_SCHEDULER)
 				// macOS has no pthread_condattr_setclock(), so px4_sem_t's condition
 				// variable waits on CLOCK_REALTIME (px4_sem_init()). Use that clock here
 				// too. CLOCK_MONOTONIC counts from boot, so the deadline would land
 				// decades in the past and px4_sem_timedwait() would return immediately.
 				px4_clock_gettime(CLOCK_REALTIME, &ts);
-#else
+#وإلا
 				// Note, we can't actually use CLOCK_MONOTONIC on macOS
 				// but that's hidden and implemented in px4_clock_gettime.
 				px4_clock_gettime(CLOCK_MONOTONIC, &ts);
 #endif
 
 				// Calculate an absolute time in the future
-				const unsigned billion = (1000 * 1000 * 1000);
+				ثابت unsigned billion = (1000 * 1000 * 1000);
 				uint64_t nsecs = ts.tv_nsec + ((uint64_t)timeout * 1000 * 1000);
 				ts.tv_sec += nsecs / billion;
 				nsecs -= (nsecs / billion) * billion;
@@ -413,32 +413,32 @@ extern "C" {
 
 				ret = px4_sem_timedwait(&sem, &ts);
 
-				if (ret && errno != ETIMEDOUT) {
+				إذا (ret && errno != ETIMEDOUT) {
 					PX4_WARN("%s: px4_poll() sem error: %s", thread_name, strerror(errno));
 				}
 
-			} else if (timeout < 0) {
+			} وإلا إذا (timeout < 0) {
 				px4_sem_wait(&sem);
 			}
 
 			// We have waited now (or not, depending on timeout),
 			// go through all fds and count how many have data
-			for (unsigned int i = 0; i < nfds; ++i) {
+			لكل (unsigned صحيح i = 0; i < nfds; ++i) {
 
 				cdev::CDev *dev = getFile(fds[i].fd);
 
 				// If fd is valid
-				if (dev) {
+				إذا (dev) {
 					PX4_DEBUG("%s: px4_poll: CDev->poll(teardown) %d", thread_name, fds[i].fd);
-					ret = dev->poll(&filemap[fds[i].fd], &fds[i], false);
+					ret = dev->poll(&filemap[fds[i].fd], &fds[i], خطأ);
 
-					if (ret < 0) {
+					إذا (ret < 0) {
 						PX4_WARN("%s: px4_poll() 2nd poll fail", thread_name);
-						break;
+						اكسر;
 					}
 
-					if (fds[i].revents) {
-						count += 1;
+					إذا (fds[i].revents) {
+						سانى += 1;
 					}
 				}
 			}
@@ -448,28 +448,28 @@ extern "C" {
 
 		// Return the positive count if present,
 		// return the negative error number if failed
-		return (count) ? count : ret;
+		أرجع (سانى) ? سانى : ret;
 	}
 
-	int px4_access(const char *pathname, int mode)
+	صحيح px4_access(ثابت حرف *pathname, صحيح mode)
 	{
-		if (mode != F_OK) {
+		إذا (mode != F_OK) {
 			errno = EINVAL;
-			return -1;
+			أرجع -1;
 		}
 
 		cdev::CDev *dev = getDev(pathname);
-		return (dev != nullptr) ? 0 : -1;
+		أرجع (dev != nullptr) ? 0 : -1;
 	}
 
-	void px4_show_files()
+	فراغ px4_show_files()
 	{
 		PX4_INFO("Files:");
 
 		pthread_mutex_lock(&devmutex);
 
-		for (const auto &dev : devmap) {
-			if (dev) {
+		لكل (ثابت auto &dev : devmap) {
+			إذا (dev) {
 				PX4_INFO_RAW("   %s\n", dev->name);
 			}
 		}

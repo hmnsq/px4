@@ -37,13 +37,13 @@
  *
  */
 
-#include "CollisionPrevention.hpp"
-#include "ObstacleMath.hpp"
-#include <px4_platform_common/events.h>
-#include <math.h>
+#ضمن "CollisionPrevention.hpp"
+#ضمن "ObstacleMath.hpp"
+#ضمن <px4_platform_common/events.h>
+#ضمن <math.h>
 
 
-using namespace matrix;
+using نطاق matrix;
 
 CollisionPrevention::CollisionPrevention(ModuleParams *parent) :
 	ModuleParams(parent)
@@ -56,46 +56,46 @@ CollisionPrevention::CollisionPrevention(ModuleParams *parent) :
 	_obstacle_map_body_frame.increment = BIN_SIZE;
 	_obstacle_map_body_frame.min_distance = UINT16_MAX;
 
-	for (uint32_t i = 0 ; i < BIN_COUNT; i++) {
+	لكل (uint32_t i = 0 ; i < BIN_سانى; i++) {
 		_obstacle_map_body_frame.distances[i] = UINT16_MAX;
 	}
 }
 
 hrt_abstime CollisionPrevention::getTime()
 {
-	return hrt_absolute_time();
+	أرجع hrt_absolute_time();
 }
 
-hrt_abstime CollisionPrevention::getElapsedTime(const hrt_abstime *ptr)
+hrt_abstime CollisionPrevention::getElapsedTime(ثابت hrt_abstime *ptr)
 {
-	return hrt_absolute_time() - *ptr;
+	أرجع hrt_absolute_time() - *ptr;
 }
 
-bool CollisionPrevention::is_active()
+منطقي CollisionPrevention::is_active()
 {
-	bool activated = _param_cp_dist.get() > 0;
+	منطقي activated = _param_cp_dist.get() > 0;
 
-	if (activated && !_was_active) {
+	إذا (activated && !_was_active) {
 		_time_activated = getTime();
 	}
 
 	_was_active = activated;
-	return activated;
+	أرجع activated;
 }
 
-void CollisionPrevention::modifySetpoint(Vector2f &setpoint_accel, const Vector2f &setpoint_vel)
+فراغ CollisionPrevention::modifySetpoint(Vector2f &setpoint_accel, ثابت Vector2f &setpoint_vel)
 {
-	if (_vehicle_attitude_sub.updated()) {
+	إذا (_vehicle_attitude_sub.updated()) {
 		vehicle_attitude_s vehicle_attitude;
 
-		if (_vehicle_attitude_sub.copy(&vehicle_attitude)) {
+		إذا (_vehicle_attitude_sub.copy(&vehicle_attitude)) {
 			_vehicle_attitude = Quatf(vehicle_attitude.q);
 			_vehicle_yaw = Eulerf(_vehicle_attitude).psi();
 		}
 	}
 
 	//calculate movement constraints based on range data
-	const Vector2f original_setpoint = setpoint_accel;
+	ثابت Vector2f original_setpoint = setpoint_accel;
 	_updateObstacleMap();
 	_updateObstacleData();
 	_calculateConstrainedSetpoint(setpoint_accel, setpoint_vel);
@@ -108,15 +108,15 @@ void CollisionPrevention::modifySetpoint(Vector2f &setpoint_accel, const Vector2
 	_constraints_pub.publish(constraints);
 }
 
-void CollisionPrevention::_updateObstacleMap()
+فراغ CollisionPrevention::_updateObstacleMap()
 {
 	// add distance sensor data
-	for (auto &dist_sens_sub : _distance_sensor_subs) {
+	لكل (auto &dist_sens_sub : _distance_sensor_subs) {
 		distance_sensor_s distance_sensor;
 
-		if (dist_sens_sub.update(&distance_sensor)) {
+		إذا (dist_sens_sub.update(&distance_sensor)) {
 			// consider only instances with valid data and orientations useful for collision prevention
-			if ((getElapsedTime(&distance_sensor.timestamp) < RANGE_STREAM_TIMEOUT_US) &&
+			إذا ((getElapsedTime(&distance_sensor.timestamp) < RANGE_STREAM_TIMEOUT_US) &&
 			    (distance_sensor.orientation != distance_sensor_s::ROTATION_DOWNWARD_FACING) &&
 			    (distance_sensor.orientation != distance_sensor_s::ROTATION_UPWARD_FACING)) {
 
@@ -133,11 +133,11 @@ void CollisionPrevention::_updateObstacleMap()
 	}
 
 	// add obstacle distance data
-	if (_sub_obstacle_distance.update()) {
-		const obstacle_distance_s &obstacle_distance = _sub_obstacle_distance.get();
+	إذا (_sub_obstacle_distance.update()) {
+		ثابت obstacle_distance_s &obstacle_distance = _sub_obstacle_distance.get();
 
 		// Update map with obstacle data if the data is not stale
-		if (getElapsedTime(&obstacle_distance.timestamp) < RANGE_STREAM_TIMEOUT_US && obstacle_distance.increment > 0.f) {
+		إذا (getElapsedTime(&obstacle_distance.timestamp) < RANGE_STREAM_TIMEOUT_US && obstacle_distance.increment > 0.f) {
 			//update message description
 			_obstacle_map_body_frame.timestamp = math::max(_obstacle_map_body_frame.timestamp, obstacle_distance.timestamp);
 			_obstacle_map_body_frame.max_distance = math::max(_obstacle_map_body_frame.max_distance,
@@ -152,50 +152,50 @@ void CollisionPrevention::_updateObstacleMap()
 	_obstacle_distance_fused_pub.publish(_obstacle_map_body_frame);
 }
 
-void CollisionPrevention::_updateObstacleData()
+فراغ CollisionPrevention::_updateObstacleData()
 {
-	_obstacle_data_present = false;
+	_obstacle_data_present = خطأ;
 	_closest_dist = UINT16_MAX;
 	_closest_dist_dir.setZero();
 
-	for (int i = 0; i < BIN_COUNT; i++) {
+	لكل (صحيح i = 0; i < BIN_سانى; i++) {
 		// if the data is stale, reset the bin
-		if (getTime() - _data_timestamps[i] > RANGE_STREAM_TIMEOUT_US) {
+		إذا (getTime() - _data_timestamps[i] > RANGE_STREAM_TIMEOUT_US) {
 			_obstacle_map_body_frame.distances[i] = UINT16_MAX;
 		}
 
-		float angle = wrap_2pi(_vehicle_yaw + math::radians((float)i * BIN_SIZE +
+		عائم angle = wrap_2pi(_vehicle_yaw + math::radians((عائم)i * BIN_SIZE +
 				       _obstacle_map_body_frame.angle_offset));
-		const Vector2f bin_direction = {cosf(angle), sinf(angle)};
-		const uint16_t bin_distance = _obstacle_map_body_frame.distances[i];
+		ثابت Vector2f bin_direction = {cosf(angle), sinf(angle)};
+		ثابت uint16_t bin_distance = _obstacle_map_body_frame.distances[i];
 
 		// check if there is avaliable data and the data of the map is not stale
-		if (bin_distance < UINT16_MAX
+		إذا (bin_distance < UINT16_MAX
 		    && (getTime() - _obstacle_map_body_frame.timestamp) < RANGE_STREAM_TIMEOUT_US) {
 			_obstacle_data_present = true;
 		}
 
-		if (bin_distance * 0.01f < _closest_dist) {
+		إذا (bin_distance * 0.01f < _closest_dist) {
 			_closest_dist = bin_distance * 0.01f;
 			_closest_dist_dir = bin_direction;
 		}
 	}
 }
 
-void CollisionPrevention::_calculateConstrainedSetpoint(Vector2f &setpoint_accel, const Vector2f &setpoint_vel)
+فراغ CollisionPrevention::_calculateConstrainedSetpoint(Vector2f &setpoint_accel, ثابت Vector2f &setpoint_vel)
 {
-	const float setpoint_length = setpoint_accel.norm();
+	ثابت عائم setpoint_length = setpoint_accel.norm();
 	_min_dist_to_keep = math::max(_obstacle_map_body_frame.min_distance / 100.0f, _param_cp_dist.get());
 
-	const hrt_abstime now = getTime();
+	ثابت hrt_abstime now = getTime();
 
-	const bool is_stick_deflected = setpoint_length > 0.001f;
+	ثابت منطقي is_stick_deflected = setpoint_length > 0.001f;
 
-	if (_obstacle_data_present && is_stick_deflected) {
+	إذا (_obstacle_data_present && is_stick_deflected) {
 
 		_transformSetpoint(setpoint_accel);
 
-		float vel_comp_accel = INFINITY;
+		عائم vel_comp_accel = INFINITY;
 		Vector2f vel_comp_accel_dir{};
 
 		_getVelocityCompensationAcceleration(_vehicle_yaw, setpoint_vel, now,
@@ -203,19 +203,19 @@ void CollisionPrevention::_calculateConstrainedSetpoint(Vector2f &setpoint_accel
 
 		Vector2f constr_accel_setpoint{};
 
-		if (_checkSetpointDirectionFeasability()) {
+		إذا (_checkSetpointDirectionFeasability()) {
 			constr_accel_setpoint = _constrainAccelerationSetpoint(setpoint_length);
 		}
 
 		setpoint_accel = constr_accel_setpoint + vel_comp_accel * vel_comp_accel_dir;
 
-	} else if (!_obstacle_data_present) {
+	} وإلا إذا (!_obstacle_data_present) {
 		// allow no movement
 		setpoint_accel.setZero();
 
 		// if distance data is stale, switch to Loiter
-		if (getElapsedTime(&_last_timeout_warning) > 1_s && getElapsedTime(&_time_activated) > 1_s) {
-			if ((now - _obstacle_map_body_frame.timestamp) > TIMEOUT_HOLD_US &&
+		إذا (getElapsedTime(&_last_timeout_warning) > 1_s && getElapsedTime(&_time_activated) > 1_s) {
+			إذا ((now - _obstacle_map_body_frame.timestamp) > TIMEOUT_HOLD_US &&
 			    getElapsedTime(&_time_activated) > TIMEOUT_HOLD_US) {
 				_publishVehicleCmdDoLoiter();
 			}
@@ -227,42 +227,42 @@ void CollisionPrevention::_calculateConstrainedSetpoint(Vector2f &setpoint_accel
 }
 
 // TODO this gives false output if the offset is not a multiple of the resolution. to be fixed...
-void CollisionPrevention::_addObstacleSensorData(const obstacle_distance_s &obstacle, const float vehicle_yaw)
+فراغ CollisionPrevention::_addObstacleSensorData(ثابت obstacle_distance_s &obstacle, ثابت عائم vehicle_yaw)
 {
 
-	float vehicle_orientation_deg = math::degrees(vehicle_yaw);
+	عائم vehicle_orientation_deg = math::degrees(vehicle_yaw);
 
 
-	if (obstacle.frame == obstacle.MAV_FRAME_GLOBAL || obstacle.frame == obstacle.MAV_FRAME_LOCAL_NED) {
+	إذا (obstacle.frame == obstacle.MAV_FRAME_GLOBAL || obstacle.frame == obstacle.MAV_FRAME_LOCAL_NED) {
 		// Obstacle message arrives in local_origin frame (north aligned)
 		// corresponding data index (convert to world frame and shift by msg offset)
-		for (int i = 0; i < BIN_COUNT; i++) {
-			for (int j = 0; (j < 360 / obstacle.increment) && (j < BIN_COUNT); j++) {
-				float bin_lower_angle = ObstacleMath::get_lower_bound_angle(i, _obstacle_map_body_frame.increment,
+		لكل (صحيح i = 0; i < BIN_سانى; i++) {
+			لكل (صحيح j = 0; (j < 360 / obstacle.increment) && (j < BIN_سانى); j++) {
+				عائم bin_lower_angle = ObstacleMath::get_lower_bound_angle(i, _obstacle_map_body_frame.increment,
 							_obstacle_map_body_frame.angle_offset);
-				float bin_upper_angle = ObstacleMath::get_lower_bound_angle(i + 1, _obstacle_map_body_frame.increment,
+				عائم bin_upper_angle = ObstacleMath::get_lower_bound_angle(i + 1, _obstacle_map_body_frame.increment,
 							_obstacle_map_body_frame.angle_offset);
-				float msg_lower_angle = ObstacleMath::get_lower_bound_angle(j, obstacle.increment,
+				عائم ئۇچۇر_lower_angle = ObstacleMath::get_lower_bound_angle(j, obstacle.increment,
 							obstacle.angle_offset - vehicle_orientation_deg);
-				float msg_upper_angle = ObstacleMath::get_lower_bound_angle(j + 1, obstacle.increment,
+				عائم ئۇچۇر_upper_angle = ObstacleMath::get_lower_bound_angle(j + 1, obstacle.increment,
 							obstacle.angle_offset - vehicle_orientation_deg);
 
 				// if a bin stretches over the 0/360 degree line, adjust the angles
-				if (bin_lower_angle > bin_upper_angle) {
+				إذا (bin_lower_angle > bin_upper_angle) {
 					bin_lower_angle -= 360;
 				}
 
-				if (msg_lower_angle > msg_upper_angle) {
-					msg_lower_angle -= 360;
+				إذا (ئۇچۇر_lower_angle > ئۇچۇر_upper_angle) {
+					ئۇچۇر_lower_angle -= 360;
 				}
 
 				// Check for overlaps.
-				if ((msg_lower_angle > bin_lower_angle && msg_lower_angle < bin_upper_angle) ||
-				    (msg_upper_angle > bin_lower_angle && msg_upper_angle < bin_upper_angle) ||
-				    (msg_lower_angle <= bin_lower_angle && msg_upper_angle >= bin_upper_angle) ||
-				    (msg_lower_angle >= bin_lower_angle && msg_upper_angle <= bin_upper_angle)) {
-					if (obstacle.distances[j] != UINT16_MAX) {
-						if (_enterData(i, obstacle.max_distance * 0.01f, obstacle.distances[j] * 0.01f)) {
+				إذا ((ئۇچۇر_lower_angle > bin_lower_angle && ئۇچۇر_lower_angle < bin_upper_angle) ||
+				    (ئۇچۇر_upper_angle > bin_lower_angle && ئۇچۇر_upper_angle < bin_upper_angle) ||
+				    (ئۇچۇر_lower_angle <= bin_lower_angle && ئۇچۇر_upper_angle >= bin_upper_angle) ||
+				    (ئۇچۇر_lower_angle >= bin_lower_angle && ئۇچۇر_upper_angle <= bin_upper_angle)) {
+					إذا (obstacle.distances[j] != UINT16_MAX) {
+						إذا (_enterData(i, obstacle.max_distance * 0.01f, obstacle.distances[j] * 0.01f)) {
 							_obstacle_map_body_frame.distances[i] = obstacle.distances[j];
 							_data_timestamps[i] = _obstacle_map_body_frame.timestamp;
 							_data_maxranges[i] = obstacle.max_distance;
@@ -274,35 +274,35 @@ void CollisionPrevention::_addObstacleSensorData(const obstacle_distance_s &obst
 			}
 		}
 
-	} else if (obstacle.frame == obstacle.MAV_FRAME_BODY_FRD) {
+	} وإلا إذا (obstacle.frame == obstacle.MAV_FRAME_BODY_FRD) {
 		// Obstacle message arrives in body frame (front aligned)
 		// corresponding data index (shift by msg offset)
-		for (int i = 0; i < BIN_COUNT; i++) {
-			for (int j = 0; (j < 360 / obstacle.increment) && (j < BIN_COUNT); j++) {
-				float bin_lower_angle = ObstacleMath::get_lower_bound_angle(i, _obstacle_map_body_frame.increment,
+		لكل (صحيح i = 0; i < BIN_سانى; i++) {
+			لكل (صحيح j = 0; (j < 360 / obstacle.increment) && (j < BIN_سانى); j++) {
+				عائم bin_lower_angle = ObstacleMath::get_lower_bound_angle(i, _obstacle_map_body_frame.increment,
 							_obstacle_map_body_frame.angle_offset);
-				float bin_upper_angle = ObstacleMath::get_lower_bound_angle(i + 1, _obstacle_map_body_frame.increment,
+				عائم bin_upper_angle = ObstacleMath::get_lower_bound_angle(i + 1, _obstacle_map_body_frame.increment,
 							_obstacle_map_body_frame.angle_offset);
-				float msg_lower_angle = ObstacleMath::get_lower_bound_angle(j, obstacle.increment, obstacle.angle_offset);
-				float msg_upper_angle = ObstacleMath::get_lower_bound_angle(j + 1, obstacle.increment, obstacle.angle_offset);
+				عائم ئۇچۇر_lower_angle = ObstacleMath::get_lower_bound_angle(j, obstacle.increment, obstacle.angle_offset);
+				عائم ئۇچۇر_upper_angle = ObstacleMath::get_lower_bound_angle(j + 1, obstacle.increment, obstacle.angle_offset);
 
 				// if a bin stretches over the 0/360 degree line, adjust the angles
-				if (bin_lower_angle > bin_upper_angle) {
+				إذا (bin_lower_angle > bin_upper_angle) {
 					bin_lower_angle -= 360;
 				}
 
-				if (msg_lower_angle > msg_upper_angle) {
-					msg_lower_angle -= 360;
+				إذا (ئۇچۇر_lower_angle > ئۇچۇر_upper_angle) {
+					ئۇچۇر_lower_angle -= 360;
 				}
 
 				// Check for overlaps.
-				if ((msg_lower_angle > bin_lower_angle && msg_lower_angle < bin_upper_angle) ||
-				    (msg_upper_angle > bin_lower_angle && msg_upper_angle < bin_upper_angle) ||
-				    (msg_lower_angle <= bin_lower_angle && msg_upper_angle >= bin_upper_angle) ||
-				    (msg_lower_angle >= bin_lower_angle && msg_upper_angle <= bin_upper_angle)) {
-					if (obstacle.distances[j] != UINT16_MAX) {
+				إذا ((ئۇچۇر_lower_angle > bin_lower_angle && ئۇچۇر_lower_angle < bin_upper_angle) ||
+				    (ئۇچۇر_upper_angle > bin_lower_angle && ئۇچۇر_upper_angle < bin_upper_angle) ||
+				    (ئۇچۇر_lower_angle <= bin_lower_angle && ئۇچۇر_upper_angle >= bin_upper_angle) ||
+				    (ئۇچۇر_lower_angle >= bin_lower_angle && ئۇچۇر_upper_angle <= bin_upper_angle)) {
+					إذا (obstacle.distances[j] != UINT16_MAX) {
 
-						if (_enterData(i, obstacle.max_distance * 0.01f, obstacle.distances[j] * 0.01f)) {
+						إذا (_enterData(i, obstacle.max_distance * 0.01f, obstacle.distances[j] * 0.01f)) {
 							_obstacle_map_body_frame.distances[i] = obstacle.distances[j];
 							_data_timestamps[i] = _obstacle_map_body_frame.timestamp;
 							_data_maxranges[i] = obstacle.max_distance;
@@ -314,7 +314,7 @@ void CollisionPrevention::_addObstacleSensorData(const obstacle_distance_s &obst
 			}
 		}
 
-	} else {
+	} وإلا {
 		mavlink_log_critical(&_mavlink_log_pub, "Obstacle message received in unsupported frame %i\t",
 				     obstacle.frame);
 		events::send<uint8_t>(events::ID("col_prev_unsup_frame"), events::Log::Error,
@@ -322,8 +322,8 @@ void CollisionPrevention::_addObstacleSensorData(const obstacle_distance_s &obst
 	}
 }
 
-bool
-CollisionPrevention::_enterData(int map_index, float sensor_range, float sensor_reading)
+منطقي
+CollisionPrevention::_enterData(صحيح map_index, عائم sensor_range, عائم sensor_reading)
 {
 	//use data from this sensor if:
 	//1. this sensor data is in range, the bin contains already valid data and this data is coming from the same or less range sensor
@@ -333,49 +333,49 @@ CollisionPrevention::_enterData(int map_index, float sensor_range, float sensor_
 
 	uint16_t sensor_range_cm = static_cast<uint16_t>(lroundf(100.0f * sensor_range)); //convert to cm
 
-	if (sensor_reading < sensor_range) {
-		if ((_obstacle_map_body_frame.distances[map_index] < _data_maxranges[map_index]
+	إذا (sensor_reading < sensor_range) {
+		إذا ((_obstacle_map_body_frame.distances[map_index] < _data_maxranges[map_index]
 		     && sensor_range_cm <= _data_maxranges[map_index])
 		    || _obstacle_map_body_frame.distances[map_index] >= _data_maxranges[map_index]) {
 
-			return true;
+			أرجع true;
 		}
 
-	} else {
-		if ((_obstacle_map_body_frame.distances[map_index] >= _data_maxranges[map_index]
+	} وإلا {
+		إذا ((_obstacle_map_body_frame.distances[map_index] >= _data_maxranges[map_index]
 		     && sensor_range_cm >= _data_maxranges[map_index])
 		    || (_obstacle_map_body_frame.distances[map_index] < _data_maxranges[map_index]
 			&& sensor_range_cm == _data_maxranges[map_index])) {
 
-			return true;
+			أرجع true;
 		}
 	}
 
-	return false;
+	أرجع خطأ;
 }
 
-bool
+منطقي
 CollisionPrevention::_checkSetpointDirectionFeasability()
 {
-	if (_setpoint_index < 0 || _setpoint_index >= BIN_COUNT) {
-		return false; // treat out-of-bounds as unsafe
+	إذا (_setpoint_index < 0 || _setpoint_index >= BIN_سانى) {
+		أرجع خطأ; // treat out-of-bounds as unsafe
 	}
 
-	const bool no_data = (_obstacle_map_body_frame.distances[_setpoint_index] == UINT16_MAX);
-	const bool allow_movement_towards_no_data = _param_cp_go_no_data.get();
-	const bool fov_at_setpoint = _data_fov[_setpoint_index];
+	ثابت منطقي no_data = (_obstacle_map_body_frame.distances[_setpoint_index] == UINT16_MAX);
+	ثابت منطقي allow_movement_towards_no_data = _param_cp_go_no_data.get();
+	ثابت منطقي fov_at_setpoint = _data_fov[_setpoint_index];
 
 	// The setpoint is feasible if:
 	// 1. There is actual data at the setpoint (no_data == false), OR
 	// 2. There is no data, but movement into no-data bins is allowed and the setpoint is outside the sensor FOV.
-	return !no_data || (allow_movement_towards_no_data && !fov_at_setpoint);
+	أرجع !no_data || (allow_movement_towards_no_data && !fov_at_setpoint);
 }
 
-void
-CollisionPrevention::_transformSetpoint(const Vector2f &setpoint)
+فراغ
+CollisionPrevention::_transformSetpoint(ثابت Vector2f &setpoint)
 {
-	const float sp_angle_body_frame = atan2f(setpoint(1), setpoint(0)) - _vehicle_yaw;
-	const float sp_angle_with_offset_deg = ObstacleMath::wrap_360(math::degrees(sp_angle_body_frame) -
+	ثابت عائم sp_angle_body_frame = atan2f(setpoint(1), setpoint(0)) - _vehicle_yaw;
+	ثابت عائم sp_angle_with_offset_deg = ObstacleMath::wrap_360(math::degrees(sp_angle_body_frame) -
 					       _obstacle_map_body_frame.angle_offset);
 	_setpoint_index = floor(sp_angle_with_offset_deg / BIN_SIZE);
 	// change setpoint direction slightly (max by _param_cp_guide_ang degrees) to help guide through narrow gaps
@@ -383,37 +383,37 @@ CollisionPrevention::_transformSetpoint(const Vector2f &setpoint)
 	_adaptSetpointDirection(_setpoint_dir, _setpoint_index, _vehicle_yaw);
 }
 
-void
-CollisionPrevention::_addDistanceSensorData(distance_sensor_s &distance_sensor, const Quatf &vehicle_attitude)
+فراغ
+CollisionPrevention::_addDistanceSensorData(distance_sensor_s &distance_sensor, ثابت Quatf &vehicle_attitude)
 {
 	// clamp at maximum sensor range
-	float distance_reading = math::min(distance_sensor.current_distance, distance_sensor.max_distance);
+	عائم distance_reading = math::min(distance_sensor.current_distance, distance_sensor.max_distance);
 
 	// negative values indicate out of range but valid measurements.
-	if (fabsf(distance_sensor.current_distance - -1.f) < FLT_EPSILON && distance_sensor.signal_quality == 0) {
+	إذا (fabsf(distance_sensor.current_distance - -1.f) < FLT_EPSILON && distance_sensor.signal_quality == 0) {
 		distance_reading = distance_sensor.max_distance;
 	}
 
 	// discard values below min range
-	if (distance_reading > distance_sensor.min_distance) {
-		float sensor_yaw_body_rad = ObstacleMath::sensor_orientation_to_yaw_offset(static_cast<ObstacleMath::SensorOrientation>
+	إذا (distance_reading > distance_sensor.min_distance) {
+		عائم sensor_yaw_body_rad = ObstacleMath::sensor_orientation_to_yaw_offset(static_cast<ObstacleMath::SensorOrientation>
 					    (distance_sensor.orientation), distance_sensor.q);
-		float sensor_yaw_body_deg = math::degrees(wrap_2pi(sensor_yaw_body_rad));
+		عائم sensor_yaw_body_deg = math::degrees(wrap_2pi(sensor_yaw_body_rad));
 
 		// calculate the field of view boundary bin indices
-		int lower_bound = (int)round((sensor_yaw_body_deg  - math::degrees(distance_sensor.h_fov / 2.0f)) / BIN_SIZE);
-		int upper_bound = (int)round((sensor_yaw_body_deg  + math::degrees(distance_sensor.h_fov / 2.0f)) / BIN_SIZE);
+		صحيح lower_bound = (صحيح)round((sensor_yaw_body_deg  - math::degrees(distance_sensor.h_fov / 2.0f)) / BIN_SIZE);
+		صحيح upper_bound = (صحيح)round((sensor_yaw_body_deg  + math::degrees(distance_sensor.h_fov / 2.0f)) / BIN_SIZE);
 
-		if (distance_reading < distance_sensor.max_distance) {
+		إذا (distance_reading < distance_sensor.max_distance) {
 			ObstacleMath::project_distance_on_horizontal_plane(distance_reading, sensor_yaw_body_rad, vehicle_attitude);
 		}
 
 		uint16_t sensor_range = static_cast<uint16_t>(lroundf(100.0f * distance_sensor.max_distance)); // convert to cm
 
-		for (int bin = lower_bound; bin <= upper_bound; ++bin) {
-			int wrapped_bin = ObstacleMath::wrap_bin(bin, BIN_COUNT);
+		لكل (صحيح bin = lower_bound; bin <= upper_bound; ++bin) {
+			صحيح wrapped_bin = ObstacleMath::wrap_bin(bin, BIN_سانى);
 
-			if (_enterData(wrapped_bin, distance_sensor.max_distance, distance_reading)) {
+			إذا (_enterData(wrapped_bin, distance_sensor.max_distance, distance_reading)) {
 				_obstacle_map_body_frame.distances[wrapped_bin] = static_cast<uint16_t>(lroundf(100.0f * distance_reading));
 				_data_timestamps[wrapped_bin] = _obstacle_map_body_frame.timestamp;
 				_data_maxranges[wrapped_bin] = sensor_range;
@@ -423,149 +423,149 @@ CollisionPrevention::_addDistanceSensorData(distance_sensor_s &distance_sensor, 
 	}
 }
 
-void
-CollisionPrevention::_adaptSetpointDirection(Vector2f &setpoint_dir, int &setpoint_index, float vehicle_yaw_angle_rad)
+فراغ
+CollisionPrevention::_adaptSetpointDirection(Vector2f &setpoint_dir, صحيح &setpoint_index, عائم vehicle_yaw_angle_rad)
 {
-	const int guidance_bins = floor(_param_cp_guide_ang.get() / BIN_SIZE);
-	const int sp_index_original = setpoint_index;
-	float best_cost = 9999.f;
-	int new_sp_index = setpoint_index;
+	ثابت صحيح guidance_bins = floor(_param_cp_guide_ang.get() / BIN_SIZE);
+	ثابت صحيح sp_index_original = setpoint_index;
+	عائم best_cost = 9999.f;
+	صحيح new_sp_index = setpoint_index;
 
-	for (int i = sp_index_original - guidance_bins; i <= sp_index_original + guidance_bins; i++) {
+	لكل (صحيح i = sp_index_original - guidance_bins; i <= sp_index_original + guidance_bins; i++) {
 
 		// apply moving average filter to the distance array to be able to center in larger gaps
-		const int filter_size = 1;
-		float mean_dist = 0;
+		ثابت صحيح filter_size = 1;
+		عائم mean_dist = 0;
 
-		for (int j = i - filter_size; j <= i + filter_size; j++) {
-			int bin = ObstacleMath::wrap_bin(j, BIN_COUNT);
+		لكل (صحيح j = i - filter_size; j <= i + filter_size; j++) {
+			صحيح bin = ObstacleMath::wrap_bin(j, BIN_سانى);
 
-			if (_obstacle_map_body_frame.distances[bin] == UINT16_MAX) {
+			إذا (_obstacle_map_body_frame.distances[bin] == UINT16_MAX) {
 				mean_dist += _param_cp_dist.get() * 100.f;
 
-			} else {
+			} وإلا {
 				mean_dist += _obstacle_map_body_frame.distances[bin];
 			}
 		}
 
-		const int bin = ObstacleMath::wrap_bin(i, BIN_COUNT);
+		ثابت صحيح bin = ObstacleMath::wrap_bin(i, BIN_سانى);
 		mean_dist = mean_dist / (2.f * filter_size + 1.f);
-		const float deviation_cost = _param_cp_dist.get() * 50.f * abs(i - sp_index_original);
-		const float bin_cost = deviation_cost - mean_dist - _obstacle_map_body_frame.distances[bin];
+		ثابت عائم deviation_cost = _param_cp_dist.get() * 50.f * abs(i - sp_index_original);
+		ثابت عائم bin_cost = deviation_cost - mean_dist - _obstacle_map_body_frame.distances[bin];
 
-		if (bin_cost < best_cost && _obstacle_map_body_frame.distances[bin] != UINT16_MAX) {
+		إذا (bin_cost < best_cost && _obstacle_map_body_frame.distances[bin] != UINT16_MAX) {
 			best_cost = bin_cost;
 			new_sp_index = bin;
 		}
 	}
 
 	//only change setpoint direction if it was moved to a different bin
-	if (new_sp_index != setpoint_index) {
-		float angle = math::radians((float)new_sp_index * BIN_SIZE + _obstacle_map_body_frame.angle_offset);
+	إذا (new_sp_index != setpoint_index) {
+		عائم angle = math::radians((عائم)new_sp_index * BIN_SIZE + _obstacle_map_body_frame.angle_offset);
 		angle = wrap_2pi(vehicle_yaw_angle_rad + angle);
 		setpoint_dir = {cosf(angle), sinf(angle)};
 		setpoint_index = new_sp_index;
 	}
 }
 
-float CollisionPrevention::_getObstacleDistance(const Vector2f &direction)
+عائم CollisionPrevention::_getObstacleDistance(ثابت Vector2f &direction)
 {
-	float obstacle_distance = 0.f;
-	const float direction_norm = direction.norm();
+	عائم obstacle_distance = 0.f;
+	ثابت عائم direction_norm = direction.norm();
 
-	if (direction_norm > FLT_EPSILON) {
+	إذا (direction_norm > FLT_EPSILON) {
 		Vector2f dir = direction / direction_norm;
-		const float sp_angle_body_frame = atan2f(dir(1), dir(0)) - _vehicle_yaw;
-		const float sp_angle_with_offset_deg =
+		ثابت عائم sp_angle_body_frame = atan2f(dir(1), dir(0)) - _vehicle_yaw;
+		ثابت عائم sp_angle_with_offset_deg =
 			ObstacleMath::wrap_360(math::degrees(sp_angle_body_frame) - _obstacle_map_body_frame.angle_offset);
 
-		const int dir_index = ObstacleMath::get_bin_at_angle(BIN_SIZE, sp_angle_with_offset_deg);
+		ثابت صحيح dir_index = ObstacleMath::get_bin_at_angle(BIN_SIZE, sp_angle_with_offset_deg);
 		obstacle_distance   = _obstacle_map_body_frame.distances[dir_index] * 0.01f;
 	}
 
-	return obstacle_distance;
+	أرجع obstacle_distance;
 }
 
 Vector2f
-CollisionPrevention::_constrainAccelerationSetpoint(const float &setpoint_length)
+CollisionPrevention::_constrainAccelerationSetpoint(ثابت عائم &setpoint_length)
 {
 	Vector2f new_setpoint{};
-	const Vector2f normal_component = _closest_dist_dir * (_setpoint_dir.dot(_closest_dist_dir));
-	const Vector2f tangential_component = _setpoint_dir - normal_component;
+	ثابت Vector2f normal_component = _closest_dist_dir * (_setpoint_dir.dot(_closest_dist_dir));
+	ثابت Vector2f tangential_component = _setpoint_dir - normal_component;
 
-	const float normal_scale = _getScale(_closest_dist);
+	ثابت عائم normal_scale = _getScale(_closest_dist);
 
 
-	const float closest_dist_tangential = _getObstacleDistance(tangential_component);
-	const float tangential_scale = _getScale(closest_dist_tangential);
+	ثابت عائم closest_dist_tangential = _getObstacleDistance(tangential_component);
+	ثابت عائم tangential_scale = _getScale(closest_dist_tangential);
 
 
 	// only scale accelerations towards the obstacle
-	if (_closest_dist_dir.dot(_setpoint_dir) > 0) {
+	إذا (_closest_dist_dir.dot(_setpoint_dir) > 0) {
 		new_setpoint = (tangential_component * tangential_scale + normal_component * normal_scale) * setpoint_length;
 
-	} else {
+	} وإلا {
 		new_setpoint = _setpoint_dir * setpoint_length;
 	}
 
-	return new_setpoint;
+	أرجع new_setpoint;
 }
 
-float
-CollisionPrevention::_getScale(const float &reference_distance)
+عائم
+CollisionPrevention::_getScale(ثابت عائم &reference_distance)
 {
-	float scale = (reference_distance - _min_dist_to_keep);
-	const float scale_distance = math::max(_min_dist_to_keep, _param_mpc_vel_manual.get() / _param_mpc_xy_p.get());
+	عائم scale = (reference_distance - _min_dist_to_keep);
+	ثابت عائم scale_distance = math::max(_min_dist_to_keep, _param_mpc_vel_manual.get() / _param_mpc_xy_p.get());
 
 	// if scale is positive, square it and scale it with the scale_distance
 	scale = scale > 0 ? powf(scale / scale_distance, 2) : scale;
 	scale = math::min(scale, 1.0f);
-	return scale;
+	أرجع scale;
 }
 
-void CollisionPrevention::_getVelocityCompensationAcceleration(const float vehicle_yaw_angle_rad,
-		const Vector2f &setpoint_vel,
-		const hrt_abstime now, float &vel_comp_accel, Vector2f &vel_comp_accel_dir)
+فراغ CollisionPrevention::_getVelocityCompensationAcceleration(ثابت عائم vehicle_yaw_angle_rad,
+		ثابت Vector2f &setpoint_vel,
+		ثابت hrt_abstime now, عائم &vel_comp_accel, Vector2f &vel_comp_accel_dir)
 {
-	for (int i = 0; i < BIN_COUNT; i++) {
-		const float max_range = _data_maxranges[i] * 0.01f;
+	لكل (صحيح i = 0; i < BIN_سانى; i++) {
+		ثابت عائم max_range = _data_maxranges[i] * 0.01f;
 
 		// get the vector pointing into the direction of current bin
-		float bin_angle = wrap_2pi(vehicle_yaw_angle_rad
-					   + math::radians((float)i * BIN_SIZE + _obstacle_map_body_frame.angle_offset));
+		عائم bin_angle = wrap_2pi(vehicle_yaw_angle_rad
+					   + math::radians((عائم)i * BIN_SIZE + _obstacle_map_body_frame.angle_offset));
 
-		const Vector2f bin_direction = { cosf(bin_angle), sinf(bin_angle) };
-		float bin_distance = _obstacle_map_body_frame.distances[i];
+		ثابت Vector2f bin_direction = { cosf(bin_angle), sinf(bin_angle) };
+		عائم bin_distance = _obstacle_map_body_frame.distances[i];
 
 		// only consider bins which are between min and max values
-		if (bin_distance > _obstacle_map_body_frame.min_distance && bin_distance < UINT16_MAX) {
-			const float distance = bin_distance * 0.01f;
+		إذا (bin_distance > _obstacle_map_body_frame.min_distance && bin_distance < UINT16_MAX) {
+			ثابت عائم distance = bin_distance * 0.01f;
 
 			// Assume current velocity is sufficiently close to the setpoint velocity, this breaks down if flying high
 			// acceleration maneuvers
-			const float curr_vel_parallel = math::max(0.f, setpoint_vel.dot(bin_direction));
-			float delay_distance = curr_vel_parallel * _param_cp_delay.get();
+			ثابت عائم curr_vel_parallel = math::max(0.f, setpoint_vel.dot(bin_direction));
+			عائم delay_distance = curr_vel_parallel * _param_cp_delay.get();
 
-			const hrt_abstime data_age = now - _data_timestamps[i];
+			ثابت hrt_abstime data_age = now - _data_timestamps[i];
 
-			if (distance < max_range) {
+			إذا (distance < max_range) {
 				delay_distance += curr_vel_parallel * (data_age * 1e-6f);
 			}
 
-			const float stop_distance = distance - _min_dist_to_keep - delay_distance;
+			ثابت عائم stop_distance = distance - _min_dist_to_keep - delay_distance;
 
-			float curr_acc_vel_constraint;
+			عائم curr_acc_vel_constraint;
 
-			if (stop_distance >= 0.f) {
-				const float max_vel = math::trajectory::computeMaxSpeedFromDistance(_param_mpc_jerk_max.get(),
+			إذا (stop_distance >= 0.f) {
+				ثابت عائم max_vel = math::trajectory::computeMaxSpeedFromDistance(_param_mpc_jerk_max.get(),
 						      _param_mpc_acc_hor.get(), stop_distance, 0.f);
 				curr_acc_vel_constraint = _param_mpc_xy_vel_p_acc.get() * math::min(max_vel - curr_vel_parallel, 0.f);
 
-			} else {
+			} وإلا {
 				curr_acc_vel_constraint = -1.f * _param_mpc_xy_vel_p_acc.get() * curr_vel_parallel;
 			}
 
-			if (curr_acc_vel_constraint < vel_comp_accel) {
+			إذا (curr_acc_vel_constraint < vel_comp_accel) {
 				vel_comp_accel = curr_acc_vel_constraint;
 				vel_comp_accel_dir = bin_direction;
 			}
@@ -573,19 +573,19 @@ void CollisionPrevention::_getVelocityCompensationAcceleration(const float vehic
 	}
 }
 
-void CollisionPrevention::_publishVehicleCmdDoLoiter()
+فراغ CollisionPrevention::_publishVehicleCmdDoLoiter()
 {
 	vehicle_command_s command{};
 	command.command = vehicle_command_s::VEHICLE_CMD_DO_SET_MODE;
 	command.param1 = 1.f; // base mode VEHICLE_MODE_FLAG_CUSTOM_MODE_ENABLED
-	command.param2 = (float)PX4_CUSTOM_MAIN_MODE_AUTO;
-	command.param3 = (float)PX4_CUSTOM_SUB_MODE_AUTO_LOITER;
+	command.param2 = (عائم)PX4_CUSTOM_MAIN_MODE_AUTO;
+	command.param3 = (عائم)PX4_CUSTOM_SUB_MODE_AUTO_LOITER;
 	command.target_system = 1;
 	command.target_component = 1;
 	command.source_system = 1;
 	command.source_component = 1;
-	command.confirmation = false;
-	command.from_external = false;
+	command.confirmation = خطأ;
+	command.from_external = خطأ;
 	command.timestamp = getTime();
 	_vehicle_command_pub.publish(command);
 }

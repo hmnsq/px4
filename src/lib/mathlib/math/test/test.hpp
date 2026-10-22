@@ -43,17 +43,17 @@
 //#include <time.h>
 //#include <stdlib.h>
 
-bool equal(float a, float b, float eps = 1e-5);
+منطقي equal(عائم a, عائم b, عائم eps = 1e-5);
 
-bool greater_than(float a, float b);
+منطقي greater_than(عائم a, عائم b);
 
-bool less_than(float a, float b);
+منطقي less_than(عائم a, عائم b);
 
-bool greater_than_or_equal(float a, float b);
+منطقي greater_than_or_equal(عائم a, عائم b);
 
-bool less_than_or_equal(float a, float b);
+منطقي less_than_or_equal(عائم a, عائم b);
 
-void float2SigExp(
-	const float &num,
-	float &sig,
-	int &exp);
+فراغ float2SigExp(
+	ثابت عائم &رەقەم,
+	عائم &sig,
+	صحيح &exp);
