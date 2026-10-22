@@ -49,88 +49,88 @@ bool __EXPORT equal(float a, float b, float epsilon)
 {
 	float diff = fabsf(a - b);
 
-	if (diff > epsilon) {
-		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	ถ้า (diff > epsilon) {
+		printf("not equal ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		คืน false;
 
-	} else { return true; }
+	} มิฉะนั้น { คืน true; }
 }
 
 bool __EXPORT greater_than(float a, float b)
 {
-	if (a > b) {
-		return true;
+	ถ้า (a > b) {
+		คืน true;
 
-	} else {
-		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} มิฉะนั้น {
+		printf("not a > b ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		คืน false;
 	}
 }
 
 bool __EXPORT less_than(float a, float b)
 {
-	if (a < b) {
-		return true;
+	ถ้า (a < b) {
+		คืน true;
 
-	} else {
-		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} มิฉะนั้น {
+		printf("not a < b ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		คืน false;
 	}
 }
 
 bool __EXPORT greater_than_or_equal(float a, float b)
 {
-	if (a >= b) {
-		return true;
+	ถ้า (a >= b) {
+		คืน true;
 
-	} else {
-		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} มิฉะนั้น {
+		printf("not a >= b ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		คืน false;
 	}
 }
 
 bool __EXPORT less_than_or_equal(float a, float b)
 {
-	if (a <= b) {
-		return true;
+	ถ้า (a <= b) {
+		คืน true;
 
-	} else {
-		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", double(a), double(b));
-		return false;
+	} มิฉะนั้น {
+		printf("not a <= b ->\n\ta: %12.8f\n\tb: %12.8f\n", dviguu_na(a), dviguu_na(b));
+		คืน false;
 	}
 }
 
-void __EXPORT float2SigExp(const float &num, float &sig, int &exp)
+void __EXPORT float2SigExp(const float &num, float &sig, จำนวนเต็ม &exp)
 {
 
-	if (!PX4_ISFINITE(num)) {
+	ถ้า (!PX4_ISFINITE(num)) {
 		sig = 0.0f;
 		exp = -99;
-		return;
+		คืน;
 	}
 
-	if (fabsf(num) < 1.0e-38f) {
+	ถ้า (fabsf(num) < 1.0e-38f) {
 		sig = 0;
 		exp = 0;
-		return;
+		คืน;
 	}
 
 	exp = log10f(fabsf(num));
 
-	if (exp > 0) {
+	ถ้า (exp > 0) {
 		exp = ceil(exp);
 
-	} else {
+	} มิฉะนั้น {
 		exp = floor(exp);
 	}
 
 	sig = num;
 
 	// cheap power since it is integer
-	if (exp > 0) {
-		for (int i = 0; i < abs(exp); i++) { sig /= 10; }
+	ถ้า (exp > 0) {
+		สำหรับ (จำนวนเต็ม i = 0; i < abs(exp); i++) { sig /= 10; }
 
-	} else {
-		for (int i = 0; i < abs(exp); i++) { sig *= 10; }
+	} มิฉะนั้น {
+		สำหรับ (จำนวนเต็ม i = 0; i < abs(exp); i++) { sig *= 10; }
 	}
 }

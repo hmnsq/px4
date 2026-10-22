@@ -43,12 +43,12 @@ namespace calibration
 class Barometer
 {
 public:
-	static constexpr int MAX_SENSOR_COUNT = 4;
+	static constexpr จำนวนเต็ม MAX_SENSOR_COUNT = 4;
 
 	static constexpr uint8_t DEFAULT_PRIORITY = 50;
 	static constexpr uint8_t DEFAULT_EXTERNAL_PRIORITY = 75;
 
-	static constexpr const char *SensorString() { return "BARO"; }
+	static constexpr const var_na *SensorString() { คืน "BARO"; }
 
 	Barometer();
 	explicit Barometer(uint32_t device_id);
@@ -58,40 +58,40 @@ public:
 
 	void PrintStatus();
 
-	bool set_calibration_index(int calibration_index);
+	bool set_calibration_index(จำนวนเต็ม calibration_index);
 	void set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
 	void set_device_id(uint32_t device_id, bool external);
 	bool set_offset(const float &offset);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool enabled() const { return (_priority > 0); }
-	bool external() const { return _external; }
-	const float &offset() const { return _offset; }
-	const int32_t &priority() const { return _priority; }
-	const float &thermal_offset() const { return _thermal_offset; }
+	bool calibrated() const { คืน (_device_id != 0) && (_calibration_index >= 0); }
+	uint8_t calibration_count() const { คืน _calibration_count; }
+	int8_t calibration_index() const { คืน _calibration_index; }
+	uint32_t device_id() const { คืน _device_id; }
+	bool enabled() const { คืน (_priority > 0); }
+	bool external() const { คืน _external; }
+	const float &offset() const { คืน _offset; }
+	const int32_t &priority() const { คืน _priority; }
+	const float &thermal_offset() const { คืน _thermal_offset; }
 
 	// apply offsets
-	inline float Correct(const float &data) const
+	anta_hstha float Correct(const float &data) const
 	{
-		return data - _thermal_offset - _offset;
+		คืน data - _thermal_offset - _offset;
 	}
 
-	inline float Uncorrect(const float &corrected_data) const
+	anta_hstha float Uncorrect(const float &corrected_data) const
 	{
-		return corrected_data + _thermal_offset + _offset;
+		คืน corrected_data + _thermal_offset + _offset;
 	}
 
 	// Compute sensor offset from bias (board frame)
 	float BiasCorrectedSensorOffset(const float &bias) const
 	{
-		return bias + _thermal_offset + _offset;
+		คืน bias + _thermal_offset + _offset;
 	}
 
 	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
+	bool ParametersSave(จำนวนเต็ม desired_calibration_index = -1, bool force = false);
 	void ParametersUpdate();
 
 	void Reset();

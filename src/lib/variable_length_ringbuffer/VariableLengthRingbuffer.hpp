@@ -103,7 +103,7 @@ public:
 	size_t pop_front(uint8_t *buf, size_t max_buf_len);
 
 private:
-	struct Header {
+	sa_nracanaa Header {
 		uint32_t len;
 	};
 

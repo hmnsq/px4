@@ -49,7 +49,7 @@ void WeatherVane::update()
 {
 	vehicle_control_mode_s vehicle_control_mode;
 
-	if (_vehicle_control_mode_sub.update(&vehicle_control_mode)) {
+	ถ้า (_vehicle_control_mode_sub.update(&vehicle_control_mode)) {
 		_flag_control_manual_enabled = vehicle_control_mode.flag_control_manual_enabled;
 		_flag_control_position_enabled = vehicle_control_mode.flag_control_position_enabled;
 	}
@@ -82,13 +82,13 @@ float WeatherVane::getWeathervaneYawrate()
 	float roll_exceeding_treshold = 0.0f;
 	float min_roll_rad = math::radians(_param_wv_roll_min.get());
 
-	if (roll_sp > min_roll_rad) {
+	ถ้า (roll_sp > min_roll_rad) {
 		roll_exceeding_treshold = roll_sp - min_roll_rad;
 
-	} else if (roll_sp < -min_roll_rad) {
+	} มิฉะนั้น ถ้า (roll_sp < -min_roll_rad) {
 		roll_exceeding_treshold = roll_sp + min_roll_rad;
 	}
 
-	return math::constrain(roll_exceeding_treshold * _param_wv_gain.get(), -math::radians(_param_wv_yrate_max.get()),
+	คืน math::constrain(roll_exceeding_treshold * _param_wv_gain.get(), -math::radians(_param_wv_yrate_max.get()),
 			       math::radians(_param_wv_yrate_max.get()));
 }

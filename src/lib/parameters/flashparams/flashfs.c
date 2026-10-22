@@ -56,7 +56,7 @@
 #include <nuttx/progmem.h>
 #include <board_config.h>
 
-#if defined(CONFIG_ARCH_HAVE_PROGMEM) || defined(BOARD_USE_EXTERNAL_FLASH)
+#ถ้า defined(CONFIG_ARCH_HAVE_PROGMEM) || defined(BOARD_USE_EXTERNAL_FLASH)
 
 /****************************************************************************
  * Pre-processor Definitions
@@ -71,13 +71,13 @@ typedef uint16_t h_size_t;
 typedef uint16_t h_flag_t;
 typedef uint16_t data_size_t;
 
-typedef enum  flash_config_t {
+typedef ga_nanaa  flash_config_t {
 	LargestBlock = 2 * 1024, // This represents the size need for backing store
 	MagicSig     = 0xaa553cc3,
 	BlankSig     = 0xffffffff
 } flash_config_t;
 
-typedef enum  flash_flags_t {
+typedef ga_nanaa  flash_flags_t {
 	SizeMask      = 0x0003,
 	MaskEntry     = ~SizeMask,
 	BlankEntry    = (h_flag_t)BlankSig,
@@ -93,7 +93,7 @@ typedef enum  flash_flags_t {
  */
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wattributes"
-typedef begin_packed_struct struct flash_entry_header_t {
+typedef begin_packed_struct sa_nracanaa flash_entry_header_t {
 	h_magic_t            magic;           /* Used to ID files*/
 	h_flag_t             flag;            /* Used to erase this entry */
 	uint32_t             crc;             /* Calculated over the size - end of data */
@@ -101,7 +101,7 @@ typedef begin_packed_struct struct flash_entry_header_t {
                                                * Will result the offset of the next active file or
                                                * free space. */
 	flash_file_token_t   file_token;      /* file token type - essentially the name/type */
-} end_packed_struct flash_entry_header_t __attribute__((aligned(sizeof(uint32_t))));
+} end_packed_struct flash_entry_header_t __attribute__((aligned(parimaa_na(uint32_t))));
 #pragma GCC diagnostic pop
 
 /****************************************************************************
@@ -115,7 +115,7 @@ static uint8_t *working_buffer;
 static size_t working_buffer_size;
 static bool working_buffer_static;
 static sector_descriptor_t *sector_map;
-static int last_erased;
+static จำนวนเต็ม last_erased;
 
 /****************************************************************************
  * Public Data
@@ -144,7 +144,7 @@ const flash_file_token_t parameters_legacy_token = {
 
 void parameter_flashfs_free(void)
 {
-	if (!working_buffer_static && working_buffer != NULL) {
+	ถ้า (!working_buffer_static && working_buffer != NULL) {
 		free(working_buffer);
 		working_buffer = NULL;
 		working_buffer_size = 0;
@@ -167,9 +167,9 @@ void parameter_flashfs_free(void)
  *
  ****************************************************************************/
 
-static inline int blank_flash(uint32_t *pf)
+static anta_hstha จำนวนเต็ม blank_flash(uint32_t *pf)
 {
-	return *pf == BlankSig;
+	คืน *pf == BlankSig;
 }
 
 /****************************************************************************
@@ -192,15 +192,15 @@ static bool blank_check(flash_entry_header_t *pf,
 {
 	bool rv = true;
 	uint32_t *pm = (uint32_t *) pf;
-	new_size /= sizeof(uint32_t);
+	new_size /= parimaa_na(uint32_t);
 
-	while (new_size-- && rv) {
-		if (!blank_flash(pm++)) {
+	ขณะ (new_size-- && rv) {
+		ถ้า (!blank_flash(pm++)) {
 			rv = false;
 		}
 	}
 
-	return rv;
+	คืน rv;
 }
 
 /****************************************************************************
@@ -219,9 +219,9 @@ static bool blank_check(flash_entry_header_t *pf,
  *
  ****************************************************************************/
 
-static inline int valid_magic(h_magic_t *pm)
+static anta_hstha จำนวนเต็ม valid_magic(h_magic_t *pm)
 {
-	return *pm == MagicSig;
+	คืน *pm == MagicSig;
 }
 
 /****************************************************************************
@@ -239,9 +239,9 @@ static inline int valid_magic(h_magic_t *pm)
  *
  ****************************************************************************/
 
-static inline int blank_entry(flash_entry_header_t *fi)
+static anta_hstha จำนวนเต็ม blank_entry(flash_entry_header_t *fi)
 {
-	return fi->magic == BlankSig  &&  fi->flag == BlankEntry;
+	คืน fi->magic == BlankSig  &&  fi->flag == BlankEntry;
 }
 
 /****************************************************************************
@@ -259,9 +259,9 @@ static inline int blank_entry(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline int valid_entry(flash_entry_header_t *fi)
+static anta_hstha จำนวนเต็ม valid_entry(flash_entry_header_t *fi)
 {
-	return (fi->flag & MaskEntry) == ValidEntry;
+	คืน (fi->flag & MaskEntry) == ValidEntry;
 }
 
 /****************************************************************************
@@ -279,9 +279,9 @@ static inline int valid_entry(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline int entry_size_adjust(flash_entry_header_t *fi)
+static anta_hstha จำนวนเต็ม entry_size_adjust(flash_entry_header_t *fi)
 {
-	return fi->flag & SizeMask;
+	คืน fi->flag & SizeMask;
 }
 
 /****************************************************************************
@@ -300,10 +300,10 @@ static inline int entry_size_adjust(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline flash_entry_header_t *next_entry(flash_entry_header_t *fi)
+static anta_hstha flash_entry_header_t *next_entry(flash_entry_header_t *fi)
 {
 	uint8_t *pb = (uint8_t *)fi;
-	return (flash_entry_header_t *)(pb + fi->size);
+	คืน (flash_entry_header_t *)(pb + fi->size);
 }
 
 /****************************************************************************
@@ -321,9 +321,9 @@ static inline flash_entry_header_t *next_entry(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline uint8_t *entry_data(flash_entry_header_t *fi)
+static anta_hstha uint8_t *entry_data(flash_entry_header_t *fi)
 {
-	return ((uint8_t *)fi) + sizeof(flash_entry_header_t);
+	คืน ((uint8_t *)fi) + parimaa_na(flash_entry_header_t);
 }
 
 /****************************************************************************
@@ -341,9 +341,9 @@ static inline uint8_t *entry_data(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline data_size_t entry_data_length(flash_entry_header_t *fi)
+static anta_hstha data_size_t entry_data_length(flash_entry_header_t *fi)
 {
-	return fi->size - (sizeof(flash_entry_header_t) + entry_size_adjust(fi));
+	คืน fi->size - (parimaa_na(flash_entry_header_t) + entry_size_adjust(fi));
 }
 
 /****************************************************************************
@@ -362,9 +362,9 @@ static inline data_size_t entry_data_length(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline const uint8_t *entry_crc_start(flash_entry_header_t *fi)
+static anta_hstha const uint8_t *entry_crc_start(flash_entry_header_t *fi)
 {
-	return (const uint8_t *)&fi->size;
+	คืน (const uint8_t *)&fi->size;
 }
 
 /****************************************************************************
@@ -383,72 +383,72 @@ static inline const uint8_t *entry_crc_start(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline data_size_t entry_crc_length(flash_entry_header_t *fi)
+static anta_hstha data_size_t entry_crc_length(flash_entry_header_t *fi)
 {
-	return fi->size - offsetof(flash_entry_header_t, size);
+	คืน fi->size - offsetof(flash_entry_header_t, size);
 }
 
 /* The parameter sector can be the last one on the chip, so no header
  * field may be read until the whole header is known to lie inside it. */
-static inline bool header_fits(flash_entry_header_t *pf, h_magic_t *pe)
+static anta_hstha bool header_fits(flash_entry_header_t *pf, h_magic_t *pe)
 {
-	return pf + 1 <= (flash_entry_header_t *)pe;
+	คืน pf + 1 <= (flash_entry_header_t *)pe;
 }
 
 static bool crc_header_ok(flash_entry_header_t *pf, h_magic_t *pe)
 {
-	if (!header_fits(pf, pe)) {
-		return false;
+	ถ้า (!header_fits(pf, pe)) {
+		คืน false;
 	}
 
-	if (pf->size < sizeof(flash_entry_header_t)) {
-		return false;
+	ถ้า (pf->size < parimaa_na(flash_entry_header_t)) {
+		คืน false;
 	}
 
 	const uint8_t *crc_start = entry_crc_start(pf);
 	data_size_t crc_length = entry_crc_length(pf);
 
-	if (crc_start + crc_length > (uint8_t *)pe) {
-		return false;
+	ถ้า (crc_start + crc_length > (uint8_t *)pe) {
+		คืน false;
 	}
 
-	return pf->crc == crc32(crc_start, crc_length);
+	คืน pf->crc == crc32(crc_start, crc_length);
 }
 
 /* The walkers stop at the last word of a sector and reject a record that
  * ends beyond it, so nothing may be written into that word. */
-static inline size_t sector_usable(int s)
+static anta_hstha size_t sector_usable(จำนวนเต็ม s)
 {
-	return sector_map[s].size - sizeof(h_magic_t);
+	คืน sector_map[s].size - parimaa_na(h_magic_t);
 }
 
-static bool slot_is_free(flash_entry_header_t *pf, int s, size_t required)
+static bool slot_is_free(flash_entry_header_t *pf, จำนวนเต็ม s, size_t required)
 {
 	uint8_t *begin = (uint8_t *)sector_map[s].address;
 	uint8_t *end = begin + sector_usable(s);
 
-	if ((uint8_t *)pf < begin || required == 0 || (uint8_t *)pf + required > end) {
-		return false;
+	ถ้า ((uint8_t *)pf < begin || required == 0 || (uint8_t *)pf + required > end) {
+		คืน false;
 	}
 
 	/* Entries start on a flash row. up_progmem_write only asserts that in
 	 * debug builds, so a slot found by the word-wise scan behind a torn
 	 * record would otherwise be programmed misaligned. */
-	if (((uintptr_t)pf & SizeMask) != 0) {
-		return false;
+	ถ้า (((uintptr_t)pf & SizeMask) != 0) {
+		คืน false;
 	}
 
-	return blank_entry(pf) && blank_check(pf, required);
+	คืน blank_entry(pf) && blank_check(pf, required);
 }
 
-static int for_each_valid_entry(flash_file_token_t token,
-				int (*cb)(flash_entry_header_t *pf, void *arg),
+static จำนวนเต็ม for_each_valid_entry(flash_file_token_t token,
+				จำนวนเต็ม (*cb)(flash_entry_header_t *pf, void *arg),
 				void *arg);
 
-static int stop_at_first(flash_entry_header_t *pf, void *arg)
+static จำนวนเต็ม stop_at_first(flash_entry_header_t *pf, void *arg)
 {
 	*(flash_entry_header_t **)arg = pf;
-	return -ECANCELED;
+	คืน -ECANCELED;
 }
 
 /* Oldest valid entry for token, or NULL. */
@@ -456,7 +456,7 @@ static flash_entry_header_t *find_entry(flash_file_token_t token)
 {
 	flash_entry_header_t *pf = NULL;
 	for_each_valid_entry(token, stop_at_first, &pf);
-	return pf;
+	คืน pf;
 }
 
 /****************************************************************************
@@ -471,26 +471,26 @@ static flash_entry_header_t *find_entry(flash_file_token_t token)
 
 static flash_entry_header_t *find_append(size_t required)
 {
-	if (sector_map == NULL || required == 0) {
-		return NULL;
+	ถ้า (sector_map == NULL || required == 0) {
+		คืน NULL;
 	}
 
 	flash_entry_header_t *last = NULL;
-	int last_s = -1;
+	จำนวนเต็ม last_s = -1;
 
-	for (int s = 0; sector_map[s].address; s++) {
+	สำหรับ (จำนวนเต็ม s = 0; sector_map[s].address; s++) {
 		h_magic_t *pmagic = (h_magic_t *) sector_map[s].address;
-		h_magic_t *pe = pmagic + (sector_map[s].size / sizeof(h_magic_t)) - 1;
+		h_magic_t *pe = pmagic + (sector_map[s].size / parimaa_na(h_magic_t)) - 1;
 
-		while (pmagic < pe) {
-			if (!valid_magic(pmagic)) {
+		ขณะ (pmagic < pe) {
+			ถ้า (!valid_magic(pmagic)) {
 				pmagic++;
 				continue;
 			}
 
 			flash_entry_header_t *pf = (flash_entry_header_t *) pmagic;
 
-			if (crc_header_ok(pf, pe)) {
+			ถ้า (crc_header_ok(pf, pe)) {
 				last = pf;
 				last_s = s;
 				pmagic = (h_magic_t *) next_entry(pf);
@@ -499,55 +499,55 @@ static flash_entry_header_t *find_append(size_t required)
 				/* Same stop rule as for_each_valid_entry: a record behind a
 				 * blank header is invisible to replay, so it must not anchor
 				 * the append point either. */
-				if (pmagic >= pe || !header_fits(pf, pe) || blank_entry(pf)) {
-					break;
+				ถ้า (pmagic >= pe || !header_fits(pf, pe) || blank_entry(pf)) {
+					bha_nga;
 				}
 
-			} else {
+			} มิฉะนั้น {
 				pmagic++;
 			}
 		}
 	}
 
-	const int start_s = (last == NULL) ? 0 : last_s;
+	const จำนวนเต็ม start_s = (last == NULL) ? 0 : last_s;
 	h_magic_t *pmagic = (last == NULL)
 			    ? (h_magic_t *) sector_map[0].address
 			    : (h_magic_t *) next_entry(last);
 
-	for (int s = start_s; sector_map[s].address; s++) {
-		if (s != start_s) {
+	สำหรับ (จำนวนเต็ม s = start_s; sector_map[s].address; s++) {
+		ถ้า (s != start_s) {
 			pmagic = (h_magic_t *) sector_map[s].address;
 		}
 
 		h_magic_t *pe = (h_magic_t *) sector_map[s].address
-				+ (sector_map[s].size / sizeof(h_magic_t)) - 1;
+				+ (sector_map[s].size / parimaa_na(h_magic_t)) - 1;
 
-		if ((uint8_t *)pmagic < (uint8_t *)sector_map[s].address
+		ถ้า ((uint8_t *)pmagic < (uint8_t *)sector_map[s].address
 		    || (uint8_t *)pmagic >= (uint8_t *)sector_map[s].address + sector_map[s].size) {
-			if (s == start_s) {
+			ถ้า (s == start_s) {
 				continue;
 			}
 
 			pmagic = (h_magic_t *) sector_map[s].address;
 		}
 
-		while (pmagic < pe) {
+		ขณะ (pmagic < pe) {
 			flash_entry_header_t *pf = (flash_entry_header_t *) pmagic;
 
-			if (valid_magic(pmagic) && crc_header_ok(pf, pe)) {
+			ถ้า (valid_magic(pmagic) && crc_header_ok(pf, pe)) {
 				pmagic = (h_magic_t *) next_entry(pf);
 				continue;
 			}
 
-			if (slot_is_free(pf, s, required)) {
-				return pf;
+			ถ้า (slot_is_free(pf, s, required)) {
+				คืน pf;
 			}
 
 			pmagic++;
 		}
 	}
 
-	return NULL;
+	คืน NULL;
 }
 
 /****************************************************************************
@@ -561,39 +561,39 @@ static flash_entry_header_t *find_append(size_t required)
  *
  ****************************************************************************/
 
-static int for_each_valid_entry(flash_file_token_t token,
-				int (*cb)(flash_entry_header_t *pf, void *arg),
+static จำนวนเต็ม for_each_valid_entry(flash_file_token_t token,
+				จำนวนเต็ม (*cb)(flash_entry_header_t *pf, void *arg),
 				void *arg)
 {
-	int n = 0;
+	จำนวนเต็ม n = 0;
 
-	if (sector_map == NULL) {
-		return -ENXIO;
+	ถ้า (sector_map == NULL) {
+		คืน -ENXIO;
 	}
 
-	for (int s = 0; sector_map[s].address; s++) {
+	สำหรับ (จำนวนเต็ม s = 0; sector_map[s].address; s++) {
 
 		h_magic_t *pmagic = (h_magic_t *) sector_map[s].address;
-		h_magic_t *pe = pmagic + (sector_map[s].size / sizeof(h_magic_t)) - 1;
+		h_magic_t *pe = pmagic + (sector_map[s].size / parimaa_na(h_magic_t)) - 1;
 
 cont:
 
-		while (pmagic < pe && !valid_magic(pmagic)) {
+		ขณะ (pmagic < pe && !valid_magic(pmagic)) {
 			pmagic++;
 		}
 
-		if (pmagic >= pe) { continue; }
+		ถ้า (pmagic >= pe) { continue; }
 
 		flash_entry_header_t *pf = (flash_entry_header_t *) pmagic;
 
-		if (crc_header_ok(pf, pe)) {
+		ถ้า (crc_header_ok(pf, pe)) {
 
-			if (valid_entry(pf) && pf->file_token.t == token.t) {
-				if (cb != NULL) {
-					int rv = cb(pf, arg);
+			ถ้า (valid_entry(pf) && pf->file_token.t == token.t) {
+				ถ้า (cb != NULL) {
+					จำนวนเต็ม rv = cb(pf, arg);
 
-					if (rv < 0) {
-						return rv;
+					ถ้า (rv < 0) {
+						คืน rv;
 					}
 				}
 
@@ -603,18 +603,18 @@ cont:
 			pf = next_entry(pf);
 			pmagic = (h_magic_t *) pf;
 
-			if (pmagic >= pe || !header_fits(pf, pe) || blank_entry(pf)) {
+			ถ้า (pmagic >= pe || !header_fits(pf, pe) || blank_entry(pf)) {
 				continue;
 			}
 
-		} else {
+		} มิฉะนั้น {
 			pmagic++;
 		}
 
 		goto cont;
 	}
 
-	return n;
+	คืน n;
 }
 
 /****************************************************************************
@@ -635,29 +635,29 @@ cont:
  *
  ****************************************************************************/
 
-static int erase_sector(sector_descriptor_t *sm, flash_entry_header_t *pf)
+static จำนวนเต็ม erase_sector(sector_descriptor_t *sm, flash_entry_header_t *pf)
 {
-	int rv = 0;
-#if defined(BOARD_USE_EXTERNAL_FLASH)
+	จำนวนเต็ม rv = 0;
+#ถ้า defined(BOARD_USE_EXTERNAL_FLASH)
 	ssize_t block = up_progmem_ext_getpage((size_t)pf);
-#else
+#มิฉะนั้น
 	ssize_t block = up_progmem_getpage((size_t)pf);
 #endif
 
-	if (block > 0 && block == sm->page) {
+	ถ้า (block > 0 && block == sm->page) {
 		last_erased = sm->page;
-#if defined(BOARD_USE_EXTERNAL_FLASH)
+#ถ้า defined(BOARD_USE_EXTERNAL_FLASH)
 		ssize_t size = up_progmem_ext_eraseblock(block);
-#else
+#มิฉะนั้น
 		ssize_t size = up_progmem_eraseblock(block);
 #endif
 
-		if (size < 0 || size != (ssize_t)sm->size) {
+		ถ้า (size < 0 || size != (ssize_t)sm->size) {
 			rv = size;
 		}
 	}
 
-	return rv;
+	คืน rv;
 }
 
 /****************************************************************************
@@ -683,24 +683,24 @@ static int erase_sector(sector_descriptor_t *sm, flash_entry_header_t *pf)
  *
  ****************************************************************************/
 
-int parameter_flashfs_read(flash_file_token_t token, uint8_t **buffer, size_t
+จำนวนเต็ม parameter_flashfs_read(flash_file_token_t token, uint8_t **buffer, size_t
 			   *buf_size)
 {
-	int rv = -ENXIO;
+	จำนวนเต็ม rv = -ENXIO;
 
-	if (sector_map) {
+	ถ้า (sector_map) {
 
 		rv = -ENOENT;
 		flash_entry_header_t *pf = find_entry(token);
 
-		if (pf) {
+		ถ้า (pf) {
 			(*buffer) = entry_data(pf);
 			rv = entry_data_length(pf);
 			*buf_size = rv;
 		}
 	}
 
-	return rv;
+	คืน rv;
 }
 
 /****************************************************************************
@@ -712,24 +712,24 @@ int parameter_flashfs_read(flash_file_token_t token, uint8_t **buffer, size_t
  *
  ****************************************************************************/
 
-int parameter_flashfs_blank(void)
+จำนวนเต็ม parameter_flashfs_blank(void)
 {
-	if (sector_map == NULL) {
-		return -ENXIO;
+	ถ้า (sector_map == NULL) {
+		คืน -ENXIO;
 	}
 
-	for (int s = 0; sector_map[s].address; s++) {
+	สำหรับ (จำนวนเต็ม s = 0; sector_map[s].address; s++) {
 		uint32_t *pm = (uint32_t *) sector_map[s].address;
-		uint32_t *pe = pm + (sector_map[s].size / sizeof(uint32_t));
+		uint32_t *pe = pm + (sector_map[s].size / parimaa_na(uint32_t));
 
-		while (pm < pe) {
-			if (!blank_flash(pm++)) {
-				return 0;
+		ขณะ (pm < pe) {
+			ถ้า (!blank_flash(pm++)) {
+				คืน 0;
 			}
 		}
 	}
 
-	return 1;
+	คืน 1;
 }
 
 /****************************************************************************
@@ -750,78 +750,78 @@ int parameter_flashfs_blank(void)
  *
  ****************************************************************************/
 
-int
+จำนวนเต็ม
 parameter_flashfs_write(flash_file_token_t token, uint8_t *buffer, size_t buf_size)
 {
-	int rv = -ENXIO;
+	จำนวนเต็ม rv = -ENXIO;
 
-	if (sector_map) {
+	ถ้า (sector_map) {
 
 		rv = 0;
 
 		/* Calculate the total space needed */
 
-		size_t total_size = buf_size + sizeof(flash_entry_header_t);
-		size_t alignment = sizeof(h_magic_t) - 1;
+		size_t total_size = buf_size + parimaa_na(flash_entry_header_t);
+		size_t alignment = parimaa_na(h_magic_t) - 1;
 		size_t  size_adjust = ((total_size + alignment) & ~alignment) - total_size;
 		total_size += size_adjust;
 
-		if (total_size > UINT16_MAX) {
-			return -EFBIG;
+		ถ้า (total_size > UINT16_MAX) {
+			คืน -EFBIG;
 		}
 
 		/* Append after the last CRC-valid record. Compaction is the caller's job. */
 		flash_entry_header_t *pf = find_append(total_size);
 
-		if (pf == 0) {
-			return -ENOSPC;
+		ถ้า (pf == 0) {
+			คืน -ENOSPC;
 		}
 
-		flash_entry_header_t *pn = (flash_entry_header_t *)(buffer - sizeof(flash_entry_header_t));
+		flash_entry_header_t *pn = (flash_entry_header_t *)(buffer - parimaa_na(flash_entry_header_t));
 		pn->magic = MagicSig;
 		pn->file_token.t = token.t;
 		pn->flag = ValidEntry + size_adjust;
 		pn->size = total_size;
 
-		for (size_t a = 0; a < size_adjust; a++) {
+		สำหรับ (size_t a = 0; a < size_adjust; a++) {
 			buffer[buf_size + a] = (uint8_t)BlankSig;
 		}
 
 		pn->crc = crc32(entry_crc_start(pn), entry_crc_length(pn));
-#if defined(BOARD_USE_EXTERNAL_FLASH)
+#ถ้า defined(BOARD_USE_EXTERNAL_FLASH)
 		rv = up_progmem_ext_write((size_t) pf, pn, pn->size);
-#else
+#มิฉะนั้น
 		rv = up_progmem_write((size_t) pf, pn, pn->size);
 #endif
-		int system_bytes = (sizeof(flash_entry_header_t) + size_adjust);
+		จำนวนเต็ม system_bytes = (parimaa_na(flash_entry_header_t) + size_adjust);
 
-		if (rv >= system_bytes) {
+		ถ้า (rv >= system_bytes) {
 			rv -= system_bytes;
 		}
 	}
 
-	return rv;
+	คืน rv;
 }
 
 /****************************************************************************
  * Name: parameter_flashfs_walk
  ****************************************************************************/
 
-struct walk_pack {
+sa_nracanaa walk_pack {
 	parameter_flashfs_walk_cb cb;
 	void *arg;
 };
 
-static int walk_one(flash_entry_header_t *pf, void *arg)
+static จำนวนเต็ม walk_one(flash_entry_header_t *pf, void *arg)
 {
-	struct walk_pack *w = (struct walk_pack *)arg;
-	return w->cb(entry_data(pf), entry_data_length(pf), w->arg);
+	sa_nracanaa walk_pack *w = (sa_nracanaa walk_pack *)arg;
+	คืน w->cb(entry_data(pf), entry_data_length(pf), w->arg);
 }
 
-int parameter_flashfs_walk(flash_file_token_t token, parameter_flashfs_walk_cb cb, void *arg)
+จำนวนเต็ม parameter_flashfs_walk(flash_file_token_t token, parameter_flashfs_walk_cb cb, void *arg)
 {
-	struct walk_pack w = { cb, arg };
-	return for_each_valid_entry(token, walk_one, &w);
+	sa_nracanaa walk_pack w = { cb, arg };
+	คืน for_each_valid_entry(token, walk_one, &w);
 }
 
 /****************************************************************************
@@ -830,75 +830,75 @@ int parameter_flashfs_walk(flash_file_token_t token, parameter_flashfs_walk_cb c
 
 size_t parameter_flashfs_max_payload(void)
 {
-	if (sector_map == NULL) {
-		return 0;
+	ถ้า (sector_map == NULL) {
+		คืน 0;
 	}
 
 	size_t max_total = 0;
 
-	for (int s = 0; sector_map[s].address; s++) {
-		if (sector_usable(s) > max_total) {
+	สำหรับ (จำนวนเต็ม s = 0; sector_map[s].address; s++) {
+		ถ้า (sector_usable(s) > max_total) {
 			max_total = sector_usable(s);
 		}
 	}
 
 	/* h_size_t holds the record size */
-	if (max_total > UINT16_MAX) {
+	ถ้า (max_total > UINT16_MAX) {
 		max_total = UINT16_MAX;
 	}
 
 	max_total &= ~(size_t)SizeMask;
 
-	if (max_total <= sizeof(flash_entry_header_t)) {
-		return 0;
+	ถ้า (max_total <= parimaa_na(flash_entry_header_t)) {
+		คืน 0;
 	}
 
-	return max_total - sizeof(flash_entry_header_t);
+	คืน max_total - parimaa_na(flash_entry_header_t);
 }
 
-int parameter_flashfs_needs_compact(flash_file_token_t token, size_t snapshot_size)
+จำนวนเต็ม parameter_flashfs_needs_compact(flash_file_token_t token, size_t snapshot_size)
 {
-	if (sector_map == NULL) {
-		return -ENXIO;
+	ถ้า (sector_map == NULL) {
+		คืน -ENXIO;
 	}
 
 	flash_entry_header_t *first = find_entry(token);
 
-	if (first == NULL) {
-		return 0;
+	ถ้า (first == NULL) {
+		คืน 0;
 	}
 
 	/* Dead records ahead of the live data (a torn write, or the erased
 	 * prefix the single-snapshot writer left) only go away with an erase. */
-	if ((uintptr_t)first != (uintptr_t)sector_map[0].address) {
-		return 1;
+	ถ้า ((uintptr_t)first != (uintptr_t)sector_map[0].address) {
+		คืน 1;
 	}
 
 	/* Keep room after the log for a burst the size of the snapshot
 	 * (reset-all tombstones, airframe PARAM_SET), floored so a UUID append
 	 * does not force a boot erase. */
-	const size_t align = sizeof(h_magic_t) - 1;
-	const size_t snapshot_total = (snapshot_size + sizeof(flash_entry_header_t) + align) & ~align;
+	const size_t align = parimaa_na(h_magic_t) - 1;
+	const size_t snapshot_total = (snapshot_size + parimaa_na(flash_entry_header_t) + align) & ~align;
 	const size_t headroom = snapshot_total > 8192 ? snapshot_total : 8192;
 
-	if (find_append(headroom) != NULL) {
-		return 0;
+	ถ้า (find_append(headroom) != NULL) {
+		คืน 0;
 	}
 
 	/* Compaction leaves the snapshot at the start of sector 0 and every
 	 * other sector blank. Erase only if that layout has the room this one
 	 * lacks, or every boot would pay the erase for nothing. */
-	if (sector_usable(0) >= snapshot_total + headroom) {
-		return 1;
+	ถ้า (sector_usable(0) >= snapshot_total + headroom) {
+		คืน 1;
 	}
 
-	for (int s = 1; sector_map[s].address; s++) {
-		if (sector_usable(s) >= headroom) {
-			return 1;
+	สำหรับ (จำนวนเต็ม s = 1; sector_map[s].address; s++) {
+		ถ้า (sector_usable(s) >= headroom) {
+			คืน 1;
 		}
 	}
 
-	return 0;
+	คืน 0;
 }
 
 /****************************************************************************
@@ -923,40 +923,40 @@ int parameter_flashfs_needs_compact(flash_file_token_t token, size_t snapshot_si
  *
  ****************************************************************************/
 
-int parameter_flashfs_alloc(flash_file_token_t token, uint8_t **buffer, size_t *buf_size)
+จำนวนเต็ม parameter_flashfs_alloc(flash_file_token_t token, uint8_t **buffer, size_t *buf_size)
 {
-	int rv = -ENXIO;
+	จำนวนเต็ม rv = -ENXIO;
 
-	if (sector_map) {
+	ถ้า (sector_map) {
 
 		rv = -ENOMEM;
 
-		if (!working_buffer_static) {
+		ถ้า (!working_buffer_static) {
 
 			/* parameter_flashfs_write pads the entry to a word in place */
-			working_buffer_size = *buf_size + sizeof(flash_entry_header_t) + SizeMask;
+			working_buffer_size = *buf_size + parimaa_na(flash_entry_header_t) + SizeMask;
 			working_buffer = malloc(working_buffer_size);
 
 		}
 
 		/* Allocation failed or not provided */
 
-		if (working_buffer == NULL) {
+		ถ้า (working_buffer == NULL) {
 
 			working_buffer_size = 0;
 
-		} else {
+		} มิฉะนั้น {
 
 			/* We have a buffer reserve space and init it */
-			*buffer = &working_buffer[sizeof(flash_entry_header_t)];
-			*buf_size = working_buffer_size - sizeof(flash_entry_header_t) - SizeMask;
+			*buffer = &working_buffer[parimaa_na(flash_entry_header_t)];
+			*buf_size = working_buffer_size - parimaa_na(flash_entry_header_t) - SizeMask;
 			memset(working_buffer, 0xff, working_buffer_size);
 			rv = 0;
 
 		}
 	}
 
-	return rv;
+	คืน rv;
 }
 
 /****************************************************************************
@@ -973,25 +973,25 @@ int parameter_flashfs_alloc(flash_file_token_t token, uint8_t **buffer, size_t *
  *
  ****************************************************************************/
 
-int parameter_flashfs_erase(void)
+จำนวนเต็ม parameter_flashfs_erase(void)
 {
-	int rv = -ENXIO;
+	จำนวนเต็ม rv = -ENXIO;
 
-	if (sector_map) {
+	ถ้า (sector_map) {
 		rv = 0;
 
-		for (int s = 0; sector_map[s].address; s++) {
-			int sz = erase_sector(&sector_map[s], (flash_entry_header_t *)sector_map[s].address);
+		สำหรับ (จำนวนเต็ม s = 0; sector_map[s].address; s++) {
+			จำนวนเต็ม sz = erase_sector(&sector_map[s], (flash_entry_header_t *)sector_map[s].address);
 
-			if (sz != 0) {
-				return sz;
+			ถ้า (sz != 0) {
+				คืน sz;
 			}
 
 			rv += sector_map[s].size;
 		}
 	}
 
-	return rv;
+	คืน rv;
 }
 
 /****************************************************************************
@@ -1022,13 +1022,13 @@ int parameter_flashfs_erase(void)
  *
  ****************************************************************************/
 
-int parameter_flashfs_init(sector_descriptor_t *fconfig, uint8_t *buffer, uint16_t size)
+จำนวนเต็ม parameter_flashfs_init(sector_descriptor_t *fconfig, uint8_t *buffer, uint16_t size)
 {
-	int rv = 0;
+	จำนวนเต็ม rv = 0;
 	sector_map = fconfig;
 	working_buffer_static = buffer != NULL;
 
-	if (!working_buffer_static) {
+	ถ้า (!working_buffer_static) {
 		size = 0;
 	}
 
@@ -1042,10 +1042,10 @@ int parameter_flashfs_init(sector_descriptor_t *fconfig, uint8_t *buffer, uint16
 	 * reports -EILSEQ. Erasing here would hide a successful retry after
 	 * a torn write. */
 
-	return rv;
+	คืน rv;
 }
 
-#if defined(FLASH_UNIT_TEST)
+#ถ้า defined(FLASH_UNIT_TEST)
 
 static sector_descriptor_t  test_sector_map[] = {
 	{1, 16 * 1024, 0x08004000},
@@ -1064,18 +1064,18 @@ __EXPORT void test(void)
 
 	parameter_flashfs_init(test_sector_map, buffer, largest_block);
 
-	for (int t = 0; t < sizeof(test_buf); t++) {
+	สำหรับ (จำนวนเต็ม t = 0; t < parimaa_na(test_buf); t++) {
 		test_buf[t] = (uint8_t) t;
 	}
 
-	int er = parameter_flashfs_erase();
+	จำนวนเต็ม er = parameter_flashfs_erase();
 	uint8_t *fbuffer;
 	size_t buf_size;
-	int written = 0;
-	int read = 0;
-	int rv = 0;
+	จำนวนเต็ม written = 0;
+	จำนวนเต็ม read = 0;
+	จำนวนเต็ม rv = 0;
 
-	for (int a = 0; a <= 4; a++) {
+	สำหรับ (จำนวนเต็ม a = 0; a <= 4; a++) {
 		parameter_flashfs_erase();
 		rv =  parameter_flashfs_alloc(parameters_token, &fbuffer, &buf_size);
 		memcpy(fbuffer, test_buf, a);
@@ -1084,15 +1084,15 @@ __EXPORT void test(void)
 		read = parameter_flashfs_read(parameters_token, &fbuffer, &buf_size);
 		parameter_flashfs_free();
 
-		if (read != written) {
-			static volatile int j;
+		ถ้า (read != written) {
+			static ca_ncala จำนวนเต็ม j;
 			j++;
 		}
 	}
 
-	int block = 2048;
+	จำนวนเต็ม block = 2048;
 
-	for (int a = 0; a <= 8; a++) {
+	สำหรับ (จำนวนเต็ม a = 0; a <= 8; a++) {
 		parameter_flashfs_erase();
 		rv =  parameter_flashfs_alloc(parameters_token, &fbuffer, &buf_size);
 		memcpy(fbuffer, test_buf, block);
@@ -1101,8 +1101,8 @@ __EXPORT void test(void)
 		read = parameter_flashfs_read(parameters_token, &fbuffer, &buf_size);
 		parameter_flashfs_free();
 
-		if (read != written) {
-			static volatile int j;
+		ถ้า (read != written) {
+			static ca_ncala จำนวนเต็ม j;
 			j++;
 		}
 

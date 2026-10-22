@@ -68,7 +68,7 @@ public:
 	 * Get value from last update of the slew rate
 	 * @return current value the slew rate is at
 	 */
-	Type getState() const { return _value; }
+	Type getState() const { คืน _value; }
 
 	/**
 	 * Update slewrate
@@ -83,10 +83,10 @@ public:
 		const Type dvalue_max = _slew_rate * deltatime;
 		const Type dvalue = math::constrain(dvalue_desired, -dvalue_max, dvalue_max);
 		_value += dvalue;
-		return _value;
+		คืน _value;
 	}
 
-protected:
+rak_sita:
 	Type _slew_rate{}; ///< maximum rate of change for the value
 	Type _value{}; ///< state to keep last value of the slew rate
 };

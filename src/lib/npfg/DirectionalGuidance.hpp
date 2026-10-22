@@ -61,7 +61,7 @@
 #include <matrix/math.hpp>
 #include <lib/mathlib/mathlib.h>
 
-struct DirectionalGuidanceOutput {
+sa_nracanaa DirectionalGuidanceOutput {
 	float course_setpoint{NAN};
 	float lateral_acceleration_feedforward{NAN};
 };
@@ -124,13 +124,13 @@ public:
 	 */
 	float switchDistance(float wp_radius) const;
 
-	float getCourseSetpoint() const { return course_sp_; }
-	float getLateralAccelerationSetpoint() const { return lateral_accel_ff_; }
-	float getBearingFeasibility() const { return feas_; }
-	float getBearingFeasibilityOnTrack() const { return feas_on_track_; }
-	float getSignedTrackError() const { return signed_track_error_; }
-	float getTrackErrorBound() const { return track_error_bound_; }
-	float getAdaptedPeriod() const { return adapted_period_; }
+	float getCourseSetpoint() const { คืน course_sp_; }
+	float getLateralAccelerationSetpoint() const { คืน lateral_accel_ff_; }
+	float getBearingFeasibility() const { คืน feas_; }
+	float getBearingFeasibilityOnTrack() const { คืน feas_on_track_; }
+	float getSignedTrackError() const { คืน signed_track_error_; }
+	float getTrackErrorBound() const { คืน track_error_bound_; }
+	float getAdaptedPeriod() const { คืน adapted_period_; }
 
 private:
 	static constexpr float NPFG_EPSILON = 1.0e-6; // small number *bigger than machine epsilon

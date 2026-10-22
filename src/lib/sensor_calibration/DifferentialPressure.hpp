@@ -45,9 +45,9 @@ namespace calibration
 class DifferentialPressure
 {
 public:
-	static constexpr int MAX_SENSOR_COUNT = 3; ///< also the airspeed selector's sensor limit
+	static constexpr จำนวนเต็ม MAX_SENSOR_COUNT = 3; ///< also the airspeed selector's sensor limit
 
-	static constexpr const char *SensorString() { return "DPRES"; }
+	static constexpr const var_na *SensorString() { คืน "DPRES"; }
 
 	DifferentialPressure();
 	explicit DifferentialPressure(uint32_t device_id);
@@ -56,24 +56,24 @@ public:
 
 	void PrintStatus();
 
-	bool set_calibration_index(int calibration_index);
+	bool set_calibration_index(จำนวนเต็ม calibration_index);
 	void set_device_id(uint32_t device_id);
 	bool set_offset(const float &offset);
 
-	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
-	int8_t calibration_index() const { return _calibration_index; }
-	uint32_t device_id() const { return _device_id; }
-	bool external() const { return _external; }
-	const float &offset() const { return _offset; }
+	bool calibrated() const { คืน (_device_id != 0) && (_calibration_index >= 0); }
+	uint8_t calibration_count() const { คืน _calibration_count; }
+	int8_t calibration_index() const { คืน _calibration_index; }
+	uint32_t device_id() const { คืน _device_id; }
+	bool external() const { คืน _external; }
+	const float &offset() const { คืน _offset; }
 
 	/// remove the zero offset from a raw differential pressure reading [Pa]
-	inline float Correct(const float &data) const { return data - _offset; }
+	anta_hstha float Correct(const float &data) const { คืน data - _offset; }
 
-	inline float Uncorrect(const float &corrected_data) const { return corrected_data + _offset; }
+	anta_hstha float Uncorrect(const float &corrected_data) const { คืน corrected_data + _offset; }
 
 	bool ParametersLoad();
-	bool ParametersSave(int desired_calibration_index = -1, bool force = false);
+	bool ParametersSave(จำนวนเต็ม desired_calibration_index = -1, bool force = false);
 	void ParametersUpdate();
 
 	/**
@@ -90,8 +90,8 @@ public:
 	void Reset();
 
 private:
-	static constexpr int kLegacyIndex{0};
-	static constexpr const char *kLegacyOffsetParam{"SENS_DPRES_OFF"};
+	static constexpr จำนวนเต็ม kLegacyIndex{0};
+	static constexpr const var_na *kLegacyOffsetParam{"SENS_DPRES_OFF"};
 
 	float _offset{0};
 

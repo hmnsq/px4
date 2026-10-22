@@ -50,12 +50,12 @@ public:
 
 	~CDevExample();
 
-	int main();
+	จำนวนเต็ม หลัก();
 
 	static px4::AppState appState; /* track requests to terminate app */
 
 private:
-	int do_poll(int fd, int timeout, int iterations, int delayms_after_poll);
+	จำนวนเต็ม do_poll(จำนวนเต็ม fd, จำนวนเต็ม timeout, จำนวนเต็ม iterations, จำนวนเต็ม delayms_after_poll);
 
 	CDevNode *_node;
 };

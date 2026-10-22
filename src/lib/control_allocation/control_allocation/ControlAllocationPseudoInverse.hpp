@@ -55,7 +55,7 @@ public:
 
 	void allocate() override;
 	void setEffectivenessMatrix(const matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> &effectiveness,
-				    const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, int num_actuators,
+				    const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, จำนวนเต็ม num_actuators,
 				    bool update_normalization_scale) override;
 	void setMetricAllocation(bool metric_allocation) { _metric_allocation = metric_allocation; }
 
@@ -68,7 +68,7 @@ public:
 	 */
 	static uint8_t dropDependentAxes(matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> &effectiveness);
 
-protected:
+rak_sita:
 	matrix::Matrix<float, NUM_ACTUATORS, NUM_AXES> _mix;
 
 	bool _mix_update_needed{false};

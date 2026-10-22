@@ -33,7 +33,7 @@
 
 #include "FailureInjection.hpp"
 
-#if defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
+#ถ้า defined(CONFIG_MODULES_FAILURE_INJECTION_MANAGER)
 
 #include <parameters/param.h>
 #include <uORB/topics/battery_status.h>
@@ -46,19 +46,19 @@ bool Config::update()
 {
 	failure_injection_s cfg;
 
-	if (_sub.update(&cfg)) {
+	ถ้า (_sub.update(&cfg)) {
 		set(cfg);
-		return true;
+		คืน true;
 	}
 
-	return false;
+	คืน false;
 }
 
 void Config::set(const failure_injection_s &cfg)
 {
 	_count = (cfg.count <= failure_injection_s::MAX_FAILURES) ? cfg.count : failure_injection_s::MAX_FAILURES;
 
-	for (uint8_t i = 0; i < _count; i++) {
+	สำหรับ (uint8_t i = 0; i < _count; i++) {
 		_unit[i] = cfg.unit[i];
 		_instance_mask[i] = cfg.instance_mask[i];
 		_failure_type[i] = static_cast<Mode>(cfg.failure_type[i]);
@@ -67,19 +67,19 @@ void Config::set(const failure_injection_s &cfg)
 
 Mode Config::mode(uint8_t unit, uint8_t instance) const
 {
-	for (uint8_t i = 0; i < _count; i++) {
-		if (_unit[i] != unit) {
+	สำหรับ (uint8_t i = 0; i < _count; i++) {
+		ถ้า (_unit[i] != unit) {
 			continue;
 		}
 
 		// instance == 0 matches any instance of the unit; otherwise match the
 		// 1-based instance against the bitmask (0xFFFF covers all instances).
-		if (instance == 0 || (instance <= 16 && (_instance_mask[i] & (1u << (instance - 1))))) {
-			return _failure_type[i];
+		ถ้า (instance == 0 || (instance <= 16 && (_instance_mask[i] & (1u << (instance - 1))))) {
+			คืน _failure_type[i];
 		}
 	}
 
-	return Mode::Ok;
+	คืน Mode::Ok;
 }
 
 bool process_battery(const Config &config, uint8_t instance, battery_status_s &battery_status)
@@ -87,13 +87,13 @@ bool process_battery(const Config &config, uint8_t instance, battery_status_s &b
 	const Mode mode = config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_BATTERY, instance);
 	static constexpr float trigger_margin = 0.01f; // report remaining charge just below the threshold
 
-	if (mode == Mode::Off) {
+	ถ้า (mode == Mode::Off) {
 		// Suppress the publication so the pack reads disconnected.
-		return false;
+		คืน false;
 	}
 
-	if (mode != Mode::Wrong) {
-		return true;
+	ถ้า (mode != Mode::Wrong) {
+		คืน true;
 	}
 
 	static const param_t level_handle = param_find("SYS_FAIL_BAT_LVL");
@@ -107,19 +107,19 @@ bool process_battery(const Config &config, uint8_t instance, battery_status_s &b
 	param_t threshold_handle = crit_thr_handle;
 
 	switch (level) {
-	case battery_status_s::WARNING_LOW:
+	pak_sa battery_status_s::WARNING_LOW:
 		threshold_handle = low_thr_handle;
-		break;
+		bha_nga;
 
-	case battery_status_s::WARNING_EMERGENCY:
+	pak_sa battery_status_s::WARNING_EMERGENCY:
 		threshold_handle = emergen_thr_handle;
-		break;
+		bha_nga;
 
-	case battery_status_s::WARNING_CRITICAL:
+	pak_sa battery_status_s::WARNING_CRITICAL:
 	default:
 		level = battery_status_s::WARNING_CRITICAL;
 		threshold_handle = crit_thr_handle;
-		break;
+		bha_nga;
 	}
 
 	battery_status.warning = level;
@@ -131,7 +131,7 @@ bool process_battery(const Config &config, uint8_t instance, battery_status_s &b
 	param_get(threshold_handle, &threshold);
 	battery_status.remaining = (threshold > trigger_margin) ? (threshold - trigger_margin) : 0.f;
 
-	return true;
+	คืน true;
 }
 
 bool process_gnss(const Config &config, uint8_t uorb_instance, sensor_gnss_s &sensor_gnss,
@@ -141,11 +141,11 @@ bool process_gnss(const Config &config, uint8_t uorb_instance, sensor_gnss_s &se
 
 	// Off and Stuck are message-agnostic; run them first so the Stuck cache keeps the
 	// uncorrupted sample and a later Stuck replays a healthy fix.
-	if (!process(mode, sensor_gnss, stuck)) {
-		return false;
+	ถ้า (!process(mode, sensor_gnss, stuck)) {
+		คืน false;
 	}
 
-	if (mode == Mode::Wrong) {
+	ถ้า (mode == Mode::Wrong) {
 		static const param_t fix_type_handle = param_find("SYS_FAIL_GPS_WRG");
 
 		int32_t fix_type = sensor_gnss_s::FIX_TYPE_2D;
@@ -157,71 +157,71 @@ bool process_gnss(const Config &config, uint8_t uorb_instance, sensor_gnss_s &se
 		int32_t jamming_state = sensor_gnss_s::JAMMING_STATE_UNKNOWN;
 		param_get(jamming_state_handle, &jamming_state);
 
-		if (jamming_state != sensor_gnss_s::JAMMING_STATE_UNKNOWN) {
+		ถ้า (jamming_state != sensor_gnss_s::JAMMING_STATE_UNKNOWN) {
 			sensor_gnss.jamming_state = (uint8_t)jamming_state;
 		}
 	}
 
-	return true;
+	คืน true;
 }
 
 esc_status_s process_esc(const Config &config, const esc_status_s &status)
 {
 	esc_status_s result = status;
 
-	for (int i = 0; i < result.esc_count && i < esc_status_s::CONNECTED_ESC_MAX; i++) {
+	สำหรับ (จำนวนเต็ม i = 0; i < result.esc_count && i < esc_status_s::CONNECTED_ESC_MAX; i++) {
 		const uint8_t function = result.esc[i].actuator_function;
 
-		if (function < esc_report_s::ACTUATOR_FUNCTION_MOTOR1 || function > esc_report_s::ACTUATOR_FUNCTION_MOTOR_MAX) {
+		ถ้า (function < esc_report_s::ACTUATOR_FUNCTION_MOTOR1 || function > esc_report_s::ACTUATOR_FUNCTION_MOTOR_MAX) {
 			continue; // not a motor output
 		}
 
 		const uint8_t instance = function - esc_report_s::ACTUATOR_FUNCTION_MOTOR1 + 1; // 1-based ESC instance
 
 		switch (config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_ESC, instance)) {
-		case Mode::Off:
+		pak_sa Mode::Off:
 			result.esc_online_flags &= ~(1u << i);
 			result.esc_armed_flags &= ~(1u << i);
 			result.esc[i] = esc_report_s{};
 			result.esc[i].actuator_function = function;
-			break;
+			bha_nga;
 
-		case Mode::Wrong:
+		pak_sa Mode::Wrong:
 			result.esc[i].esc_voltage *= 0.1f;
 			result.esc[i].esc_current *= 0.1f;
 			result.esc[i].esc_rpm *= 10;
-			break;
+			bha_nga;
 
 		default:
-			break;
+			bha_nga;
 		}
 	}
 
-	return result;
+	คืน result;
 }
 
 MotorFailureMasks process_motor(const Config &config)
 {
 	MotorFailureMasks masks{};
 
-	for (int i = 0; i < esc_status_s::CONNECTED_ESC_MAX; i++) {
+	สำหรับ (จำนวนเต็ม i = 0; i < esc_status_s::CONNECTED_ESC_MAX; i++) {
 		const uint16_t bit = 1u << i;
 
 		switch (config.mode(failure_injection_s::FAILURE_UNIT_SYSTEM_MOTOR, i + 1)) {
-		case Mode::Off:
+		pak_sa Mode::Off:
 			masks.failure_mask |= bit;
-			break;
+			bha_nga;
 
-		case Mode::Wrong:
+		pak_sa Mode::Wrong:
 			masks.stop_mask |= bit;
-			break;
+			bha_nga;
 
 		default:
-			break;
+			bha_nga;
 		}
 	}
 
-	return masks;
+	คืน masks;
 }
 
 } // namespace failure_injection

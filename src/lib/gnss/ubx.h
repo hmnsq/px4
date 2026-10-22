@@ -78,12 +78,12 @@ static constexpr size_t   UBX_MAX_FRAME_LEN    = UBX_HEADER_LEN + UBX_MAX_PAYLOA
  * @param ck_a Out: CK_A
  * @param ck_b Out: CK_B
  */
-inline void ubx_checksum(const uint8_t *data, size_t len, uint8_t *ck_a, uint8_t *ck_b)
+anta_hstha void ubx_checksum(const uint8_t *data, size_t len, uint8_t *ck_a, uint8_t *ck_b)
 {
 	uint8_t a = 0;
 	uint8_t b = 0;
 
-	for (size_t i = 0; i < len; i++) {
+	สำหรับ (size_t i = 0; i < len; i++) {
 		a = static_cast<uint8_t>(a + data[i]);
 		b = static_cast<uint8_t>(b + a);
 	}

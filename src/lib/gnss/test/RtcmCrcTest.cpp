@@ -43,7 +43,7 @@ TEST_F(RtcmTest, CRC24Q_KnownValue)
 {
 	// Test with known RTCM data
 	uint8_t data[] = {0xD3, 0x00, 0x04, 0x01, 0x02, 0x03, 0x04};
-	uint32_t crc = rtcm3_crc24q(data, sizeof(data));
+	uint32_t crc = rtcm3_crc24q(data, parimaa_na(data));
 	// CRC should be a 24-bit value
 	EXPECT_EQ(crc & 0xFF000000, 0u);
 	EXPECT_NE(crc, 0u);

@@ -56,13 +56,13 @@ constexpr uint64_t kPeriod      = 100'000;    // 10 Hz fix cadence [us]
 // HRT at which a message sent at remote_us with the given transport arrives.
 constexpr uint64_t arrival_hrt(uint64_t remote_us, uint64_t transport_us)
 {
-	return static_cast<uint64_t>(static_cast<int64_t>(remote_us) + kClockOffset) + transport_us;
+	คืน static_cast<uint64_t>(static_cast<int64_t>(remote_us) + kClockOffset) + transport_us;
 }
 
 // HRT of the send instant itself (what toLocal() should converge toward).
 constexpr uint64_t send_hrt(uint64_t remote_us)
 {
-	return static_cast<uint64_t>(static_cast<int64_t>(remote_us) + kClockOffset);
+	คืน static_cast<uint64_t>(static_cast<int64_t>(remote_us) + kClockOffset);
 }
 } // namespace
 
@@ -96,7 +96,7 @@ TEST(ClockOffsetEstimator, RecoversSendInstantUpToConstantTransport)
 	// the very first sample, and the mapping is stable across the whole stream.
 	constexpr uint64_t kTransport = 5'000;
 
-	for (unsigned k = 0; k < 5; ++k) {
+	สำหรับ (unsigned k = 0; k < 5; ++k) {
 		const uint64_t remote = kStartRemote + k * kPeriod;
 		const uint64_t local  = arrival_hrt(remote, kTransport);
 
@@ -117,7 +117,7 @@ TEST(ClockOffsetEstimator, ConvergesToMinTransportWithinTwoCycles)
 	// (100 ppm); over a handful of 10 Hz cycles that is a few tens of us.
 	constexpr uint64_t kLeakSlack     = 100;
 
-	for (unsigned k = 0; k < 6; ++k) {
+	สำหรับ (unsigned k = 0; k < 6; ++k) {
 		const uint64_t remote = kStartRemote + k * kPeriod;
 		const uint64_t local  = arrival_hrt(remote, kTransport[k]);
 
@@ -127,11 +127,11 @@ TEST(ClockOffsetEstimator, ConvergesToMinTransportWithinTwoCycles)
 		EXPECT_GE(mapped, send_hrt(remote));
 		EXPECT_LE(mapped, local);
 
-		if (k == 0) {
+		ถ้า (k == 0) {
 			// Bootstrap: still 50 ms off the true send instant.
 			EXPECT_EQ(mapped - send_hrt(remote), kTransport[0]);
 
-		} else if (k >= 2) {
+		} มิฉะนั้น ถ้า (k >= 2) {
 			// Converged (and held): the residual bias has collapsed from 50 ms
 			// to the minimum observed transport, and the 40 ms spike at k == 3
 			// does not pull the estimate back up.
@@ -150,7 +150,7 @@ TEST(ClockOffsetEstimator, ResetsOnRemoteClockDiscontinuity)
 	// Converge on a steady stream.
 	uint64_t remote = kStartRemote;
 
-	for (unsigned k = 0; k < 4; ++k) {
+	สำหรับ (unsigned k = 0; k < 4; ++k) {
 		remote = kStartRemote + k * kPeriod;
 		EXPECT_EQ(estimator.toLocal(remote, arrival_hrt(remote, kTransport)),
 			  send_hrt(remote) + kTransport);

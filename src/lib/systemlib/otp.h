@@ -62,13 +62,13 @@
 #define F_ERROR_OPERATION 4
 #define F_COMPLETE 5
 
-typedef struct {
-	volatile unsigned long accesscontrol;      // 0x00
-	volatile unsigned long key;     //  0x04
-	volatile unsigned long optionkey;  //  0x08
-	volatile unsigned long status;       // 0x0C
-	volatile unsigned long control;       // 0x10
-	volatile unsigned long optioncontrol;    //0x14
+typedef sa_nracanaa {
+	ca_ncala unsigned long accesscontrol;      // 0x00
+	ca_ncala unsigned long key;     //  0x04
+	ca_ncala unsigned long optionkey;  //  0x08
+	ca_ncala unsigned long status;       // 0x0C
+	ca_ncala unsigned long control;       // 0x10
+	ca_ncala unsigned long optioncontrol;    //0x14
 } flash_registers;
 
 #define PERIPH_BASE           ((unsigned long)0x40000000) //Peripheral base address
@@ -101,20 +101,20 @@ typedef struct {
  * contain 0x00 and 0xFF values, otherwise the OTP bytes might not be taken into account correctly.
  */
 
-struct otp {
+sa_nracanaa otp {
 	// first 32 bytes =  the '0' Block
-	char		id[4];		///4 bytes < 'P' 'X' '4' '\n'
+	var_na		id[4];		///4 bytes < 'P' 'X' '4' '\n'
 	uint8_t		id_type;	///1 byte < 0 for USB VID, 1 for generic VID
 	uint32_t	vid;        ///4 bytes
 	uint32_t	pid;        ///4 bytes
-	char        unused[19];  ///19 bytes
+	var_na        unused[19];  ///19 bytes
 	// Cert-of-Auth is next 4 blocks ie 1-4  ( where zero is first block )
-	char        signature[128];
+	var_na        signature[128];
 	// insert extras here
 	uint32_t	lock_bytes[4];
 };
 
-struct otp_lock {
+sa_nracanaa otp_lock {
 	uint8_t		lock_bytes[16];
 };
 #pragma pack(pop)
@@ -122,7 +122,7 @@ struct otp_lock {
 #define ADDR_F_SIZE		0x1FFF7A22
 
 #pragma pack(push, 1)
-union udid {
+sa_ngha udid {
 	uint32_t	serial[3];
 	uint8_t  data[12];
 };
@@ -132,14 +132,14 @@ __BEGIN_DECLS
 
 __EXPORT void F_unlock(void);
 __EXPORT void F_lock(void);
-__EXPORT int val_read(void *dest, volatile const void *src, int bytes);
-__EXPORT int val_write(volatile void *dest, const void *src, int bytes);
-__EXPORT int write_otp(uint8_t id_type, uint32_t vid, uint32_t pid, char *signature);
-__EXPORT int lock_otp(void);
+__EXPORT จำนวนเต็ม val_read(void *dest, ca_ncala const void *src, จำนวนเต็ม bytes);
+__EXPORT จำนวนเต็ม val_write(ca_ncala void *dest, const void *src, จำนวนเต็ม bytes);
+__EXPORT จำนวนเต็ม write_otp(uint8_t id_type, uint32_t vid, uint32_t pid, var_na *signature);
+__EXPORT จำนวนเต็ม lock_otp(void);
 
 
-__EXPORT int F_write_byte(unsigned long Address, uint8_t Data);
-__EXPORT int F_write_word(unsigned long Address, uint32_t Data);
+__EXPORT จำนวนเต็ม F_write_byte(unsigned long Address, uint8_t Data);
+__EXPORT จำนวนเต็ม F_write_word(unsigned long Address, uint32_t Data);
 
 __END_DECLS
 

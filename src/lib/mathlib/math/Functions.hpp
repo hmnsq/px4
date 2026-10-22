@@ -49,9 +49,9 @@ namespace math
 
 // Type-safe signum function with zero treated as positive
 template<typename T>
-int signNoZero(T val)
+จำนวนเต็ม signNoZero(T val)
 {
-	return (T(0) <= val) - (val < T(0));
+	คืน (T(0) <= val) - (val < T(0));
 }
 
 /**
@@ -60,15 +60,15 @@ int signNoZero(T val)
  * @param[in] positive Truth value to take the sign from
  * @return 1 if positive is true, -1 if positive is false
  */
-inline int signFromBool(bool positive)
+anta_hstha จำนวนเต็ม signFromBool(bool positive)
 {
-	return positive ? 1 : -1;
+	คืน positive ? 1 : -1;
 }
 
 template<typename T>
 T sq(T val)
 {
-	return val * val;
+	คืน val * val;
 }
 
 /*
@@ -85,7 +85,7 @@ const T expo(const T &value, const T &e)
 {
 	T x = constrain(value, (T) - 1, (T) 1);
 	T ec = constrain(e, (T) 0, (T) 1);
-	return (1 - ec) * x + ec * x * x * x;
+	คืน (1 - ec) * x + ec * x * x * x;
 }
 
 /*
@@ -104,7 +104,7 @@ const T superexpo(const T &value, const T &e, const T &g)
 {
 	T x = constrain(value, (T) - 1, (T) 1);
 	T gc = constrain(g, (T) 0, (T) 0.99);
-	return expo(x, e) * (1 - gc) / (1 - fabsf(x) * gc);
+	คืน expo(x, e) * (1 - gc) / (1 - fabsf(x) * gc);
 }
 
 /*
@@ -129,13 +129,13 @@ const T deadzone(const T &value, const T &dz)
 	// Rescale the input such that we get a piecewise linear function that will be continuous with applied deadzone
 	T out = (x - matrix::sign(x) * dzc) / (1 - dzc);
 	// apply the deadzone (values zero around the middle)
-	return out * (fabsf(x) > dzc);
+	คืน out * (fabsf(x) > dzc);
 }
 
 template<typename T>
 const T expo_deadzone(const T &value, const T &e, const T &dz)
 {
-	return expo(deadzone(value, dz), e);
+	คืน expo(deadzone(value, dz), e);
 }
 
 
@@ -151,17 +151,17 @@ const T expo_deadzone(const T &value, const T &e, const T &dz)
 template<typename T>
 const T interpolate(const T &value, const T &x_low, const T &x_high, const T &y_low, const T &y_high)
 {
-	if (value <= x_low) {
-		return y_low;
+	ถ้า (value <= x_low) {
+		คืน y_low;
 
-	} else if (value > x_high) {
-		return y_high;
+	} มิฉะนั้น ถ้า (value > x_high) {
+		คืน y_high;
 
-	} else {
+	} มิฉะนั้น {
 		/* linear function between the two points */
 		T a = (y_high - y_low) / (x_high - x_low);
 		T b = y_low - (a * x_low);
-		return (a * value) + b;
+		คืน (a * value) + b;
 	}
 }
 
@@ -180,8 +180,8 @@ const T interpolate(const T &value, const T &x_low, const T &x_high, const T &y_
 template<typename T, size_t N>
 const T interpolateN(const T &value, const T(&y)[N])
 {
-	size_t index = constrain((int)(value * (N - 1)), 0, (int)(N - 2));
-	return interpolate(value, (T)index / (T)(N - 1), (T)(index + 1) / (T)(N - 1), y[index], y[index + 1]);
+	size_t index = constrain((จำนวนเต็ม)(value * (N - 1)), 0, (จำนวนเต็ม)(N - 2));
+	คืน interpolate(value, (T)index / (T)(N - 1), (T)(index + 1) / (T)(N - 1), y[index], y[index + 1]);
 }
 
 /*
@@ -202,11 +202,11 @@ const T interpolateNXY(const T &value, const T(&x)[N], const T(&y)[N])
 {
 	size_t index = 0;
 
-	while ((value > x[index + 1]) && (index < (N - 2))) {
+	ขณะ ((value > x[index + 1]) && (index < (N - 2))) {
 		index++;
 	}
 
-	return interpolate(value, x[index], x[index + 1], y[index], y[index + 1]);
+	คืน interpolate(value, x[index], x[index + 1], y[index], y[index + 1]);
 }
 
 /*
@@ -224,14 +224,14 @@ const T interpolateNXY(const T &value, const T(&x)[N], const T(&y)[N])
 template<typename T>
 const T sqrt_linear(const T &value)
 {
-	if (value < static_cast<T>(0)) {
-		return static_cast<T>(0);
+	ถ้า (value < static_cast<T>(0)) {
+		คืน static_cast<T>(0);
 
-	} else if (value < static_cast<T>(1)) {
-		return sqrtf(value);
+	} มิฉะนั้น ถ้า (value < static_cast<T>(1)) {
+		คืน sqrtf(value);
 
-	} else {
-		return value;
+	} มิฉะนั้น {
+		คืน value;
 	}
 }
 
@@ -244,27 +244,27 @@ const T sqrt_linear(const T &value)
 template<typename T>
 const T lerp(const T &a, const T &b, const T &s)
 {
-	return (static_cast<T>(1) - s) * a + s * b;
+	คืน (static_cast<T>(1) - s) * a + s * b;
 }
 
 template<typename T>
 constexpr T negate(T value)
 {
-	static_assert(sizeof(T) > 2, "implement for T");
-	return -value;
+	static_assert(parimaa_na(T) > 2, "implement for T");
+	คืน -value;
 }
 
 template<>
 constexpr int16_t negate<int16_t>(int16_t value)
 {
-	if (value == INT16_MAX) {
-		return INT16_MIN;
+	ถ้า (value == INT16_MAX) {
+		คืน INT16_MIN;
 
-	} else if (value == INT16_MIN) {
-		return INT16_MAX;
+	} มิฉะนั้น ถ้า (value == INT16_MIN) {
+		คืน INT16_MAX;
 	}
 
-	return -value;
+	คืน -value;
 }
 
 /*
@@ -273,30 +273,30 @@ constexpr int16_t negate<int16_t>(int16_t value)
  */
 
 template<typename T>
-int countSetBits(T n)
+จำนวนเต็ม countSetBits(T n)
 {
-	return __builtin_popcount(n);
+	คืน __builtin_popcount(n);
 }
 
 template<typename T>
-int countTrailingZeros(T n)
+จำนวนเต็ม countTrailingZeros(T n)
 {
-	return n == 0 ? (int)(sizeof(T) * 8) : __builtin_ctz(n);
+	คืน n == 0 ? (จำนวนเต็ม)(parimaa_na(T) * 8) : __builtin_ctz(n);
 }
 
-inline bool isFinite(const float &value)
+anta_hstha bool isFinite(const float &value)
 {
-	return PX4_ISFINITE(value);
+	คืน PX4_ISFINITE(value);
 }
 
-inline bool isFinite(const matrix::Vector2f &value)
+anta_hstha bool isFinite(const matrix::Vector2f &value)
 {
-	return value.isAllFinite();
+	คืน value.isAllFinite();
 }
 
-inline bool isFinite(const matrix::Vector3f &value)
+anta_hstha bool isFinite(const matrix::Vector3f &value)
 {
-	return value.isAllFinite();
+	คืน value.isAllFinite();
 }
 
 } /* namespace math */

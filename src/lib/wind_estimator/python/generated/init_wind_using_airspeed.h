@@ -50,14 +50,14 @@ void InitWindUsingAirspeed(const matrix::Matrix<Scalar, 3, 1>& v_local, const Sc
   const Scalar _tmp8 = -_tmp4 * _tmp7 - _tmp5 * _tmp7 + _tmp7 * airspeed_var;
 
   // Output terms (2)
-  if (wind != nullptr) {
+  ถ้า (wind != nullptr) {
     matrix::Matrix<Scalar, 2, 1>& _wind = (*wind);
 
     _wind(0, 0) = -_tmp0 * airspeed + v_local(0, 0);
     _wind(1, 0) = -_tmp1 * airspeed + v_local(1, 0);
   }
 
-  if (P != nullptr) {
+  ถ้า (P != nullptr) {
     matrix::Matrix<Scalar, 2, 2>& _p = (*P);
 
     _p(0, 0) = _tmp2 * _tmp4 + _tmp2 * _tmp5 + _tmp6 * airspeed_var + v_var;

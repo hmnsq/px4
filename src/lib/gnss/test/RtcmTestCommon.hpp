@@ -44,7 +44,7 @@ using namespace gnss;
 
 class RtcmTest : public ::testing::Test
 {
-protected:
+rak_sita:
 	CorrectionFramer parser;
 	GpsRtcmMessageAssembler gps_rtcm_assembler;
 
@@ -53,7 +53,7 @@ protected:
 		uint8_t flags = fragmented ? GPS_RTCM_FLAG_FRAGMENTED : 0;
 		flags |= (fragment_id & GPS_RTCM_FLAG_FRAGMENT_ID_MASK) << GPS_RTCM_FLAG_FRAGMENT_ID_SHIFT;
 		flags |= (sequence_id & GPS_RTCM_FLAG_SEQUENCE_ID_MASK) << GPS_RTCM_FLAG_SEQUENCE_ID_SHIFT;
-		return flags;
+		คืน flags;
 	}
 
 	// Helper to build a valid RTCM3 frame with proper CRC
@@ -65,17 +65,17 @@ protected:
 		payload.push_back((msg_type >> 4) & 0xFF);
 		payload.push_back(((msg_type & 0x0F) << 4) | (payload_data.empty() ? 0 : (payload_data[0] >> 4)));
 
-		for (size_t i = 0; i < payload_data.size(); i++) {
+		สำหรับ (size_t i = 0; i < payload_data.size(); i++) {
 			uint8_t current = (payload_data[i] << 4) & 0xF0;
 
-			if (i + 1 < payload_data.size()) {
+			ถ้า (i + 1 < payload_data.size()) {
 				current |= (payload_data[i + 1] >> 4) & 0x0F;
 			}
 
 			payload.push_back(current);
 		}
 
-		return buildRawFrame(payload);
+		คืน buildRawFrame(payload);
 	}
 
 	// Helper to build a frame with raw payload bytes (no message type encoding)
@@ -102,7 +102,7 @@ protected:
 		frame.push_back((crc >> 8) & 0xFF);
 		frame.push_back(crc & 0xFF);
 
-		return frame;
+		คืน frame;
 	}
 
 	// Helper to build a frame with bad CRC
@@ -111,6 +111,6 @@ protected:
 		auto frame = buildRawFrame(payload);
 		// Corrupt the CRC
 		frame[frame.size() - 1] ^= 0xFF;
-		return frame;
+		คืน frame;
 	}
 };

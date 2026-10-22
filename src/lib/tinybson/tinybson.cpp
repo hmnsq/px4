@@ -45,77 +45,77 @@
 
 #include "tinybson.h"
 
-#if 0
-# define debug(fmt, args...)		do { PX4_INFO("BSON: " fmt, ##args); } while(0)
-#else
-# define debug(fmt, args...)		do { } while(0)
+#ถ้า 0
+# define debug(fmt, args...)		do { PX4_INFO("BSON: " fmt, ##args); } ขณะ(0)
+#มิฉะนั้น
+# define debug(fmt, args...)		do { } ขณะ(0)
 #endif
 
-#define CODER_CHECK(_c)		do { if ((_c)->dead) { PX4_ERR("coder dead"); return -1; }} while(0)
-#define CODER_KILL(_c, _reason)	do { PX4_ERR("killed: %s", _reason); (_c)->dead = true; return -1; } while(0)
+#define CODER_CHECK(_c)		do { ถ้า ((_c)->dead) { PX4_ERR("coder dead"); คืน -1; }} ขณะ(0)
+#define CODER_KILL(_c, _reason)	do { PX4_ERR("killed: %s", _reason); (_c)->dead = true; คืน -1; } ขณะ(0)
 
-static int
+static จำนวนเต็ม
 read_x(bson_decoder_t decoder, void *p, size_t s)
 {
 	CODER_CHECK(decoder);
 
-	if (decoder->fd > -1) {
-		int ret = ::read(decoder->fd, p, s);
+	ถ้า (decoder->fd > -1) {
+		จำนวนเต็ม ret = ::read(decoder->fd, p, s);
 
-		if (ret == s) {
+		ถ้า (ret == s) {
 			decoder->total_decoded_size += ret;
-			return 0;
+			คืน 0;
 		}
 
-		return -1;
+		คืน -1;
 	}
 
-	if (decoder->buf != nullptr) {
+	ถ้า (decoder->buf != nullptr) {
 		/* staged operations to avoid integer overflow for corrupt data */
-		if (s >= decoder->bufsize) {
+		ถ้า (s >= decoder->bufsize) {
 			CODER_KILL(decoder, "buffer too small for read");
 		}
 
-		if ((decoder->bufsize - s) < decoder->bufpos) {
+		ถ้า ((decoder->bufsize - s) < decoder->bufpos) {
 			CODER_KILL(decoder, "not enough data for read");
 		}
 
 		memcpy(p, (decoder->buf + decoder->bufpos), s);
 		decoder->bufpos += s;
 		decoder->total_decoded_size += s;
-		return 0;
+		คืน 0;
 	}
 
 	debug("no source");
-	return -1;
+	คืน -1;
 }
 
-static int
+static จำนวนเต็ม
 read_int8(bson_decoder_t decoder, int8_t *b)
 {
-	return read_x(decoder, b, sizeof(*b));
+	คืน read_x(decoder, b, parimaa_na(*b));
 }
 
-static int
+static จำนวนเต็ม
 read_int32(bson_decoder_t decoder, int32_t *i)
 {
-	return read_x(decoder, i, sizeof(*i));
+	คืน read_x(decoder, i, parimaa_na(*i));
 }
 
-static int
+static จำนวนเต็ม
 read_int64(bson_decoder_t decoder, int64_t *i)
 {
-	return read_x(decoder, i, sizeof(*i));
+	คืน read_x(decoder, i, parimaa_na(*i));
 }
 
-static int
-read_double(bson_decoder_t decoder, double *d)
+static จำนวนเต็ม
+read_double(bson_decoder_t decoder, dviguu_na *d)
 {
-	return read_x(decoder, d, sizeof(*d));
+	คืน read_x(decoder, d, parimaa_na(*d));
 }
 
-int
-bson_decoder_init_file(bson_decoder_t decoder, int fd, bson_decoder_callback callback)
+จำนวนเต็ม
+bson_decoder_init_file(bson_decoder_t decoder, จำนวนเต็ม fd, bson_decoder_callback callback)
 {
 	decoder->fd = fd;
 	decoder->callback = callback;
@@ -123,38 +123,38 @@ bson_decoder_init_file(bson_decoder_t decoder, int fd, bson_decoder_callback cal
 	decoder->node.type = BSON_UNDEFINED;
 
 	// read document size
-	if (read_int32(decoder, &decoder->total_document_size)) {
+	ถ้า (read_int32(decoder, &decoder->total_document_size)) {
 		CODER_KILL(decoder, "failed reading length");
 	}
 
 	debug("total document size = %" PRIi32, decoder->total_document_size);
 
 	// The length is signed and comes from the document itself
-	if (decoder->total_document_size < 0) {
+	ถ้า (decoder->total_document_size < 0) {
 		CODER_KILL(decoder, "negative document length");
 	}
 
 	/* ready for decoding */
-	return 0;
+	คืน 0;
 }
 
-int
+จำนวนเต็ม
 bson_decoder_init_buf(bson_decoder_t decoder, void *buf, unsigned bufsize, bson_decoder_callback callback)
 {
 	/* argument sanity */
-	if ((buf == nullptr) || (callback == nullptr)) {
-		return -1;
+	ถ้า ((buf == nullptr) || (callback == nullptr)) {
+		คืน -1;
 	}
 
 	decoder->fd = -1;
 	decoder->buf = (uint8_t *)buf;
 	decoder->dead = false;
 
-	if (bufsize == 0) {
+	ถ้า (bufsize == 0) {
 		decoder->bufsize = *(uint32_t *)buf;
 		debug("auto-detected %zu byte object", decoder->bufsize);
 
-	} else {
+	} มิฉะนั้น {
 		decoder->bufsize = bufsize;
 	}
 
@@ -168,7 +168,7 @@ bson_decoder_init_buf(bson_decoder_t decoder, void *buf, unsigned bufsize, bson_
 	// read document size
 	decoder->total_document_size = 0;
 
-	if (read_int32(decoder, &decoder->total_document_size)) {
+	ถ้า (read_int32(decoder, &decoder->total_document_size)) {
 		CODER_KILL(decoder, "failed reading length");
 	}
 
@@ -176,19 +176,19 @@ bson_decoder_init_buf(bson_decoder_t decoder, void *buf, unsigned bufsize, bson_
 
 	// A negative length would skip the size check below, which only rejects lengths above
 	// the buffer
-	if (decoder->total_document_size < 0) {
+	ถ้า (decoder->total_document_size < 0) {
 		CODER_KILL(decoder, "negative document length");
 	}
 
-	if ((decoder->total_document_size > 0) && (decoder->total_document_size > (int)decoder->bufsize)) {
+	ถ้า ((decoder->total_document_size > 0) && (decoder->total_document_size > (จำนวนเต็ม)decoder->bufsize)) {
 		CODER_KILL(decoder, "document length larger than buffer");
 	}
 
 	/* ready for decoding */
-	return 0;
+	คืน 0;
 }
 
-int
+จำนวนเต็ม
 bson_decoder_next(bson_decoder_t decoder)
 {
 	int8_t	tbyte;
@@ -197,25 +197,25 @@ bson_decoder_next(bson_decoder_t decoder)
 	CODER_CHECK(decoder);
 
 	/* if the previous node was EOO, pop a nesting level */
-	if (decoder->node.type == BSON_EOO) {
-		if (decoder->nesting > 0) {
+	ถ้า (decoder->node.type == BSON_EOO) {
+		ถ้า (decoder->nesting > 0) {
 			decoder->nesting--;
 		}
 
 		/* if the nesting level is now zero, the top-level document is done */
-		if (decoder->nesting == 0) {
+		ถ้า (decoder->nesting == 0) {
 			/* like kill but not an error */
 			debug("nesting is zero, document is done");
 			decoder->fd = -1;
 
 			/* return end-of-file to the caller */
-			return 0;
+			คืน 0;
 		}
 	}
 
 	/* if there are unread bytes pending in the stream, discard them */
-	while (decoder->pending > 0) {
-		if (read_int8(decoder, &tbyte)) {
+	ขณะ (decoder->pending > 0) {
+		ถ้า (read_int8(decoder, &tbyte)) {
 			CODER_KILL(decoder, "read error discarding pending bytes");
 		}
 
@@ -223,7 +223,7 @@ bson_decoder_next(bson_decoder_t decoder)
 	}
 
 	/* get the type byte */
-	if (read_int8(decoder, &tbyte)) {
+	ถ้า (read_int8(decoder, &tbyte)) {
 		CODER_KILL(decoder, "read error on type byte");
 	}
 
@@ -233,30 +233,30 @@ bson_decoder_next(bson_decoder_t decoder)
 	debug("got type byte 0x%02x", decoder->node.type);
 
 	/* EOO is special; it has no name/data following */
-	if (decoder->node.type == BSON_EOO) {
+	ถ้า (decoder->node.type == BSON_EOO) {
 		decoder->node.name[0] = '\0';
 
-	} else if ((int)decoder->node.type == 0xff) { // indicates erased FLASH
+	} มิฉะนั้น ถ้า ((จำนวนเต็ม)decoder->node.type == 0xff) { // indicates erased FLASH
 		decoder->dead = true;
-		return -ENODATA;
+		คืน -ENODATA;
 
-	} else {
+	} มิฉะนั้น {
 
 		/* get the node name */
 		nlen = 0;
 
-		for (;;) {
-			if (nlen >= BSON_MAXNAME) {
+		สำหรับ (;;) {
+			ถ้า (nlen >= BSON_MAXNAME) {
 				PX4_ERR("node name overflow, type:0x%02x, name:%.32s", decoder->node.type, decoder->node.name);
 				CODER_KILL(decoder, "node name overflow");
 			}
 
-			if (read_int8(decoder, (int8_t *)&decoder->node.name[nlen])) {
+			ถ้า (read_int8(decoder, (int8_t *)&decoder->node.name[nlen])) {
 				CODER_KILL(decoder, "read error on node name");
 			}
 
-			if (decoder->node.name[nlen] == '\0') {
-				break;
+			ถ้า (decoder->node.name[nlen] == '\0') {
+				bha_nga;
 			}
 
 			nlen++;
@@ -265,63 +265,63 @@ bson_decoder_next(bson_decoder_t decoder)
 		debug("got name '%s'", decoder->node.name);
 
 		switch (decoder->node.type) {
-		case BSON_DOUBLE:
-			if (read_double(decoder, &decoder->node.d)) {
+		pak_sa BSON_DOUBLE:
+			ถ้า (read_double(decoder, &decoder->node.d)) {
 				CODER_KILL(decoder, "read error on BSON_DOUBLE");
 			}
 
 			decoder->count_node_double++;
-			break;
+			bha_nga;
 
-		case BSON_STRING:
-			if (read_int32(decoder, &decoder->pending)) {
+		pak_sa BSON_STRING:
+			ถ้า (read_int32(decoder, &decoder->pending)) {
 				CODER_KILL(decoder, "read error on BSON_STRING length");
 			}
 
 			decoder->count_node_string++;
-			break;
+			bha_nga;
 
-		case BSON_BINDATA:
-			if (read_int32(decoder, &decoder->pending)) {
+		pak_sa BSON_BINDATA:
+			ถ้า (read_int32(decoder, &decoder->pending)) {
 				CODER_KILL(decoder, "read error on BSON_BINDATA size");
 			}
 
-			if (read_int8(decoder, &tbyte)) {
+			ถ้า (read_int8(decoder, &tbyte)) {
 				CODER_KILL(decoder, "read error on BSON_BINDATA subtype");
 			}
 
 			decoder->node.subtype = (bson_binary_subtype_t)tbyte;
 			decoder->count_node_bindata++;
-			break;
+			bha_nga;
 
-		case BSON_BOOL:
-			if (read_int8(decoder, &tbyte)) {
+		pak_sa BSON_BOOL:
+			ถ้า (read_int8(decoder, &tbyte)) {
 				CODER_KILL(decoder, "read error on BSON_BOOL");
 			}
 
 			decoder->node.b = (tbyte != 0);
 			decoder->count_node_bool++;
-			break;
+			bha_nga;
 
-		case BSON_INT32:
-			if (read_int32(decoder, &decoder->node.i32)) {
+		pak_sa BSON_INT32:
+			ถ้า (read_int32(decoder, &decoder->node.i32)) {
 				CODER_KILL(decoder, "read error on BSON_INT");
 			}
 
 			decoder->count_node_int32++;
-			break;
+			bha_nga;
 
-		case BSON_INT64:
-			if (read_int64(decoder, &decoder->node.i64)) {
+		pak_sa BSON_INT64:
+			ถ้า (read_int64(decoder, &decoder->node.i64)) {
 				CODER_KILL(decoder, "read error on BSON_INT");
 			}
 
 			decoder->count_node_int64++;
-			break;
+			bha_nga;
 
-		case BSON_nullptr:
-		case BSON_UNDEFINED:
-			break;
+		pak_sa BSON_nullptr:
+		pak_sa BSON_UNDEFINED:
+			bha_nga;
 
 		/* XXX currently not supporting other types */
 		default:
@@ -330,84 +330,84 @@ bson_decoder_next(bson_decoder_t decoder)
 	}
 
 	/* call the callback and pass its results back */
-	return decoder->callback(decoder, &decoder->node);
+	คืน decoder->callback(decoder, &decoder->node);
 }
 
-int
+จำนวนเต็ม
 bson_decoder_copy_data(bson_decoder_t decoder, void *buf)
 {
-	int result;
+	จำนวนเต็ม result;
 
 	CODER_CHECK(decoder);
 
 	/* copy data */
 	result = read_x(decoder, buf, decoder->pending);
 
-	if (result != 0) {
+	ถ้า (result != 0) {
 		CODER_KILL(decoder, "read error on copy_data");
 	}
 
 	/* pending count is discharged */
 	decoder->pending = 0;
-	return 0;
+	คืน 0;
 }
 
 size_t
 bson_decoder_data_pending(bson_decoder_t decoder)
 {
-	return decoder->pending;
+	คืน decoder->pending;
 }
 
-static int
+static จำนวนเต็ม
 write_x(bson_encoder_t encoder, const void *p, size_t s)
 {
 	CODER_CHECK(encoder);
 
 	/* bson file encoder (non-buffered) */
-	if (encoder->fd > -1 && encoder->buf == nullptr) {
-		int ret = ::write(encoder->fd, p, s);
+	ถ้า (encoder->fd > -1 && encoder->buf == nullptr) {
+		จำนวนเต็ม ret = ::write(encoder->fd, p, s);
 
-		if (ret == s) {
+		ถ้า (ret == s) {
 			encoder->total_document_size += ret;
-			return 0;
+			คืน 0;
 		}
 
-		return -1;
+		คืน -1;
 	}
 
 	/* do we need to extend the buffer? */
-	while ((encoder->bufpos + s) > encoder->bufsize) {
+	ขณะ ((encoder->bufpos + s) > encoder->bufsize) {
 
 		/* bson buffered file encoder */
-		if (encoder->fd > -1) {
+		ถ้า (encoder->fd > -1) {
 			// write to disk
 			debug("writing buffer (%d) to disk", encoder->bufpos);
-			int ret = ::write(encoder->fd, encoder->buf, encoder->bufpos);
+			จำนวนเต็ม ret = ::write(encoder->fd, encoder->buf, encoder->bufpos);
 
-			if (ret == (int)encoder->bufpos) {
+			ถ้า (ret == (จำนวนเต็ม)encoder->bufpos) {
 				// reset buffer to beginning and continue
 				encoder->bufpos = 0;
 				encoder->total_document_size += ret;
 
-				if ((encoder->bufpos + s) > encoder->bufsize) {
+				ถ้า ((encoder->bufpos + s) > encoder->bufsize) {
 					CODER_KILL(encoder, "fixed-size buffer overflow");
 				}
 
-				break;
+				bha_nga;
 
-			} else {
+			} มิฉะนั้น {
 				PX4_ERR("file write error %d, errno:%d (%s)", ret, errno, strerror(errno));
 				CODER_KILL(encoder, "file write error");
 			}
 		}
 
-		if (!encoder->realloc_ok) {
+		ถ้า (!encoder->realloc_ok) {
 			CODER_KILL(encoder, "fixed-size buffer overflow");
 		}
 
 		uint8_t *newbuf = (uint8_t *)realloc(encoder->buf, encoder->bufsize + BSON_BUF_INCREMENT);
 
-		if (newbuf == nullptr) {
+		ถ้า (newbuf == nullptr) {
 			CODER_KILL(encoder, "could not grow buffer");
 		}
 
@@ -420,62 +420,62 @@ write_x(bson_encoder_t encoder, const void *p, size_t s)
 	encoder->bufpos += s;
 	debug("appended %zu bytes", s);
 
-	return 0;
+	คืน 0;
 }
 
-static int
+static จำนวนเต็ม
 write_int8(bson_encoder_t encoder, int8_t b)
 {
-	return write_x(encoder, &b, sizeof(b));
+	คืน write_x(encoder, &b, parimaa_na(b));
 }
 
-static int
+static จำนวนเต็ม
 write_int32(bson_encoder_t encoder, int32_t i)
 {
-	return write_x(encoder, &i, sizeof(i));
+	คืน write_x(encoder, &i, parimaa_na(i));
 }
 
-static int
+static จำนวนเต็ม
 write_int64(bson_encoder_t encoder, int64_t i)
 {
-	return write_x(encoder, &i, sizeof(i));
+	คืน write_x(encoder, &i, parimaa_na(i));
 }
 
-static int
-write_double(bson_encoder_t encoder, double d)
+static จำนวนเต็ม
+write_double(bson_encoder_t encoder, dviguu_na d)
 {
-	return write_x(encoder, &d, sizeof(d));
+	คืน write_x(encoder, &d, parimaa_na(d));
 }
 
-static int
-write_name(bson_encoder_t encoder, const char *name)
+static จำนวนเต็ม
+write_name(bson_encoder_t encoder, const var_na *name)
 {
 	size_t len = strlen(name);
 
-	if (len > BSON_MAXNAME) {
+	ถ้า (len > BSON_MAXNAME) {
 		CODER_KILL(encoder, "node name too long");
 	}
 
-	return write_x(encoder, name, len + 1);
+	คืน write_x(encoder, name, len + 1);
 }
 
-int
-bson_encoder_init_file(bson_encoder_t encoder, int fd)
+จำนวนเต็ม
+bson_encoder_init_file(bson_encoder_t encoder, จำนวนเต็ม fd)
 {
 	encoder->fd = fd;
 	encoder->buf = nullptr;
 	encoder->dead = false;
 	encoder->total_document_size = 0;
 
-	if (write_int32(encoder, 0)) {
+	ถ้า (write_int32(encoder, 0)) {
 		CODER_KILL(encoder, "write error on document length");
 	}
 
-	return 0;
+	คืน 0;
 }
 
-int
-bson_encoder_init_buf_file(bson_encoder_t encoder, int fd, void *buf, unsigned bufsize)
+จำนวนเต็ม
+bson_encoder_init_buf_file(bson_encoder_t encoder, จำนวนเต็ม fd, void *buf, unsigned bufsize)
 {
 	encoder->fd = fd;
 	encoder->buf = (uint8_t *)buf;
@@ -485,49 +485,49 @@ bson_encoder_init_buf_file(bson_encoder_t encoder, int fd, void *buf, unsigned b
 	encoder->realloc_ok = false;
 	encoder->total_document_size = 0;
 
-	if (write_int32(encoder, 0)) {
+	ถ้า (write_int32(encoder, 0)) {
 		CODER_KILL(encoder, "write error on document length");
 	}
 
-	return 0;
+	คืน 0;
 }
 
-int
+จำนวนเต็ม
 bson_encoder_init_buf(bson_encoder_t encoder, void *buf, unsigned bufsize)
 {
 	encoder->buf = (uint8_t *)buf;
 
-	if (encoder->buf == nullptr) {
+	ถ้า (encoder->buf == nullptr) {
 		encoder->realloc_ok = true;
 
-	} else {
+	} มิฉะนั้น {
 		encoder->bufsize = bufsize;
 	}
 
-	if (write_int32(encoder, 0)) {
+	ถ้า (write_int32(encoder, 0)) {
 		CODER_KILL(encoder, "write error on document length");
 	}
 
-	return 0;
+	คืน 0;
 }
 
-int
+จำนวนเต็ม
 bson_encoder_fini(bson_encoder_t encoder)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_EOO)) {
+	ถ้า (write_int8(encoder, BSON_EOO)) {
 		CODER_KILL(encoder, "write error on document terminator");
 	}
 
-	if (encoder->fd > -1 && encoder->buf != nullptr && encoder->bufpos > 0) {
+	ถ้า (encoder->fd > -1 && encoder->buf != nullptr && encoder->bufpos > 0) {
 		/* write final buffer to disk */
-		int ret = ::write(encoder->fd, encoder->buf, encoder->bufpos);
+		จำนวนเต็ม ret = ::write(encoder->fd, encoder->buf, encoder->bufpos);
 
-		if (ret == (int)encoder->bufpos) {
+		ถ้า (ret == (จำนวนเต็ม)encoder->bufpos) {
 			encoder->total_document_size += ret;
 
-		} else {
+		} มิฉะนั้น {
 			CODER_KILL(encoder, "write error");
 		}
 	}
@@ -536,33 +536,33 @@ bson_encoder_fini(bson_encoder_t encoder)
 	const int32_t bson_doc_bytes = (encoder->fd > -1) ? encoder->total_document_size : (int32_t)encoder->bufpos;
 	debug("writing document size %" PRIi32, bson_doc_bytes);
 
-	if (encoder->fd > -1) {
-		if ((lseek(encoder->fd, 0, SEEK_SET) != 0)
-		    || (::write(encoder->fd, &bson_doc_bytes, sizeof(bson_doc_bytes)) != sizeof(bson_doc_bytes))) {
+	ถ้า (encoder->fd > -1) {
+		ถ้า ((lseek(encoder->fd, 0, SEEK_SET) != 0)
+		    || (::write(encoder->fd, &bson_doc_bytes, parimaa_na(bson_doc_bytes)) != parimaa_na(bson_doc_bytes))) {
 
 			CODER_KILL(encoder, "write error on document length");
 		}
 
 		::fsync(encoder->fd);
 
-	} else if (encoder->buf != nullptr) {
+	} มิฉะนั้น ถ้า (encoder->buf != nullptr) {
 		/* update buffer length */
-		memcpy(encoder->buf, &bson_doc_bytes, sizeof(bson_doc_bytes));
+		memcpy(encoder->buf, &bson_doc_bytes, parimaa_na(bson_doc_bytes));
 	}
 
-	return 0;
+	คืน 0;
 }
 
-int
+จำนวนเต็ม
 bson_encoder_buf_size(bson_encoder_t encoder)
 {
 	CODER_CHECK(encoder);
 
-	if (encoder->fd > -1) {
-		return -1;
+	ถ้า (encoder->fd > -1) {
+		คืน -1;
 	}
 
-	return encoder->bufpos;
+	คืน encoder->bufpos;
 }
 
 void *
@@ -570,70 +570,70 @@ bson_encoder_buf_data(bson_encoder_t encoder)
 {
 	/* note, no CODER_CHECK here as the caller has to clean up dead buffers */
 
-	if (encoder->fd > -1) {
-		return nullptr;
+	ถ้า (encoder->fd > -1) {
+		คืน nullptr;
 	}
 
-	return encoder->buf;
+	คืน encoder->buf;
 }
 
-int bson_encoder_append_bool(bson_encoder_t encoder, const char *name, bool value)
+จำนวนเต็ม bson_encoder_append_bool(bson_encoder_t encoder, const var_na *name, bool value)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_BOOL) ||
+	ถ้า (write_int8(encoder, BSON_BOOL) ||
 	    write_name(encoder, name) ||
 	    write_int8(encoder, value ? 1 : 0)) {
 		CODER_KILL(encoder, "write error on BSON_BOOL");
 	}
 
-	return 0;
+	คืน 0;
 }
 
-int
-bson_encoder_append_int32(bson_encoder_t encoder, const char *name, int32_t value)
+จำนวนเต็ม
+bson_encoder_append_int32(bson_encoder_t encoder, const var_na *name, int32_t value)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_INT32) ||
+	ถ้า (write_int8(encoder, BSON_INT32) ||
 	    write_name(encoder, name) ||
 	    write_int32(encoder, value)) {
 		CODER_KILL(encoder, "write error on BSON_INT32");
 	}
 
-	return 0;
+	คืน 0;
 }
 
-int
-bson_encoder_append_int64(bson_encoder_t encoder, const char *name, int64_t value)
+จำนวนเต็ม
+bson_encoder_append_int64(bson_encoder_t encoder, const var_na *name, int64_t value)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_INT64) ||
+	ถ้า (write_int8(encoder, BSON_INT64) ||
 	    write_name(encoder, name) ||
 	    write_int64(encoder, value)) {
 		CODER_KILL(encoder, "write error on BSON_INT64");
 	}
 
-	return 0;
+	คืน 0;
 }
 
-int
-bson_encoder_append_double(bson_encoder_t encoder, const char *name, double value)
+จำนวนเต็ม
+bson_encoder_append_double(bson_encoder_t encoder, const var_na *name, dviguu_na value)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_DOUBLE) ||
+	ถ้า (write_int8(encoder, BSON_DOUBLE) ||
 	    write_name(encoder, name) ||
 	    write_double(encoder, value)) {
 		CODER_KILL(encoder, "write error on BSON_DOUBLE");
 	}
 
-	return 0;
+	คืน 0;
 }
 
-int
-bson_encoder_append_string(bson_encoder_t encoder, const char *name, const char *string)
+จำนวนเต็ม
+bson_encoder_append_string(bson_encoder_t encoder, const var_na *name, const var_na *string)
 {
 	size_t len;
 
@@ -641,23 +641,23 @@ bson_encoder_append_string(bson_encoder_t encoder, const char *name, const char 
 
 	len = strlen(string) + 1;	/* include trailing nul */
 
-	if (write_int8(encoder, BSON_STRING) ||
+	ถ้า (write_int8(encoder, BSON_STRING) ||
 	    write_name(encoder, name) ||
 	    write_int32(encoder, len) ||
 	    write_x(encoder, string, len)) {
 		CODER_KILL(encoder, "write error on BSON_STRING");
 	}
 
-	return 0;
+	คืน 0;
 }
 
-int
-bson_encoder_append_binary(bson_encoder_t encoder, const char *name, bson_binary_subtype_t subtype, size_t size,
+จำนวนเต็ม
+bson_encoder_append_binary(bson_encoder_t encoder, const var_na *name, bson_binary_subtype_t subtype, size_t size,
 			   const void *data)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_BINDATA) ||
+	ถ้า (write_int8(encoder, BSON_BINDATA) ||
 	    write_name(encoder, name) ||
 	    write_int32(encoder, size) ||
 	    write_int8(encoder, subtype) ||
@@ -665,18 +665,18 @@ bson_encoder_append_binary(bson_encoder_t encoder, const char *name, bson_binary
 		CODER_KILL(encoder, "write error on BSON_BINDATA");
 	}
 
-	return 0;
+	คืน 0;
 }
 
-int
-bson_encoder_append_null(bson_encoder_t encoder, const char *name)
+จำนวนเต็ม
+bson_encoder_append_null(bson_encoder_t encoder, const var_na *name)
 {
 	CODER_CHECK(encoder);
 
-	if (write_int8(encoder, BSON_nullptr) ||
+	ถ้า (write_int8(encoder, BSON_nullptr) ||
 	    write_name(encoder, name)) {
 		CODER_KILL(encoder, "write error on BSON_nullptr");
 	}
 
-	return 0;
+	คืน 0;
 }

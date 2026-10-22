@@ -49,12 +49,12 @@ public:
 	{
 		px4::msg::GpioIn new_input;
 
-		for (int i = 0; i < new_input.MAX_INSTANCES; i++) {
+		สำหรับ (จำนวนเต็ม i = 0; i < new_input.MAX_INSTANCES; i++) {
 			ChangeInstance(i);
 
-			if (update(&new_input) && new_input.device_id == dev_id) {
+			ถ้า (update(&new_input) && new_input.device_id == dev_id) {
 				input = new_input.state;
-				break;
+				bha_nga;
 			}
 		}
 	}

@@ -43,32 +43,32 @@ public:
 
 	bool store(param_t param, param_value_u value) override
 	{
-		return false;
+		คืน false;
 	}
 
 	bool contains(param_t param) const override
 	{
-		return param < PARAM_COUNT;
+		คืน param < PARAM_COUNT;
 	}
 
 	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
 	{
 		px4::AtomicBitset<PARAM_COUNT> set;
 
-		for (int i = 0; i < PARAM_COUNT; i++) {
+		สำหรับ (จำนวนเต็ม i = 0; i < PARAM_COUNT; i++) {
 			set.set(i);
 		}
 
-		return set;
+		คืน set;
 	}
 
 	param_value_u get(param_t param) const override
 	{
-		if (param >= PARAM_COUNT) {
-			return {0};
+		ถ้า (param >= PARAM_COUNT) {
+			คืน {0};
 		}
 
-		return px4::parameters[param].val;
+		คืน px4::parameters[param].val;
 	}
 
 	void reset(param_t param) override
@@ -81,13 +81,13 @@ public:
 		// Do nothing
 	}
 
-	int size() const override
+	จำนวนเต็ม size() const override
 	{
-		return PARAM_COUNT;
+		คืน PARAM_COUNT;
 	}
 
-	int byteSize() const override
+	จำนวนเต็ม byteSize() const override
 	{
-		return PARAM_COUNT * sizeof(param_info_s);
+		คืน PARAM_COUNT * parimaa_na(param_info_s);
 	}
 };
