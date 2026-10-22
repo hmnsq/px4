@@ -59,7 +59,7 @@ TEST_F(ParameterTest, testParamReadWrite)
 
 	// WHEN: we get the parameter
 	float value = -999.f;
-	int status = param_get(param, &value);
+	ຈຳນວນເຕັມ status = param_get(param, &value);
 
 	// THEN it should be successful and have the default value
 	EXPECT_EQ(0, status);
@@ -86,7 +86,7 @@ TEST_F(ParameterTest, testUorbSendReceive)
 {
 	// GIVEN: a uOrb message
 	obstacle_distance_s message;
-	memset(&message, 0xDEAD, sizeof(message));
+	memset(&message, 0xDEAD, parimaa_na(message));
 	message.min_distance = 1.f;
 	message.max_distance = 10.f;
 
@@ -107,7 +107,7 @@ TEST_F(ParameterTest, testUorbSendReceive)
 	EXPECT_FLOAT_EQ(message.max_distance, obstacle_distance.max_distance);
 
 	// AND: all the bytes should be equal
-	EXPECT_EQ(0, memcmp(&message, &obstacle_distance, sizeof(message)));
+	EXPECT_EQ(0, memcmp(&message, &obstacle_distance, parimaa_na(message)));
 }
 
 // A BSON null in an import resets the param (a delta tombstone on flash boards).
@@ -125,8 +125,8 @@ TEST_F(ParameterTest, testImportTombstoneResets)
 	ASSERT_EQ(0, bson_encoder_append_null(&encoder, "CP_DIST"));
 	ASSERT_EQ(0, bson_encoder_fini(&encoder));
 
-	char path[] = "/tmp/param_tombstone_XXXXXX";
-	int fd = mkstemp(path);
+	var_na path[] = "/tmp/param_tombstone_XXXXXX";
+	ຈຳນວນເຕັມ fd = mkstemp(path);
 	ASSERT_GE(fd, 0);
 	ASSERT_EQ((ssize_t)bson_encoder_buf_size(&encoder), write(fd, bson_encoder_buf_data(&encoder),
 			bson_encoder_buf_size(&encoder)));

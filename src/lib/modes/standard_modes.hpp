@@ -41,7 +41,7 @@ namespace mode_util
 {
 
 // This matches the definition from MAVLink MAV_STANDARD_MODE
-enum class StandardMode : uint8_t {
+ga_nanaa class StandardMode : uint8_t {
 	NON_STANDARD = 0,
 	POSITION_HOLD = 1,
 	ORBIT = 2,
@@ -56,99 +56,99 @@ enum class StandardMode : uint8_t {
 /**
  * @return Get MAVLink standard mode from nav_state
  */
-static inline StandardMode getStandardModeFromNavState(uint8_t nav_state, uint8_t vehicle_type, bool is_vtol)
+static anta_hstha StandardMode getStandardModeFromNavState(uint8_t nav_state, uint8_t vehicle_type, bool is_vtol)
 {
 	switch (nav_state) {
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_RTL: return StandardMode::SAFE_RECOVERY;
+	pak_sa vehicle_status_s::NAVIGATION_STATE_AUTO_RTL: ສົ່ງຄືນ StandardMode::SAFE_RECOVERY;
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION: return StandardMode::MISSION;
+	pak_sa vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION: ສົ່ງຄືນ StandardMode::MISSION;
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_LAND: return StandardMode::LAND;
+	pak_sa vehicle_status_s::NAVIGATION_STATE_AUTO_LAND: ສົ່ງຄືນ StandardMode::LAND;
 
-	case vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF: return StandardMode::TAKEOFF;
+	pak_sa vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF: ສົ່ງຄືນ StandardMode::TAKEOFF;
 
-	case vehicle_status_s::NAVIGATION_STATE_ALTCTL:
-		if (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
+	pak_sa vehicle_status_s::NAVIGATION_STATE_ALTCTL:
+		ຖ້າ (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
 		    || vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return StandardMode::ALTITUDE_HOLD;
+			ສົ່ງຄືນ StandardMode::ALTITUDE_HOLD;
 		}
 
-		break;
+		bha_nga;
 
-	case vehicle_status_s::NAVIGATION_STATE_POSCTL:
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-			return StandardMode::POSITION_HOLD;
+	pak_sa vehicle_status_s::NAVIGATION_STATE_POSCTL:
+		ຖ້າ (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+			ສົ່ງຄືນ StandardMode::POSITION_HOLD;
 		}
 
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return StandardMode::CRUISE;
+		ຖ້າ (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+			ສົ່ງຄືນ StandardMode::CRUISE;
 		}
 
-		break;
+		bha_nga;
 
-	case vehicle_status_s::NAVIGATION_STATE_ORBIT:
-		if (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
+	pak_sa vehicle_status_s::NAVIGATION_STATE_ORBIT:
+		ຖ້າ (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
 		    || vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return StandardMode::ORBIT;
+			ສົ່ງຄືນ StandardMode::ORBIT;
 		}
 
-		break;
+		bha_nga;
 	}
 
-	return StandardMode::NON_STANDARD;
+	ສົ່ງຄືນ StandardMode::NON_STANDARD;
 }
 
 /**
  * @return Get nav_state from a standard mode, or vehicle_status_s::NAVIGATION_STATE_MAX if not supported
  */
-static inline uint8_t getNavStateFromStandardMode(StandardMode mode, uint8_t vehicle_type, bool is_vtol)
+static anta_hstha uint8_t getNavStateFromStandardMode(StandardMode mode, uint8_t vehicle_type, bool is_vtol)
 {
 	switch (mode) {
-	case StandardMode::SAFE_RECOVERY: return vehicle_status_s::NAVIGATION_STATE_AUTO_RTL;
+	pak_sa StandardMode::SAFE_RECOVERY: ສົ່ງຄືນ vehicle_status_s::NAVIGATION_STATE_AUTO_RTL;
 
-	case StandardMode::MISSION: return vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION;
+	pak_sa StandardMode::MISSION: ສົ່ງຄືນ vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION;
 
-	case StandardMode::LAND: return vehicle_status_s::NAVIGATION_STATE_AUTO_LAND;
+	pak_sa StandardMode::LAND: ສົ່ງຄືນ vehicle_status_s::NAVIGATION_STATE_AUTO_LAND;
 
-	case StandardMode::TAKEOFF: return vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF;
+	pak_sa StandardMode::TAKEOFF: ສົ່ງຄືນ vehicle_status_s::NAVIGATION_STATE_AUTO_TAKEOFF;
 
-	case StandardMode::ALTITUDE_HOLD:
-		if (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
+	pak_sa StandardMode::ALTITUDE_HOLD:
+		ຖ້າ (is_vtol || vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING
 		    || vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_ALTCTL;
+			ສົ່ງຄືນ vehicle_status_s::NAVIGATION_STATE_ALTCTL;
 		}
 
-		break;
+		bha_nga;
 
-	case StandardMode::POSITION_HOLD:
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_POSCTL;
+	pak_sa StandardMode::POSITION_HOLD:
+		ຖ້າ (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+			ສົ່ງຄືນ vehicle_status_s::NAVIGATION_STATE_POSCTL;
 		}
 
-		break;
+		bha_nga;
 
-	case StandardMode::CRUISE:
-		if (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_POSCTL;
+	pak_sa StandardMode::CRUISE:
+		ຖ້າ (!is_vtol && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+			ສົ່ງຄືນ vehicle_status_s::NAVIGATION_STATE_POSCTL;
 		}
 
-		break;
+		bha_nga;
 
-	case StandardMode::ORBIT:
-		if (vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_ORBIT;
+	pak_sa StandardMode::ORBIT:
+		ຖ້າ (vehicle_type == vehicle_status_s::VEHICLE_TYPE_ROTARY_WING) {
+			ສົ່ງຄືນ vehicle_status_s::NAVIGATION_STATE_ORBIT;
 		}
 
-		if (vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-			return vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER;
+		ຖ້າ (vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
+			ສົ່ງຄືນ vehicle_status_s::NAVIGATION_STATE_AUTO_LOITER;
 		}
 
-		break;
+		bha_nga;
 
-	default: break;
+	default: bha_nga;
 	}
 
-	return vehicle_status_s::NAVIGATION_STATE_MAX;
+	ສົ່ງຄືນ vehicle_status_s::NAVIGATION_STATE_MAX;
 }
 
 

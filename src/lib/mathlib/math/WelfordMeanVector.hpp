@@ -49,13 +49,13 @@ public:
 	// For a new value, compute the new count, new mean, the new M2.
 	bool update(const matrix::Vector<Type, N> &new_value)
 	{
-		if (_count == 0) {
+		ຖ້າ (_count == 0) {
 			reset();
 			_count = 1;
 			_mean = new_value;
-			return false;
+			ສົ່ງຄືນ false;
 
-		} else if (_count == UINT16_MAX) {
+		} ບໍ່ດັ່ງນັ້ນ ຖ້າ (_count == UINT16_MAX) {
 			// count overflow
 			//  reset count, but maintain mean and variance
 			_M2 = _M2 / _count;
@@ -63,7 +63,7 @@ public:
 
 			_count = 1;
 
-		} else {
+		} ບໍ່ດັ່ງນັ້ນ {
 			_count++;
 		}
 
@@ -78,9 +78,9 @@ public:
 			_mean = t;
 		}
 
-		if (!_mean.isAllFinite()) {
+		ຖ້າ (!_mean.isAllFinite()) {
 			reset();
-			return false;
+			ສົ່ງຄືນ false;
 		}
 
 		// covariance
@@ -89,14 +89,14 @@ public:
 			// eg C(x,y) += dx * (y - mean_y)
 			matrix::SquareMatrix<Type, N> m2_change{};
 
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r; c < N; c++) {
+			ສຳລັບ (size_t r = 0; r < N; r++) {
+				ສຳລັບ (size_t c = r; c < N; c++) {
 					m2_change(r, c) = delta(r) * (new_value(c) - _mean(c));
 				}
 			}
 
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r; c < N; c++) {
+			ສຳລັບ (size_t r = 0; r < N; r++) {
+				ສຳລັບ (size_t c = r; c < N; c++) {
 
 					const Type y = m2_change(r, c) - _M2_accum(r, c);
 					const Type t = _M2(r, c) + y;
@@ -106,29 +106,29 @@ public:
 				}
 
 				// protect against floating point precision causing negative variances
-				if (_M2(r, r) < 0) {
+				ຖ້າ (_M2(r, r) < 0) {
 					_M2(r, r) = 0;
 				}
 			}
 
 			// make symmetric
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r + 1; c < N; c++) {
+			ສຳລັບ (size_t r = 0; r < N; r++) {
+				ສຳລັບ (size_t c = r + 1; c < N; c++) {
 					_M2(c, r) = _M2(r, c);
 				}
 			}
 		}
 
-		if (!_M2.isAllFinite()) {
+		ຖ້າ (!_M2.isAllFinite()) {
 			reset();
-			return false;
+			ສົ່ງຄືນ false;
 		}
 
-		return valid();
+		ສົ່ງຄືນ valid();
 	}
 
-	bool valid() const { return _count > 2; }
-	auto count() const { return _count; }
+	bool valid() const { ສົ່ງຄືນ _count > 2; }
+	auto count() const { ສົ່ງຄືນ _count; }
 
 	void reset()
 	{
@@ -140,11 +140,11 @@ public:
 		_M2_accum.zero();
 	}
 
-	matrix::Vector<Type, N> mean() const { return _mean; }
-	matrix::Vector<Type, N> variance() const { return _M2.diag() / (_count - 1); }
-	matrix::SquareMatrix<Type, N> covariance() const { return _M2 / (_count - 1); }
+	matrix::Vector<Type, N> mean() const { ສົ່ງຄືນ _mean; }
+	matrix::Vector<Type, N> variance() const { ສົ່ງຄືນ _M2.diag() / (_count - 1); }
+	matrix::SquareMatrix<Type, N> covariance() const { ສົ່ງຄືນ _M2 / (_count - 1); }
 
-	Type covariance(int x, int y) const { return _M2(x, y) / (_count - 1); }
+	Type covariance(ຈຳນວນເຕັມ x, ຈຳນວນເຕັມ y) const { ສົ່ງຄືນ _M2(x, y) / (_count - 1); }
 
 private:
 

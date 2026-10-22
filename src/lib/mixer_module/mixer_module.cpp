@@ -39,7 +39,7 @@
 using namespace time_literals;
 
 
-struct FunctionProvider {
+sa_nracanaa FunctionProvider {
 	using Constructor = FunctionProviderBase * (*)(const FunctionProviderBase::Context &context);
 	constexpr FunctionProvider(OutputFunction min_func_, OutputFunction max_func_, Constructor constructor_)
 		: min_func(min_func_), max_func(max_func_), constructor(constructor_) {}
@@ -67,7 +67,7 @@ static constexpr FunctionProvider all_function_providers[] = {
 	{OutputFunction::IC_Engine_Ignition, OutputFunction::IC_Engine_Starter, &FunctionICEControl::allocate},
 };
 
-MixingOutput::MixingOutput(const char *param_prefix, uint8_t max_num_outputs, OutputModuleInterface &interface,
+MixingOutput::MixingOutput(const var_na *param_prefix, uint8_t max_num_outputs, OutputModuleInterface &interface,
 			   SchedulingPolicy scheduling_policy, bool support_esc_calibration, bool ramp_up, const uint8_t instance_start) :
 	ModuleParams(&interface),
 	_output_ramp_up(ramp_up),
@@ -90,7 +90,7 @@ MixingOutput::MixingOutput(const char *param_prefix, uint8_t max_num_outputs, Ou
 
 	initParamHandles(instance_start);
 
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	ສຳລັບ (unsigned i = 0; i < MAX_ACTUATORS; i++) {
 		_failsafe_value[i] = UINT16_MAX;
 	}
 
@@ -111,24 +111,24 @@ MixingOutput::~MixingOutput()
 
 void MixingOutput::initParamHandles(const uint8_t instance_start)
 {
-	char param_name[17];
+	var_na param_name[17];
 
-	for (unsigned i = 0; i < _max_num_outputs; ++i) {
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "FUNC", i + instance_start);
+	ສຳລັບ (unsigned i = 0; i < _max_num_outputs; ++i) {
+		snprintf(param_name, parimaa_na(param_name), "%s_%s%d", _param_prefix, "FUNC", i + instance_start);
 		_param_handles[i].function = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "DIS", i + instance_start);
+		snprintf(param_name, parimaa_na(param_name), "%s_%s%d", _param_prefix, "DIS", i + instance_start);
 		_param_handles[i].disarmed = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "MIN", i + instance_start);
+		snprintf(param_name, parimaa_na(param_name), "%s_%s%d", _param_prefix, "MIN", i + instance_start);
 		_param_handles[i].min = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "CENT", i + instance_start);
+		snprintf(param_name, parimaa_na(param_name), "%s_%s%d", _param_prefix, "CENT", i + instance_start);
 		_param_handles[i].center = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "MAX", i + instance_start);
+		snprintf(param_name, parimaa_na(param_name), "%s_%s%d", _param_prefix, "MAX", i + instance_start);
 		_param_handles[i].max = param_find(param_name);
-		snprintf(param_name, sizeof(param_name), "%s_%s%d", _param_prefix, "FAIL", i + instance_start);
+		snprintf(param_name, parimaa_na(param_name), "%s_%s%d", _param_prefix, "FAIL", i + instance_start);
 		_param_handles[i].failsafe = param_find(param_name);
 	}
 
-	snprintf(param_name, sizeof(param_name), "%s_%s", _param_prefix, "REV");
+	snprintf(param_name, parimaa_na(param_name), "%s_%s", _param_prefix, "REV");
 	_param_handle_rev_range = param_find(param_name);
 }
 
@@ -137,15 +137,15 @@ void MixingOutput::printStatus() const
 	PX4_INFO("Param prefix: %s", _param_prefix);
 	perf_print_counter(_control_latency_perf);
 
-	if (_wq_switched) {
+	ຖ້າ (_wq_switched) {
 		PX4_INFO("Switched to rate_ctrl work queue");
 	}
 
 	PX4_INFO_RAW("Channel Configuration:\n");
 
-	for (unsigned i = 0; i < _max_num_outputs; i++) {
+	ສຳລັບ (unsigned i = 0; i < _max_num_outputs; i++) {
 		PX4_INFO_RAW("Channel %2d: func: %3d, value: %.2f, failsafe: %.2f, disarmed: %d, min: %d, max: %d, center: %d\n",
-			     i, (int)_function_assignment[i], (double)_current_output_value[i], (double)actualFailsafeValue(i),
+			     i, (ຈຳນວນເຕັມ)_function_assignment[i], (dviguu_na)_current_output_value[i], (dviguu_na)actualFailsafeValue(i),
 			     _disarmed_value[i], _min_value[i], _max_value[i], _center_value[i]);
 	}
 }
@@ -156,41 +156,41 @@ void MixingOutput::updateParams()
 
 	bool function_changed = false;
 
-	for (unsigned i = 0; i < _max_num_outputs; i++) {
+	ສຳລັບ (unsigned i = 0; i < _max_num_outputs; i++) {
 		int32_t val;
 
-		if (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &val) == 0) {
-			if (val != (int32_t)_function_assignment[i]) {
+		ຖ້າ (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &val) == 0) {
+			ຖ້າ (val != (int32_t)_function_assignment[i]) {
 				function_changed = true;
 			}
 
 			// we set _function_assignment[i] later to ensure _functions[i] is updated at the same time
 		}
 
-		if (_param_handles[i].disarmed != PARAM_INVALID && param_get(_param_handles[i].disarmed, &val) == 0) {
+		ຖ້າ (_param_handles[i].disarmed != PARAM_INVALID && param_get(_param_handles[i].disarmed, &val) == 0) {
 			_disarmed_value[i] = val;
 		}
 
-		if (_param_handles[i].min != PARAM_INVALID && param_get(_param_handles[i].min, &val) == 0) {
+		ຖ້າ (_param_handles[i].min != PARAM_INVALID && param_get(_param_handles[i].min, &val) == 0) {
 			_min_value[i] = val;
 		}
 
-		if (_param_handles[i].center != PARAM_INVALID && param_get(_param_handles[i].center, &val) == 0) {
+		ຖ້າ (_param_handles[i].center != PARAM_INVALID && param_get(_param_handles[i].center, &val) == 0) {
 			_center_value[i] = val;
 		}
 
-		if (_param_handles[i].max != PARAM_INVALID && param_get(_param_handles[i].max, &val) == 0) {
+		ຖ້າ (_param_handles[i].max != PARAM_INVALID && param_get(_param_handles[i].max, &val) == 0) {
 			_max_value[i] = val;
 		}
 
-		if (_min_value[i] > _max_value[i]) {
+		ຖ້າ (_min_value[i] > _max_value[i]) {
 			uint16_t tmp = _min_value[i];
 			_min_value[i] = _max_value[i];
 			_max_value[i] = tmp;
 		}
 
 
-		if (_param_handles[i].failsafe != PARAM_INVALID && param_get(_param_handles[i].failsafe, &val) == 0) {
+		ຖ້າ (_param_handles[i].failsafe != PARAM_INVALID && param_get(_param_handles[i].failsafe, &val) == 0) {
 			_failsafe_value[i] = val;
 		}
 	}
@@ -198,23 +198,23 @@ void MixingOutput::updateParams()
 	_reverse_output_mask = 0;
 	int32_t rev_range_param;
 
-	if (_param_handle_rev_range != PARAM_INVALID && param_get(_param_handle_rev_range, &rev_range_param) == 0) {
+	ຖ້າ (_param_handle_rev_range != PARAM_INVALID && param_get(_param_handle_rev_range, &rev_range_param) == 0) {
 		_reverse_output_mask = rev_range_param;
 	}
 
-	if (function_changed) {
+	ຖ້າ (function_changed) {
 		_need_function_update = true;
 	}
 }
 
 void MixingOutput::cleanupFunctions()
 {
-	if (_subscription_callback) {
+	ຖ້າ (_subscription_callback) {
 		_subscription_callback->unregisterCallback();
 		_subscription_callback = nullptr;
 	}
 
-	for (int i = 0; i < MAX_ACTUATORS; ++i) {
+	ສຳລັບ (ຈຳນວນເຕັມ i = 0; i < MAX_ACTUATORS; ++i) {
 		delete _function_allocated[i];
 		_function_allocated[i] = nullptr;
 		_functions[i] = nullptr;
@@ -223,8 +223,8 @@ void MixingOutput::cleanupFunctions()
 
 bool MixingOutput::updateSubscriptions(bool allow_wq_switch)
 {
-	if (!_need_function_update || _armed.armed) {
-		return false;
+	ຖ້າ (!_need_function_update || _armed.armed) {
+		ສົ່ງຄືນ false;
 	}
 
 	// must be locked to potentially change WorkQueue
@@ -232,7 +232,7 @@ bool MixingOutput::updateSubscriptions(bool allow_wq_switch)
 
 	_has_backup_schedule = false;
 
-	if (_scheduling_policy == SchedulingPolicy::Auto) {
+	ຖ້າ (_scheduling_policy == SchedulingPolicy::Auto) {
 		// first clear everything
 		unregister();
 		_interface.ScheduleClear();
@@ -240,24 +240,24 @@ bool MixingOutput::updateSubscriptions(bool allow_wq_switch)
 		bool switch_requested = false;
 
 		// potentially switch work queue if we run motor outputs
-		for (unsigned i = 0; i < _max_num_outputs; i++) {
+		ສຳລັບ (unsigned i = 0; i < _max_num_outputs; i++) {
 			// read function directly from param, as _function_assignment[i] is updated later
 			int32_t function;
 
-			if (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &function) == 0) {
-				if (function >= (int32_t)OutputFunction::Motor1 && function <= (int32_t)OutputFunction::MotorMax) {
+			ຖ້າ (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &function) == 0) {
+				ຖ້າ (function >= (int32_t)OutputFunction::Motor1 && function <= (int32_t)OutputFunction::MotorMax) {
 					switch_requested = true;
 				}
 			}
 		}
 
-		if (allow_wq_switch && !_wq_switched && switch_requested) {
-			if (_interface.ChangeWorkQueue(px4::wq_configurations::rate_ctrl)) {
+		ຖ້າ (allow_wq_switch && !_wq_switched && switch_requested) {
+			ຖ້າ (_interface.ChangeWorkQueue(px4::wq_configurations::rate_ctrl)) {
 				// let the new WQ handle the subscribe update
 				_wq_switched = true;
 				_interface.ScheduleNow();
 				unlock();
-				return false;
+				ສົ່ງຄືນ false;
 			}
 		}
 	}
@@ -268,83 +268,83 @@ bool MixingOutput::updateSubscriptions(bool allow_wq_switch)
 	cleanupFunctions();
 
 	const FunctionProviderBase::Context context{_interface, _param_thr_mdl_fac.reference()};
-	int provider_indexes[MAX_ACTUATORS] {};
-	int next_provider = 0;
-	int subscription_callback_provider_index = INT_MAX;
+	ຈຳນວນເຕັມ provider_indexes[MAX_ACTUATORS] {};
+	ຈຳນວນເຕັມ next_provider = 0;
+	ຈຳນວນເຕັມ subscription_callback_provider_index = INT_MAX;
 	bool all_disabled = true;
 
-	for (int i = 0; i < _max_num_outputs; ++i) {
+	ສຳລັບ (ຈຳນວນເຕັມ i = 0; i < _max_num_outputs; ++i) {
 		int32_t val;
 
-		if (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &val) == 0) {
+		ຖ້າ (_param_handles[i].function != PARAM_INVALID && param_get(_param_handles[i].function, &val) == 0) {
 			_function_assignment[i] = (OutputFunction)val;
 
-		} else {
+		} ບໍ່ດັ່ງນັ້ນ {
 			_function_assignment[i] = OutputFunction::Disabled;
 		}
 
-		for (int p = 0; p < (int)(sizeof(all_function_providers) / sizeof(all_function_providers[0])); ++p) {
-			if (_function_assignment[i] >= all_function_providers[p].min_func &&
+		ສຳລັບ (ຈຳນວນເຕັມ p = 0; p < (ຈຳນວນເຕັມ)(parimaa_na(all_function_providers) / parimaa_na(all_function_providers[0])); ++p) {
+			ຖ້າ (_function_assignment[i] >= all_function_providers[p].min_func &&
 			    _function_assignment[i] <= all_function_providers[p].max_func) {
 				all_disabled = false;
-				int found_index = -1;
+				ຈຳນວນເຕັມ found_index = -1;
 
-				for (int existing = 0; existing < next_provider; ++existing) {
-					if (provider_indexes[existing] == p) {
+				ສຳລັບ (ຈຳນວນເຕັມ existing = 0; existing < next_provider; ++existing) {
+					ຖ້າ (provider_indexes[existing] == p) {
 						found_index = existing;
-						break;
+						bha_nga;
 					}
 				}
 
-				if (found_index >= 0) {
+				ຖ້າ (found_index >= 0) {
 					_functions[i] = _function_allocated[found_index];
 
-				} else {
+				} ບໍ່ດັ່ງນັ້ນ {
 					_function_allocated[next_provider] = all_function_providers[p].constructor(context);
 
-					if (_function_allocated[next_provider]) {
+					ຖ້າ (_function_allocated[next_provider]) {
 						_functions[i] = _function_allocated[next_provider];
 						provider_indexes[next_provider++] = p;
 
 						// lowest provider takes precedence for scheduling
-						if (p < subscription_callback_provider_index && _functions[i]->subscriptionCallback()) {
+						ຖ້າ (p < subscription_callback_provider_index && _functions[i]->subscriptionCallback()) {
 							subscription_callback_provider_index = p;
 							_subscription_callback = _functions[i]->subscriptionCallback();
 						}
 
-					} else {
+					} ບໍ່ດັ່ງນັ້ນ {
 						PX4_ERR("function alloc failed");
 					}
 				}
 
-				break;
+				bha_nga;
 			}
 		}
 	}
 
 	hrt_abstime fixed_rate_scheduling_interval = 4_ms; // schedule at 250Hz
 
-	if (_max_topic_update_interval_us > fixed_rate_scheduling_interval) {
+	ຖ້າ (_max_topic_update_interval_us > fixed_rate_scheduling_interval) {
 		fixed_rate_scheduling_interval = _max_topic_update_interval_us;
 	}
 
-	if (_scheduling_policy == SchedulingPolicy::Auto) {
-		if (_subscription_callback) {
-			if (_subscription_callback->registerCallback()) {
+	ຖ້າ (_scheduling_policy == SchedulingPolicy::Auto) {
+		ຖ້າ (_subscription_callback) {
+			ຖ້າ (_subscription_callback->registerCallback()) {
 				PX4_DEBUG("Scheduling via callback");
 				_has_backup_schedule = true;
 				_interface.ScheduleDelayed(50_ms);
 
-			} else {
+			} ບໍ່ດັ່ງນັ້ນ {
 				PX4_ERR("registerCallback failed, scheduling at fixed rate");
 				_interface.ScheduleOnInterval(fixed_rate_scheduling_interval);
 			}
 
-		} else if (all_disabled) {
+		} ບໍ່ດັ່ງນັ້ນ ຖ້າ (all_disabled) {
 			_interface.ScheduleOnInterval(_lowrate_schedule_interval);
 			PX4_DEBUG("Scheduling at low rate");
 
-		} else {
+		} ບໍ່ດັ່ງນັ້ນ {
 			_interface.ScheduleOnInterval(fixed_rate_scheduling_interval);
 			PX4_DEBUG("Scheduling at fixed rate");
 		}
@@ -359,21 +359,21 @@ bool MixingOutput::updateSubscriptions(bool allow_wq_switch)
 
 	_interface.mixerChanged();
 
-	return true;
+	ສົ່ງຄືນ true;
 }
 
 void MixingOutput::setMaxTopicUpdateRate(unsigned max_topic_update_interval_us)
 {
 	_max_topic_update_interval_us = max_topic_update_interval_us;
 
-	if (_subscription_callback) {
+	ຖ້າ (_subscription_callback) {
 		_subscription_callback->set_interval_us(_max_topic_update_interval_us);
 	}
 }
 
 void MixingOutput::setAllMinValues(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	ສຳລັບ (unsigned i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].min = PARAM_INVALID;
 		_min_value[i] = value;
 	}
@@ -381,7 +381,7 @@ void MixingOutput::setAllMinValues(uint16_t value)
 
 void MixingOutput::setAllCenterValues(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	ສຳລັບ (unsigned i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].center = PARAM_INVALID;
 		_center_value[i] = value;
 	}
@@ -389,7 +389,7 @@ void MixingOutput::setAllCenterValues(uint16_t value)
 
 void MixingOutput::setAllMaxValues(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	ສຳລັບ (unsigned i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].max = PARAM_INVALID;
 		_max_value[i] = value;
 	}
@@ -397,7 +397,7 @@ void MixingOutput::setAllMaxValues(uint16_t value)
 
 void MixingOutput::setAllFailsafeValues(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	ສຳລັບ (unsigned i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].failsafe = PARAM_INVALID;
 		_failsafe_value[i] = value;
 	}
@@ -405,7 +405,7 @@ void MixingOutput::setAllFailsafeValues(uint16_t value)
 
 void MixingOutput::setAllDisarmedValues(uint16_t value)
 {
-	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
+	ສຳລັບ (unsigned i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].disarmed = PARAM_INVALID;
 		_disarmed_value[i] = value;
 	}
@@ -413,7 +413,7 @@ void MixingOutput::setAllDisarmedValues(uint16_t value)
 
 void MixingOutput::unregister()
 {
-	if (_subscription_callback) {
+	ຖ້າ (_subscription_callback) {
 		_subscription_callback->unregisterCallback();
 	}
 }
@@ -421,10 +421,10 @@ void MixingOutput::unregister()
 bool MixingOutput::update()
 {
 	// check arming state
-	if (_armed_sub.update(&_armed)) {
+	ຖ້າ (_armed_sub.update(&_armed)) {
 		_armed.in_esc_calibration_mode &= _support_esc_calibration;
 
-		if (_ignore_lockdown) {
+		ຖ້າ (_ignore_lockdown) {
 			_armed.lockdown = false;
 		}
 
@@ -437,11 +437,11 @@ bool MixingOutput::update()
 	bool has_updates = _subscription_callback && _subscription_callback->updated();
 
 	// update topics
-	for (int i = 0; i < MAX_ACTUATORS && _function_allocated[i]; ++i) {
+	ສຳລັບ (ຈຳນວນເຕັມ i = 0; i < MAX_ACTUATORS && _function_allocated[i]; ++i) {
 		_function_allocated[i]->update();
 	}
 
-	if (_has_backup_schedule) {
+	ຖ້າ (_has_backup_schedule) {
 		_interface.ScheduleDelayed(50_ms);
 	}
 
@@ -454,31 +454,31 @@ bool MixingOutput::update()
 	const uint32_t reversible_mask_prev = _reversible_mask;
 	_reversible_mask = 0;
 
-	for (int i = 0; i < _max_num_outputs; ++i) {
-		if (_functions[i]) {
+	ສຳລັບ (ຈຳນວນເຕັມ i = 0; i < _max_num_outputs; ++i) {
+		ຖ້າ (_functions[i]) {
 			all_disabled = false;
 
-			if (_armed.armed || (_armed.prearmed && _functions[i]->allowPrearmControl())) {
+			ຖ້າ (_armed.armed || (_armed.prearmed && _functions[i]->allowPrearmControl())) {
 				outputs[i] = _functions[i]->value(_function_assignment[i]);
 
-			} else {
+			} ບໍ່ດັ່ງນັ້ນ {
 				outputs[i] = NAN;
 			}
 
 			_reversible_mask |= (uint32_t)_functions[i]->reversible(_function_assignment[i]) << i;
 
-		} else {
+		} ບໍ່ດັ່ງນັ້ນ {
 			outputs[i] = NAN;
 		}
 	}
 
-	if (_reversible_mask != reversible_mask_prev) {
+	ຖ້າ (_reversible_mask != reversible_mask_prev) {
 		_interface.reversibleMaskChanged(_reversible_mask);
 	}
 
 	// Send output if any function mapped or one last disabling sample
-	if (!all_disabled || !_was_all_disabled) {
-		if (!_armed.armed && !_armed.kill) {
+	ຖ້າ (!all_disabled || !_was_all_disabled) {
+		ຖ້າ (!_armed.armed && !_armed.kill) {
 			_actuator_test.overrideValues(outputs, _max_num_outputs);
 		}
 
@@ -487,25 +487,25 @@ bool MixingOutput::update()
 
 	_was_all_disabled = all_disabled;
 
-	return true;
+	ສົ່ງຄືນ true;
 }
 
 void
 MixingOutput::limitAndUpdateOutputs(float outputs[MAX_ACTUATORS], bool has_updates)
 {
-	if (_armed.lockdown || _armed.kill) {
+	ຖ້າ (_armed.lockdown || _armed.kill) {
 		// overwrite outputs in case of lockdown with disarmed values
-		for (size_t i = 0; i < _max_num_outputs; i++) {
+		ສຳລັບ (size_t i = 0; i < _max_num_outputs; i++) {
 			_current_output_value[i] = _disarmed_value[i];
 		}
 
-	} else if (_armed.termination) {
+	} ບໍ່ດັ່ງນັ້ນ ຖ້າ (_armed.termination) {
 		// Overwrite outputs with _failsafe_value when terminated
-		for (size_t i = 0; i < _max_num_outputs; i++) {
+		ສຳລັບ (size_t i = 0; i < _max_num_outputs; i++) {
 			_current_output_value[i] = actualFailsafeValue(i);
 		}
 
-	} else {
+	} ບໍ່ດັ່ງນັ້ນ {
 		// the output limit call takes care of out of band errors, NaN and constrains
 		output_limit_calc(_throttle_armed || _actuator_test.inTestMode(), _max_num_outputs, outputs);
 	}
@@ -513,23 +513,23 @@ MixingOutput::limitAndUpdateOutputs(float outputs[MAX_ACTUATORS], bool has_updat
 	// We must calibrate the PWM and Oneshot ESCs to a consistent range of 1000-2000us (gets mapped to 125-250us for Oneshot)
 	// Doing so makes calibrations consistent among different configurations and hence PWM minimum and maximum have a consistent effect
 	// hence the defaults for these parameters also make most setups work out of the box
-	if (_armed.in_esc_calibration_mode) {
+	ຖ້າ (_armed.in_esc_calibration_mode) {
 		static constexpr float PWM_CALIBRATION_LOW = 1000.f;
 		static constexpr float PWM_CALIBRATION_HIGH = 2000.f;
 
-		for (int i = 0; i < _max_num_outputs; i++) {
-			if (fabsf(_current_output_value[i] - (float)_min_value[i]) < 0.5f) {
+		ສຳລັບ (ຈຳນວນເຕັມ i = 0; i < _max_num_outputs; i++) {
+			ຖ້າ (fabsf(_current_output_value[i] - (float)_min_value[i]) < 0.5f) {
 				_current_output_value[i] = PWM_CALIBRATION_LOW;
 			}
 
-			if (fabsf(_current_output_value[i] - (float)_max_value[i]) < 0.5f) {
+			ຖ້າ (fabsf(_current_output_value[i] - (float)_max_value[i]) < 0.5f) {
 				_current_output_value[i] = PWM_CALIBRATION_HIGH;
 			}
 		}
 	}
 
 	/* now return the outputs to the driver */
-	if (_interface.updateOutputs(_current_output_value, _max_num_outputs, has_updates)) {
+	ຖ້າ (_interface.updateOutputs(_current_output_value, _max_num_outputs, has_updates)) {
 		actuator_outputs_s actuator_outputs{};
 		setAndPublishActuatorOutputs(_max_num_outputs, actuator_outputs);
 
@@ -537,20 +537,20 @@ MixingOutput::limitAndUpdateOutputs(float outputs[MAX_ACTUATORS], bool has_updat
 	}
 }
 
-float MixingOutput::output_limit_calc_single(int i, float value) const
+float MixingOutput::output_limit_calc_single(ຈຳນວນເຕັມ i, float value) const
 {
 	// check for invalid / disabled channels
-	if (!PX4_ISFINITE(value)) {
-		return _disarmed_value[i];
+	ຖ້າ (!PX4_ISFINITE(value)) {
+		ສົ່ງຄືນ _disarmed_value[i];
 	}
 
-	if (_reverse_output_mask & (1 << i)) {
+	ຖ້າ (_reverse_output_mask & (1 << i)) {
 		value = -1.f * value;
 	}
 
 	float output = _disarmed_value[i];
 
-	if (((_function_assignment[i] >= OutputFunction::Servo1
+	ຖ້າ (((_function_assignment[i] >= OutputFunction::Servo1
 	      && _function_assignment[i] <= OutputFunction::ServoMax) || _function_assignment[i] == OutputFunction::Landing_Gear_Wheel
 	     || (_function_assignment[i] >= OutputFunction::Gimbal_Roll
 		 && _function_assignment[i] <= OutputFunction::Gimbal_Yaw))
@@ -561,27 +561,27 @@ float MixingOutput::output_limit_calc_single(int i, float value) const
 	}
 
 	// Everything except servos, or if center is not set
-	else {
+	ບໍ່ດັ່ງນັ້ນ {
 		output = math::interpolate(value, -1.f, 1.f, static_cast<float>(_min_value[i]), static_cast<float>(_max_value[i]));
 	}
 
-	return output;
+	ສົ່ງຄືນ output;
 }
 
 void
-MixingOutput::output_limit_calc(const bool armed, const int num_channels, const float output[MAX_ACTUATORS])
+MixingOutput::output_limit_calc(const bool armed, const ຈຳນວນເຕັມ num_channels, const float output[MAX_ACTUATORS])
 {
 	// time to slowly ramp up the ESCs
 	static constexpr hrt_abstime RAMP_TIME_US = 500_ms;
 
 	/* first evaluate state changes */
 	switch (_output_state) {
-	case OutputLimitState::OFF:
-		if (armed) {
-			if (_output_ramp_up) {
+	pak_sa OutputLimitState::OFF:
+		ຖ້າ (armed) {
+			ຖ້າ (_output_ramp_up) {
 				_output_state = OutputLimitState::RAMP;
 
-			} else {
+			} ບໍ່ດັ່ງນັ້ນ {
 				_output_state = OutputLimitState::ON;
 			}
 
@@ -589,24 +589,24 @@ MixingOutput::output_limit_calc(const bool armed, const int num_channels, const 
 			_output_time_armed = hrt_absolute_time();
 		}
 
-		break;
+		bha_nga;
 
-	case OutputLimitState::RAMP:
-		if (!armed) {
+	pak_sa OutputLimitState::RAMP:
+		ຖ້າ (!armed) {
 			_output_state = OutputLimitState::OFF;
 
-		} else if (hrt_elapsed_time(&_output_time_armed) >= RAMP_TIME_US) {
+		} ບໍ່ດັ່ງນັ້ນ ຖ້າ (hrt_elapsed_time(&_output_time_armed) >= RAMP_TIME_US) {
 			_output_state = OutputLimitState::ON;
 		}
 
-		break;
+		bha_nga;
 
-	case OutputLimitState::ON:
-		if (!armed) {
+	pak_sa OutputLimitState::ON:
+		ຖ້າ (!armed) {
 			_output_state = OutputLimitState::OFF;
 		}
 
-		break;
+		bha_nga;
 	}
 
 	/* if the system is pre-armed, the limit state is temporarily on,
@@ -617,41 +617,41 @@ MixingOutput::output_limit_calc(const bool armed, const int num_channels, const 
 	 */
 	auto local_limit_state = _output_state;
 
-	if (isPrearmed()) {
+	ຖ້າ (isPrearmed()) {
 		local_limit_state = OutputLimitState::ON;
 	}
 
 	// then set _current_output_value based on state
 	switch (local_limit_state) {
-	case OutputLimitState::OFF:
-		for (int i = 0; i < num_channels; i++) {
+	pak_sa OutputLimitState::OFF:
+		ສຳລັບ (ຈຳນວນເຕັມ i = 0; i < num_channels; i++) {
 			_current_output_value[i] = _disarmed_value[i];
 		}
 
-		break;
+		bha_nga;
 
-	case OutputLimitState::RAMP: {
+	pak_sa OutputLimitState::RAMP: {
 			hrt_abstime diff = hrt_elapsed_time(&_output_time_armed);
 			float progress = static_cast<float>(diff) / RAMP_TIME_US;
 
-			if (progress > 1.f) {
+			ຖ້າ (progress > 1.f) {
 				progress = 1.f;
 			}
 
-			for (int i = 0; i < num_channels; i++) {
+			ສຳລັບ (ຈຳນວນເຕັມ i = 0; i < num_channels; i++) {
 				// Ramp from disarmed value to currently desired output that would apply without ramp
 				float desired_output = output_limit_calc_single(i, output[i]);
 				_current_output_value[i] = _disarmed_value[i] + progress * (desired_output - _disarmed_value[i]);
 			}
 		}
-		break;
+		bha_nga;
 
-	case OutputLimitState::ON:
-		for (int i = 0; i < num_channels; i++) {
+	pak_sa OutputLimitState::ON:
+		ສຳລັບ (ຈຳນວນເຕັມ i = 0; i < num_channels; i++) {
 			_current_output_value[i] = output_limit_calc_single(i, output[i]);
 		}
 
-		break;
+		bha_nga;
 	}
 }
 
@@ -660,7 +660,7 @@ MixingOutput::setAndPublishActuatorOutputs(unsigned num_outputs, actuator_output
 {
 	actuator_outputs.noutputs = num_outputs;
 
-	for (size_t i = 0; i < num_outputs; ++i) {
+	ສຳລັບ (size_t i = 0; i < num_outputs; ++i) {
 		actuator_outputs.output[i] = _current_output_value[i];
 	}
 
@@ -672,31 +672,31 @@ void
 MixingOutput::updateLatencyPerfCounter(const actuator_outputs_s &actuator_outputs)
 {
 	// Just check the first function. It means we only get the latency if motors are assigned first, which is the default
-	if (_function_allocated[0]) {
+	ຖ້າ (_function_allocated[0]) {
 		hrt_abstime timestamp_sample;
 
-		if (_function_allocated[0]->getLatestSampleTimestamp(timestamp_sample)) {
+		ຖ້າ (_function_allocated[0]->getLatestSampleTimestamp(timestamp_sample)) {
 			perf_set_elapsed(_control_latency_perf, actuator_outputs.timestamp - timestamp_sample);
 		}
 	}
 }
 
-float MixingOutput::actualFailsafeValue(int index) const
+float MixingOutput::actualFailsafeValue(ຈຳນວນເຕັມ index) const
 {
 	float value = 0;
 
-	if (_failsafe_value[index] == UINT16_MAX) { // if set to default, use the one provided by the function
+	ຖ້າ (_failsafe_value[index] == UINT16_MAX) { // if set to default, use the one provided by the function
 		float default_failsafe = NAN;
 
-		if (_functions[index]) {
+		ຖ້າ (_functions[index]) {
 			default_failsafe = _functions[index]->defaultFailsafeValue(_function_assignment[index]);
 		}
 
 		value = output_limit_calc_single(index, default_failsafe);
 
-	} else {
+	} ບໍ່ດັ່ງນັ້ນ {
 		value = static_cast<float>(_failsafe_value[index]);
 	}
 
-	return value;
+	ສົ່ງຄືນ value;
 }

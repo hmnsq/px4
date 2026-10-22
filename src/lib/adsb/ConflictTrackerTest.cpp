@@ -55,7 +55,7 @@ conflict_info_s make_conflict(const uint64_t icao_id, const uint8_t conflict_lev
 	conflict.conflict_level = conflict_level;
 	conflict.aircraft_dist = aircraft_dist;
 	conflict.latest_update_timestamp = timestamp;
-	return conflict;
+	ສົ່ງຄືນ conflict;
 }
 
 } // namespace
@@ -230,7 +230,7 @@ TEST(ConflictTrackerTest, EvictsLeastUrgentWhenFull)
 	conflict_tracker_changes_s changes{};
 
 	// fill so that 0x100 is least urgent (lowest level, largest distance)
-	for (uint64_t i = 0; i < kDaaMaxTraffic; ++i) {
+	ສຳລັບ (uint64_t i = 0; i < kDaaMaxTraffic; ++i) {
 		changes = {};
 		ASSERT_TRUE(tracker.apply_conflict(make_conflict(0x100 + i, detect_and_avoid_s::DAA_CONFLICT_LVL_LOW + (i > 0),
 						   2000.f - static_cast<float>(i) * 100.f), changes));
@@ -263,7 +263,7 @@ TEST(ConflictTrackerTest, RejectsLessImportantWhenFull)
 	ConflictTracker tracker;
 	conflict_tracker_changes_s changes{};
 
-	for (uint64_t i = 0; i < kDaaMaxTraffic; ++i) {
+	ສຳລັບ (uint64_t i = 0; i < kDaaMaxTraffic; ++i) {
 		changes = {};
 		ASSERT_TRUE(tracker.apply_conflict(make_conflict(0x200 + i, detect_and_avoid_s::DAA_CONFLICT_LVL_HIGH,
 						   600.f + static_cast<float>(i)), changes));
@@ -334,7 +334,7 @@ TEST(ConflictTrackerTest, RemovesOnlyStaleConflicts)
 	// Timed-out, missing, and future timestamps are invalid; the fresh entry survives.
 	ASSERT_EQ(changes.size(), 3u);
 
-	for (size_t i = 0; i < changes.size(); ++i) {
+	ສຳລັບ (size_t i = 0; i < changes.size(); ++i) {
 		EXPECT_EQ(changes[i].type, ConflictTrackerChangeType::kConflictRemoved);
 		EXPECT_EQ(changes[i].remove_cause, RemoveBufferCause::kStaleConflict);
 	}

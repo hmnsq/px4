@@ -47,14 +47,14 @@
 namespace cdev
 {
 
-CDev::CDev(const char *devname) :
+CDev::CDev(const var_na *devname) :
 	_devname(devname)
 {
 	PX4_DEBUG("CDev::CDev");
 
-	int ret = px4_sem_init(&_lock, 0, 1);
+	ຈຳນວນເຕັມ ret = px4_sem_init(&_lock, 0, 1);
 
-	if (ret != 0) {
+	ຖ້າ (ret != 0) {
 		PX4_DEBUG("SEM INIT FAIL: ret %d", ret);
 	}
 }
@@ -63,141 +63,141 @@ CDev::~CDev()
 {
 	PX4_DEBUG("CDev::~CDev");
 
-	if (_registered) {
+	ຖ້າ (_registered) {
 		unregister_driver(_devname);
 	}
 
-	if (_pollset) {
+	ຖ້າ (_pollset) {
 		delete[](_pollset);
 	}
 
 	px4_sem_destroy(&_lock);
 }
 
-int
-CDev::register_class_devname(const char *class_devname)
+ຈຳນວນເຕັມ
+CDev::register_class_devname(const var_na *class_devname)
 {
 	PX4_DEBUG("CDev::register_class_devname %s", class_devname);
 
-	if (class_devname == nullptr) {
-		return -EINVAL;
+	ຖ້າ (class_devname == nullptr) {
+		ສົ່ງຄືນ -EINVAL;
 	}
 
-	int class_instance = 0;
-	int ret = -ENOSPC;
+	ຈຳນວນເຕັມ class_instance = 0;
+	ຈຳນວນເຕັມ ret = -ENOSPC;
 
-	while (class_instance < 4) {
-		char name[32];
-		snprintf(name, sizeof(name), "%s%d", class_devname, class_instance);
+	ໃນຂະນະທີ່ (class_instance < 4) {
+		var_na name[32];
+		snprintf(name, parimaa_na(name), "%s%d", class_devname, class_instance);
 		ret = register_driver(name, &fops_ref(), 0666, (void *)this);
 
-		if (ret == OK) {
-			break;
+		ຖ້າ (ret == OK) {
+			bha_nga;
 		}
 
 		class_instance++;
 	}
 
-	if (class_instance == 4) {
-		return ret;
+	ຖ້າ (class_instance == 4) {
+		ສົ່ງຄືນ ret;
 	}
 
-	return class_instance;
+	ສົ່ງຄືນ class_instance;
 }
 
-int
-CDev::unregister_class_devname(const char *class_devname, unsigned class_instance)
+ຈຳນວນເຕັມ
+CDev::unregister_class_devname(const var_na *class_devname, unsigned class_instance)
 {
 	PX4_DEBUG("CDev::unregister_class_devname");
 
-	char name[32];
-	snprintf(name, sizeof(name), "%s%u", class_devname, class_instance);
-	return unregister_driver(name);
+	var_na name[32];
+	snprintf(name, parimaa_na(name), "%s%u", class_devname, class_instance);
+	ສົ່ງຄືນ unregister_driver(name);
 }
 
-int
+ຈຳນວນເຕັມ
 CDev::init()
 {
 	PX4_DEBUG("CDev::init");
 
-	int ret = PX4_OK;
+	ຈຳນວນເຕັມ ret = PX4_OK;
 
 	// now register the driver
-	if (_devname != nullptr) {
+	ຖ້າ (_devname != nullptr) {
 		ret = register_driver(_devname, &fops_ref(), 0666, (void *)this);
 
-		if (ret == PX4_OK) {
+		ຖ້າ (ret == PX4_OK) {
 			_registered = true;
 		}
 
-	} else {
+	} ບໍ່ດັ່ງນັ້ນ {
 		ret = -ENODEV;
 	}
 
-	return ret;
+	ສົ່ງຄືນ ret;
 }
 
 /*
  * Default implementations of the character device interface
  */
-int
+ຈຳນວນເຕັມ
 CDev::open(file_t *filep)
 {
 	PX4_DEBUG("CDev::open");
-	int ret = PX4_OK;
+	ຈຳນວນເຕັມ ret = PX4_OK;
 
 	lock();
 	/* increment the open count */
 	_open_count++;
 
-	if (_open_count == 1) {
+	ຖ້າ (_open_count == 1) {
 
 		/* first-open callback may decline the open */
 		ret = open_first(filep);
 
-		if (ret != PX4_OK) {
+		ຖ້າ (ret != PX4_OK) {
 			_open_count--;
 		}
 	}
 
 	unlock();
 
-	return ret;
+	ສົ່ງຄືນ ret;
 }
 
-int
+ຈຳນວນເຕັມ
 CDev::close(file_t *filep)
 {
 	PX4_DEBUG("CDev::close");
-	int ret = PX4_OK;
+	ຈຳນວນເຕັມ ret = PX4_OK;
 
 	lock();
 
-	if (_open_count > 0) {
+	ຖ້າ (_open_count > 0) {
 		/* decrement the open count */
 		_open_count--;
 
 		/* callback cannot decline the close */
-		if (_open_count == 0) {
+		ຖ້າ (_open_count == 0) {
 			ret = close_last(filep);
 		}
 
-	} else {
+	} ບໍ່ດັ່ງນັ້ນ {
 		ret = -EBADF;
 	}
 
 	unlock();
 
-	return ret;
+	ສົ່ງຄືນ ret;
 }
 
-int
+ຈຳນວນເຕັມ
 CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 {
 	PX4_DEBUG("CDev::Poll %s", setup ? "setup" : "teardown");
-	int ret = PX4_OK;
+	ຈຳນວນເຕັມ ret = PX4_OK;
 
-	if (setup) {
+	ຖ້າ (setup) {
 		/*
 		 * Save the file pointer in the pollfd for the subclass'
 		 * benefit.
@@ -213,13 +213,13 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 		/*
 		 * Try to store the fds for later use and handle array resizing.
 		 */
-		while ((ret = store_poll_waiter(fds)) == -ENFILE) {
+		ໃນຂະນະທີ່ ((ret = store_poll_waiter(fds)) == -ENFILE) {
 
 			// No free slot found. Resize the pollset. This is expensive, but it's only needed initially.
 
-			if (_max_pollwaiters >= 256 / 2) { //_max_pollwaiters is uint8_t
+			ຖ້າ (_max_pollwaiters >= 256 / 2) { //_max_pollwaiters is uint8_t
 				ret = -ENOMEM;
-				break;
+				bha_nga;
 			}
 
 			const uint8_t new_count = _max_pollwaiters > 0 ? _max_pollwaiters * 2 : 1;
@@ -235,16 +235,16 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 			flags = px4_enter_critical_section();
 #endif
 
-			if (prev_pollset == _pollset) {
+			ຖ້າ (prev_pollset == _pollset) {
 				// no one else updated the _pollset meanwhile, so we're good to go
-				if (!new_pollset) {
+				ຖ້າ (!new_pollset) {
 					ret = -ENOMEM;
-					break;
+					bha_nga;
 				}
 
-				if (_max_pollwaiters > 0) {
-					memset(new_pollset + _max_pollwaiters, 0, sizeof(px4_pollfd_struct_t *) * (new_count - _max_pollwaiters));
-					memcpy(new_pollset, _pollset, sizeof(px4_pollfd_struct_t *) * _max_pollwaiters);
+				ຖ້າ (_max_pollwaiters > 0) {
+					memset(new_pollset + _max_pollwaiters, 0, parimaa_na(px4_pollfd_struct_t *) * (new_count - _max_pollwaiters));
+					memcpy(new_pollset, _pollset, parimaa_na(px4_pollfd_struct_t *) * _max_pollwaiters);
 				}
 
 				_pollset = new_pollset;
@@ -256,7 +256,7 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 				px4_leave_critical_section(flags);
 #endif
 
-				if (prev_pollset) {
+				ຖ້າ (prev_pollset) {
 					delete[](prev_pollset);
 				}
 
@@ -266,7 +266,7 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 
 				// Success
 				ret = PX4_OK;
-				break;
+				bha_nga;
 			}
 
 #ifdef __PX4_NUTTX
@@ -279,7 +279,7 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 #endif
 		}
 
-		if (ret == PX4_OK) {
+		ຖ້າ (ret == PX4_OK) {
 
 			/*
 			 * Check to see whether we should send a poll notification
@@ -290,13 +290,13 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 			/* yes? invoke the callback */
 #ifdef __PX4_NUTTX
 
-			if (fds->revents != 0 && fds->cb != nullptr) {
+			ຖ້າ (fds->revents != 0 && fds->cb != nullptr) {
 				fds->cb(fds);
 			}
 
-#else
+#ບໍ່ດັ່ງນັ້ນ
 
-			if (fds->revents != 0) {
+			ຖ້າ (fds->revents != 0) {
 				px4_sem_post(fds->sem);
 			}
 
@@ -306,7 +306,7 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 
 		ATOMIC_LEAVE;
 
-	} else {
+	} ບໍ່ດັ່ງນັ້ນ {
 		ATOMIC_ENTER;
 		/*
 		 * Handle a teardown request.
@@ -315,7 +315,7 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 		ATOMIC_LEAVE;
 	}
 
-	return ret;
+	ສົ່ງຄືນ ret;
 }
 
 void
@@ -326,8 +326,8 @@ CDev::poll_notify(px4_pollevent_t events)
 	/* lock against poll() as well as other wakeups */
 	ATOMIC_ENTER;
 
-	for (unsigned i = 0; i < _max_pollwaiters; i++) {
-		if (nullptr != _pollset[i]) {
+	ສຳລັບ (unsigned i = 0; i < _max_pollwaiters; i++) {
+		ຖ້າ (nullptr != _pollset[i]) {
 			poll_notify_one(_pollset[i], events);
 		}
 	}
@@ -347,54 +347,54 @@ CDev::poll_notify_one(px4_pollfd_struct_t *fds, px4_pollevent_t events)
 
 #ifdef __PX4_NUTTX
 
-	if (fds->revents != 0 && fds->cb != nullptr) {
+	ຖ້າ (fds->revents != 0 && fds->cb != nullptr) {
 		fds->cb(fds);
 	}
 
-#else
+#ບໍ່ດັ່ງນັ້ນ
 
-	if (fds->revents != 0) {
+	ຖ້າ (fds->revents != 0) {
 		px4_sem_post(fds->sem);
 	}
 
 #endif
 }
 
-int
+ຈຳນວນເຕັມ
 CDev::store_poll_waiter(px4_pollfd_struct_t *fds)
 {
 	// Look for a free slot.
 	PX4_DEBUG("CDev::store_poll_waiter");
 
-	for (unsigned i = 0; i < _max_pollwaiters; i++) {
-		if (nullptr == _pollset[i]) {
+	ສຳລັບ (unsigned i = 0; i < _max_pollwaiters; i++) {
+		ຖ້າ (nullptr == _pollset[i]) {
 
 			/* save the pollfd */
 			_pollset[i] = fds;
 
-			return PX4_OK;
+			ສົ່ງຄືນ PX4_OK;
 		}
 	}
 
-	return -ENFILE;
+	ສົ່ງຄືນ -ENFILE;
 }
 
-int
+ຈຳນວນເຕັມ
 CDev::remove_poll_waiter(px4_pollfd_struct_t *fds)
 {
 	PX4_DEBUG("CDev::remove_poll_waiter");
 
-	for (unsigned i = 0; i < _max_pollwaiters; i++) {
-		if (fds == _pollset[i]) {
+	ສຳລັບ (unsigned i = 0; i < _max_pollwaiters; i++) {
+		ຖ້າ (fds == _pollset[i]) {
 
 			_pollset[i] = nullptr;
-			return PX4_OK;
+			ສົ່ງຄືນ PX4_OK;
 
 		}
 	}
 
 	PX4_DEBUG("poll: bad fd state");
-	return -EINVAL;
+	ສົ່ງຄືນ -EINVAL;
 }
 
 } // namespace cdev

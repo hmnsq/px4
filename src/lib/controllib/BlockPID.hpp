@@ -63,7 +63,7 @@ class __EXPORT BlockPID: public SuperBlock
 {
 public:
 // methods
-	BlockPID(SuperBlock *parent, const char *name) :
+	BlockPID(SuperBlock *parent, const var_na *name) :
 		SuperBlock(parent, name),
 		_integral(this, "I"),
 		_derivative(this, "D"),
@@ -74,16 +74,16 @@ public:
 	virtual ~BlockPID() = default;
 	float update(float input)
 	{
-		return getKP() * input +
+		ສົ່ງຄືນ getKP() * input +
 		       getKI() * getIntegral().update(input) +
 		       getKD() * getDerivative().update(input);
 	}
 // accessors
-	float getKP() { return _kP.get(); }
-	float getKI() { return _kI.get(); }
-	float getKD() { return _kD.get(); }
-	BlockIntegral &getIntegral() { return _integral; }
-	BlockDerivative &getDerivative() { return _derivative; }
+	float getKP() { ສົ່ງຄືນ _kP.get(); }
+	float getKI() { ສົ່ງຄືນ _kI.get(); }
+	float getKD() { ສົ່ງຄືນ _kD.get(); }
+	BlockIntegral &getIntegral() { ສົ່ງຄືນ _integral; }
+	BlockDerivative &getDerivative() { ສົ່ງຄືນ _derivative; }
 private:
 // attributes
 	BlockIntegral _integral;

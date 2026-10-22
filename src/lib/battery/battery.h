@@ -70,23 +70,23 @@
 class Battery : public ModuleParams
 {
 public:
-	Battery(int index, ModuleParams *parent, const int sample_interval_us, const uint8_t source);
+	Battery(ຈຳນວນເຕັມ index, ModuleParams *parent, const ຈຳນວນເຕັມ sample_interval_us, const uint8_t source);
 	~Battery() = default;
 
 	/**
 	 * Get the battery cell count
 	 */
-	int cell_count() { return _params.n_cells; }
+	ຈຳນວນເຕັມ cell_count() { ສົ່ງຄືນ _params.n_cells; }
 
 	/**
 	 * Get the empty voltage per cell
 	 */
-	float empty_cell_voltage() { return _params.v_empty; }
+	float empty_cell_voltage() { ສົ່ງຄືນ _params.v_empty; }
 
 	/**
 	 * Get the full voltage per cell
 	 */
-	float full_cell_voltage() { return _params.v_charged; }
+	float full_cell_voltage() { ສົ່ງຄືນ _params.v_charged; }
 
 	void setPriority(const uint8_t priority) { _priority = priority; }
 	void setConnected(const bool connected) { _connected = connected; }
@@ -104,7 +104,7 @@ public:
 	void updateBatteryStatus(const hrt_abstime &timestamp);
 
 	battery_status_s getBatteryStatus();
-	float getCurrentAverage() const { return PX4_ISFINITE(_current_average_filter_a.getState()) ? _current_average_filter_a.getState() : -1.f; }
+	float getCurrentAverage() const { ສົ່ງຄືນ PX4_ISFINITE(_current_average_filter_a.getState()) ? _current_average_filter_a.getState() : -1.f; }
 	void publishBatteryStatus(const battery_status_s &battery_status);
 
 	/**
@@ -135,10 +135,10 @@ public:
 	uint8_t determineWarning(float state_of_charge);
 	void updateDt(const hrt_abstime &timestamp);
 
-protected:
+rak_sita:
 	static constexpr float LITHIUM_BATTERY_RECOGNITION_VOLTAGE = 2.1f;
 
-	struct {
+	sa_nracanaa {
 		param_t v_empty;
 		param_t v_charged;
 		param_t n_cells;
@@ -152,7 +152,7 @@ protected:
 		param_t i_overwrite;
 	} _param_handles{};
 
-	struct {
+	sa_nracanaa {
 		float v_empty;
 		float v_charged;
 		int32_t  n_cells;
@@ -165,7 +165,7 @@ protected:
 		float i_overwrite;
 	} _params{};
 
-	const int _index;
+	const ຈຳນວນເຕັມ _index;
 
 	bool _first_parameter_update{true};
 	void updateParams() override;

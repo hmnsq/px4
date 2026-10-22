@@ -60,7 +60,7 @@ PerformanceModel::PerformanceModel(): ModuleParams(nullptr)
 }
 void PerformanceModel::setFuelFractionRemaining(float fuel_fraction_remaining)
 {
-	if (PX4_ISFINITE(fuel_fraction_remaining)) {
+	ຖ້າ (PX4_ISFINITE(fuel_fraction_remaining)) {
 		_fuel_fraction_remaining = math::constrain(fuel_fraction_remaining, 0.f, 1.f);
 	}
 }
@@ -69,27 +69,27 @@ float PerformanceModel::getFuelFractionRemaining(const fuel_tank_status_s &fuel_
 {
 	float fraction = NAN;
 
-	if (fuel_tank_status.percent_remaining <= 100) {
+	ຖ້າ (fuel_tank_status.percent_remaining <= 100) {
 		fraction = fuel_tank_status.percent_remaining * 0.01f;
 
-	} else if (PX4_ISFINITE(fuel_tank_status.remaining_fuel) && fuel_tank_status.maximum_fuel_capacity > FLT_EPSILON) {
+	} ບໍ່ດັ່ງນັ້ນ ຖ້າ (PX4_ISFINITE(fuel_tank_status.remaining_fuel) && fuel_tank_status.maximum_fuel_capacity > FLT_EPSILON) {
 		fraction = fuel_tank_status.remaining_fuel / fuel_tank_status.maximum_fuel_capacity;
 
-	} else if (PX4_ISFINITE(fuel_tank_status.consumed_fuel) && fuel_tank_status.maximum_fuel_capacity > FLT_EPSILON) {
+	} ບໍ່ດັ່ງນັ້ນ ຖ້າ (PX4_ISFINITE(fuel_tank_status.consumed_fuel) && fuel_tank_status.maximum_fuel_capacity > FLT_EPSILON) {
 		fraction = 1.f - fuel_tank_status.consumed_fuel / fuel_tank_status.maximum_fuel_capacity;
 	}
 
-	return PX4_ISFINITE(fraction) ? math::constrain(fraction, 0.f, 1.f) : NAN;
+	ສົ່ງຄືນ PX4_ISFINITE(fraction) ? math::constrain(fraction, 0.f, 1.f) : NAN;
 }
 
 float PerformanceModel::getWeightRatio() const
 {
 	float weight_factor = 1.0f;
 
-	if (_param_weight_base.get() > FLT_EPSILON && _param_weight_gross.get() > FLT_EPSILON) {
+	ຖ້າ (_param_weight_base.get() > FLT_EPSILON && _param_weight_gross.get() > FLT_EPSILON) {
 		float weight = _param_weight_gross.get();
 
-		if (_param_weight_fuel.get() > FLT_EPSILON && PX4_ISFINITE(_fuel_fraction_remaining)) {
+		ຖ້າ (_param_weight_fuel.get() > FLT_EPSILON && PX4_ISFINITE(_fuel_fraction_remaining)) {
 			weight -= (1.f - _fuel_fraction_remaining) * _param_weight_fuel.get();
 		}
 
@@ -97,7 +97,7 @@ float PerformanceModel::getWeightRatio() const
 						kMaxWeightRatio);
 	}
 
-	return weight_factor;
+	ສົ່ງຄືນ weight_factor;
 }
 float PerformanceModel::getMaximumClimbRate(float air_density) const
 {
@@ -106,7 +106,7 @@ float PerformanceModel::getMaximumClimbRate(float air_density) const
 
 	const float service_ceiling = _param_service_ceiling.get();
 
-	if (service_ceiling > FLT_EPSILON) {
+	ຖ້າ (service_ceiling > FLT_EPSILON) {
 		const float ceiling_pressure = getPressureFromAltitude(service_ceiling);
 		const float ceiling_density = getDensityFromPressureAndTemp(ceiling_pressure,
 					      getStandardTemperatureAtAltitude(service_ceiling));
@@ -118,14 +118,14 @@ float PerformanceModel::getMaximumClimbRate(float air_density) const
 						_param_fw_t_clmb_max.get());
 	}
 
-	return climbrate_max / getWeightRatio();
+	ສົ່ງຄືນ climbrate_max / getWeightRatio();
 }
 float PerformanceModel::getTrimThrottle(float throttle_min, float throttle_max, float airspeed_sp,
 					float air_density) const
 {
 	const float throttle_trim = getTrimThrottleForCalibratedAirspeed(airspeed_sp) * getAirDensityThrottleScale(
 					    air_density);
-	return math::constrain(throttle_trim, throttle_min, throttle_max);
+	ສົ່ງຄືນ math::constrain(throttle_trim, throttle_min, throttle_max);
 }
 
 float PerformanceModel::getAirDensityThrottleScale(float air_density) const
@@ -138,7 +138,7 @@ float PerformanceModel::getAirDensityThrottleScale(float air_density) const
 	const float eas2tas_at_11km_amsl = sqrtf(kAirDensitySeaLevelStandardAtmos / kAirDensityStandardAtmos11000Amsl);
 	air_density_throttle_scale = math::constrain(eas2tas, 1.f, eas2tas_at_11km_amsl);
 
-	return air_density_throttle_scale;
+	ສົ່ງຄືນ air_density_throttle_scale;
 }
 float PerformanceModel::getTrimThrottleForCalibratedAirspeed(float calibrated_airspeed_sp) const
 {
@@ -152,52 +152,52 @@ float PerformanceModel::getTrimThrottleForCalibratedAirspeed(float calibrated_ai
 	const float slope_above_trim = (_param_fw_thr_aspd_max.get() - _param_fw_thr_trim.get()) /
 				       (_param_fw_airspd_max.get() - _param_fw_airspd_trim.get());
 
-	if (PX4_ISFINITE(calibrated_airspeed_sp) && PX4_ISFINITE(slope_below_trim) && _param_fw_thr_aspd_min.get() > FLT_EPSILON
+	ຖ້າ (PX4_ISFINITE(calibrated_airspeed_sp) && PX4_ISFINITE(slope_below_trim) && _param_fw_thr_aspd_min.get() > FLT_EPSILON
 	    && calibrated_airspeed_sp < _param_fw_airspd_trim.get()) {
 		throttle_trim = _param_fw_thr_trim.get() - slope_below_trim * (_param_fw_airspd_trim.get() - calibrated_airspeed_sp);
 
-	} else if (PX4_ISFINITE(calibrated_airspeed_sp) && PX4_ISFINITE(slope_above_trim)
+	} ບໍ່ດັ່ງນັ້ນ ຖ້າ (PX4_ISFINITE(calibrated_airspeed_sp) && PX4_ISFINITE(slope_above_trim)
 		   && _param_fw_thr_aspd_max.get() > FLT_EPSILON
 		   && calibrated_airspeed_sp > _param_fw_airspd_trim.get()) {
 		throttle_trim = _param_fw_thr_trim.get() + slope_above_trim * (calibrated_airspeed_sp - _param_fw_airspd_trim.get());
 	}
 
-	return throttle_trim;
+	ສົ່ງຄືນ throttle_trim;
 }
 float PerformanceModel::getMinimumSinkRate(float air_density) const
 {
 	air_density = sanitiseAirDensity(air_density);
-	return _param_fw_t_sink_min.get() * sqrtf(getWeightRatio() * kAirDensitySeaLevelStandardAtmos / air_density);
+	ສົ່ງຄືນ _param_fw_t_sink_min.get() * sqrtf(getWeightRatio() * kAirDensitySeaLevelStandardAtmos / air_density);
 }
 float PerformanceModel::getCalibratedTrimAirspeed() const
 {
-	return math::constrain(_param_fw_airspd_trim.get() * sqrtf(getWeightRatio()), _param_fw_airspd_min.get(),
+	ສົ່ງຄືນ math::constrain(_param_fw_airspd_trim.get() * sqrtf(getWeightRatio()), _param_fw_airspd_min.get(),
 			       _param_fw_airspd_max.get());
 }
 float PerformanceModel::getMinimumCalibratedAirspeed(float load_factor, float flaps_setpoint) const
 {
 	load_factor = math::max(load_factor, FLT_EPSILON);
 	const float airspeed_flap_factor = math::lerp(1.f, _param_fw_airspd_flp_sc.get(), flaps_setpoint);
-	return (_param_fw_airspd_min.get() * airspeed_flap_factor) * sqrtf(getWeightRatio() * load_factor);
+	ສົ່ງຄືນ (_param_fw_airspd_min.get() * airspeed_flap_factor) * sqrtf(getWeightRatio() * load_factor);
 }
 
 float PerformanceModel::getCalibratedStallAirspeed(float load_factor, float flaps_setpoint) const
 {
 	load_factor = math::max(load_factor, FLT_EPSILON);
 	const float airspeed_flap_factor = math::lerp(1.f, _param_fw_airspd_flp_sc.get(), flaps_setpoint);
-	return (_param_fw_airspd_stall.get() * airspeed_flap_factor) * sqrtf(getWeightRatio() * load_factor);
+	ສົ່ງຄືນ (_param_fw_airspd_stall.get() * airspeed_flap_factor) * sqrtf(getWeightRatio() * load_factor);
 }
 
 float PerformanceModel::getMaximumCalibratedAirspeed() const
 {
-	return _param_fw_airspd_max.get();
+	ສົ່ງຄືນ _param_fw_airspd_max.get();
 }
 bool PerformanceModel::runSanityChecks() const
 {
 	bool ret = true;
 
 	// sanity check parameters
-	if (_param_fw_airspd_max.get() < _param_fw_airspd_min.get()) {
+	ຖ້າ (_param_fw_airspd_max.get() < _param_fw_airspd_min.get()) {
 		/* EVENT
 		 * @description
 		 * - <param>FW_AIRSPD_MAX</param>: {1:.1}
@@ -209,7 +209,7 @@ bool PerformanceModel::runSanityChecks() const
 		ret = false;
 	}
 
-	if (_param_fw_airspd_max.get() < 5.0f || _param_fw_airspd_min.get() > 100.0f) {
+	ຖ້າ (_param_fw_airspd_max.get() < 5.0f || _param_fw_airspd_min.get() > 100.0f) {
 		/* EVENT
 		 * @description
 		 * - <param>FW_AIRSPD_MAX</param>: {1:.1}
@@ -221,7 +221,7 @@ bool PerformanceModel::runSanityChecks() const
 		ret = false;
 	}
 
-	if (_param_fw_airspd_trim.get() < _param_fw_airspd_min.get() ||
+	ຖ້າ (_param_fw_airspd_trim.get() < _param_fw_airspd_min.get() ||
 	    _param_fw_airspd_trim.get() > _param_fw_airspd_max.get()) {
 		/* EVENT
 		 * @description
@@ -236,7 +236,7 @@ bool PerformanceModel::runSanityChecks() const
 		ret = false;
 	}
 
-	if (_param_fw_airspd_stall.get() > _param_fw_airspd_min.get()) {
+	ຖ້າ (_param_fw_airspd_stall.get() > _param_fw_airspd_min.get()) {
 		/* EVENT
 		 * @description
 		 * - <param>FW_AIRSPD_MIN</param>: {1:.1}
@@ -251,7 +251,7 @@ bool PerformanceModel::runSanityChecks() const
 	const float max_bank_loadfactor = 1 / cosf(math::radians(_param_fw_r_lim.get()));
 	const float min_airspd_at_max_bank = getMinimumCalibratedAirspeed(max_bank_loadfactor, /*flaps_setpoint = */0.0f);
 
-	if (min_airspd_at_max_bank > _param_fw_airspd_max.get()) {
+	ຖ້າ (min_airspd_at_max_bank > _param_fw_airspd_max.get()) {
 
 		// Flying the maximum bank angle requires an airspeed above FW_AIRSPD_MAX.
 		// To mitigate, choose between these (or a combination):
@@ -273,7 +273,7 @@ bool PerformanceModel::runSanityChecks() const
 		ret = false;
 	}
 
-	return ret;
+	ສົ່ງຄືນ ret;
 
 }
 void PerformanceModel::	updateParameters()
@@ -283,9 +283,9 @@ void PerformanceModel::	updateParameters()
 
 float PerformanceModel::sanitiseAirDensity(float air_density)
 {
-	if (!PX4_ISFINITE(air_density)) {
+	ຖ້າ (!PX4_ISFINITE(air_density)) {
 		air_density = kAirDensitySeaLevelStandardAtmos;
 	}
 
-	return math::max(air_density, kAirDensityStandardAtmos11000Amsl);
+	ສົ່ງຄືນ math::max(air_density, kAirDensityStandardAtmos11000Amsl);
 }

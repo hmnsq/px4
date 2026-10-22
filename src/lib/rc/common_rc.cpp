@@ -7,25 +7,25 @@ uint8_t crc8_dvb_s2(uint8_t crc, uint8_t a)
 {
 	crc ^= a;
 
-	for (int i = 0; i < 8; ++i) {
-		if (crc & 0x80) {
+	ສຳລັບ (ຈຳນວນເຕັມ i = 0; i < 8; ++i) {
+		ຖ້າ (crc & 0x80) {
 			crc = (crc << 1) ^ 0xD5;
 
-		} else {
+		} ບໍ່ດັ່ງນັ້ນ {
 			crc = crc << 1;
 		}
 	}
 
-	return crc;
+	ສົ່ງຄືນ crc;
 }
 
-uint8_t crc8_dvb_s2_buf(uint8_t *buf, int len)
+uint8_t crc8_dvb_s2_buf(uint8_t *buf, ຈຳນວນເຕັມ len)
 {
 	uint8_t crc = 0;
 
-	for (int i = 0; i < len; ++i) {
+	ສຳລັບ (ຈຳນວນເຕັມ i = 0; i < len; ++i) {
 		crc = crc8_dvb_s2(crc, buf[i]);
 	}
 
-	return crc;
+	ສົ່ງຄືນ crc;
 }

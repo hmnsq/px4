@@ -57,10 +57,10 @@ void send(event_s &event)
 	pthread_mutex_lock(&publish_event_mutex);
 	event.event_sequence = ++event_sequence; // Set the sequence here so we're able to detect uORB queue overflows
 
-	if (orb_event_pub != nullptr) {
+	ຖ້າ (orb_event_pub != nullptr) {
 		orb_publish(ORB_ID(event), orb_event_pub, &event);
 
-	} else {
+	} ບໍ່ດັ່ງນັ້ນ {
 		orb_event_pub = orb_advertise(ORB_ID(event), &event);
 	}
 

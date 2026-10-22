@@ -114,7 +114,7 @@ public:
 
 void VelocitySmoothingTest::setConstraints(float j_max, float a_max, float v_max)
 {
-	for (int i = 0; i < 3; i++) {
+	ສຳລັບ (ຈຳນວນເຕັມ i = 0; i < 3; i++) {
 		_trajectories[i].setMaxJerk(j_max);
 		_trajectories[i].setMaxAccel(a_max);
 		_trajectories[i].setMaxVel(v_max);
@@ -123,7 +123,7 @@ void VelocitySmoothingTest::setConstraints(float j_max, float a_max, float v_max
 
 void VelocitySmoothingTest::setInitialConditions(Vector3f a0, Vector3f v0, Vector3f x0)
 {
-	for (int i = 0; i < 3; i++) {
+	ສຳລັບ (ຈຳນວນເຕັມ i = 0; i < 3; i++) {
 		_trajectories[i].setCurrentAcceleration(a0(i));
 		_trajectories[i].setCurrentVelocity(v0(i));
 		_trajectories[i].setCurrentPosition(x0(i));
@@ -132,14 +132,14 @@ void VelocitySmoothingTest::setInitialConditions(Vector3f a0, Vector3f v0, Vecto
 
 void VelocitySmoothingTest::updateTrajectories(float dt, Vector3f velocity_setpoints)
 {
-	for (int i = 0; i < 3; i++) {
+	ສຳລັບ (ຈຳນວນເຕັມ i = 0; i < 3; i++) {
 		_trajectories[i].updateTraj(dt);
 		EXPECT_LE(fabsf(_trajectories[i].getCurrentJerk()), _trajectories[i].getMaxJerk());
 		EXPECT_LE(fabsf(_trajectories[i].getCurrentAcceleration()), _trajectories[i].getMaxAccel());
 		EXPECT_LE(fabsf(_trajectories[i].getCurrentVelocity()), _trajectories[i].getMaxVel());
 	}
 
-	for (int i = 0; i < 3; i++) {
+	ສຳລັບ (ຈຳນວນເຕັມ i = 0; i < 3; i++) {
 		_trajectories[i].updateDurations(velocity_setpoints(i));
 	}
 
@@ -184,7 +184,7 @@ TEST_F(VelocitySmoothingTest, testTimeSynchronizationSameDelta)
 	const float delta_v = 0.3f;
 	Vector3f velocity_setpoints{v0(0) + delta_v, v0(1) + delta_v, 0.f};
 
-	for (int i = 0; i < 3; i++) {
+	ສຳລັບ (ຈຳນວນເຕັມ i = 0; i < 3; i++) {
 		_trajectories[i].updateDurations(velocity_setpoints(i));
 	}
 
@@ -227,15 +227,15 @@ TEST_F(VelocitySmoothingTest, testConstantSetpoint)
 	const float dt = 0.01;
 	updateTrajectories(0.f, velocity_setpoints);
 	float t123 = _trajectories[0].getTotalTime();
-	int nb_steps = ceilf(t123 / dt);
+	ຈຳນວນເຕັມ nb_steps = ceilf(t123 / dt);
 
-	for (int i = 0; i < nb_steps; i++) {
+	ສຳລັບ (ຈຳນວນເຕັມ i = 0; i < nb_steps; i++) {
 		updateTrajectories(dt, velocity_setpoints);
 	}
 
 	// THEN: All the trajectories should have reached their
 	// final state: desired velocity target and zero acceleration
-	for (int i = 0; i < 3; i++) {
+	ສຳລັບ (ຈຳນວນເຕັມ i = 0; i < 3; i++) {
 		EXPECT_LE(fabsf(_trajectories[i].getCurrentVelocity() - velocity_setpoints(i)), 0.01f);
 		EXPECT_LE(fabsf(_trajectories[i].getCurrentAcceleration()), 0.0001f);
 	}
@@ -255,12 +255,12 @@ TEST_F(VelocitySmoothingTest, testZeroSetpoint)
 	const float dt = 0.01f;
 
 	// WHEN: We run a few times the algorithm
-	for (int i = 0; i < 60; i++) {
+	ສຳລັບ (ຈຳນວນເຕັມ i = 0; i < 60; i++) {
 		updateTrajectories(dt, velocity_setpoints);
 	}
 
 	// THEN: All the trajectories should still be zero
-	for (int i = 0; i < 3; i++) {
+	ສຳລັບ (ຈຳນວນເຕັມ i = 0; i < 3; i++) {
 		EXPECT_FLOAT_EQ(_trajectories[i].getCurrentJerk(), 0.f);
 		EXPECT_FLOAT_EQ(_trajectories[i].getCurrentAcceleration(), 0.f);
 		EXPECT_FLOAT_EQ(_trajectories[i].getCurrentVelocity(), 0.f);

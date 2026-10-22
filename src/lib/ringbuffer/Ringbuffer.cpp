@@ -52,7 +52,7 @@ bool Ringbuffer::allocate(size_t buffer_size)
 
 	_size = buffer_size;
 	_ringbuffer = new uint8_t[_size];
-	return _ringbuffer != nullptr;
+	ສົ່ງຄືນ _ringbuffer != nullptr;
 }
 
 void Ringbuffer::deallocate()
@@ -66,86 +66,86 @@ void Ringbuffer::deallocate()
 
 size_t Ringbuffer::space_available() const
 {
-	if (_start > _end) {
-		return _start - _end - 1;
+	ຖ້າ (_start > _end) {
+		ສົ່ງຄືນ _start - _end - 1;
 
-	} else {
-		return _start - _end - 1 + _size;
+	} ບໍ່ດັ່ງນັ້ນ {
+		ສົ່ງຄືນ _start - _end - 1 + _size;
 	}
 }
 
 size_t Ringbuffer::space_used() const
 {
-	if (_start <= _end) {
-		return _end - _start;
+	ຖ້າ (_start <= _end) {
+		ສົ່ງຄືນ _end - _start;
 
-	} else {
+	} ບໍ່ດັ່ງນັ້ນ {
 		// Potential wrap around.
-		return _end - _start + _size;
+		ສົ່ງຄືນ _end - _start + _size;
 	}
 }
 
 
 bool Ringbuffer::push_back(const uint8_t *buf, size_t buf_len)
 {
-	if (buf_len == 0 || buf == nullptr) {
+	ຖ້າ (buf_len == 0 || buf == nullptr) {
 		// Nothing to add, we better don't try.
-		return false;
+		ສົ່ງຄືນ false;
 	}
 
-	if (_start > _end) {
+	ຖ້າ (_start > _end) {
 		// Add after end up to start, no wrap around.
 
 		// Leave one byte free so that start don't end up the same
 		// which signals empty.
 		const size_t available = _start - _end - 1;
 
-		if (available < buf_len) {
-			return false;
+		ຖ້າ (available < buf_len) {
+			ສົ່ງຄືນ false;
 		}
 
 		memcpy(&_ringbuffer[_end], buf, buf_len);
 		_end += buf_len;
 
-	} else {
+	} ບໍ່ດັ່ງນັ້ນ {
 		// Add after end, maybe wrap around.
 		const size_t available = _start - _end - 1 + _size;
 
-		if (available < buf_len) {
-			return false;
+		ຖ້າ (available < buf_len) {
+			ສົ່ງຄືນ false;
 		}
 
 		const size_t remaining_packet_len = _size - _end;
 
-		if (buf_len > remaining_packet_len) {
+		ຖ້າ (buf_len > remaining_packet_len) {
 			memcpy(&_ringbuffer[_end], buf, remaining_packet_len);
 			_end = 0;
 
 			memcpy(&_ringbuffer[_end], buf + remaining_packet_len, buf_len - remaining_packet_len);
 			_end += buf_len - remaining_packet_len;
 
-		} else {
+		} ບໍ່ດັ່ງນັ້ນ {
 			memcpy(&_ringbuffer[_end], buf, buf_len);
 			_end += buf_len;
 		}
 	}
 
-	return true;
+	ສົ່ງຄືນ true;
 }
 
 size_t Ringbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
 {
-	if (buf == nullptr) {
+	ຖ້າ (buf == nullptr) {
 		// User needs to supply a valid pointer.
-		return 0;
+		ສົ່ງຄືນ 0;
 	}
 
-	if (_start == _end) {
+	ຖ້າ (_start == _end) {
 		// Empty
-		return 0;
+		ສົ່ງຄືນ 0;
 	}
 
-	if (_start < _end) {
+	ຖ້າ (_start < _end) {
 
 		// No wrap around.
 		size_t to_copy_len = math::min(_end - _start, buf_max_len);
@@ -153,30 +153,30 @@ size_t Ringbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
 		memcpy(buf, &_ringbuffer[_start], to_copy_len);
 		_start += to_copy_len;
 
-		return to_copy_len;
+		ສົ່ງຄືນ to_copy_len;
 
-	} else {
+	} ບໍ່ດັ່ງນັ້ນ {
 		// Potential wrap around.
 		size_t to_copy_len = _end - _start + _size;
 
-		if (to_copy_len > buf_max_len) {
+		ຖ້າ (to_copy_len > buf_max_len) {
 			to_copy_len = buf_max_len;
 		}
 
 		const size_t remaining_buf_len = _size - _start;
 
-		if (to_copy_len > remaining_buf_len) {
+		ຖ້າ (to_copy_len > remaining_buf_len) {
 
 			memcpy(buf, &_ringbuffer[_start], remaining_buf_len);
 			_start = 0;
 			memcpy(buf + remaining_buf_len, &_ringbuffer[_start], to_copy_len - remaining_buf_len);
 			_start += to_copy_len - remaining_buf_len;
 
-		} else {
+		} ບໍ່ດັ່ງນັ້ນ {
 			memcpy(buf, &_ringbuffer[_start], to_copy_len);
 			_start += to_copy_len;
 		}
 
-		return to_copy_len;
+		ສົ່ງຄືນ to_copy_len;
 	}
 }

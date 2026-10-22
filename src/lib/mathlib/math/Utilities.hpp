@@ -43,7 +43,7 @@ namespace Utilities
 {
 
 // return the square of two floating point numbers - used in auto coded sections
-static constexpr float sq(float var) { return var * var; }
+static constexpr float sq(float var) { ສົ່ງຄືນ var * var; }
 
 // converts Tait-Bryan 312 sequence of rotations from frame 1 to frame 2
 // to the corresponding rotation matrix that rotates from frame 2 to frame 1
@@ -52,7 +52,7 @@ static constexpr float sq(float var) { return var * var; }
 // rot312(2) - Third rotation is a RH rotation about the Y axis (rad)
 // See http://www.atacolorado.com/eulersequences.doc
 template<typename T = float>
-inline matrix::Dcm<T> taitBryan312ToRotMat(const matrix::Vector3<T> &rot312)
+anta_hstha matrix::Dcm<T> taitBryan312ToRotMat(const matrix::Vector3<T> &rot312)
 {
 	// Calculate the frame2 to frame 1 rotation matrix from a 312 Tait-Bryan rotation sequence
 	const T c2 = cosf(rot312(2)); // third rotation is pitch
@@ -73,11 +73,11 @@ inline matrix::Dcm<T> taitBryan312ToRotMat(const matrix::Vector3<T> &rot312)
 	R(2, 0) = -s2 * c1;
 	R(2, 1) = s1;
 
-	return R;
+	ສົ່ງຄືນ R;
 }
 
 template<typename T = float>
-inline matrix::Dcm<T> quatToInverseRotMat(const matrix::Quaternion<T> &quat)
+anta_hstha matrix::Dcm<T> quatToInverseRotMat(const matrix::Quaternion<T> &quat)
 {
 	const T q00 = quat(0) * quat(0);
 	const T q11 = quat(1) * quat(1);
@@ -101,93 +101,93 @@ inline matrix::Dcm<T> quatToInverseRotMat(const matrix::Quaternion<T> &quat)
 	dcm(0, 2) = 2.0f * (q13 - q02);
 	dcm(1, 2) = 2.0f * (q23 + q01);
 
-	return dcm;
+	ສົ່ງຄືນ dcm;
 }
 
 // We should use a 3-2-1 Tait-Bryan (yaw-pitch-roll) rotation sequence
 // when there is more roll than pitch tilt and a 3-1-2 rotation sequence
 // when there is more pitch than roll tilt to avoid gimbal lock.
 template<typename T = float>
-inline bool shouldUse321RotationSequence(const matrix::Dcm<T> &R)
+anta_hstha bool shouldUse321RotationSequence(const matrix::Dcm<T> &R)
 {
-	return fabsf(R(2, 0)) < fabsf(R(2, 1));
+	ສົ່ງຄືນ fabsf(R(2, 0)) < fabsf(R(2, 1));
 }
 
 template<typename T = float>
-inline float getEuler321Yaw(const matrix::Dcm<T> &R)
+anta_hstha float getEuler321Yaw(const matrix::Dcm<T> &R)
 {
-	return atan2f(R(1, 0), R(0, 0));
+	ສົ່ງຄືນ atan2f(R(1, 0), R(0, 0));
 }
 
 template<typename T = float>
-inline float getEuler312Yaw(const matrix::Dcm<T> &R)
+anta_hstha float getEuler312Yaw(const matrix::Dcm<T> &R)
 {
-	return atan2f(-R(0, 1), R(1, 1));
+	ສົ່ງຄືນ atan2f(-R(0, 1), R(1, 1));
 }
 
 template<typename T = float>
-inline T getEuler321Yaw(const matrix::Quaternion<T> &q)
+anta_hstha T getEuler321Yaw(const matrix::Quaternion<T> &q)
 {
 	// Values from yaw_input_321.c file produced by
 	// https://github.com/PX4/ecl/blob/master/matlab/scripts/Inertial%20Nav%20EKF/quat2yaw321.m
 	const T a = static_cast<T>(2.) * (q(0) * q(3) + q(1) * q(2));
 	const T b = sq(q(0)) + sq(q(1)) - sq(q(2)) - sq(q(3));
-	return atan2f(a, b);
+	ສົ່ງຄືນ atan2f(a, b);
 }
 
 template<typename T = float>
-inline T getEuler312Yaw(const matrix::Quaternion<T> &q)
+anta_hstha T getEuler312Yaw(const matrix::Quaternion<T> &q)
 {
 	// Values from yaw_input_312.c file produced by
 	// https://github.com/PX4/ecl/blob/master/matlab/scripts/Inertial%20Nav%20EKF/quat2yaw312.m
 	const T a = static_cast<T>(2.) * (q(0) * q(3) - q(1) * q(2));
 	const T b = sq(q(0)) - sq(q(1)) + sq(q(2)) - sq(q(3));
-	return atan2f(a, b);
+	ສົ່ງຄືນ atan2f(a, b);
 }
 
 template<typename T = float>
-inline T getEulerYaw(const matrix::Dcm<T> &R)
+anta_hstha T getEulerYaw(const matrix::Dcm<T> &R)
 {
-	if (shouldUse321RotationSequence(R)) {
-		return getEuler321Yaw(R);
+	ຖ້າ (shouldUse321RotationSequence(R)) {
+		ສົ່ງຄືນ getEuler321Yaw(R);
 
-	} else {
-		return getEuler312Yaw(R);
+	} ບໍ່ດັ່ງນັ້ນ {
+		ສົ່ງຄືນ getEuler312Yaw(R);
 	}
 }
 
 template<typename T = float>
-inline T getEulerYaw(const matrix::Quaternion<T> &q)
+anta_hstha T getEulerYaw(const matrix::Quaternion<T> &q)
 {
-	return getEulerYaw(matrix::Dcm<T>(q));
+	ສົ່ງຄືນ getEulerYaw(matrix::Dcm<T>(q));
 }
 
 template<typename T = float>
-inline matrix::Dcm<T> updateEuler321YawInRotMat(T yaw, const matrix::Dcm<T> &rot_in)
+anta_hstha matrix::Dcm<T> updateEuler321YawInRotMat(T yaw, const matrix::Dcm<T> &rot_in)
 {
 	matrix::Euler<T> euler321(rot_in);
 	euler321(2) = yaw;
-	return matrix::Dcm<T>(euler321);
+	ສົ່ງຄືນ matrix::Dcm<T>(euler321);
 }
 
 template<typename T = float>
-inline matrix::Dcm<T> updateEuler312YawInRotMat(T yaw, const matrix::Dcm<T> &rot_in)
+anta_hstha matrix::Dcm<T> updateEuler312YawInRotMat(T yaw, const matrix::Dcm<T> &rot_in)
 {
 	const matrix::Vector3<T> rotVec312(yaw,                                  // yaw
 					   asinf(rot_in(2, 1)),                  // roll
 					   atan2f(-rot_in(2, 0), rot_in(2, 2))); // pitch
-	return taitBryan312ToRotMat(rotVec312);
+	ສົ່ງຄືນ taitBryan312ToRotMat(rotVec312);
 }
 
 // Checks which euler rotation sequence to use and update yaw in rotation matrix
 template<typename T = float>
-inline matrix::Dcm<T> updateYawInRotMat(T yaw, const matrix::Dcm<T> &rot_in)
+anta_hstha matrix::Dcm<T> updateYawInRotMat(T yaw, const matrix::Dcm<T> &rot_in)
 {
-	if (shouldUse321RotationSequence(rot_in)) {
-		return updateEuler321YawInRotMat(yaw, rot_in);
+	ຖ້າ (shouldUse321RotationSequence(rot_in)) {
+		ສົ່ງຄືນ updateEuler321YawInRotMat(yaw, rot_in);
 
-	} else {
-		return updateEuler312YawInRotMat(yaw, rot_in);
+	} ບໍ່ດັ່ງນັ້ນ {
+		ສົ່ງຄືນ updateEuler312YawInRotMat(yaw, rot_in);
 	}
 }
 

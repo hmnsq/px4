@@ -51,15 +51,15 @@ namespace
 daa_action_params_s params_for_all_levels(const int32_t action_param)
 {
 	daa_action_params_s params{};
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+#ຖ້າ defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
 	params.lvl_low_act = action_param;
 	params.lvl_med_act = action_param;
 	params.lvl_high_act = action_param;
 	params.lvl_crit_act = action_param;
-#else
+#ບໍ່ດັ່ງນັ້ນ
 	params.traff_avoid = action_param;
 #endif // CONFIG_NAVIGATOR_ADSB_F3442
-	return params;
+	ສົ່ງຄືນ params;
 }
 
 // Navigation state groups by the weakest DAA action allowed to escalate above them.
@@ -107,7 +107,7 @@ const uint8_t kStatesNeverEnable[] {
 	vehicle_status_s::NAVIGATION_STATE_EXTERNAL8,
 };
 
-struct escalation_case_s {
+sa_nracanaa escalation_case_s {
 	DaaAction action{DaaAction::kDisabled};
 	bool hold_allowed{false};
 	bool rtl_allowed{false};
@@ -117,29 +117,29 @@ struct escalation_case_s {
 
 void check_escalation_matrix(const escalation_case_s &test_case)
 {
-	for (const uint8_t nav_state : kStatesEnableHold) {
+	ສຳລັບ (const uint8_t nav_state : kStatesEnableHold) {
 		EXPECT_EQ(DaaActionPolicy::action_escalates_above_nav_state(test_case.action, nav_state),
-			  test_case.hold_allowed) << "action " << (int)test_case.action << " nav_state " << (int)nav_state;
+			  test_case.hold_allowed) << "action " << (ຈຳນວນເຕັມ)test_case.action << " nav_state " << (ຈຳນວນເຕັມ)nav_state;
 	}
 
-	for (const uint8_t nav_state : kStatesEnableRtl) {
+	ສຳລັບ (const uint8_t nav_state : kStatesEnableRtl) {
 		EXPECT_EQ(DaaActionPolicy::action_escalates_above_nav_state(test_case.action, nav_state),
-			  test_case.rtl_allowed) << "action " << (int)test_case.action << " nav_state " << (int)nav_state;
+			  test_case.rtl_allowed) << "action " << (ຈຳນວນເຕັມ)test_case.action << " nav_state " << (ຈຳນວນເຕັມ)nav_state;
 	}
 
-	for (const uint8_t nav_state : kStatesEnableLand) {
+	ສຳລັບ (const uint8_t nav_state : kStatesEnableLand) {
 		EXPECT_EQ(DaaActionPolicy::action_escalates_above_nav_state(test_case.action, nav_state),
-			  test_case.land_allowed) << "action " << (int)test_case.action << " nav_state " << (int)nav_state;
+			  test_case.land_allowed) << "action " << (ຈຳນວນເຕັມ)test_case.action << " nav_state " << (ຈຳນວນເຕັມ)nav_state;
 	}
 
-	for (const uint8_t nav_state : kStatesEnableTermination) {
+	ສຳລັບ (const uint8_t nav_state : kStatesEnableTermination) {
 		EXPECT_EQ(DaaActionPolicy::action_escalates_above_nav_state(test_case.action, nav_state),
-			  test_case.terminate_allowed) << "action " << (int)test_case.action << " nav_state " << (int)nav_state;
+			  test_case.terminate_allowed) << "action " << (ຈຳນວນເຕັມ)test_case.action << " nav_state " << (ຈຳນວນເຕັມ)nav_state;
 	}
 
-	for (const uint8_t nav_state : kStatesNeverEnable) {
+	ສຳລັບ (const uint8_t nav_state : kStatesNeverEnable) {
 		EXPECT_FALSE(DaaActionPolicy::action_escalates_above_nav_state(test_case.action, nav_state))
-				<< "action " << (int)test_case.action << " nav_state " << (int)nav_state;
+				<< "action " << (ຈຳນວນເຕັມ)test_case.action << " nav_state " << (ຈຳນວນເຕັມ)nav_state;
 	}
 }
 
@@ -171,7 +171,7 @@ void expect_command(const daa_action_decision_s &decision, const DaaAction expec
 // Param numbering and the internal action ladder map both ways; out-of-range maps to Disabled.
 TEST(DaaActionPolicyTest, ActionParamMappingUsesParameterNumbering)
 {
-	struct action_param_case_s {
+	sa_nracanaa action_param_case_s {
 		int32_t param;
 		DaaAction action;
 	};
@@ -185,11 +185,11 @@ TEST(DaaActionPolicyTest, ActionParamMappingUsesParameterNumbering)
 		{5, DaaAction::kTerminate},
 	};
 
-	for (const action_param_case_s &test_case : cases) {
+	ສຳລັບ (const action_param_case_s &test_case : cases) {
 		EXPECT_EQ(DaaActionPolicy::action_param_to_daa_action(test_case.param), test_case.action)
 				<< "param " << test_case.param;
 		EXPECT_EQ(DaaActionPolicy::daa_action_to_action_param(test_case.action), test_case.param)
-				<< "action " << static_cast<int>(test_case.action);
+				<< "action " << static_cast<ຈຳນວນເຕັມ>(test_case.action);
 	}
 
 	// out-of-range -> Disabled
@@ -220,7 +220,7 @@ TEST(DaaActionPolicyTest, NoActionForInvalidLevels)
 		  DaaAction::kDisabled);
 }
 
-#if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
+#ຖ້າ defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
 TEST(DaaActionPolicyTest, F3442FallbackUsesGuaranteedBreachedZones)
 {
 	daa_action_params_s params{};
@@ -247,13 +247,13 @@ TEST(DaaActionPolicyTest, F3442FallbackUsesGuaranteedBreachedZones)
 	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL,
 			params_for_all_levels(0)), DaaAction::kDisabled);
 }
-#else
+#ບໍ່ດັ່ງນັ້ນ
 // Crosstrack maps every level through the single NAV_TRAFF_AVOID action.
 TEST(DaaActionPolicyTest, CrosstrackSingleActionMapping)
 {
 	const daa_action_params_s params = params_for_all_levels(3); // Land
 
-	for (uint8_t level = detect_and_avoid_s::DAA_CONFLICT_LVL_LOW;
+	ສຳລັບ (uint8_t level = detect_and_avoid_s::DAA_CONFLICT_LVL_LOW;
 	     level <= detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL; ++level) {
 		EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(level, params), DaaAction::kLandMode);
 	}

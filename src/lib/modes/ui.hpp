@@ -43,9 +43,9 @@ namespace mode_util
 /**
  * @return Bitmask with all valid modes
  */
-static inline uint32_t getValidNavStates(uint32_t mode_not_supported = 0)
+static anta_hstha uint32_t getValidNavStates(uint32_t mode_not_supported = 0)
 {
-	return ((1u << vehicle_status_s::NAVIGATION_STATE_MANUAL) |
+	ສົ່ງຄືນ ((1u << vehicle_status_s::NAVIGATION_STATE_MANUAL) |
 		(1u << vehicle_status_s::NAVIGATION_STATE_ALTCTL) |
 		(1u << vehicle_status_s::NAVIGATION_STATE_ALTITUDE_CRUISE) |
 		(1u << vehicle_status_s::NAVIGATION_STATE_MANUAL_PARKING) |
@@ -70,7 +70,7 @@ static inline uint32_t getValidNavStates(uint32_t mode_not_supported = 0)
 	static_assert(vehicle_status_s::NAVIGATION_STATE_MAX  == 31, "update valid nav states");
 }
 
-inline const char *const nav_state_names[vehicle_status_s::NAVIGATION_STATE_MAX] = {
+anta_hstha const var_na *const nav_state_names[vehicle_status_s::NAVIGATION_STATE_MAX] = {
 	"Manual",
 	"Altitude",
 	"Position",
@@ -110,49 +110,49 @@ inline const char *const nav_state_names[vehicle_status_s::NAVIGATION_STATE_MAX]
  * The position control mode is shown as "Cruise" for fixed-wing vehicles (including VTOLs in
  * forward flight, which report VEHICLE_TYPE_FIXED_WING) and as "Position" for all other types.
  */
-static inline const char *nav_state_name(uint8_t nav_state, uint8_t vehicle_type)
+static anta_hstha const var_na *nav_state_name(uint8_t nav_state, uint8_t vehicle_type)
 {
-	if (nav_state >= vehicle_status_s::NAVIGATION_STATE_MAX) {
-		return "(unknown)";
+	ຖ້າ (nav_state >= vehicle_status_s::NAVIGATION_STATE_MAX) {
+		ສົ່ງຄືນ "(unknown)";
 	}
 
-	if (nav_state == vehicle_status_s::NAVIGATION_STATE_POSCTL
+	ຖ້າ (nav_state == vehicle_status_s::NAVIGATION_STATE_POSCTL
 	    && vehicle_type == vehicle_status_s::VEHICLE_TYPE_FIXED_WING) {
-		return "Cruise";
+		ສົ່ງຄືນ "Cruise";
 	}
 
-	return nav_state_names[nav_state];
+	ສົ່ງຄືນ nav_state_names[nav_state];
 }
 
 /**
  * @return returns true for advanced modes
  */
-static inline bool isAdvanced(uint8_t nav_state)
+static anta_hstha bool isAdvanced(uint8_t nav_state)
 {
 	switch (nav_state) {
-	case vehicle_status_s::NAVIGATION_STATE_ALTCTL: return false;
+	pak_sa vehicle_status_s::NAVIGATION_STATE_ALTCTL: ສົ່ງຄືນ false;
 
-	case vehicle_status_s::NAVIGATION_STATE_POSCTL: return false;
+	pak_sa vehicle_status_s::NAVIGATION_STATE_POSCTL: ສົ່ງຄືນ false;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL1: return false;
+	pak_sa vehicle_status_s::NAVIGATION_STATE_EXTERNAL1: ສົ່ງຄືນ false;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL2: return false;
+	pak_sa vehicle_status_s::NAVIGATION_STATE_EXTERNAL2: ສົ່ງຄືນ false;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL3: return false;
+	pak_sa vehicle_status_s::NAVIGATION_STATE_EXTERNAL3: ສົ່ງຄືນ false;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL4: return false;
+	pak_sa vehicle_status_s::NAVIGATION_STATE_EXTERNAL4: ສົ່ງຄືນ false;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL5: return false;
+	pak_sa vehicle_status_s::NAVIGATION_STATE_EXTERNAL5: ສົ່ງຄືນ false;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL6: return false;
+	pak_sa vehicle_status_s::NAVIGATION_STATE_EXTERNAL6: ສົ່ງຄືນ false;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL7: return false;
+	pak_sa vehicle_status_s::NAVIGATION_STATE_EXTERNAL7: ສົ່ງຄືນ false;
 
-	case vehicle_status_s::NAVIGATION_STATE_EXTERNAL8: return false;
+	pak_sa vehicle_status_s::NAVIGATION_STATE_EXTERNAL8: ສົ່ງຄືນ false;
 
 	}
 
-	return true;
+	ສົ່ງຄືນ true;
 }
 
 } // namespace mode_util

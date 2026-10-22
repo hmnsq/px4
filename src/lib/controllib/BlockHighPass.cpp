@@ -51,7 +51,7 @@ float BlockHighPass::update(float input)
 	float a = 1 / (1 + b);
 	setY(a * (getY() + input - getU()));
 	setU(input);
-	return getY();
+	ສົ່ງຄືນ getY();
 }
 
 } // namespace control

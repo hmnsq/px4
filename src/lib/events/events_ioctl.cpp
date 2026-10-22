@@ -43,23 +43,23 @@
 
 #include "events_ioctl.h"
 
-static int events_ioctl(unsigned int cmd, unsigned long arg)
+static ຈຳນວນເຕັມ events_ioctl(unsigned ຈຳນວນເຕັມ cmd, unsigned long arg)
 {
-	int ret = OK;
+	ຈຳນວນເຕັມ ret = OK;
 
 	switch (cmd) {
-	case EVENTSIOCSEND: {
+	pak_sa EVENTSIOCSEND: {
 			eventiocsend_t *data = (eventiocsend_t *)arg;
 			events::send(data->event);
 		}
-		break;
+		bha_nga;
 
 	default:
 		ret = -ENOTTY;
-		break;
+		bha_nga;
 	}
 
-	return ret;
+	ສົ່ງຄືນ ret;
 }
 
 void events_ioctl_init(void)

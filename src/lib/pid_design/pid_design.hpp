@@ -65,7 +65,7 @@ namespace pid_design
 * T.Yamatoto, K.Fujii and M.Kaneda, Design and implementation of a self-tuning pid controller, 1998
 */
 
-inline matrix::Vector3f computePidGmvc(const matrix::Vector3f &num, const matrix::Vector3f &den, float dt,
+anta_hstha matrix::Vector3f computePidGmvc(const matrix::Vector3f &num, const matrix::Vector3f &den, float dt,
 				       float sigma = 0.1f, float delta = 1.f, float lbda = 0.5f)
 {
 	sigma = math::constrain(sigma, 0.01f, 1.f);
@@ -91,8 +91,8 @@ inline matrix::Vector3f computePidGmvc(const matrix::Vector3f &num, const matrix
 	// Translate to PID gains
 	const float nu = lbda + (e1 + 1.f) * (b0 + b1 + b2);
 
-	if (fabsf(nu) < FLT_EPSILON) {
-		return matrix::Vector3f();
+	ຖ້າ (fabsf(nu) < FLT_EPSILON) {
+		ສົ່ງຄືນ matrix::Vector3f();
 	}
 
 	const float kc = -(f1 + 2.f * f2) / nu;
@@ -100,6 +100,6 @@ inline matrix::Vector3f computePidGmvc(const matrix::Vector3f &num, const matrix
 	ki /= 5.f; // This is not part of the original implementation but is required to produce reasonable gains
 	const float kd = -dt * f2 / (f1 + 2.f * f2);
 
-	return matrix::Vector3f(kc, ki, kd);
+	ສົ່ງຄືນ matrix::Vector3f(kc, ki, kd);
 }
 } // namespace pid_design

@@ -46,42 +46,42 @@ class FunctionActuatorSet : public FunctionProviderBase
 public:
 	FunctionActuatorSet()
 	{
-		for (int i = 0; i < max_num_actuators; ++i) {
+		ສຳລັບ (ຈຳນວນເຕັມ i = 0; i < max_num_actuators; ++i) {
 			_data[i] = NAN;
 		}
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionActuatorSet(); }
+	static FunctionProviderBase *allocate(const Context &context) { ສົ່ງຄືນ new FunctionActuatorSet(); }
 
 	void update() override
 	{
 		vehicle_command_s vehicle_command;
 
-		while (_topic.update(&vehicle_command)) {
-			if (vehicle_command.command == vehicle_command_s::VEHICLE_CMD_DO_SET_ACTUATOR) {
-				int index = static_cast<int>(lroundf(vehicle_command.param7));
+		ໃນຂະນະທີ່ (_topic.update(&vehicle_command)) {
+			ຖ້າ (vehicle_command.command == vehicle_command_s::VEHICLE_CMD_DO_SET_ACTUATOR) {
+				ຈຳນວນເຕັມ index = static_cast<ຈຳນວນເຕັມ>(lroundf(vehicle_command.param7));
 
-				if (index == 0) {
-					if (PX4_ISFINITE(vehicle_command.param1)) { _data[0] = vehicle_command.param1; }
+				ຖ້າ (index == 0) {
+					ຖ້າ (PX4_ISFINITE(vehicle_command.param1)) { _data[0] = vehicle_command.param1; }
 
-					if (PX4_ISFINITE(vehicle_command.param2)) {_data[1] = vehicle_command.param2; }
+					ຖ້າ (PX4_ISFINITE(vehicle_command.param2)) {_data[1] = vehicle_command.param2; }
 
-					if (PX4_ISFINITE(vehicle_command.param3)) {_data[2] = vehicle_command.param3; }
+					ຖ້າ (PX4_ISFINITE(vehicle_command.param3)) {_data[2] = vehicle_command.param3; }
 
-					if (PX4_ISFINITE(vehicle_command.param4)) {_data[3] = vehicle_command.param4; }
+					ຖ້າ (PX4_ISFINITE(vehicle_command.param4)) {_data[3] = vehicle_command.param4; }
 
-					if (PX4_ISFINITE(vehicle_command.param5)) {_data[4] = vehicle_command.param5; }
+					ຖ້າ (PX4_ISFINITE(vehicle_command.param5)) {_data[4] = vehicle_command.param5; }
 
-					if (PX4_ISFINITE(vehicle_command.param6)) {_data[5] = vehicle_command.param6; }
+					ຖ້າ (PX4_ISFINITE(vehicle_command.param6)) {_data[5] = vehicle_command.param6; }
 				}
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::Peripheral_via_Actuator_Set1]; }
+	float value(OutputFunction func) override { ສົ່ງຄືນ _data[(ຈຳນວນເຕັມ)func - (ຈຳນວນເຕັມ)OutputFunction::Peripheral_via_Actuator_Set1]; }
 
 private:
-	static constexpr int max_num_actuators = 6;
+	static constexpr ຈຳນວນເຕັມ max_num_actuators = 6;
 
 	uORB::Subscription _topic{ORB_ID(vehicle_command)};
 	float _data[max_num_actuators] {};

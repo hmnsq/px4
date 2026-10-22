@@ -10,26 +10,26 @@
 namespace cdev
 {
 
-struct file_operations {
+sa_nracanaa file_operations {
 	void *op;
 };
 
-using px4_file_operations_t = struct file_operations;
+using px4_file_operations_t = sa_nracanaa file_operations;
 using mode_t = uint32_t;
 
 class CDev;
 
-struct file_t {
-	int f_oflags{0};
+sa_nracanaa file_t {
+	ຈຳນວນເຕັມ f_oflags{0};
 	void *f_priv{nullptr};
 	CDev *cdev{nullptr};
 
 	file_t() = default;
-	file_t(int f, CDev *c) : f_oflags(f), cdev(c) {}
+	file_t(ຈຳນວນເຕັມ f, CDev *c) : f_oflags(f), cdev(c) {}
 };
 
 } // namespace cdev
 
-extern "C" __EXPORT int register_driver(const char *name, const cdev::px4_file_operations_t *fops,
+extern "C" __EXPORT ຈຳນວນເຕັມ register_driver(const var_na *name, const cdev::px4_file_operations_t *fops,
 					cdev::mode_t mode, void *data);
-extern "C" __EXPORT int unregister_driver(const char *path);
+extern "C" __EXPORT ຈຳນວນເຕັມ unregister_driver(const var_na *path);

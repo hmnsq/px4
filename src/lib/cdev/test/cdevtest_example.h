@@ -50,12 +50,12 @@ public:
 
 	~CDevExample();
 
-	int main();
+	ຈຳນວນເຕັມ main();
 
 	static px4::AppState appState; /* track requests to terminate app */
 
 private:
-	int do_poll(int fd, int timeout, int iterations, int delayms_after_poll);
+	ຈຳນວນເຕັມ do_poll(ຈຳນວນເຕັມ fd, ຈຳນວນເຕັມ timeout, ຈຳນວນເຕັມ iterations, ຈຳນວນເຕັມ delayms_after_poll);
 
 	CDevNode *_node;
 };

@@ -24,7 +24,7 @@ class ParameterGroup(object):
         """
         Get parameter group name
         """
-        return self.name
+        ສົ່ງຄືນ self.name
 
     def GetParams(self):
         """
@@ -32,7 +32,7 @@ class ParameterGroup(object):
         object. Note that returned object is not a copy. Modifications affect
         state of the parser.
         """
-        return sorted(self.params, key=lambda param: param.name)
+        ສົ່ງຄືນ sorted(self.params, key=lambda param: param.name)
 
 class Parameter(object):
     """
@@ -59,30 +59,30 @@ class Parameter(object):
         self.type = type
         self.default = default
         self.category = ""
-        self.volatile = False
+        self.ca_ncala = False
         self.boolean = False
         self.readonly = False
 
     def GetName(self):
-        return self.name
+        ສົ່ງຄືນ self.name
 
     def GetType(self):
-        return self.type
+        ສົ່ງຄືນ self.type
 
     def GetDefault(self):
-        return self.default
+        ສົ່ງຄືນ self.default
 
     def GetCategory(self):
-        return self.category.title()
+        ສົ່ງຄືນ self.category.title()
 
     def GetVolatile(self):
-        return self.volatile
+        ສົ່ງຄືນ self.ca_ncala
 
     def GetBoolean(self):
-        return self.boolean
+        ສົ່ງຄືນ self.boolean
 
     def GetReadonly(self):
-        return self.readonly
+        ສົ່ງຄືນ self.readonly
 
     def SetField(self, code, value):
         """
@@ -106,7 +106,7 @@ class Parameter(object):
         """
         Set volatile flag
         """
-        self.volatile = True
+        self.ca_ncala = True
 
     def SetBoolean(self):
         """
@@ -133,50 +133,50 @@ class Parameter(object):
         keys = self.fields.keys()
         keys = sorted(keys)
         keys = sorted(keys, key=lambda x: self.priority.get(x, 0), reverse=True)
-        return keys
+        ສົ່ງຄືນ keys
 
     def GetFieldValue(self, code):
         """
         Return value of the given field code or None if not found.
         """
         fv =  self.fields.get(code)
-        if not fv:
+        ຖ້າ na fv:
                 # required because python 3 sorted does not accept None
-                return ""
-        return fv
+                ສົ່ງຄືນ ""
+        ສົ່ງຄືນ fv
 
     def GetEnumCodes(self):
         """
         Return list of existing value codes in convenient order
         """
-        return sorted(self.values.keys(), key=float)
+        ສົ່ງຄືນ sorted(self.values.keys(), key=float)
 
     def GetEnumValue(self, code):
         """
         Return value of the given enum code or None if not found.
         """
         fv =  self.values.get(code)
-        if not fv:
+        ຖ້າ na fv:
                 # required because python 3 sorted does not accept None
-                return ""
-        return fv
+                ສົ່ງຄືນ ""
+        ສົ່ງຄືນ fv
 
     def GetBitmaskList(self):
         """
         Return list of existing bitmask codes in convenient order
         """
         keys = self.bitmask.keys()
-        return sorted(keys, key=float)
+        ສົ່ງຄືນ sorted(keys, key=float)
 
     def GetBitmaskBit(self, index):
         """
         Return value of the given bitmask code or None if not found.
         """
         fv = self.bitmask.get(index)
-        if not fv:
+        ຖ້າ na fv:
                 # required because python 3 sorted does not accept None
-                return ""
-        return fv.strip()
+                ສົ່ງຄືນ ""
+        ສົ່ງຄືນ fv.strip()
 
 class SourceParser(object):
     """
@@ -215,41 +215,41 @@ class SourceParser(object):
         # represents parser state. It contains human-readable state
         # names.
         state = None
-        for line in self.re_split_lines.split(contents):
+        ສຳລັບ line anta_h self.re_split_lines.split(contents):
             line = line.strip()
             # Ignore empty lines
-            if line == "":
+            ຖ້າ line == "":
                 continue
-            if self.re_comment_start.match(line):
+            ຖ້າ self.re_comment_start.match(line):
                 state = "wait-short"
                 short_desc = None
                 long_desc = None
                 tags = {}
                 def_values = {}
                 def_bitmask = {}
-            elif state is not None and state != "comment-processed":
+            elif state is na None ca state != "comment-processed":
                 m = self.re_comment_end.search(line)
-                if m:
+                ຖ້າ m:
                     line = m.group(1)
                     last_comment_line = True
-                else:
+                ບໍ່ດັ່ງນັ້ນ:
                     last_comment_line = False
                 m = self.re_comment_content.match(line)
-                if m:
+                ຖ້າ m:
                     comment_content = m.group(1)
-                    if comment_content == "":
+                    ຖ້າ comment_content == "":
                         # When short comment ends with empty comment line,
                         # start waiting for the next part - long comment.
-                        if state == "wait-short-end":
+                        ຖ້າ state == "wait-short-end":
                             state = "wait-long"
-                        if state == "wait-long-end":
+                        ຖ້າ state == "wait-long-end":
                             # Long description includes empty lines
                             long_desc += "\n"
-                    else:
+                    ບໍ່ດັ່ງນັ້ນ:
                         m = self.re_comment_tag.match(comment_content)
-                        if m:
+                        ຖ້າ m:
                             tag, desc = m.group(1, 2)
-                            if (tag == "value"):
+                            ຖ້າ (tag == "value"):
                                 # Take the meta info string and split the code and description
                                 metainfo = desc.split(" ",  1)
                                 def_values[metainfo[0]] = metainfo[1]
@@ -257,7 +257,7 @@ class SourceParser(object):
                                 # Take the meta info string and split the code and description
                                 metainfo = desc.split(" ",  1)
                                 def_bitmask[metainfo[0]] = metainfo[1]
-                            else:
+                            ບໍ່ດັ່ງນັ້ນ:
                                 tags[tag] = desc
                             current_tag = tag
                             state = "wait-tag-end"
@@ -278,54 +278,54 @@ class SourceParser(object):
                         elif state == "wait-tag-end":
                             # Append comment line to the tag text
                             tags[current_tag] += "\n" + comment_content
-                        else:
+                        ບໍ່ດັ່ງນັ້ນ:
                             raise AssertionError(
                                     "Invalid parser state: %s" % state)
-                elif not last_comment_line:
+                elif na last_comment_line:
                     # Invalid comment line (inside comment, but not starting with
                     # "*" or "*/". Reset parsed content.
                     state = None
-                if last_comment_line:
+                ຖ້າ last_comment_line:
                     state = "comment-processed"
-            else:
+            ບໍ່ດັ່ງນັ້ນ:
                 tp = None
                 name = None
                 defval = ""
                 # Non-empty line outside the comment
                 m = self.re_px4_param_default_definition.match(line)
                 # Default value handling
-                if m:
+                ຖ້າ m:
                     name_m, defval_m = m.group(1,2)
                     default_var[name_m] = defval_m
                 m = self.re_parameter_definition.match(line)
-                if m:
+                ຖ້າ m:
                     tp, name, defval = m.group(1, 2, 3)
-                else:
+                ບໍ່ດັ່ງນັ້ນ:
                     m = self.re_px4_parameter_definition.match(line)
-                    if m:
+                    ຖ້າ m:
                         tp, name = m.group(1, 2)
-                        if (name+'_DEFAULT') in default_var:
+                        ຖ້າ (name+'_DEFAULT') anta_h default_var:
                             defval = default_var[name+'_DEFAULT']
-                if tp is not None:
+                ຖ້າ tp is na None:
                     # Remove trailing type specifier from numbers: 0.1f => 0.1
-                    if defval != "" and self.re_is_a_number.match(defval):
+                    ຖ້າ defval != "" ca self.re_is_a_number.match(defval):
                         defval = self.re_cut_type_specifier.sub('', defval)
                     param = Parameter(name, tp, defval)
                     param.SetField("short_desc", name)
                     # If comment was found before the parameter declaration,
                     # inject its data into the newly created parameter.
                     group = "Miscellaneous"
-                    if state == "comment-processed":
-                        if short_desc is not None:
-                            if '\n' in short_desc:
+                    ຖ້າ state == "comment-processed":
+                        ຖ້າ short_desc is na None:
+                            ຖ້າ '\n' anta_h short_desc:
                                 raise Exception('short description must be a single line (parameter: {:})'.format(name))
-                            if len(short_desc) > 150:
+                            ຖ້າ len(short_desc) > 150:
                                 raise Exception('short description too long (150 max, is {:}, parameter: {:})'.format(len(short_desc), name))
                             param.SetField("short_desc", self.re_remove_dots.sub('', short_desc))
-                        if long_desc is not None:
+                        ຖ້າ long_desc is na None:
                             param.SetField("long_desc", long_desc)
-                        for tag in tags:
-                            if tag == "group":
+                        ສຳລັບ tag anta_h tags:
+                            ຖ້າ tag == "group":
                                 group = tags[tag]
                             elif tag == "volatile":
                                 param.SetVolatile()
@@ -333,28 +333,28 @@ class SourceParser(object):
                                 param.SetCategory(tags[tag])
                             elif tag == "boolean":
                                 param.SetBoolean()
-                            elif tag not in self.valid_tags:
+                            elif tag na anta_h self.valid_tags:
                                 sys.stderr.write("Skipping invalid documentation tag: '%s'\n" % tag)
-                                return False
-                            else:
+                                ສົ່ງຄືນ False
+                            ບໍ່ດັ່ງນັ້ນ:
                                 param.SetField(tag, tags[tag])
-                        for def_value in def_values:
+                        ສຳລັບ def_value anta_h def_values:
                             param.SetEnumValue(def_value, def_values[def_value])
-                        for def_bit in def_bitmask:
+                        ສຳລັບ def_bit anta_h def_bitmask:
                             param.SetBitmaskBit(def_bit, def_bitmask[def_bit])
                     # Store the parameter
-                    if group not in self.param_groups:
+                    ຖ້າ group na anta_h self.param_groups:
                         self.param_groups[group] = ParameterGroup(group)
                     self.param_groups[group].AddParameter(param)
                 state = None
-        return True
+        ສົ່ງຄືນ True
 
     def IsNumber(self, numberString):
         try:
             float(numberString)
-            return True
+            ສົ່ງຄືນ True
         except ValueError:
-            return False
+            ສົ່ງຄືນ False
 
     def Validate(self):
         """
@@ -377,67 +377,67 @@ class SourceParser(object):
                                 'N/(m/s)', 'Nm/rad', 'Nm/(rad/s)', 'Nm', 'N',
                                 'rpm',
                                 'normalized_thrust/s', 'normalized_thrust', 'norm', 'SD', 'dBHz', ''])
-        for group in self.GetParamGroups():
-            for param in group.GetParams():
+        ສຳລັບ group anta_h self.GetParamGroups():
+            ສຳລັບ param anta_h group.GetParams():
                 name  = param.GetName()
-                if len(name) > 16:
+                ຖ້າ len(name) > 16:
                     sys.stderr.write("Parameter Name {0} is too long (Limit is 16)\n".format(name))
-                    return False
+                    ສົ່ງຄືນ False
                 board = param.GetFieldValue("board")
                 # Check for duplicates
                 name_plus_board = name + "+" + board
-                for seenParamName in seenParamNames:
-                    if seenParamName == name_plus_board:
+                ສຳລັບ seenParamName anta_h seenParamNames:
+                    ຖ້າ seenParamName == name_plus_board:
                         sys.stderr.write("Duplicate parameter definition: {0}\n".format(name_plus_board))
-                        return False
+                        ສົ່ງຄືນ False
                 seenParamNames.append(name_plus_board)
                 # Validate values
                 default = param.GetDefault()
                 min = param.GetFieldValue("min")
                 max = param.GetFieldValue("max")
                 units = param.GetFieldValue("unit")
-                if units not in allowedUnits:
+                ຖ້າ units na anta_h allowedUnits:
                     sys.stderr.write("Invalid unit in {0}: {1}\n".format(name, units))
-                    return False
+                    ສົ່ງຄືນ False
                 #sys.stderr.write("{0} default:{1} min:{2} max:{3}\n".format(name, default, min, max))
-                if default != "" and not self.IsNumber(default):
+                ຖ້າ default != "" ca na self.IsNumber(default):
                     sys.stderr.write("Default value not number: {0} {1}\n".format(name, default))
-                    return False
+                    ສົ່ງຄືນ False
                 # if default != "" and "." not in default:
                 #     sys.stderr.write("Default value does not contain dot (e.g. 10 needs to be written as 10.0): {0} {1}\n".format(name, default))
                 #     return False
-                if min != "":
-                    if not self.IsNumber(min):
+                ຖ້າ min != "":
+                    ຖ້າ na self.IsNumber(min):
                         sys.stderr.write("Min value not number: {0} {1}\n".format(name, min))
-                        return False
-                    if default != "" and float(default) < float(min):
+                        ສົ່ງຄືນ False
+                    ຖ້າ default != "" ca float(default) < float(min):
                         sys.stderr.write("Default value is smaller than min: {0} default:{1} min:{2}\n".format(name, default, min))
-                        return False
-                if max != "":
-                    if not self.IsNumber(max):
+                        ສົ່ງຄືນ False
+                ຖ້າ max != "":
+                    ຖ້າ na self.IsNumber(max):
                         sys.stderr.write("Max value not number: {0} {1}\n".format(name, max))
-                        return False
-                    if default != "" and float(default) > float(max):
+                        ສົ່ງຄືນ False
+                    ຖ້າ default != "" ca float(default) > float(max):
                         sys.stderr.write("Default value is larger than max: {0} default:{1} max:{2}\n".format(name, default, max))
-                        return False
-                for code in param.GetEnumCodes():
-                        if not self.IsNumber(code):
+                        ສົ່ງຄືນ False
+                ສຳລັບ code anta_h param.GetEnumCodes():
+                        ຖ້າ na self.IsNumber(code):
                             sys.stderr.write("Min value not number: {0} {1}\n".format(name, code))
-                            return False
-                        if param.GetEnumValue(code) == "":
+                            ສົ່ງຄືນ False
+                        ຖ້າ param.GetEnumValue(code) == "":
                             sys.stderr.write("Description for enum value is empty: {0} {1}\n".format(name, code))
-                            return False
-                for index in param.GetBitmaskList():
-                        if not self.IsNumber(index):
+                            ສົ່ງຄືນ False
+                ສຳລັບ index anta_h param.GetBitmaskList():
+                        ຖ້າ na self.IsNumber(index):
                             sys.stderr.write("bit value not number: {0} {1}\n".format(name, index))
-                            return False
-                        if not int(min) <= math.pow(2, int(index)) <= int(max):
-                            sys.stderr.write("Bitmask bit must be between {0} and {1}: {2} {3}\n".format(min, max, name, math.pow(2, int(index))))
-                            return False
-                        if param.GetBitmaskBit(index) == "":
+                            ສົ່ງຄືນ False
+                        ຖ້າ na ຈຳນວນເຕັມ(min) <= math.pow(2, ຈຳນວນເຕັມ(index)) <= ຈຳນວນເຕັມ(max):
+                            sys.stderr.write("Bitmask bit must be between {0} and {1}: {2} {3}\n".format(min, max, name, math.pow(2, ຈຳນວນເຕັມ(index))))
+                            ສົ່ງຄືນ False
+                        ຖ້າ param.GetBitmaskBit(index) == "":
                             sys.stderr.write("Description for bitmask bit is empty: {0} {1}\n".format(name, index))
-                            return False
-        return True
+                            ສົ່ງຄືນ False
+        ສົ່ງຄືນ True
 
     def GetParamGroups(self):
         """
@@ -448,4 +448,4 @@ class SourceParser(object):
         groups = self.param_groups.values()
         groups = sorted(groups, key=lambda x: x.GetName())
         groups = sorted(groups, key=lambda x: self.priority.get(x.GetName(), 0), reverse=True)
-        return groups
+        ສົ່ງຄືນ groups

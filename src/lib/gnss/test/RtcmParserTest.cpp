@@ -102,9 +102,9 @@ TEST_F(RtcmTest, MultipleFramesInSequence)
 	parser.addData(frame3.data(), frame3.size());
 
 	size_t len;
-	int count = 0;
+	ຈຳນວນເຕັມ count = 0;
 
-	while (parser.getNextMessage(&len) != nullptr) {
+	ໃນຂະນະທີ່ (parser.getNextMessage(&len) != nullptr) {
 		parser.consumeMessage(len);
 		count++;
 	}
@@ -117,7 +117,7 @@ TEST_F(RtcmTest, FrameArrivesInChunks)
 	auto frame = buildValidFrame(1005, {0x01, 0x02, 0x03, 0x04, 0x05});
 
 	// Feed one byte at a time
-	for (size_t i = 0; i < frame.size() - 1; i++) {
+	ສຳລັບ (size_t i = 0; i < frame.size() - 1; i++) {
 		parser.addData(&frame[i], 1);
 		size_t len;
 		EXPECT_EQ(parser.getNextMessage(&len), nullptr);
@@ -139,7 +139,7 @@ TEST_F(RtcmTest, GarbageBeforeValidFrame)
 	std::vector<uint8_t> data;
 
 	// 50 bytes of garbage
-	for (int i = 0; i < 50; i++) {
+	ສຳລັບ (ຈຳນວນເຕັມ i = 0; i < 50; i++) {
 		data.push_back(0x00 + i);
 	}
 
@@ -168,9 +168,9 @@ TEST_F(RtcmTest, ValidFrameBadFrameValid)
 	parser.addData(frame2.data(), frame2.size());
 
 	size_t len;
-	int valid_count = 0;
+	ຈຳນວນເຕັມ valid_count = 0;
 
-	while (parser.getNextMessage(&len) != nullptr) {
+	ໃນຂະນະທີ່ (parser.getNextMessage(&len) != nullptr) {
 		parser.consumeMessage(len);
 		valid_count++;
 	}
@@ -318,8 +318,8 @@ TEST_F(RtcmTest, GpsRtcmAssemblerIgnoresDuplicateMatchingFragment)
 	EXPECT_EQ(memcmp(message, payload.data(), payload.size()), 0);
 }
 
-struct GpsRtcmSequenceChangeCase {
-	const char *name;
+sa_nracanaa GpsRtcmSequenceChangeCase {
+	const var_na *name;
 	std::vector<uint8_t> old_fragment_ids;
 	size_t expected_flushed_fragments;
 };
@@ -343,7 +343,7 @@ TEST_P(GpsRtcmSequenceChangeTest, GpsRtcmAssemblerFlushesOnlyGapFreeFullPrefixOn
 
 	// GIVEN: A buffered old sequence with full-sized fragments as described by
 	// the parameter set, followed by a new sequence that starts with fragment 0.
-	for (const uint8_t fragment_id : param.old_fragment_ids) {
+	ສຳລັບ (const uint8_t fragment_id : param.old_fragment_ids) {
 		old_fragments[fragment_id].resize(GPS_RTCM_MAX_FRAGMENT_LEN);
 		std::iota(old_fragments[fragment_id].begin(), old_fragments[fragment_id].end(),
 			  static_cast<uint8_t>(0x20 + fragment_id * 0x10));
@@ -356,7 +356,7 @@ TEST_P(GpsRtcmSequenceChangeTest, GpsRtcmAssemblerFlushesOnlyGapFreeFullPrefixOn
 
 	std::vector<uint8_t> expected_old_message;
 
-	for (size_t fragment_id = 0; fragment_id < param.expected_flushed_fragments; fragment_id++) {
+	ສຳລັບ (size_t fragment_id = 0; fragment_id < param.expected_flushed_fragments; fragment_id++) {
 		expected_old_message.insert(expected_old_message.end(), old_fragments[fragment_id].begin(), old_fragments[fragment_id].end());
 	}
 
@@ -369,11 +369,11 @@ TEST_P(GpsRtcmSequenceChangeTest, GpsRtcmAssemblerFlushesOnlyGapFreeFullPrefixOn
 
 	// THEN: Only a gap-free run of full 180-byte fragments from fragment 0 is
 	// flushed. Any gap in the buffered old sequence emits nothing.
-	if (expected_old_message.empty()) {
+	ຖ້າ (expected_old_message.empty()) {
 		EXPECT_EQ(message, nullptr);
 		EXPECT_EQ(len, 0u);
 
-	} else {
+	} ບໍ່ດັ່ງນັ້ນ {
 		ASSERT_NE(message, nullptr);
 		EXPECT_EQ(len, expected_old_message.size());
 		EXPECT_EQ(memcmp(message, expected_old_message.data(), expected_old_message.size()), 0);
@@ -403,7 +403,7 @@ INSTANTIATE_TEST_SUITE_P(RolloverFlushCases, GpsRtcmSequenceChangeTest,
 			 ),
 			 [](const ::testing::TestParamInfo<GpsRtcmSequenceChangeCase> &test_param_info)
 {
-	return test_param_info.param.name;
+	ສົ່ງຄືນ test_param_info.param.name;
 });
 
 // WHAT: Verify that the fragmented sequence-change path can emit both the
@@ -520,7 +520,7 @@ TEST_F(RtcmTest, GpsRtcmAssemblerCompletesOnFourthFullFragment)
 	size_t len = 0;
 
 	// WHEN: The first three full fragments arrive.
-	for (uint8_t fragment = 0; fragment < GPS_RTCM_MAX_FRAGMENTS - 1; fragment++) {
+	ສຳລັບ (uint8_t fragment = 0; fragment < GPS_RTCM_MAX_FRAGMENTS - 1; fragment++) {
 		EXPECT_EQ(gps_rtcm_assembler.addPacket(buildGpsRtcmFlags(true, fragment, 3),
 						       &payload[fragment * GPS_RTCM_MAX_FRAGMENT_LEN], GPS_RTCM_MAX_FRAGMENT_LEN, 10 + fragment, len),
 			  nullptr);

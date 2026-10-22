@@ -42,15 +42,15 @@ public:
 	ExhaustiveLayer(ParamLayer *parent) : ParamLayer(parent)
 	{
 		// refresh all values
-		for (param_t i = 0; i < PARAM_COUNT; i++) {
+		ສຳລັບ (param_t i = 0; i < PARAM_COUNT; i++) {
 			_values[i] = parent->get(i);
 		}
 	}
 
 	bool store(param_t param, param_value_u value) override
 	{
-		if (param >= PARAM_COUNT) {
-			return false;
+		ຖ້າ (param >= PARAM_COUNT) {
+			ສົ່ງຄືນ false;
 		}
 
 		{
@@ -59,35 +59,35 @@ public:
 			_ownership_set.set(param);
 		}
 
-		return true;
+		ສົ່ງຄືນ true;
 	}
 
 	bool contains(param_t param) const override
 	{
-		return param < PARAM_COUNT && _ownership_set[param];
+		ສົ່ງຄືນ param < PARAM_COUNT && _ownership_set[param];
 	}
 
 	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
 	{
-		return _ownership_set;
+		ສົ່ງຄືນ _ownership_set;
 	}
 
 	param_value_u get(param_t param) const override
 	{
-		if (param >= PARAM_COUNT) {
-			return {0};
+		ຖ້າ (param >= PARAM_COUNT) {
+			ສົ່ງຄືນ {0};
 		}
 
 		const AtomicTransaction transaction;
 		// We assume to have the correct values for all params, even without ownership.
 		// We expect that refresh was called when underlying defaults changed
-		return _values[param];
+		ສົ່ງຄືນ _values[param];
 	}
 
 	void reset(param_t param) override
 	{
-		if (param >= PARAM_COUNT) {
-			return;
+		ຖ້າ (param >= PARAM_COUNT) {
+			ສົ່ງຄືນ;
 		}
 
 		const AtomicTransaction transaction;
@@ -102,20 +102,20 @@ public:
 		{
 			const AtomicTransaction transaction;
 
-			if (!contains(param)) {
+			ຖ້າ (!contains(param)) {
 				_values[param] = _parent->get(param);
 			}
 		}
 	}
 
-	int size() const override
+	ຈຳນວນເຕັມ size() const override
 	{
-		return _ownership_set.count();
+		ສົ່ງຄືນ _ownership_set.count();
 	}
 
-	int byteSize() const override
+	ຈຳນວນເຕັມ byteSize() const override
 	{
-		return PARAM_COUNT * sizeof(param_value_u);
+		ສົ່ງຄືນ PARAM_COUNT * parimaa_na(param_value_u);
 	}
 
 private:

@@ -26,32 +26,32 @@ bool geninv(const Matrix<Type, M, N> &G, Matrix<Type, N, M> &res)
 {
 	size_t rank;
 
-	if (M <= N) {
+	ຖ້າ (M <= N) {
 		SquareMatrix<Type, M> A = G * G.transpose();
 		SquareMatrix<Type, M> L = fullRankCholesky(A, rank);
 
 		A = L.transpose() * L;
 		SquareMatrix<Type, M> X;
 
-		if (!inv(A, X, rank)) {
+		ຖ້າ (!inv(A, X, rank)) {
 			res = Matrix<Type, N, M>();
-			return false; // LCOV_EXCL_LINE -- this can only be hit from numerical issues
+			ສົ່ງຄືນ false; // LCOV_EXCL_LINE -- this can only be hit from numerical issues
 		}
 
 		// doing an intermediate assignment reduces stack usage
 		A = X * X * L.transpose();
 		res = G.transpose() * (L * A);
 
-	} else {
+	} ບໍ່ດັ່ງນັ້ນ {
 		SquareMatrix<Type, N> A = G.transpose() * G;
 		SquareMatrix<Type, N> L = fullRankCholesky(A, rank);
 
 		A = L.transpose() * L;
 		SquareMatrix<Type, N> X;
 
-		if (!inv(A, X, rank)) {
+		ຖ້າ (!inv(A, X, rank)) {
 			res = Matrix<Type, N, M>();
-			return false; // LCOV_EXCL_LINE -- this can only be hit from numerical issues
+			ສົ່ງຄືນ false; // LCOV_EXCL_LINE -- this can only be hit from numerical issues
 		}
 
 		// doing an intermediate assignment reduces stack usage
@@ -59,17 +59,17 @@ bool geninv(const Matrix<Type, M, N> &G, Matrix<Type, N, M> &res)
 		res = (L * A) * G.transpose();
 	}
 
-	return true;
+	ສົ່ງຄືນ true;
 }
 
 
 template<typename Type>
 Type typeEpsilon();
 
-template<> inline
+template<> anta_hstha
 float typeEpsilon<float>()
 {
-	return FLT_EPSILON;
+	ສົ່ງຄືນ FLT_EPSILON;
 }
 
 /**
@@ -86,19 +86,19 @@ SquareMatrix<Type, N> fullRankCholesky(const SquareMatrix<Type, N> &A,
 
 	size_t r = 0;
 
-	for (size_t k = 0; k < N; k++) {
+	ສຳລັບ (size_t k = 0; k < N; k++) {
 
-		if (r == 0) {
-			for (size_t i = k; i < N; i++) {
+		ຖ້າ (r == 0) {
+			ສຳລັບ (size_t i = k; i < N; i++) {
 				L(i, r) = A(i, k);
 			}
 
-		} else {
-			for (size_t i = k; i < N; i++) {
+		} ບໍ່ດັ່ງນັ້ນ {
+			ສຳລັບ (size_t i = k; i < N; i++) {
 				// Compute LL = L[k:n, :r] * L[k, :r].T
 				Type LL = Type();
 
-				for (size_t j = 0; j < r; j++) {
+				ສຳລັບ (size_t j = 0; j < r; j++) {
 					LL += L(i, j) * L(k, j);
 				}
 
@@ -106,11 +106,11 @@ SquareMatrix<Type, N> fullRankCholesky(const SquareMatrix<Type, N> &A,
 			}
 		}
 
-		if (L(k, r) > tol) {
+		ຖ້າ (L(k, r) > tol) {
 			L(k, r) = std::sqrt(L(k, r));
 
-			if (k < N - 1) {
-				for (size_t i = k + 1; i < N; i++) {
+			ຖ້າ (k < N - 1) {
+				ສຳລັບ (size_t i = k + 1; i < N; i++) {
 					L(i, r) = L(i, r) / L(k, r);
 				}
 			}
@@ -122,7 +122,7 @@ SquareMatrix<Type, N> fullRankCholesky(const SquareMatrix<Type, N> &A,
 	// Return rank
 	rank = r;
 
-	return L;
+	ສົ່ງຄືນ L;
 }
 
 } // namespace matrix

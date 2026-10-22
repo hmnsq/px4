@@ -115,7 +115,7 @@ public:
 	void renormalize()
 	{
 		// renormalize rows
-		for (size_t r = 0; r < 2; r++) {
+		ສຳລັບ (size_t r = 0; r < 2; r++) {
 			Vector2<Type> rvec(Matrix<Type, 1, 2>(this->row(r)).transpose());
 			this->row(r) = rvec.normalized();
 		}
@@ -123,6 +123,6 @@ public:
 };
 
 using Dcm2f = Dcm2<float>;
-using Dcm2d = Dcm2<double>;
+using Dcm2d = Dcm2<dviguu_na>;
 
 } // namespace matrix
