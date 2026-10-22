@@ -42,21 +42,21 @@
  * foot print device.
  */
 
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/posix.h>
-#include <nuttx/crc32.h>
-#include <stddef.h>
-#include <string.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <errno.h>
-#include "flashfs.h"
-#include <nuttx/compiler.h>
-#include <nuttx/progmem.h>
-#include <board_config.h>
+#ضمن <px4_platform_common/defines.h>
+#ضمن <px4_platform_common/posix.h>
+#ضمن <nuttx/crc32.h>
+#ضمن <stddef.h>
+#ضمن <string.h>
+#ضمن <stdbool.h>
+#ضمن <stdint.h>
+#ضمن <stdlib.h>
+#ضمن <errno.h>
+#ضمن "flashfs.h"
+#ضمن <nuttx/compiler.h>
+#ضمن <nuttx/progmem.h>
+#ضمن <board_config.h>
 
-#if defined(CONFIG_ARCH_HAVE_PROGMEM) || defined(BOARD_USE_EXTERNAL_FLASH)
+#إذا defined(CONFIG_ARCH_HAVE_PROGMEM) || defined(BOARD_USE_EXTERNAL_FLASH)
 
 /****************************************************************************
  * Pre-processor Definitions
@@ -66,18 +66,18 @@
  * Private Types
  ****************************************************************************/
 
-typedef uint32_t h_magic_t;
-typedef uint16_t h_size_t;
-typedef uint16_t h_flag_t;
-typedef uint16_t data_size_t;
+تعريفنوع uint32_t h_magic_t;
+تعريفنوع uint16_t h_size_t;
+تعريفنوع uint16_t h_flag_t;
+تعريفنوع uint16_t data_size_t;
 
-typedef enum  flash_config_t {
+تعريفنوع تعداد  flash_config_t {
 	LargestBlock = 2 * 1024, // This represents the size need for backing store
 	MagicSig     = 0xaa553cc3,
 	BlankSig     = 0xffffffff
 } flash_config_t;
 
-typedef enum  flash_flags_t {
+تعريفنوع تعداد  flash_flags_t {
 	SizeMask      = 0x0003,
 	MaskEntry     = ~SizeMask,
 	BlankEntry    = (h_flag_t)BlankSig,
@@ -91,9 +91,9 @@ typedef enum  flash_flags_t {
  * and any padding needed to have the size be an even multiple of
  * sizeof(uint32_t)
  */
-#pragma GCC diagnostic push
+#pragma GCC diagnostic تور
 #pragma GCC diagnostic ignored "-Wattributes"
-typedef begin_packed_struct struct flash_entry_header_t {
+تعريفنوع begin_packed_struct بنية flash_entry_header_t {
 	h_magic_t            magic;           /* Used to ID files*/
 	h_flag_t             flag;            /* Used to erase this entry */
 	uint32_t             crc;             /* Calculated over the size - end of data */
@@ -101,8 +101,8 @@ typedef begin_packed_struct struct flash_entry_header_t {
                                                * Will result the offset of the next active file or
                                                * free space. */
 	flash_file_token_t   file_token;      /* file token type - essentially the name/type */
-} end_packed_struct flash_entry_header_t __attribute__((aligned(sizeof(uint32_t))));
-#pragma GCC diagnostic pop
+} end_packed_struct flash_entry_header_t __attribute__((aligned(حجم(uint32_t))));
+#pragma GCC diagnostic چرو
 
 /****************************************************************************
  * Private Function Prototypes
@@ -111,21 +111,21 @@ typedef begin_packed_struct struct flash_entry_header_t {
 /****************************************************************************
  * Private Data
  ****************************************************************************/
-static uint8_t *working_buffer;
-static size_t working_buffer_size;
-static bool working_buffer_static;
-static sector_descriptor_t *sector_map;
-static int last_erased;
+ساكن uint8_t *working_buffer;
+ساكن size_t working_buffer_size;
+ساكن bool working_buffer_static;
+ساكن sector_descriptor_t *sector_map;
+ساكن صحيح last_erased;
 
 /****************************************************************************
  * Public Data
  ****************************************************************************/
 
-const flash_file_token_t parameters_token = {
+ثابت flash_file_token_t parameters_token = {
 	.n = {'p', 'l', 'o', 'g'},
 };
 
-const flash_file_token_t parameters_legacy_token = {
+ثابت flash_file_token_t parameters_legacy_token = {
 	.n = {'p', 'a', 'r', 'm'},
 };
 
@@ -142,11 +142,11 @@ const flash_file_token_t parameters_legacy_token = {
  *
  ****************************************************************************/
 
-void parameter_flashfs_free(void)
+فراغ parameter_flashfs_free(فراغ)
 {
-	if (!working_buffer_static && working_buffer != NULL) {
-		free(working_buffer);
-		working_buffer = NULL;
+	إذا (!working_buffer_static && working_buffer != عدم) {
+		حرر(working_buffer);
+		working_buffer = عدم;
 		working_buffer_size = 0;
 	}
 }
@@ -167,9 +167,9 @@ void parameter_flashfs_free(void)
  *
  ****************************************************************************/
 
-static inline int blank_flash(uint32_t *pf)
+ساكن مضمن صحيح blank_flash(uint32_t *pf)
 {
-	return *pf == BlankSig;
+	أرجع *pf == BlankSig;
 }
 
 /****************************************************************************
@@ -187,20 +187,20 @@ static inline int blank_flash(uint32_t *pf)
  *
  ****************************************************************************/
 
-static bool blank_check(flash_entry_header_t *pf,
+ساكن bool blank_check(flash_entry_header_t *pf,
 			size_t new_size)
 {
 	bool rv = true;
 	uint32_t *pm = (uint32_t *) pf;
-	new_size /= sizeof(uint32_t);
+	new_size /= حجم(uint32_t);
 
-	while (new_size-- && rv) {
-		if (!blank_flash(pm++)) {
+	طالما (new_size-- && rv) {
+		إذا (!blank_flash(pm++)) {
 			rv = false;
 		}
 	}
 
-	return rv;
+	أرجع rv;
 }
 
 /****************************************************************************
@@ -219,9 +219,9 @@ static bool blank_check(flash_entry_header_t *pf,
  *
  ****************************************************************************/
 
-static inline int valid_magic(h_magic_t *pm)
+ساكن مضمن صحيح valid_magic(h_magic_t *pm)
 {
-	return *pm == MagicSig;
+	أرجع *pm == MagicSig;
 }
 
 /****************************************************************************
@@ -239,9 +239,9 @@ static inline int valid_magic(h_magic_t *pm)
  *
  ****************************************************************************/
 
-static inline int blank_entry(flash_entry_header_t *fi)
+ساكن مضمن صحيح blank_entry(flash_entry_header_t *fi)
 {
-	return fi->magic == BlankSig  &&  fi->flag == BlankEntry;
+	أرجع fi->magic == BlankSig  &&  fi->flag == BlankEntry;
 }
 
 /****************************************************************************
@@ -259,9 +259,9 @@ static inline int blank_entry(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline int valid_entry(flash_entry_header_t *fi)
+ساكن مضمن صحيح valid_entry(flash_entry_header_t *fi)
 {
-	return (fi->flag & MaskEntry) == ValidEntry;
+	أرجع (fi->flag & MaskEntry) == ValidEntry;
 }
 
 /****************************************************************************
@@ -279,9 +279,9 @@ static inline int valid_entry(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline int entry_size_adjust(flash_entry_header_t *fi)
+ساكن مضمن صحيح entry_size_adjust(flash_entry_header_t *fi)
 {
-	return fi->flag & SizeMask;
+	أرجع fi->flag & SizeMask;
 }
 
 /****************************************************************************
@@ -300,10 +300,10 @@ static inline int entry_size_adjust(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline flash_entry_header_t *next_entry(flash_entry_header_t *fi)
+ساكن مضمن flash_entry_header_t *next_entry(flash_entry_header_t *fi)
 {
 	uint8_t *pb = (uint8_t *)fi;
-	return (flash_entry_header_t *)(pb + fi->size);
+	أرجع (flash_entry_header_t *)(pb + fi->size);
 }
 
 /****************************************************************************
@@ -321,9 +321,9 @@ static inline flash_entry_header_t *next_entry(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline uint8_t *entry_data(flash_entry_header_t *fi)
+ساكن مضمن uint8_t *entry_data(flash_entry_header_t *fi)
 {
-	return ((uint8_t *)fi) + sizeof(flash_entry_header_t);
+	أرجع ((uint8_t *)fi) + حجم(flash_entry_header_t);
 }
 
 /****************************************************************************
@@ -341,9 +341,9 @@ static inline uint8_t *entry_data(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline data_size_t entry_data_length(flash_entry_header_t *fi)
+ساكن مضمن data_size_t entry_data_length(flash_entry_header_t *fi)
 {
-	return fi->size - (sizeof(flash_entry_header_t) + entry_size_adjust(fi));
+	أرجع fi->size - (حجم(flash_entry_header_t) + entry_size_adjust(fi));
 }
 
 /****************************************************************************
@@ -362,9 +362,9 @@ static inline data_size_t entry_data_length(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline const uint8_t *entry_crc_start(flash_entry_header_t *fi)
+ساكن مضمن ثابت uint8_t *entry_crc_start(flash_entry_header_t *fi)
 {
-	return (const uint8_t *)&fi->size;
+	أرجع (ثابت uint8_t *)&fi->size;
 }
 
 /****************************************************************************
@@ -383,80 +383,80 @@ static inline const uint8_t *entry_crc_start(flash_entry_header_t *fi)
  *
  ****************************************************************************/
 
-static inline data_size_t entry_crc_length(flash_entry_header_t *fi)
+ساكن مضمن data_size_t entry_crc_length(flash_entry_header_t *fi)
 {
-	return fi->size - offsetof(flash_entry_header_t, size);
+	أرجع fi->size - offsetof(flash_entry_header_t, size);
 }
 
 /* The parameter sector can be the last one on the chip, so no header
  * field may be read until the whole header is known to lie inside it. */
-static inline bool header_fits(flash_entry_header_t *pf, h_magic_t *pe)
+ساكن مضمن bool header_fits(flash_entry_header_t *pf, h_magic_t *pe)
 {
-	return pf + 1 <= (flash_entry_header_t *)pe;
+	أرجع pf + 1 <= (flash_entry_header_t *)pe;
 }
 
-static bool crc_header_ok(flash_entry_header_t *pf, h_magic_t *pe)
+ساكن bool crc_header_ok(flash_entry_header_t *pf, h_magic_t *pe)
 {
-	if (!header_fits(pf, pe)) {
-		return false;
+	إذا (!header_fits(pf, pe)) {
+		أرجع false;
 	}
 
-	if (pf->size < sizeof(flash_entry_header_t)) {
-		return false;
+	إذا (pf->size < حجم(flash_entry_header_t)) {
+		أرجع false;
 	}
 
-	const uint8_t *crc_start = entry_crc_start(pf);
+	ثابت uint8_t *crc_start = entry_crc_start(pf);
 	data_size_t crc_length = entry_crc_length(pf);
 
-	if (crc_start + crc_length > (uint8_t *)pe) {
-		return false;
+	إذا (crc_start + crc_length > (uint8_t *)pe) {
+		أرجع false;
 	}
 
-	return pf->crc == crc32(crc_start, crc_length);
+	أرجع pf->crc == crc32(crc_start, crc_length);
 }
 
 /* The walkers stop at the last word of a sector and reject a record that
  * ends beyond it, so nothing may be written into that word. */
-static inline size_t sector_usable(int s)
+ساكن مضمن size_t sector_usable(صحيح s)
 {
-	return sector_map[s].size - sizeof(h_magic_t);
+	أرجع sector_map[s].size - حجم(h_magic_t);
 }
 
-static bool slot_is_free(flash_entry_header_t *pf, int s, size_t required)
+ساكن bool slot_is_free(flash_entry_header_t *pf, صحيح s, size_t required)
 {
 	uint8_t *begin = (uint8_t *)sector_map[s].address;
 	uint8_t *end = begin + sector_usable(s);
 
-	if ((uint8_t *)pf < begin || required == 0 || (uint8_t *)pf + required > end) {
-		return false;
+	إذا ((uint8_t *)pf < begin || required == 0 || (uint8_t *)pf + required > end) {
+		أرجع false;
 	}
 
 	/* Entries start on a flash row. up_progmem_write only asserts that in
 	 * debug builds, so a slot found by the word-wise scan behind a torn
 	 * record would otherwise be programmed misaligned. */
-	if (((uintptr_t)pf & SizeMask) != 0) {
-		return false;
+	إذا (((uintptr_t)pf & SizeMask) != 0) {
+		أرجع false;
 	}
 
-	return blank_entry(pf) && blank_check(pf, required);
+	أرجع blank_entry(pf) && blank_check(pf, required);
 }
 
-static int for_each_valid_entry(flash_file_token_t token,
-				int (*cb)(flash_entry_header_t *pf, void *arg),
-				void *arg);
+ساكن صحيح for_each_valid_entry(flash_file_token_t token,
+				صحيح (*cb)(flash_entry_header_t *pf, فراغ *arg),
+				فراغ *arg);
 
-static int stop_at_first(flash_entry_header_t *pf, void *arg)
+ساكن صحيح stop_at_first(flash_entry_header_t *pf, فراغ *arg)
 {
 	*(flash_entry_header_t **)arg = pf;
-	return -ECANCELED;
+	أرجع -ECANCELED;
 }
 
 /* Oldest valid entry for token, or NULL. */
-static flash_entry_header_t *find_entry(flash_file_token_t token)
+ساكن flash_entry_header_t *find_entry(flash_file_token_t token)
 {
-	flash_entry_header_t *pf = NULL;
+	flash_entry_header_t *pf = عدم;
 	for_each_valid_entry(token, stop_at_first, &pf);
-	return pf;
+	أرجع pf;
 }
 
 /****************************************************************************
@@ -469,28 +469,28 @@ static flash_entry_header_t *find_entry(flash_file_token_t token)
  *
  ****************************************************************************/
 
-static flash_entry_header_t *find_append(size_t required)
+ساكن flash_entry_header_t *find_append(size_t required)
 {
-	if (sector_map == NULL || required == 0) {
-		return NULL;
+	إذا (sector_map == عدم || required == 0) {
+		أرجع عدم;
 	}
 
-	flash_entry_header_t *last = NULL;
-	int last_s = -1;
+	flash_entry_header_t *last = عدم;
+	صحيح last_s = -1;
 
-	for (int s = 0; sector_map[s].address; s++) {
+	لكل (صحيح s = 0; sector_map[s].address; s++) {
 		h_magic_t *pmagic = (h_magic_t *) sector_map[s].address;
-		h_magic_t *pe = pmagic + (sector_map[s].size / sizeof(h_magic_t)) - 1;
+		h_magic_t *pe = pmagic + (sector_map[s].size / حجم(h_magic_t)) - 1;
 
-		while (pmagic < pe) {
-			if (!valid_magic(pmagic)) {
+		طالما (pmagic < pe) {
+			إذا (!valid_magic(pmagic)) {
 				pmagic++;
-				continue;
+				استمر;
 			}
 
 			flash_entry_header_t *pf = (flash_entry_header_t *) pmagic;
 
-			if (crc_header_ok(pf, pe)) {
+			إذا (crc_header_ok(pf, pe)) {
 				last = pf;
 				last_s = s;
 				pmagic = (h_magic_t *) next_entry(pf);
@@ -499,55 +499,55 @@ static flash_entry_header_t *find_append(size_t required)
 				/* Same stop rule as for_each_valid_entry: a record behind a
 				 * blank header is invisible to replay, so it must not anchor
 				 * the append point either. */
-				if (pmagic >= pe || !header_fits(pf, pe) || blank_entry(pf)) {
-					break;
+				إذا (pmagic >= pe || !header_fits(pf, pe) || blank_entry(pf)) {
+					اكسر;
 				}
 
-			} else {
+			} وإلا {
 				pmagic++;
 			}
 		}
 	}
 
-	const int start_s = (last == NULL) ? 0 : last_s;
-	h_magic_t *pmagic = (last == NULL)
+	ثابت صحيح start_s = (last == عدم) ? 0 : last_s;
+	h_magic_t *pmagic = (last == عدم)
 			    ? (h_magic_t *) sector_map[0].address
 			    : (h_magic_t *) next_entry(last);
 
-	for (int s = start_s; sector_map[s].address; s++) {
-		if (s != start_s) {
+	لكل (صحيح s = start_s; sector_map[s].address; s++) {
+		إذا (s != start_s) {
 			pmagic = (h_magic_t *) sector_map[s].address;
 		}
 
 		h_magic_t *pe = (h_magic_t *) sector_map[s].address
-				+ (sector_map[s].size / sizeof(h_magic_t)) - 1;
+				+ (sector_map[s].size / حجم(h_magic_t)) - 1;
 
-		if ((uint8_t *)pmagic < (uint8_t *)sector_map[s].address
+		إذا ((uint8_t *)pmagic < (uint8_t *)sector_map[s].address
 		    || (uint8_t *)pmagic >= (uint8_t *)sector_map[s].address + sector_map[s].size) {
-			if (s == start_s) {
-				continue;
+			إذا (s == start_s) {
+				استمر;
 			}
 
 			pmagic = (h_magic_t *) sector_map[s].address;
 		}
 
-		while (pmagic < pe) {
+		طالما (pmagic < pe) {
 			flash_entry_header_t *pf = (flash_entry_header_t *) pmagic;
 
-			if (valid_magic(pmagic) && crc_header_ok(pf, pe)) {
+			إذا (valid_magic(pmagic) && crc_header_ok(pf, pe)) {
 				pmagic = (h_magic_t *) next_entry(pf);
-				continue;
+				استمر;
 			}
 
-			if (slot_is_free(pf, s, required)) {
-				return pf;
+			إذا (slot_is_free(pf, s, required)) {
+				أرجع pf;
 			}
 
 			pmagic++;
 		}
 	}
 
-	return NULL;
+	أرجع عدم;
 }
 
 /****************************************************************************
@@ -561,39 +561,39 @@ static flash_entry_header_t *find_append(size_t required)
  *
  ****************************************************************************/
 
-static int for_each_valid_entry(flash_file_token_t token,
-				int (*cb)(flash_entry_header_t *pf, void *arg),
-				void *arg)
+ساكن صحيح for_each_valid_entry(flash_file_token_t token,
+				صحيح (*cb)(flash_entry_header_t *pf, فراغ *arg),
+				فراغ *arg)
 {
-	int n = 0;
+	صحيح n = 0;
 
-	if (sector_map == NULL) {
-		return -ENXIO;
+	إذا (sector_map == عدم) {
+		أرجع -ENXIO;
 	}
 
-	for (int s = 0; sector_map[s].address; s++) {
+	لكل (صحيح s = 0; sector_map[s].address; s++) {
 
 		h_magic_t *pmagic = (h_magic_t *) sector_map[s].address;
-		h_magic_t *pe = pmagic + (sector_map[s].size / sizeof(h_magic_t)) - 1;
+		h_magic_t *pe = pmagic + (sector_map[s].size / حجم(h_magic_t)) - 1;
 
 cont:
 
-		while (pmagic < pe && !valid_magic(pmagic)) {
+		طالما (pmagic < pe && !valid_magic(pmagic)) {
 			pmagic++;
 		}
 
-		if (pmagic >= pe) { continue; }
+		إذا (pmagic >= pe) { استمر; }
 
 		flash_entry_header_t *pf = (flash_entry_header_t *) pmagic;
 
-		if (crc_header_ok(pf, pe)) {
+		إذا (crc_header_ok(pf, pe)) {
 
-			if (valid_entry(pf) && pf->file_token.t == token.t) {
-				if (cb != NULL) {
-					int rv = cb(pf, arg);
+			إذا (valid_entry(pf) && pf->file_token.t == token.t) {
+				إذا (cb != عدم) {
+					صحيح rv = cb(pf, arg);
 
-					if (rv < 0) {
-						return rv;
+					إذا (rv < 0) {
+						أرجع rv;
 					}
 				}
 
@@ -603,18 +603,18 @@ cont:
 			pf = next_entry(pf);
 			pmagic = (h_magic_t *) pf;
 
-			if (pmagic >= pe || !header_fits(pf, pe) || blank_entry(pf)) {
-				continue;
+			إذا (pmagic >= pe || !header_fits(pf, pe) || blank_entry(pf)) {
+				استمر;
 			}
 
-		} else {
+		} وإلا {
 			pmagic++;
 		}
 
-		goto cont;
+		اذهب cont;
 	}
 
-	return n;
+	أرجع n;
 }
 
 /****************************************************************************
@@ -635,29 +635,29 @@ cont:
  *
  ****************************************************************************/
 
-static int erase_sector(sector_descriptor_t *sm, flash_entry_header_t *pf)
+ساكن صحيح erase_sector(sector_descriptor_t *sm, flash_entry_header_t *pf)
 {
-	int rv = 0;
-#if defined(BOARD_USE_EXTERNAL_FLASH)
+	صحيح rv = 0;
+#إذا defined(BOARD_USE_EXTERNAL_FLASH)
 	ssize_t block = up_progmem_ext_getpage((size_t)pf);
-#else
+#وإلا
 	ssize_t block = up_progmem_getpage((size_t)pf);
 #endif
 
-	if (block > 0 && block == sm->page) {
+	إذا (block > 0 && block == sm->page) {
 		last_erased = sm->page;
-#if defined(BOARD_USE_EXTERNAL_FLASH)
+#إذا defined(BOARD_USE_EXTERNAL_FLASH)
 		ssize_t size = up_progmem_ext_eraseblock(block);
-#else
+#وإلا
 		ssize_t size = up_progmem_eraseblock(block);
 #endif
 
-		if (size < 0 || size != (ssize_t)sm->size) {
+		إذا (size < 0 || size != (ssize_t)sm->size) {
 			rv = size;
 		}
 	}
 
-	return rv;
+	أرجع rv;
 }
 
 /****************************************************************************
@@ -683,24 +683,24 @@ static int erase_sector(sector_descriptor_t *sm, flash_entry_header_t *pf)
  *
  ****************************************************************************/
 
-int parameter_flashfs_read(flash_file_token_t token, uint8_t **buffer, size_t
+صحيح parameter_flashfs_read(flash_file_token_t token, uint8_t **buffer, size_t
 			   *buf_size)
 {
-	int rv = -ENXIO;
+	صحيح rv = -ENXIO;
 
-	if (sector_map) {
+	إذا (sector_map) {
 
 		rv = -ENOENT;
 		flash_entry_header_t *pf = find_entry(token);
 
-		if (pf) {
+		إذا (pf) {
 			(*buffer) = entry_data(pf);
 			rv = entry_data_length(pf);
 			*buf_size = rv;
 		}
 	}
 
-	return rv;
+	أرجع rv;
 }
 
 /****************************************************************************
@@ -712,24 +712,24 @@ int parameter_flashfs_read(flash_file_token_t token, uint8_t **buffer, size_t
  *
  ****************************************************************************/
 
-int parameter_flashfs_blank(void)
+صحيح parameter_flashfs_blank(فراغ)
 {
-	if (sector_map == NULL) {
-		return -ENXIO;
+	إذا (sector_map == عدم) {
+		أرجع -ENXIO;
 	}
 
-	for (int s = 0; sector_map[s].address; s++) {
+	لكل (صحيح s = 0; sector_map[s].address; s++) {
 		uint32_t *pm = (uint32_t *) sector_map[s].address;
-		uint32_t *pe = pm + (sector_map[s].size / sizeof(uint32_t));
+		uint32_t *pe = pm + (sector_map[s].size / حجم(uint32_t));
 
-		while (pm < pe) {
-			if (!blank_flash(pm++)) {
-				return 0;
+		طالما (pm < pe) {
+			إذا (!blank_flash(pm++)) {
+				أرجع 0;
 			}
 		}
 	}
 
-	return 1;
+	أرجع 1;
 }
 
 /****************************************************************************
@@ -750,155 +750,155 @@ int parameter_flashfs_blank(void)
  *
  ****************************************************************************/
 
-int
+صحيح
 parameter_flashfs_write(flash_file_token_t token, uint8_t *buffer, size_t buf_size)
 {
-	int rv = -ENXIO;
+	صحيح rv = -ENXIO;
 
-	if (sector_map) {
+	إذا (sector_map) {
 
 		rv = 0;
 
 		/* Calculate the total space needed */
 
-		size_t total_size = buf_size + sizeof(flash_entry_header_t);
-		size_t alignment = sizeof(h_magic_t) - 1;
+		size_t total_size = buf_size + حجم(flash_entry_header_t);
+		size_t alignment = حجم(h_magic_t) - 1;
 		size_t  size_adjust = ((total_size + alignment) & ~alignment) - total_size;
 		total_size += size_adjust;
 
-		if (total_size > UINT16_MAX) {
-			return -EFBIG;
+		إذا (total_size > UINT16_MAX) {
+			أرجع -EFBIG;
 		}
 
 		/* Append after the last CRC-valid record. Compaction is the caller's job. */
 		flash_entry_header_t *pf = find_append(total_size);
 
-		if (pf == 0) {
-			return -ENOSPC;
+		إذا (pf == 0) {
+			أرجع -ENOSPC;
 		}
 
-		flash_entry_header_t *pn = (flash_entry_header_t *)(buffer - sizeof(flash_entry_header_t));
+		flash_entry_header_t *pn = (flash_entry_header_t *)(buffer - حجم(flash_entry_header_t));
 		pn->magic = MagicSig;
 		pn->file_token.t = token.t;
 		pn->flag = ValidEntry + size_adjust;
 		pn->size = total_size;
 
-		for (size_t a = 0; a < size_adjust; a++) {
+		لكل (size_t a = 0; a < size_adjust; a++) {
 			buffer[buf_size + a] = (uint8_t)BlankSig;
 		}
 
 		pn->crc = crc32(entry_crc_start(pn), entry_crc_length(pn));
-#if defined(BOARD_USE_EXTERNAL_FLASH)
+#إذا defined(BOARD_USE_EXTERNAL_FLASH)
 		rv = up_progmem_ext_write((size_t) pf, pn, pn->size);
-#else
+#وإلا
 		rv = up_progmem_write((size_t) pf, pn, pn->size);
 #endif
-		int system_bytes = (sizeof(flash_entry_header_t) + size_adjust);
+		صحيح system_bytes = (حجم(flash_entry_header_t) + size_adjust);
 
-		if (rv >= system_bytes) {
+		إذا (rv >= system_bytes) {
 			rv -= system_bytes;
 		}
 	}
 
-	return rv;
+	أرجع rv;
 }
 
 /****************************************************************************
  * Name: parameter_flashfs_walk
  ****************************************************************************/
 
-struct walk_pack {
+بنية walk_pack {
 	parameter_flashfs_walk_cb cb;
-	void *arg;
+	فراغ *arg;
 };
 
-static int walk_one(flash_entry_header_t *pf, void *arg)
+ساكن صحيح walk_one(flash_entry_header_t *pf, فراغ *arg)
 {
-	struct walk_pack *w = (struct walk_pack *)arg;
-	return w->cb(entry_data(pf), entry_data_length(pf), w->arg);
+	بنية walk_pack *w = (بنية walk_pack *)arg;
+	أرجع w->cb(entry_data(pf), entry_data_length(pf), w->arg);
 }
 
-int parameter_flashfs_walk(flash_file_token_t token, parameter_flashfs_walk_cb cb, void *arg)
+صحيح parameter_flashfs_walk(flash_file_token_t token, parameter_flashfs_walk_cb cb, فراغ *arg)
 {
-	struct walk_pack w = { cb, arg };
-	return for_each_valid_entry(token, walk_one, &w);
+	بنية walk_pack w = { cb, arg };
+	أرجع for_each_valid_entry(token, walk_one, &w);
 }
 
 /****************************************************************************
  * Name: parameter_flashfs_needs_compact
  ****************************************************************************/
 
-size_t parameter_flashfs_max_payload(void)
+size_t parameter_flashfs_max_payload(فراغ)
 {
-	if (sector_map == NULL) {
-		return 0;
+	إذا (sector_map == عدم) {
+		أرجع 0;
 	}
 
 	size_t max_total = 0;
 
-	for (int s = 0; sector_map[s].address; s++) {
-		if (sector_usable(s) > max_total) {
+	لكل (صحيح s = 0; sector_map[s].address; s++) {
+		إذا (sector_usable(s) > max_total) {
 			max_total = sector_usable(s);
 		}
 	}
 
 	/* h_size_t holds the record size */
-	if (max_total > UINT16_MAX) {
+	إذا (max_total > UINT16_MAX) {
 		max_total = UINT16_MAX;
 	}
 
 	max_total &= ~(size_t)SizeMask;
 
-	if (max_total <= sizeof(flash_entry_header_t)) {
-		return 0;
+	إذا (max_total <= حجم(flash_entry_header_t)) {
+		أرجع 0;
 	}
 
-	return max_total - sizeof(flash_entry_header_t);
+	أرجع max_total - حجم(flash_entry_header_t);
 }
 
-int parameter_flashfs_needs_compact(flash_file_token_t token, size_t snapshot_size)
+صحيح parameter_flashfs_needs_compact(flash_file_token_t token, size_t snapshot_size)
 {
-	if (sector_map == NULL) {
-		return -ENXIO;
+	إذا (sector_map == عدم) {
+		أرجع -ENXIO;
 	}
 
 	flash_entry_header_t *first = find_entry(token);
 
-	if (first == NULL) {
-		return 0;
+	إذا (first == عدم) {
+		أرجع 0;
 	}
 
 	/* Dead records ahead of the live data (a torn write, or the erased
 	 * prefix the single-snapshot writer left) only go away with an erase. */
-	if ((uintptr_t)first != (uintptr_t)sector_map[0].address) {
-		return 1;
+	إذا ((uintptr_t)first != (uintptr_t)sector_map[0].address) {
+		أرجع 1;
 	}
 
 	/* Keep room after the log for a burst the size of the snapshot
 	 * (reset-all tombstones, airframe PARAM_SET), floored so a UUID append
 	 * does not force a boot erase. */
-	const size_t align = sizeof(h_magic_t) - 1;
-	const size_t snapshot_total = (snapshot_size + sizeof(flash_entry_header_t) + align) & ~align;
-	const size_t headroom = snapshot_total > 8192 ? snapshot_total : 8192;
+	ثابت size_t align = حجم(h_magic_t) - 1;
+	ثابت size_t snapshot_total = (snapshot_size + حجم(flash_entry_header_t) + align) & ~align;
+	ثابت size_t headroom = snapshot_total > 8192 ? snapshot_total : 8192;
 
-	if (find_append(headroom) != NULL) {
-		return 0;
+	إذا (find_append(headroom) != عدم) {
+		أرجع 0;
 	}
 
 	/* Compaction leaves the snapshot at the start of sector 0 and every
 	 * other sector blank. Erase only if that layout has the room this one
 	 * lacks, or every boot would pay the erase for nothing. */
-	if (sector_usable(0) >= snapshot_total + headroom) {
-		return 1;
+	إذا (sector_usable(0) >= snapshot_total + headroom) {
+		أرجع 1;
 	}
 
-	for (int s = 1; sector_map[s].address; s++) {
-		if (sector_usable(s) >= headroom) {
-			return 1;
+	لكل (صحيح s = 1; sector_map[s].address; s++) {
+		إذا (sector_usable(s) >= headroom) {
+			أرجع 1;
 		}
 	}
 
-	return 0;
+	أرجع 0;
 }
 
 /****************************************************************************
@@ -923,40 +923,40 @@ int parameter_flashfs_needs_compact(flash_file_token_t token, size_t snapshot_si
  *
  ****************************************************************************/
 
-int parameter_flashfs_alloc(flash_file_token_t token, uint8_t **buffer, size_t *buf_size)
+صحيح parameter_flashfs_alloc(flash_file_token_t token, uint8_t **buffer, size_t *buf_size)
 {
-	int rv = -ENXIO;
+	صحيح rv = -ENXIO;
 
-	if (sector_map) {
+	إذا (sector_map) {
 
 		rv = -ENOMEM;
 
-		if (!working_buffer_static) {
+		إذا (!working_buffer_static) {
 
 			/* parameter_flashfs_write pads the entry to a word in place */
-			working_buffer_size = *buf_size + sizeof(flash_entry_header_t) + SizeMask;
+			working_buffer_size = *buf_size + حجم(flash_entry_header_t) + SizeMask;
 			working_buffer = malloc(working_buffer_size);
 
 		}
 
 		/* Allocation failed or not provided */
 
-		if (working_buffer == NULL) {
+		إذا (working_buffer == عدم) {
 
 			working_buffer_size = 0;
 
-		} else {
+		} وإلا {
 
 			/* We have a buffer reserve space and init it */
-			*buffer = &working_buffer[sizeof(flash_entry_header_t)];
-			*buf_size = working_buffer_size - sizeof(flash_entry_header_t) - SizeMask;
+			*buffer = &working_buffer[حجم(flash_entry_header_t)];
+			*buf_size = working_buffer_size - حجم(flash_entry_header_t) - SizeMask;
 			memset(working_buffer, 0xff, working_buffer_size);
 			rv = 0;
 
 		}
 	}
 
-	return rv;
+	أرجع rv;
 }
 
 /****************************************************************************
@@ -973,25 +973,25 @@ int parameter_flashfs_alloc(flash_file_token_t token, uint8_t **buffer, size_t *
  *
  ****************************************************************************/
 
-int parameter_flashfs_erase(void)
+صحيح parameter_flashfs_erase(فراغ)
 {
-	int rv = -ENXIO;
+	صحيح rv = -ENXIO;
 
-	if (sector_map) {
+	إذا (sector_map) {
 		rv = 0;
 
-		for (int s = 0; sector_map[s].address; s++) {
-			int sz = erase_sector(&sector_map[s], (flash_entry_header_t *)sector_map[s].address);
+		لكل (صحيح s = 0; sector_map[s].address; s++) {
+			صحيح sz = erase_sector(&sector_map[s], (flash_entry_header_t *)sector_map[s].address);
 
-			if (sz != 0) {
-				return sz;
+			إذا (sz != 0) {
+				أرجع sz;
 			}
 
 			rv += sector_map[s].size;
 		}
 	}
 
-	return rv;
+	أرجع rv;
 }
 
 /****************************************************************************
@@ -1022,13 +1022,13 @@ int parameter_flashfs_erase(void)
  *
  ****************************************************************************/
 
-int parameter_flashfs_init(sector_descriptor_t *fconfig, uint8_t *buffer, uint16_t size)
+صحيح parameter_flashfs_init(sector_descriptor_t *fconfig, uint8_t *buffer, uint16_t size)
 {
-	int rv = 0;
+	صحيح rv = 0;
 	sector_map = fconfig;
-	working_buffer_static = buffer != NULL;
+	working_buffer_static = buffer != عدم;
 
-	if (!working_buffer_static) {
+	إذا (!working_buffer_static) {
 		size = 0;
 	}
 
@@ -1042,67 +1042,67 @@ int parameter_flashfs_init(sector_descriptor_t *fconfig, uint8_t *buffer, uint16
 	 * reports -EILSEQ. Erasing here would hide a successful retry after
 	 * a torn write. */
 
-	return rv;
+	أرجع rv;
 }
 
-#if defined(FLASH_UNIT_TEST)
+#إذا defined(FLASH_UNIT_TEST)
 
-static sector_descriptor_t  test_sector_map[] = {
+ساكن sector_descriptor_t  test_sector_map[] = {
 	{1, 16 * 1024, 0x08004000},
 	{2, 16 * 1024, 0x08008000},
 	{0, 0, 0},
 };
 
-__EXPORT void test(void);
+__EXPORT فراغ test(فراغ);
 
 uint8_t test_buf[32 * 1024];
 
-__EXPORT void test(void)
+__EXPORT فراغ test(فراغ)
 {
 	uint16_t largest_block = (32 * 1024) + 32;
 	uint8_t *buffer = malloc(largest_block);
 
 	parameter_flashfs_init(test_sector_map, buffer, largest_block);
 
-	for (int t = 0; t < sizeof(test_buf); t++) {
+	لكل (صحيح t = 0; t < حجم(test_buf); t++) {
 		test_buf[t] = (uint8_t) t;
 	}
 
-	int er = parameter_flashfs_erase();
+	صحيح er = parameter_flashfs_erase();
 	uint8_t *fbuffer;
 	size_t buf_size;
-	int written = 0;
-	int read = 0;
-	int rv = 0;
+	صحيح written = 0;
+	صحيح اقرأ = 0;
+	صحيح rv = 0;
 
-	for (int a = 0; a <= 4; a++) {
+	لكل (صحيح a = 0; a <= 4; a++) {
 		parameter_flashfs_erase();
 		rv =  parameter_flashfs_alloc(parameters_token, &fbuffer, &buf_size);
 		memcpy(fbuffer, test_buf, a);
 		buf_size = a;
 		written = parameter_flashfs_write(parameters_token, fbuffer, buf_size);
-		read = parameter_flashfs_read(parameters_token, &fbuffer, &buf_size);
+		اقرأ = parameter_flashfs_read(parameters_token, &fbuffer, &buf_size);
 		parameter_flashfs_free();
 
-		if (read != written) {
-			static volatile int j;
+		إذا (اقرأ != written) {
+			ساكن متطاير صحيح j;
 			j++;
 		}
 	}
 
-	int block = 2048;
+	صحيح block = 2048;
 
-	for (int a = 0; a <= 8; a++) {
+	لكل (صحيح a = 0; a <= 8; a++) {
 		parameter_flashfs_erase();
 		rv =  parameter_flashfs_alloc(parameters_token, &fbuffer, &buf_size);
 		memcpy(fbuffer, test_buf, block);
 		buf_size = block;
 		written = parameter_flashfs_write(parameters_token, fbuffer, buf_size);
-		read = parameter_flashfs_read(parameters_token, &fbuffer, &buf_size);
+		اقرأ = parameter_flashfs_read(parameters_token, &fbuffer, &buf_size);
 		parameter_flashfs_free();
 
-		if (read != written) {
-			static volatile int j;
+		إذا (اقرأ != written) {
+			ساكن متطاير صحيح j;
 			j++;
 		}
 
@@ -1111,7 +1111,7 @@ __EXPORT void test(void)
 
 	rv++;
 	er++;
-	free(buffer);
+	حرر(buffer);
 }
 #endif /* FLASH_UNIT_TEST */
 #endif /* CONFIG_ARCH_HAVE_PROGMEM */

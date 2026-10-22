@@ -33,43 +33,43 @@
 
 #pragma once
 
-#include <limits.h>
+#ضمن <limits.h>
 
-#include <mixer_module/output_functions.hpp>
+#ضمن <mixer_module/output_functions.hpp>
 
-#include <uORB/Subscription.hpp>
-#include <uORB/SubscriptionCallback.hpp>
+#ضمن <uORB/Subscription.hpp>
+#ضمن <uORB/SubscriptionCallback.hpp>
 
-#include <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
+#ضمن <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
 
-class FunctionProviderBase
+صنف FunctionProviderBase
 {
-public:
-	struct Context {
+عام:
+	بنية Context {
 		px4::WorkItem &work_item;
-		const float &thrust_factor;
+		ثابت عائم &thrust_factor;
 	};
 
-	FunctionProviderBase() = default;
-	virtual ~FunctionProviderBase() = default;
+	FunctionProviderBase() = افتراضي;
+	virtual ~FunctionProviderBase() = افتراضي;
 
-	virtual void update() = 0;
+	virtual فراغ update() = 0;
 
 	/**
 	 * Get the current output value for a given function
 	 * @return NAN (=disarmed) or value in range [-1, 1]
 	 */
-	virtual float value(OutputFunction func) = 0;
+	virtual عائم value(OutputFunction func) = 0;
 
-	virtual float defaultFailsafeValue(OutputFunction func) const { return NAN; }
-	virtual bool allowPrearmControl() const { return true; }
+	virtual عائم default_Failsafe_درج(OutputFunction func) ثابت { أرجع NAN; }
+	virtual منطقي allowPrearmControl() ثابت { أرجع true; }
 
-	virtual uORB::SubscriptionCallbackWorkItem *subscriptionCallback() { return nullptr; }
+	virtual uORB::SubscriptionCallbackWorkItem *subscriptionCallback() { أرجع nullptr; }
 
-	virtual bool getLatestSampleTimestamp(hrt_abstime &t) const { return false; }
+	virtual منطقي getLatestSampleTimestamp(hrt_abstime &t) ثابت { أرجع خطأ; }
 
 	/**
 	 * Check whether the output (motor) is configured to be reversible
 	 */
-	virtual bool reversible(OutputFunction func) const { return false; }
+	virtual منطقي reversible(OutputFunction func) ثابت { أرجع خطأ; }
 };

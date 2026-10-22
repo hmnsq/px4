@@ -33,41 +33,41 @@
 #
 ############################################################################
 
-import argparse
-import builtins
-import pathlib
-import sys
+استورد argparse
+استورد builtins
+استورد pathlib
+استورد sys
 
-from rosidl_adapter.msg import convert_msg_to_idl
+من rosidl_adapter.سكو استورد convert_سكو_to_idl
 
-if __name__ == '__main__':
+إذا __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description=f'Convert px4 .msg files to .idl')
     parser.add_argument(
         'interface_files', nargs='+',
         help='The interface files to convert')
-    args = parser.parse_args(sys.argv[1:])
+    حجوجي = parser.parse_حجوجي(sys.argv[1:])
 
     # convert_msg_to_idl prints a Reading/Writing line per file. Filter those
     # via builtins.print instead of redirecting stdout, which the empy template
     # engine relies on and breaks if replaced. Errors still surface on stderr.
-    real_print = builtins.print
+    real_بغ = builtins.print
 
-    def quiet_print(*pargs, **kwargs):
-        if pargs and isinstance(pargs[0], str) and \
+    def quiet_بغ(*pargs, **kwargs):
+        إذا pargs و isinstance(pargs[0], str) و \
                 pargs[0].startswith(('Reading input file:', 'Writing output file:')):
-            return
-        real_print(*pargs, **kwargs)
+            أرجع
+        real_بغ(*pargs, **kwargs)
 
-    builtins.print = quiet_print
-    try:
-        for interface_file in args.interface_files:
+    builtins.print = quiet_بغ
+    حاول:
+        لكل interface_file في حجوجي.interface_files:
             interface_file = pathlib.Path(interface_file)
             package_dir = interface_file.parent.absolute()
 
-            convert_msg_to_idl(
+            convert_سكو_to_idl(
                 package_dir, 'px4_msgs',
                 interface_file.absolute().relative_to(package_dir),
                 interface_file.parent)
-    finally:
-        builtins.print = real_print
+    أخيرا:
+        builtins.print = real_بغ

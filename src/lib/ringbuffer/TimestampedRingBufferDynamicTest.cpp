@@ -31,26 +31,26 @@
  *
  ****************************************************************************/
 
-#include <gtest/gtest.h>
-#include <math.h>
-#include "TimestampedRingBuffer.hpp"
+#ضمن <gtest/gtest.h>
+#ضمن <math.h>
+#ضمن "TimestampedRingBuffer.hpp"
 
-struct sample {
+بنية sample {
 	uint64_t time_us;
-	float data[3];
+	عائم data[3];
 };
 
 
-class TimestampedRingBufferDynamicTest : public ::testing::Test
+صنف TimestampedRingBufferDynamicTest : عام ::testing::Test
 {
-public:
+عام:
 
 	sample _x, _y, _z;
 	TimestampedRingBuffer<sample> *_buffer{nullptr};
 
-	void SetUp() override
+	فراغ SetUp() override
 	{
-		_buffer = new TimestampedRingBuffer<sample>(3);
+		_buffer = جديد TimestampedRingBuffer<sample>(3);
 		_x.time_us = 1000000;
 		_x.data[0] = _x.data[1] = _x.data[2] = 1.5f;
 
@@ -61,7 +61,7 @@ public:
 		_z.data[0] = _z.data[1] = _z.data[2] = 4.0f;
 	}
 
-	void TearDown() override
+	فراغ TearDown() override
 	{
 		delete _buffer;
 	}
@@ -100,65 +100,65 @@ TEST_F(TimestampedRingBufferDynamicTest, orderOfSamples)
 	// GIVEN: allocated buffer
 	// WHEN: adding multiple samples
 	// THEN: they should be added in order
-	_buffer->push(_x);
+	_buffer->تور(_x);
 
 	EXPECT_EQ(_x.time_us, _buffer->get_newest().time_us);
 	EXPECT_EQ(_x.time_us, _buffer->get_oldest().time_us);
 
-	_buffer->push(_z);
-	_buffer->push(_y);
+	_buffer->تور(_z);
+	_buffer->تور(_y);
 
 	EXPECT_EQ(_x.time_us, _buffer->get_oldest().time_us);
 	EXPECT_EQ(_y.time_us, _buffer->get_newest().time_us);
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, popSample)
+TEST_F(TimestampedRingBufferDynamicTest, چرو_Sample)
 {
 	ASSERT_EQ(true, _buffer->allocate(3));
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	_buffer->تور(_x);
+	_buffer->تور(_y);
+	_buffer->تور(_z);
 
 	// GIVEN: allocated and filled buffer
 
-	sample pop = {};
+	sample چرو = {};
 	// WHEN: we want to retrieve a sample that is older than any in the buffer
 	// THEN: we should not get any sample
-	EXPECT_FALSE(_buffer->pop_first_older_than(0, &pop));
+	EXPECT_FALSE(_buffer->چرو_first_older_than(0, &چرو));
 
 	// WHEN: when calling "pop_first_older_than"
 	// THEN: we should get the first sample from the head that is older
-	EXPECT_TRUE(_buffer->pop_first_older_than(_x.time_us + 1, &pop));
-	EXPECT_EQ(_x.time_us, pop.time_us);
-	EXPECT_TRUE(_buffer->pop_first_older_than(_y.time_us + 10, &pop));
-	EXPECT_EQ(_y.time_us, pop.time_us);
-	EXPECT_TRUE(_buffer->pop_first_older_than(_z.time_us + 100, &pop));
-	EXPECT_EQ(_z.time_us, pop.time_us);
+	EXPECT_TRUE(_buffer->چرو_first_older_than(_x.time_us + 1, &چرو));
+	EXPECT_EQ(_x.time_us, چرو.time_us);
+	EXPECT_TRUE(_buffer->چرو_first_older_than(_y.time_us + 10, &چرو));
+	EXPECT_EQ(_y.time_us, چرو.time_us);
+	EXPECT_TRUE(_buffer->چرو_first_older_than(_z.time_us + 100, &چرو));
+	EXPECT_EQ(_z.time_us, چرو.time_us);
 	// TODO: When changing the order of popping sample it does not behave as expected, fix this
 }
 
 TEST_F(TimestampedRingBufferDynamicTest, askingForTooNewSample)
 {
 	ASSERT_EQ(true, _buffer->allocate(3));
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	_buffer->تور(_x);
+	_buffer->تور(_y);
+	_buffer->تور(_z);
 
-	sample pop = {};
+	sample چرو = {};
 	// WHEN: all buffered samples are older by 0.1s than your query timestamp
 	// THEN: should get no sample returned
-	EXPECT_TRUE(_buffer->pop_first_older_than(_z.time_us + 99000, &pop));
-	EXPECT_FALSE(_buffer->pop_first_older_than(_y.time_us + 100000, &pop));
+	EXPECT_TRUE(_buffer->چرو_first_older_than(_z.time_us + 99000, &چرو));
+	EXPECT_FALSE(_buffer->چرو_first_older_than(_y.time_us + 100000, &چرو));
 }
 
 TEST_F(TimestampedRingBufferDynamicTest, reallocateBuffer)
 {
 	ASSERT_EQ(true, _buffer->allocate(5));
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_y);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	_buffer->تور(_x);
+	_buffer->تور(_y);
+	_buffer->تور(_y);
+	_buffer->تور(_y);
+	_buffer->تور(_z);
 
 	// GIVEN: allocated and filled buffer
 	// WHEN: do another allocate call

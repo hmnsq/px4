@@ -39,48 +39,48 @@
 
 #pragma once
 
-namespace math
+نطاق math
 {
 
 template <typename Type, size_t N>
-class WelfordMeanVector
+صنف WelfordMeanVector
 {
-public:
+عام:
 	// For a new value, compute the new count, new mean, the new M2.
-	bool update(const matrix::Vector<Type, N> &new_value)
+	منطقي update(ثابت matrix::Vector<Type, N> &new_درج)
 	{
-		if (_count == 0) {
+		إذا (كدي_3 == 0) {
 			reset();
-			_count = 1;
-			_mean = new_value;
-			return false;
+			كدي_3 = 1;
+			_mean = new_درج;
+			أرجع خطأ;
 
-		} else if (_count == UINT16_MAX) {
+		} وإلا إذا (كدي_3 == UINT16_MAX) {
 			// count overflow
 			//  reset count, but maintain mean and variance
-			_M2 = _M2 / _count;
+			_M2 = _M2 / كدي_3;
 			_M2_accum.zero();
 
-			_count = 1;
+			كدي_3 = 1;
 
-		} else {
-			_count++;
+		} وإلا {
+			كدي_3++;
 		}
 
 		// mean
 		//  accumulates the mean of the entire dataset
 		//  use Kahan summation because delta can be very small compared to the mean
-		const matrix::Vector<Type, N> delta{new_value - _mean};
+		ثابت matrix::Vector<Type, N> delta{new_درج - _mean};
 		{
-			const matrix::Vector<Type, N> y = (delta / _count) - _mean_accum;
-			const matrix::Vector<Type, N> t = _mean + y;
+			ثابت matrix::Vector<Type, N> y = (delta / كدي_3) - _mean_accum;
+			ثابت matrix::Vector<Type, N> t = _mean + y;
 			_mean_accum = (t - _mean) - y;
 			_mean = t;
 		}
 
-		if (!_mean.isAllFinite()) {
+		إذا (!_mean.isAllFinite()) {
 			reset();
-			return false;
+			أرجع خطأ;
 		}
 
 		// covariance
@@ -89,50 +89,50 @@ public:
 			// eg C(x,y) += dx * (y - mean_y)
 			matrix::SquareMatrix<Type, N> m2_change{};
 
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r; c < N; c++) {
-					m2_change(r, c) = delta(r) * (new_value(c) - _mean(c));
+			لكل (size_t r = 0; r < N; r++) {
+				لكل (size_t c = r; c < N; c++) {
+					m2_change(r, c) = delta(r) * (new_درج(c) - _mean(c));
 				}
 			}
 
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r; c < N; c++) {
+			لكل (size_t r = 0; r < N; r++) {
+				لكل (size_t c = r; c < N; c++) {
 
-					const Type y = m2_change(r, c) - _M2_accum(r, c);
-					const Type t = _M2(r, c) + y;
+					ثابت Type y = m2_change(r, c) - _M2_accum(r, c);
+					ثابت Type t = _M2(r, c) + y;
 					_M2_accum(r, c) = (t - _M2(r, c)) - y;
 
 					_M2(r, c) = t;
 				}
 
 				// protect against floating point precision causing negative variances
-				if (_M2(r, r) < 0) {
+				إذا (_M2(r, r) < 0) {
 					_M2(r, r) = 0;
 				}
 			}
 
 			// make symmetric
-			for (size_t r = 0; r < N; r++) {
-				for (size_t c = r + 1; c < N; c++) {
+			لكل (size_t r = 0; r < N; r++) {
+				لكل (size_t c = r + 1; c < N; c++) {
 					_M2(c, r) = _M2(r, c);
 				}
 			}
 		}
 
-		if (!_M2.isAllFinite()) {
+		إذا (!_M2.isAllFinite()) {
 			reset();
-			return false;
+			أرجع خطأ;
 		}
 
-		return valid();
+		أرجع valid();
 	}
 
-	bool valid() const { return _count > 2; }
-	auto count() const { return _count; }
+	منطقي valid() ثابت { أرجع كدي_3 > 2; }
+	auto كدي() ثابت { أرجع كدي_3; }
 
-	void reset()
+	فراغ reset()
 	{
-		_count = 0;
+		كدي_3 = 0;
 		_mean.zero();
 		_M2.zero();
 
@@ -140,13 +140,13 @@ public:
 		_M2_accum.zero();
 	}
 
-	matrix::Vector<Type, N> mean() const { return _mean; }
-	matrix::Vector<Type, N> variance() const { return _M2.diag() / (_count - 1); }
-	matrix::SquareMatrix<Type, N> covariance() const { return _M2 / (_count - 1); }
+	matrix::Vector<Type, N> mean() ثابت { أرجع _mean; }
+	matrix::Vector<Type, N> variance() ثابت { أرجع _M2.diag() / (كدي_3 - 1); }
+	matrix::SquareMatrix<Type, N> covariance() ثابت { أرجع _M2 / (كدي_3 - 1); }
 
-	Type covariance(int x, int y) const { return _M2(x, y) / (_count - 1); }
+	Type covariance(صحيح x, صحيح y) ثابت { أرجع _M2(x, y) / (كدي_3 - 1); }
 
-private:
+خاص:
 
 	matrix::Vector<Type, N> _mean{};
 	matrix::Vector<Type, N> _mean_accum{};  ///< kahan summation algorithm accumulator for mean
@@ -154,7 +154,7 @@ private:
 	matrix::SquareMatrix<Type, N> _M2{};
 	matrix::SquareMatrix<Type, N> _M2_accum{};    ///< kahan summation algorithm accumulator for M2
 
-	uint16_t _count{0};
+	uint16_t كدي_3{0};
 };
 
 } // namespace math

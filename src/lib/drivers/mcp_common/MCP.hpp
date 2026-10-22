@@ -32,35 +32,35 @@
  ****************************************************************************/
 #pragma once
 
-#include <stdint.h>
-#include <drivers/device/i2c.h>
-#include <px4_platform_common/i2c_spi_buses.h>
-#include <uORB/topics/gpio_config.h>
-#include <uORB/topics/gpio_in.h>
-#include <uORB/topics/gpio_out.h>
-#include <uORB/PublicationMulti.hpp>
-#include <lib/perf/perf_counter.h>
-#include <drivers/drv_hrt.h>
-#include <px4_platform/gpio/mcp.hpp>
-#include <px4_platform_common/module.h>
+#ضمن <stdint.h>
+#ضمن <drivers/device/i2c.h>
+#ضمن <px4_platform_common/i2c_spi_buses.h>
+#ضمن <uORB/topics/gpio_config.h>
+#ضمن <uORB/topics/gpio_in.h>
+#ضمن <uORB/topics/gpio_out.h>
+#ضمن <uORB/PublicationMulti.hpp>
+#ضمن <lib/perf/perf_counter.h>
+#ضمن <drivers/drv_hrt.h>
+#ضمن <px4_platform/gpio/mcp.hpp>
+#ضمن <px4_platform_common/module.h>
 
-static constexpr uint8_t I2C_ADDRESS_MCP23009 = 0x25;
-static constexpr uint8_t I2C_ADDRESS_MCP23017 = 0x27;
+ساكن constexpr uint8_t I2C_ADDRESS_MCP23009 = 0x25;
+ساكن constexpr uint8_t I2C_ADDRESS_MCP23017 = 0x27;
 
-enum class
+تعداد صنف
 PinType : uint8_t {
 	Output,
-	Input,
-	InputPullUp,
+	شغرو_2,
+	شغرو_Pull_Up,
 };
 
-struct MCP230XX_config_t {
+بنية MCP230XX_config_t {
 	uint16_t device_type;
 	uint8_t i2c_addr = 0;
 	uint8_t i2c_bus = 0;
 	uint8_t first_minor = 0;
-	uint8_t num_pins = 8;
-	int num_banks = 1;
+	uint8_t لمب_pins = 8;
+	صحيح لمب_banks = 1;
 	uint16_t interval = 10;
 	mcp_gpio_dev_s _gpio_handle[16];
 	CallbackHandler *_callback_handler = nullptr;
@@ -70,57 +70,57 @@ struct MCP230XX_config_t {
 	uint16_t pullup = 0x0000;
 };
 
-class MCP230XX :  public device::I2C, public I2CSPIDriver<MCP230XX>
+صنف MCP230XX :  عام device::I2C, عام I2CSPIDriver<MCP230XX>
 {
-public:
-	MCP230XX(const I2CSPIDriverConfig &config);
+عام:
+	MCP230XX(ثابت I2CSPIDriverConfig &config);
 	virtual ~MCP230XX();
-	static I2CSPIDriverBase *instantiate(const I2CSPIDriverConfig &config, int runtime_instance);
-	static void print_usage();
+	ساكن I2CSPIDriverBase *instantiate(ثابت I2CSPIDriverConfig &config, صحيح runtime_instance);
+	ساكن فراغ بغ_usage();
 
-	void RunImpl();
-	void print_status() override;
-	void custom_method(const BusCLIArguments &cli) override;
-	int probe();
-	virtual int init();
+	فراغ RunImpl();
+	فراغ بغ_status() override;
+	فراغ custom_method(ثابت BusCLIArguments &cli) override;
+	صحيح probe();
+	virtual صحيح init();
 
-protected:
+محمي:
 	MCP230XX_config_t mcp_config;
 
-private:
-	uORB::SubscriptionCallbackWorkItem _gpio_out_sub{this, ORB_ID(gpio_out)};
-	uORB::SubscriptionCallbackWorkItem _gpio_config_sub{this, ORB_ID(gpio_config)};
+خاص:
+	uORB::SubscriptionCallbackWorkItem _gpio_out_sub{هذا, ORB_ID(gpio_out)};
+	uORB::SubscriptionCallbackWorkItem _gpio_config_sub{هذا, ORB_ID(gpio_config)};
 	uORB::PublicationMulti<gpio_in_s> _to_gpio_in{ORB_ID(gpio_in)};
 
 	perf_counter_t _cycle_perf;
 	perf_counter_t _comms_errors;
 	perf_counter_t _register_check;
 
-	virtual int configure(uint16_t mask, PinType type);
-	virtual int read(uint16_t *mask);
-	int read_reg(uint8_t address, uint8_t &data);
-	int write(uint16_t mask_set, uint16_t mask_clear);
-	int write_reg(uint8_t address, uint8_t value);
-	int set_up();
-	int sanity_check();
-	int init_communication();
-	int init_uorb();
-	void cleanup_uorb();
+	virtual صحيح configure(uint16_t mask, PinType type);
+	virtual صحيح اقرأ(uint16_t *mask);
+	صحيح read_reg(uint8_t address, uint8_t &data);
+	صحيح اكتب(uint16_t mask_set, uint16_t mask_clear);
+	صحيح write_reg(uint8_t address, uint8_t value);
+	صحيح set_up();
+	صحيح sanity_check();
+	صحيح init_communication();
+	صحيح init_uorb();
+	فراغ cleanup_uorb();
 
-	virtual int get_olat(int bank, uint8_t *addr) = 0;
-	virtual int get_gppu(int bank, uint8_t *addr) = 0;
-	virtual int get_iodir(int bank, uint8_t *addr) = 0;
-	virtual int get_gpio(int bank, uint8_t *addr) = 0;
-	virtual int get_probe_reg(uint8_t *addr) = 0;
+	virtual صحيح get_olat(صحيح bank, uint8_t *addr) = 0;
+	virtual صحيح get_gppu(صحيح bank, uint8_t *addr) = 0;
+	virtual صحيح get_iodir(صحيح bank, uint8_t *addr) = 0;
+	virtual صحيح get_gpio(صحيح bank, uint8_t *addr) = 0;
+	virtual صحيح get_probe_reg(uint8_t *addr) = 0;
 
 	uint16_t _olat;
 	uint16_t _iodir;
 	uint16_t _gppu;
 
 	uint16_t _checking_freq = 10;
-	int _count = 0;
+	صحيح كدي_3 = 0;
 
-	enum class STATE : uint8_t {
+	تعداد صنف STATE : uint8_t {
 		INIT_COMMUNICATION,
 		CONFIGURE,
 		CHECK,
