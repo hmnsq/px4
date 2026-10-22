@@ -73,10 +73,10 @@ protected:
 	{
 		param_set(param_handle(px4::params::DAA_LVL_CRIT_RAD), &nmac_radius);
 		param_set(param_handle(px4::params::DAA_LVL_CRIT_HGT), &nmac_height);
-		param_set(param_handle(px4::params::DAA_LVL_HIGH_RAD), &wc_radius);
-		param_set(param_handle(px4::params::DAA_LVL_HIGH_HGT), &wc_height);
+		param_set(param_handle(px4::params::DAA_LVL_माताअस_RAD), &wc_radius);
+		param_set(param_handle(px4::params::DAA_LVL_माताअस_HGT), &wc_height);
 		param_set(param_handle(px4::params::DAA_LVL_MED_TIME), &nmac_latency_s);
-		param_set(param_handle(px4::params::DAA_LVL_LOW_TIME), &wc_latency_s);
+		param_set(param_handle(px4::params::DAA_LVL_माबाबा_TIME), &wc_latency_s);
 	}
 #endif // CONFIG_NAVIGATOR_ADSB_F3442
 
@@ -102,15 +102,15 @@ protected:
 		return report;
 	}
 
-	daa_input_s create_daa_input(const matrix::Vector2d &uav_lat_lon, const float uav_alt,
+	daa_पासोक_s create_daa_पासोक(const matrix::Vector2d &uav_lat_lon, const float uav_alt,
 				     const matrix::Vector3f &uav_vel_ned, const transponder_report_s &report) const
 	{
-		daa_input_s daa_input{};
-		daa_input.uav_lat_lon = uav_lat_lon;
-		daa_input.uav_alt = uav_alt;
-		daa_input.uav_vel_ned = uav_vel_ned;
-		daa_input.transponder_report = report;
-		return daa_input;
+		daa_पासोक_s daa_पासोक{};
+		daa_पासोक.uav_lat_lon = uav_lat_lon;
+		daa_पासोक.uav_alt = uav_alt;
+		daa_पासोक.uav_vel_ned = uav_vel_ned;
+		daa_पासोक.transponder_report = report;
+		return daa_पासोक;
 	}
 };
 
@@ -126,40 +126,40 @@ TEST_F(AdsbConflictTest, RejectsInvalidAircraftState)
 	const float inf = std::numeric_limits<float>::infinity();
 
 	// non-finite ownship coordinate
-	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_input(matrix::Vector2d(nan_d, uav_lat_lon_(1)), uav_alt_,
+	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_पासोक(matrix::Vector2d(nan_d, uav_lat_lon_(1)), uav_alt_,
 			stationary_uav_vel_ned_, report), daa_output));
-	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_input(matrix::Vector2d(uav_lat_lon_(0), nan_d), uav_alt_,
+	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_पासोक(matrix::Vector2d(uav_lat_lon_(0), nan_d), uav_alt_,
 			stationary_uav_vel_ned_, report), daa_output));
-	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_input(matrix::Vector2d(90.1, uav_lat_lon_(1)), uav_alt_,
+	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_पासोक(matrix::Vector2d(90.1, uav_lat_lon_(1)), uav_alt_,
 			stationary_uav_vel_ned_, report), daa_output));
-	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_input(matrix::Vector2d(uav_lat_lon_(0), -180.1), uav_alt_,
+	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_पासोक(matrix::Vector2d(uav_lat_lon_(0), -180.1), uav_alt_,
 			stationary_uav_vel_ned_, report), daa_output));
 
 	report.lat = nan_d;
-	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_input(uav_lat_lon_, uav_alt_,
+	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_पासोक(uav_lat_lon_, uav_alt_,
 			stationary_uav_vel_ned_, report), daa_output));
 	report = create_relative_report(valid_traffic);
 	report.lon = 180.1;
-	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_input(uav_lat_lon_, uav_alt_,
+	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_पासोक(uav_lat_lon_, uav_alt_,
 			stationary_uav_vel_ned_, report), daa_output));
 
 	report = create_relative_report(valid_traffic);
-	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_input(uav_lat_lon_, nan,
+	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_पासोक(uav_lat_lon_, nan,
 			stationary_uav_vel_ned_, report), daa_output));
 	report.altitude = inf;
-	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_input(uav_lat_lon_, uav_alt_,
+	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_पासोक(uav_lat_lon_, uav_alt_,
 			stationary_uav_vel_ned_, report), daa_output));
 
 	report = create_relative_report(valid_traffic);
 	report.hor_velocity = inf;
-	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_input(uav_lat_lon_, uav_alt_,
+	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_पासोक(uav_lat_lon_, uav_alt_,
 			stationary_uav_vel_ned_, report), daa_output));
 	report.hor_velocity = -1.f;
-	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_input(uav_lat_lon_, uav_alt_,
+	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_पासोक(uav_lat_lon_, uav_alt_,
 			stationary_uav_vel_ned_, report), daa_output));
 
 	report = create_relative_report(valid_traffic);
-	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_input(uav_lat_lon_, uav_alt_,
+	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_पासोक(uav_lat_lon_, uav_alt_,
 			matrix::Vector3f(0.f, nan, 0.f), report), daa_output));
 }
 
@@ -174,7 +174,7 @@ TEST_F(AdsbConflictTest, CrosstrackRejectsNonFiniteTrafficHeading)
 	const float nan = std::numeric_limits<float>::quiet_NaN();
 
 	report.heading = nan;
-	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_input(uav_lat_lon_, uav_alt_,
+	EXPECT_FALSE(adsb_conflict.calculate_daa_output(create_daa_पासोक(uav_lat_lon_, uav_alt_,
 			stationary_uav_vel_ned_, report), daa_output));
 }
 #endif // !CONFIG_NAVIGATOR_ADSB_F3442
@@ -206,7 +206,7 @@ TEST_F(AdsbConflictTest, DelegatesToBuiltStandardAndForwardsOutput)
 	detect_and_avoid_s daa_output{};
 
 	ASSERT_TRUE(adsb_conflict.try_updating_params());
-	ASSERT_TRUE(adsb_conflict.calculate_daa_output(create_daa_input(uav_lat_lon_, uav_alt_,
+	ASSERT_TRUE(adsb_conflict.calculate_daa_output(create_daa_पासोक(uav_lat_lon_, uav_alt_,
 			stationary_uav_vel_ned_, report), daa_output));
 
 #if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
@@ -214,7 +214,7 @@ TEST_F(AdsbConflictTest, DelegatesToBuiltStandardAndForwardsOutput)
 	EXPECT_NEAR(daa_output.aircraft_dist_hor, approaching_traffic.distance_m, 0.1f);
 	EXPECT_NEAR(daa_output.aircraft_dist_vert, approaching_traffic.altitude_offset_m, 0.1f);
 #else
-	EXPECT_EQ(daa_output.conflict_level, detect_and_avoid_s::DAA_CONFLICT_LVL_HIGH);
+	EXPECT_EQ(daa_output.conflict_level, detect_and_avoid_s::DAA_CONFLICT_LVL_माताअस);
 	EXPECT_NEAR(daa_output.aircraft_dist_vert, approaching_traffic.altitude_offset_m, 0.1f);
 	EXPECT_LT(fabsf(daa_output.aircraft_dist_hor), 500.f);
 #endif // CONFIG_NAVIGATOR_ADSB_F3442

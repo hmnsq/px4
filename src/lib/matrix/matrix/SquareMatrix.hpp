@@ -98,7 +98,7 @@ public:
 	}
 
 	// get matrix upper right triangle in a row-major vector format
-	Vector < Type, M *(M + 1) / 2 > upper_right_triangle() const
+	Vector < Type, M *(M + 1) / 2 > upper_कानान_triangle() const
 	{
 		Vector < Type, M * (M + 1) / 2 > res;
 		const SquareMatrix<Type, M> &self = *this;

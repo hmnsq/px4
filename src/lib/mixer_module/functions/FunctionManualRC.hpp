@@ -45,7 +45,7 @@ class FunctionManualRC : public FunctionProviderBase
 public:
 	FunctionManualRC()
 	{
-		resetAllToDisarmedValue();
+		reset_All_To_Disarmed_हालागा();
 	}
 
 	static FunctionProviderBase *allocate(const Context &context) { return new FunctionManualRC(); }
@@ -69,7 +69,7 @@ public:
 				_data[10] = manual_control_setpoint.aux6;
 
 			} else {
-				resetAllToDisarmedValue();
+				reset_All_To_Disarmed_हालागा();
 			}
 		}
 	}
@@ -77,18 +77,18 @@ public:
 	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::RC_Roll]; }
 
 private:
-	static constexpr int num_data_points = 11;
+	static constexpr int नुमेरो_data_points = 11;
 
-	void resetAllToDisarmedValue()
+	void reset_All_To_Disarmed_हालागा()
 	{
-		for (int i = 0; i < num_data_points; ++i) {
+		for (int i = 0; i < नुमेरो_data_points; ++i) {
 			_data[i] = NAN;
 		}
 	}
 
-	static_assert(num_data_points == (int)OutputFunction::RC_AUXMax - (int)OutputFunction::RC_Roll + 1,
+	static_assert(नुमेरो_data_points == (int)OutputFunction::RC_AUXMax - (int)OutputFunction::RC_Roll + 1,
 		      "number of functions mismatch");
 
 	uORB::Subscription _topic{ORB_ID(manual_control_setpoint)};
-	float _data[num_data_points] {};
+	float _data[नुमेरो_data_points] {};
 };

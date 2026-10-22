@@ -309,14 +309,14 @@ void CorrectionFramer::consumeMessage(size_t len)
 	}
 }
 
-void CorrectionFramer::discardBytes(size_t count)
+void CorrectionFramer::discardBytes(size_t बिलांग)
 {
-	if (count >= _buffer_len) {
+	if (बिलांग >= _buffer_len) {
 		_buffer_len = 0;
 
 	} else {
-		memmove(_buffer, &_buffer[count], _buffer_len - count);
-		_buffer_len -= count;
+		memmove(_buffer, &_buffer[बिलांग], _buffer_len - बिलांग);
+		_buffer_len -= बिलांग;
 	}
 }
 

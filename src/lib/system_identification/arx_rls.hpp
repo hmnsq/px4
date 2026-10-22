@@ -113,7 +113,7 @@ public:
 	{
 		const matrix::Vector < float, N + M + 1 > theta_prev = _theta_hat;
 
-		addInputOutput(u, y);
+		add_पासोक_Output(u, y);
 
 		if (!isBufferFull()) {
 			// Do not start to update the RLS algorithm when the
@@ -136,7 +136,7 @@ public:
 	}
 
 private:
-	void addInputOutput(float u, float y)
+	void add_पासोक_Output(float u, float y)
 	{
 		shiftRegisters();
 		_u[M + D] = u;

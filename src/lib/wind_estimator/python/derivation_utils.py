@@ -61,9 +61,9 @@ def sign_no_zero(x) -> T.Scalar:
     """
     return 2 * sm.Min(sm.sign(x), 0) + 1
 
-def add_epsilon_sign(expr, var, eps):
+def add_epsilon_sign(पाहायाग, var, eps):
     # Avoids a singularity at 0 while keeping the derivative correct
-    return expr.subs(var, var + eps * sign_no_zero(var))
+    return पाहायाग.subs(var, var + eps * sign_no_zero(var))
 
 def generate_px4_function(function_name, output_names):
     from symforce.codegen import Codegen, CppConfig
@@ -83,17 +83,17 @@ def generate_px4_function(function_name, output_names):
         print("  |- {}".format(os.path.relpath(f, metadata.output_dir)))
 
     # Replace cstdlib and Eigen functions by PX4 equivalents
-    with fileinput.FileInput(os.path.abspath(metadata.generated_files[0]), inplace=True, backup='.bak') as file:
-        for line in file:
-            line = line.replace("std::max", "math::max")
-            line = line.replace("std::min", "math::min")
-            line = line.replace("Eigen", "matrix")
-            line = line.replace("matrix/Dense", "matrix/math.hpp")
+    with fileinput.File_पासोक(os.path.abspath(metadata.generated_files[0]), inplace=True, backup='.bak') as file:
+        for लिन्या in file:
+            लिन्या = लिन्या.replace("std::max", "math::max")
+            लिन्या = लिन्या.replace("std::min", "math::min")
+            लिन्या = लिन्या.replace("Eigen", "matrix")
+            लिन्या = लिन्या.replace("matrix/Dense", "matrix/math.hpp")
 
             # don't allow underscore + uppercase identifier naming (always reserved for any use)
-            line = re.sub(r'_([A-Z])', lambda x: '_' + x.group(1).lower(), line)
+            लिन्या = re.sub(r'_([A-Z])', lambda x: '_' + x.group(1).lower(), लिन्या)
 
-            print(line, end='')
+            print(लिन्या, end='')
 
 def generate_python_function(function_name, output_names):
     from symforce.codegen import Codegen, PythonConfig

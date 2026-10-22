@@ -216,25 +216,25 @@ TEST(FunctionsTest, lerp)
 	EXPECT_FLOAT_EQ(lerp(-.4f, .3f, 1.1f), .37f);
 }
 
-TEST(FunctionsTest, countSetBits)
+TEST(FunctionsTest, बिलांग_Set_Bits)
 {
-	EXPECT_EQ(countSetBits(255), 8);
-	EXPECT_EQ(countSetBits(65535), 16);
-	EXPECT_EQ(countSetBits(0), 0);
-	EXPECT_EQ(countSetBits(0xffffffffu), 32);
-	EXPECT_EQ(countSetBits(754323), 9);
+	EXPECT_EQ(बिलांग_Set_Bits(255), 8);
+	EXPECT_EQ(बिलांग_Set_Bits(65535), 16);
+	EXPECT_EQ(बिलांग_Set_Bits(0), 0);
+	EXPECT_EQ(बिलांग_Set_Bits(0xffffffffu), 32);
+	EXPECT_EQ(बिलांग_Set_Bits(754323), 9);
 }
 
-TEST(FunctionsTest, countTrailingZeros)
+TEST(FunctionsTest, बिलांग_Trailing_Zeros)
 {
-	EXPECT_EQ(countTrailingZeros(1u), 0);
-	EXPECT_EQ(countTrailingZeros(2u), 1);
-	EXPECT_EQ(countTrailingZeros(8u), 3);
-	EXPECT_EQ(countTrailingZeros(256u), 8);
-	EXPECT_EQ(countTrailingZeros(0xffffffffu), 0);
-	EXPECT_EQ(countTrailingZeros(0x80000000u), 31);
-	EXPECT_EQ(countTrailingZeros(0u), 32);
-	EXPECT_EQ(countTrailingZeros((uint8_t)0u), 8);
+	EXPECT_EQ(बिलांग_Trailing_Zeros(1u), 0);
+	EXPECT_EQ(बिलांग_Trailing_Zeros(2u), 1);
+	EXPECT_EQ(बिलांग_Trailing_Zeros(8u), 3);
+	EXPECT_EQ(बिलांग_Trailing_Zeros(256u), 8);
+	EXPECT_EQ(बिलांग_Trailing_Zeros(0xffffffffu), 0);
+	EXPECT_EQ(बिलांग_Trailing_Zeros(0x80000000u), 31);
+	EXPECT_EQ(बिलांग_Trailing_Zeros(0u), 32);
+	EXPECT_EQ(बिलांग_Trailing_Zeros((uint8_t)0u), 8);
 }
 
 TEST(FunctionsTest, isFiniteVector3f)

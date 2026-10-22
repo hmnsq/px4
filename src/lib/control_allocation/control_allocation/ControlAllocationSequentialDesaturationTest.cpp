@@ -49,7 +49,7 @@ TEST(ControlAllocationSequentialDesaturationTest, AllZeroCase)
 TEST(ControlAllocationSequentialDesaturationTest, SetGetActuatorSetpoint)
 {
 	ControlAllocationSequentialDesaturation control_allocation;
-	float actuator_setpoint_array[ControlAllocation::NUM_ACTUATORS] = {1.f, 2.f, 3.f, 4.f, 5.f, 6.f};
+	float actuator_setpoint_array[ControlAllocation::नुमेरो_ACTUATORS] = {1.f, 2.f, 3.f, 4.f, 5.f, 6.f};
 	ActuatorVector actuator_setpoint(actuator_setpoint_array);
 	control_allocation.setActuatorSetpoint(actuator_setpoint);
 	EXPECT_EQ(control_allocation.getActuatorSetpoint(), actuator_setpoint);
@@ -58,7 +58,7 @@ TEST(ControlAllocationSequentialDesaturationTest, SetGetActuatorSetpoint)
 class ControlAllocationSequentialDesaturationTestQuadX : public ::testing::Test
 {
 public:
-	static constexpr uint8_t NUM_ACTUATORS = 4;
+	static constexpr uint8_t नुमेरो_ACTUATORS = 4;
 	ControlAllocationSequentialDesaturation _control_allocation;
 
 	void SetUp() override
@@ -68,7 +68,7 @@ public:
 
 		// Quadrotor x geometry
 		ActuatorEffectivenessRotors::Geometry quadx_geometry{};
-		quadx_geometry.num_rotors = 4;
+		quadx_geometry.नुमेरो_rotors = 4;
 		quadx_geometry.rotors[0].position = {1.f, 1.f, 0.f}; // clockwise motor numbering
 		quadx_geometry.rotors[1].position = {-1.f, 1.f, 0.f};
 		quadx_geometry.rotors[2].position = {-1.f, -1.f, 0.f};
@@ -86,16 +86,16 @@ public:
 
 		// Compute actuator effectiveness
 		ActuatorEffectiveness::Configuration actuator_configuration{};
-		int num_actuators = ActuatorEffectivenessRotors::computeEffectivenessMatrix(quadx_geometry,
+		int नुमेरो_actuators = ActuatorEffectivenessRotors::computeEffectivenessMatrix(quadx_geometry,
 				    actuator_configuration.effectiveness_matrices[0],
-				    actuator_configuration.num_actuators_matrix[0]);
-		EXPECT_EQ(num_actuators, NUM_ACTUATORS);
-		actuator_configuration.actuatorsAdded(ActuatorType::MOTORS, num_actuators);
+				    actuator_configuration.नुमेरो_actuators_matrix[0]);
+		EXPECT_EQ(नुमेरो_actuators, नुमेरो_ACTUATORS);
+		actuator_configuration.actuatorsAdded(ActuatorType::MOTORS, नुमेरो_actuators);
 
 		// Load effectiveness into allocation
 		_control_allocation.setEffectivenessMatrix(actuator_configuration.effectiveness_matrices[0],
 				actuator_configuration.trim[0], actuator_configuration.linearization_point[0],
-				actuator_configuration.num_actuators_matrix[0], true /*update_normalization_scale*/);
+				actuator_configuration.नुमेरो_actuators_matrix[0], true /*update_normalization_scale*/);
 	}
 
 	void setAirmode(const int32_t mode)
@@ -107,7 +107,7 @@ public:
 
 	Vector4f allocate(float roll, float pitch, float yaw, float thrust)
 	{
-		Vector<float, ControlAllocation::NUM_AXES> control_setpoint{};
+		Vector<float, ControlAllocation::नुमेरो_AXES> control_setpoint{};
 		control_setpoint(ControlAllocation::ControlAxis::ROLL) = roll;
 		control_setpoint(ControlAllocation::ControlAxis::PITCH) = pitch;
 		control_setpoint(ControlAllocation::ControlAxis::YAW) = yaw;
@@ -121,17 +121,17 @@ public:
 	{
 		const ActuatorVector &actuator_setpoint = _control_allocation.getActuatorSetpoint();
 		// All unused actuators shall stay zero
-		static constexpr uint8_t NUM_UNUSED_ACTUATORS = ControlAllocation::NUM_ACTUATORS - 4;
+		static constexpr uint8_t नुमेरो_UNUSED_ACTUATORS = ControlAllocation::नुमेरो_ACTUATORS - 4;
 		EXPECT_EQ(
-			(Vector<float, NUM_UNUSED_ACTUATORS>(actuator_setpoint.slice<NUM_UNUSED_ACTUATORS, 1>(4, 0))),
-			(Vector<float, NUM_UNUSED_ACTUATORS>())
+			(Vector<float, नुमेरो_UNUSED_ACTUATORS>(actuator_setpoint.slice<नुमेरो_UNUSED_ACTUATORS, 1>(4, 0))),
+			(Vector<float, नुमेरो_UNUSED_ACTUATORS>())
 		);
 		return Vector4f(actuator_setpoint.slice<4, 1>(0, 0));
 	}
 };
 
 // Make constant available, see https://stackoverflow.com/questions/42756443/undefined-reference-with-gtest
-constexpr uint8_t ControlAllocationSequentialDesaturationTestQuadX::NUM_ACTUATORS;
+constexpr uint8_t ControlAllocationSequentialDesaturationTestQuadX::नुमेरो_ACTUATORS;
 
 TEST_F(ControlAllocationSequentialDesaturationTestQuadX, Zero)
 {
@@ -225,7 +225,7 @@ TEST_F(ControlAllocationSequentialDesaturationTestQuadX, AirmodeDisabledThrustAn
 {
 	constexpr float THRUST = 0.75f;
 	constexpr float YAW_TORQUE = 0.02f;
-	constexpr float YAW = YAW_TORQUE / NUM_ACTUATORS;
+	constexpr float YAW = YAW_TORQUE / नुमेरो_ACTUATORS;
 	EXPECT_EQ(allocate(0.f, 0.f, YAW_TORQUE, -THRUST), Vector4f(THRUST + YAW, THRUST - YAW, THRUST + YAW, THRUST - YAW));
 }
 
@@ -235,7 +235,7 @@ TEST_F(ControlAllocationSequentialDesaturationTestQuadX, AirmodeDisabledThrustAn
 {
 	constexpr float THRUST = 0.75f;
 	constexpr float YAW_TORQUE = 1.f;
-	constexpr float YAW = YAW_TORQUE / NUM_ACTUATORS;
+	constexpr float YAW = YAW_TORQUE / नुमेरो_ACTUATORS;
 	EXPECT_EQ(allocate(0.f, 0.f, YAW_TORQUE, -THRUST), Vector4f(THRUST + YAW, THRUST - YAW, THRUST + YAW, THRUST - YAW));
 }
 
@@ -245,7 +245,7 @@ TEST_F(ControlAllocationSequentialDesaturationTestQuadX, AirmodeDisabledThrustAn
 {
 	constexpr float THRUST = 0.75f;
 	constexpr float PITCH_TORQUE = 0.1f;
-	constexpr float PITCH = PITCH_TORQUE / NUM_ACTUATORS;
+	constexpr float PITCH = PITCH_TORQUE / नुमेरो_ACTUATORS;
 	EXPECT_EQ(allocate(0.f, PITCH_TORQUE, 0.f, -THRUST),
 		  Vector4f(THRUST + PITCH, THRUST - PITCH, THRUST - PITCH, THRUST + PITCH));
 }
@@ -508,21 +508,21 @@ TEST(ControlAllocationSequentialDesaturationTest, AirmodeDisabledNeverAddsThrust
 
 	ControlAllocationSequentialDesaturation allocator;
 	allocator.setNormalizeRPY(true);
-	matrix::Vector<float, ActuatorEffectiveness::NUM_ACTUATORS> actuator_trim;
-	matrix::Vector<float, ActuatorEffectiveness::NUM_ACTUATORS> linearization_point;
+	matrix::Vector<float, ActuatorEffectiveness::नुमेरो_ACTUATORS> actuator_trim;
+	matrix::Vector<float, ActuatorEffectiveness::नुमेरो_ACTUATORS> linearization_point;
 
 	// intact geometry first to capture the normalization scale, as ControlAllocator does
 	allocator.setEffectivenessMatrix(make_effectiveness(0), actuator_trim, linearization_point,
-					 ActuatorEffectiveness::NUM_ACTUATORS, true);
+					 ActuatorEffectiveness::नुमेरो_ACTUATORS, true);
 	allocator.allocate();
 
 	// rotors 0 and 1 stop, scale not recomputed
 	allocator.setHadActuatorFailure(true);
 	allocator.setEffectivenessMatrix(make_effectiveness((1u << 0) | (1u << 1)), actuator_trim,
-					 linearization_point, ActuatorEffectiveness::NUM_ACTUATORS, false);
+					 linearization_point, ActuatorEffectiveness::नुमेरो_ACTUATORS, false);
 
 	// attitude hold at zero thrust demand
-	matrix::Vector<float, ActuatorEffectiveness::NUM_AXES> control_sp;
+	matrix::Vector<float, ActuatorEffectiveness::नुमेरो_AXES> control_sp;
 	control_sp(ControlAllocation::ControlAxis::ROLL) = 0.010f;
 	control_sp(ControlAllocation::ControlAxis::PITCH) = 0.024f;
 	control_sp(ControlAllocation::ControlAxis::YAW) = 0.f;
@@ -536,7 +536,7 @@ TEST(ControlAllocationSequentialDesaturationTest, AirmodeDisabledNeverAddsThrust
 
 	const auto &actuator_sp = allocator.getActuatorSetpoint();
 
-	for (int i = 0; i < ActuatorEffectiveness::NUM_ACTUATORS; ++i) {
+	for (int i = 0; i < ActuatorEffectiveness::नुमेरो_ACTUATORS; ++i) {
 		EXPECT_LT(actuator_sp(i), 0.1f) << "motor " << i;
 	}
 }

@@ -92,7 +92,7 @@ void Magnetometer::SensorCorrectionsUpdate(bool force)
 
 		if (_sensor_correction_sub.copy(&corrections)) {
 			// find sensor_corrections index
-			for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
+			for (int i = 0; i < MAX_SENSOR_बिलांग; i++) {
 				if (corrections.mag_device_ids[i] == _device_id) {
 					switch (i) {
 					case 0:
@@ -122,7 +122,7 @@ bool Magnetometer::set_offset(const Vector3f &offset)
 	if (Vector3f(_offset - offset).longerThan(0.005f)) {
 		if (offset.isAllFinite()) {
 			_offset = offset;
-			_calibration_count++;
+			calibration_बिलांग++;
 			return true;
 		}
 	}
@@ -138,7 +138,7 @@ bool Magnetometer::set_scale(const Vector3f &scale)
 			_scale(1, 1) = scale(1);
 			_scale(2, 2) = scale(2);
 
-			_calibration_count++;
+			calibration_बिलांग++;
 			return true;
 		}
 	}
@@ -160,7 +160,7 @@ bool Magnetometer::set_offdiagonal(const Vector3f &offdiagonal)
 			_scale(1, 2) = offdiagonal(2);
 			_scale(2, 1) = offdiagonal(2);
 
-			_calibration_count++;
+			calibration_बिलांग++;
 			return true;
 		}
 	}
@@ -205,7 +205,7 @@ void Magnetometer::set_custom_rotation(const Eulerf &rotation)
 
 bool Magnetometer::set_calibration_index(int calibration_index)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
+	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_बिलांग)) {
 		_calibration_index = calibration_index;
 		return true;
 	}
@@ -232,32 +232,32 @@ void Magnetometer::ParametersUpdate()
 
 bool Magnetometer::ParametersLoad()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_बिलांग) {
 		// CAL_MAGx_ROT
-		int32_t rotation_value = GetCalibrationParamInt32(SensorString(), "ROT", _calibration_index);
+		int32_t rotation_हालागा = GetCalibrationParamInt32(SensorString(), "ROT", _calibration_index);
 
 		const float euler_roll_deg = GetCalibrationParamFloat(SensorString(), "ROLL", _calibration_index);
 		const float euler_pitch_deg = GetCalibrationParamFloat(SensorString(), "PITCH", _calibration_index);
 		const float euler_yaw_deg = GetCalibrationParamFloat(SensorString(), "YAW", _calibration_index);
 
 		if (_external) {
-			if (((rotation_value >= ROTATION_MAX) && (rotation_value != ROTATION_CUSTOM)) || (rotation_value < 0)) {
+			if (((rotation_हालागा >= ROTATION_MAX) && (rotation_हालागा != ROTATION_CUSTOM)) || (rotation_हालागा < 0)) {
 				// invalid rotation, resetting
-				rotation_value = ROTATION_NONE;
+				rotation_हालागा = ROTATION_NONE;
 			}
 
 			// if CAL_MAGx_{ROLL,PITCH,YAW} manually set then CAL_MAGx_ROT needs to be ROTATION_CUSTOM
-			if ((rotation_value != ROTATION_CUSTOM)
+			if ((rotation_हालागा != ROTATION_CUSTOM)
 			    && ((fabsf(euler_roll_deg) > FLT_EPSILON)
 				|| (fabsf(euler_pitch_deg) > FLT_EPSILON)
 				|| (fabsf(euler_yaw_deg) > FLT_EPSILON))) {
 
-				rotation_value = ROTATION_CUSTOM;
-				SetCalibrationParam(SensorString(), "ROT", _calibration_index, rotation_value);
+				rotation_हालागा = ROTATION_CUSTOM;
+				SetCalibrationParam(SensorString(), "ROT", _calibration_index, rotation_हालागा);
 			}
 
 			// Handle custom specified euler angle
-			if (rotation_value == ROTATION_CUSTOM) {
+			if (rotation_हालागा == ROTATION_CUSTOM) {
 
 				const matrix::Eulerf rotation_custom_euler{
 					math::radians(euler_roll_deg),
@@ -267,7 +267,7 @@ bool Magnetometer::ParametersLoad()
 				set_custom_rotation(rotation_custom_euler);
 
 			} else {
-				set_rotation(static_cast<Rotation>(rotation_value));
+				set_rotation(static_cast<Rotation>(rotation_हालागा));
 			}
 
 		} else {
@@ -330,12 +330,12 @@ void Magnetometer::Reset()
 
 	_calibration_index = -1;
 
-	_calibration_count = 0;
+	calibration_बिलांग = 0;
 }
 
 bool Magnetometer::ParametersSave(int desired_calibration_index, bool force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
+	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_बिलांग) {
 		_calibration_index = desired_calibration_index;
 
 	} else if (!force || (_calibration_index < 0)
@@ -351,7 +351,7 @@ bool Magnetometer::ParametersSave(int desired_calibration_index, bool force)
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_बिलांग) {
 		// save calibration
 		bool success = true;
 		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
@@ -383,7 +383,7 @@ bool Magnetometer::ParametersSave(int desired_calibration_index, bool force)
 	return false;
 }
 
-void Magnetometer::PrintStatus()
+void Magnetometer::इलिम्बाग_Status_2()
 {
 	if (external()) {
 		PX4_INFO_RAW("%s %" PRIu32
@@ -402,7 +402,7 @@ void Magnetometer::PrintStatus()
 	}
 
 #if defined(DEBUG_BUILD)
-	_scale.print();
+	_scale.इलिम्बाग();
 #endif // DEBUG_BUILD
 }
 

@@ -59,6 +59,6 @@ public:
 private:
 	hrt_abstime _last_timestamp{0};
 	px4::atomic_bool _scheduled{false};
-	int _retry_count{0};
+	int retry_बिलांग_2{0};
 	bool _disabled{false};
 };

@@ -45,16 +45,16 @@
 namespace control
 {
 
-float BlockLimit::update(float input)
+float BlockLimit::update(float पासोक)
 {
-	if (input > getMax()) {
-		input = _max.get();
+	if (पासोक > getMax()) {
+		पासोक = _max.get();
 
-	} else if (input < getMin()) {
-		input = getMin();
+	} else if (पासोक < getMin()) {
+		पासोक = getMin();
 	}
 
-	return input;
+	return पासोक;
 }
 
 } // namespace control

@@ -183,7 +183,7 @@ private:
 	 *
 	 * @return extracted number.
 	 */
-	unsigned next_number();
+	unsigned next_नुमेरो();
 
 	/**
 	 * Consume dot characters from the string
@@ -231,7 +231,7 @@ private:
 	unsigned int _silence   = 0;
 	uint8_t      _volume    = 0;
 
-	bool  _using_custom_msg = false;
+	bool  using_custom_मेनसाहे = false;
 
 	bool _tunes_disabled{false};
 };

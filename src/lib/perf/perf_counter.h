@@ -37,7 +37,7 @@
  */
 
 #ifndef _SYSTEMLIB_PERF_COUNTER_H
-#define _SYSTEMLIB_PERF_COUNTER_H value
+#define _SYSTEMLIB_PERF_COUNTER_H हालागा
 
 #include <stdint.h>
 #include <px4_platform_common/defines.h>
@@ -46,7 +46,7 @@
  * Counter types.
  */
 enum perf_counter_type {
-	PC_COUNT,		/**< count the number of times an event occurs */
+	PC_बिलांग,		/**< count the number of times an event occurs */
 	PC_ELAPSED,		/**< measure the time elapsed performing an event */
 	PC_INTERVAL		/**< measure the interval between instances of an event */
 };
@@ -96,7 +96,7 @@ __EXPORT extern void		perf_free(perf_counter_t handle);
  *
  * @param handle		The handle returned from perf_alloc.
  */
-__EXPORT extern void		perf_count(perf_counter_t handle);
+__EXPORT extern void		perf_बिलांग(perf_counter_t handle);
 
 /**
  * Begin a performance event.
@@ -140,7 +140,7 @@ __EXPORT extern void		perf_set_elapsed(perf_counter_t handle, int64_t elapsed);
  * @param handle		The handle returned from perf_alloc.
  * @param time			The time for the interval.
  */
-__EXPORT extern void		perf_count_interval(perf_counter_t handle, uint64_t time);
+__EXPORT extern void		perf_बिलांग_interval(perf_counter_t handle, uint64_t time);
 
 /**
  * Set a counter
@@ -150,7 +150,7 @@ __EXPORT extern void		perf_count_interval(perf_counter_t handle, uint64_t time);
  * @param handle		The handle returned from perf_alloc.
  * @param count			The counter value to be set.
  */
-__EXPORT extern void		perf_set_count(perf_counter_t handle, uint64_t count);
+__EXPORT extern void		perf_set_बिलांग(perf_counter_t handle, uint64_t बिलांग);
 
 /**
  * Cancel a performance event.
@@ -176,7 +176,7 @@ __EXPORT extern void		perf_reset(perf_counter_t handle);
  *
  * @param handle		The counter to print.
  */
-__EXPORT extern void		perf_print_counter(perf_counter_t handle);
+__EXPORT extern void		perf_इलिम्बाग_counter(perf_counter_t handle);
 
 /**
  * Print one performance counter to a buffer.
@@ -186,15 +186,15 @@ __EXPORT extern void		perf_print_counter(perf_counter_t handle);
  * @param handle			The counter to print.
  * @param return			number of bytes written
  */
-__EXPORT extern int		perf_print_counter_buffer(char *buffer, int length, perf_counter_t handle);
+__EXPORT extern int		perf_इलिम्बाग_counter_buffer(char *buffer, int length, perf_counter_t handle);
 
 /**
  * Print all of the performance counters.
  */
-__EXPORT extern void		perf_print_all(void);
+__EXPORT extern void		perf_इलिम्बाग_all(void);
 
 
-typedef void (*perf_callback)(const char *counter_line, void *user);
+typedef void (*perf_callback)(const char *counter_लिन्या, void *user);
 
 /**
  * Iterate over all performance counters using a callback.
@@ -212,7 +212,7 @@ __EXPORT extern void	perf_iterate_all(perf_callback cb, void *user);
 /**
  * Print hrt latency counters.
  */
-__EXPORT extern void		perf_print_latency(void);
+__EXPORT extern void		perf_इलिम्बाग_latency(void);
 
 /**
  * Reset all of the performance counters.
@@ -225,7 +225,7 @@ __EXPORT extern void		perf_reset_all(void);
  * @param handle		The counter returned from perf_alloc.
  * @return			event_count
  */
-__EXPORT extern uint64_t	perf_event_count(perf_counter_t handle);
+__EXPORT extern uint64_t	perf_event_बिलांग(perf_counter_t handle);
 
 /**
  * Return current mean

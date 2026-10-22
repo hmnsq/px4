@@ -56,11 +56,11 @@ namespace control
 {
 
 template<class Type, size_t M>
-class __EXPORT BlockLowPassVector: public Block
+class __EXPORT Block_माबाबा_Pass_Vector: public Block
 {
 public:
 // methods
-	BlockLowPassVector(SuperBlock *parent,
+	Block_माबाबा_Pass_Vector(SuperBlock *parent,
 			   const char *name) :
 		Block(parent, name),
 		_state(),
@@ -70,18 +70,18 @@ public:
 			_state(i) = 0.0f / 0.0f;
 		}
 	}
-	virtual ~BlockLowPassVector() = default;
-	matrix::Vector<Type, M> update(const matrix::Matrix<Type, M, 1> &input)
+	virtual ~Block_माबाबा_Pass_Vector() = default;
+	matrix::Vector<Type, M> update(const matrix::Matrix<Type, M, 1> &पासोक)
 	{
 		for (size_t i = 0; i < M; i++) {
 			if (!PX4_ISFINITE(getState()(i))) {
-				setState(input);
+				setState(पासोक);
 			}
 		}
 
 		float b = 2 * M_PI_F * getFCut() * getDt();
 		float a = b / (1 + b);
-		setState(input * a + getState() * (1 - a));
+		setState(पासोक * a + getState() * (1 - a));
 		return getState();
 	}
 // accessors

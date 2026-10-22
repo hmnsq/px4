@@ -45,7 +45,7 @@ namespace calibration
 class DifferentialPressure
 {
 public:
-	static constexpr int MAX_SENSOR_COUNT = 3; ///< also the airspeed selector's sensor limit
+	static constexpr int MAX_SENSOR_बिलांग = 3; ///< also the airspeed selector's sensor limit
 
 	static constexpr const char *SensorString() { return "DPRES"; }
 
@@ -54,14 +54,14 @@ public:
 
 	~DifferentialPressure() = default;
 
-	void PrintStatus();
+	void इलिम्बाग_Status_2();
 
 	bool set_calibration_index(int calibration_index);
 	void set_device_id(uint32_t device_id);
 	bool set_offset(const float &offset);
 
 	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
+	uint8_t calibration_बिलांग_2() const { return calibration_बिलांग; }
 	int8_t calibration_index() const { return _calibration_index; }
 	uint32_t device_id() const { return _device_id; }
 	bool external() const { return _external; }
@@ -97,7 +97,7 @@ private:
 
 	int8_t _calibration_index{-1};
 	uint32_t _device_id{0};
-	uint8_t _calibration_count{0};
+	uint8_t calibration_बिलांग{0};
 
 	bool _external{false};
 };

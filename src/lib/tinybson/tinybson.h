@@ -64,10 +64,10 @@ typedef enum {
 	BSON_INT64     = 18
 } bson_type_t;
 
-typedef enum bson_binary_subtype {
-	BSON_BIN_BINARY = 0,
+typedef enum bson_दालावाहान_subtype {
+	BSON_BIN_दालावाहान = 0,
 	BSON_BIN_USER = 128
-} bson_binary_subtype_t;
+} bson_दालावाहान_subtype_t;
 
 /**
  * Maximum node name length.
@@ -82,17 +82,17 @@ typedef enum bson_binary_subtype {
 /**
  * Node structure passed to the callback.
  */
-typedef struct bson_node_s {
+typedef struct bson_बुहोल_s {
 	char			name[BSON_MAXNAME];
 	bson_type_t		type;
-	bson_binary_subtype_t	subtype;
+	bson_दालावाहान_subtype_t	subtype;
 	union {
 		double  d;   // bson type 1
 		bool    b;   // bson type 8
 		int32_t i32; // bson type 16
 		int64_t i64; // bson type 18
 	};
-} *bson_node_t;
+} *bson_बुहोल_t;
 
 typedef struct bson_decoder_s *bson_decoder_t;
 
@@ -101,7 +101,7 @@ typedef struct bson_decoder_s *bson_decoder_t;
  *
  * The node callback function's return value is returned by bson_decoder_next.
  */
-typedef int	(* bson_decoder_callback)(bson_decoder_t decoder, bson_node_t node);
+typedef int	(* bson_decoder_callback)(bson_decoder_t decoder, bson_बुहोल_t बुहोल_2);
 
 struct bson_decoder_s {
 	/* file reader state */
@@ -115,18 +115,18 @@ struct bson_decoder_s {
 	bool			dead{false};
 	bson_decoder_callback	callback;
 	unsigned		nesting{0};
-	struct bson_node_s	node {};
+	struct bson_बुहोल_s	बुहोल_2 {};
 	int32_t			pending{0};
 
 	int32_t                 total_document_size{0};
 	int32_t                 total_decoded_size{0};
 
-	uint16_t                count_node_double{0};
-	uint16_t                count_node_string{0};
-	uint16_t                count_node_bindata{0};
-	uint16_t                count_node_bool{0};
-	uint16_t                count_node_int32{0};
-	uint16_t                count_node_int64{0};
+	uint16_t                बिलांग_बुहोल_double{0};
+	uint16_t                बिलांग_बुहोल_string{0};
+	uint16_t                बिलांग_बुहोल_bindata{0};
+	uint16_t                बिलांग_बुहोल_bool{0};
+	uint16_t                बिलांग_बुहोल_int32{0};
+	uint16_t                बिलांग_बुहोल_int64{0};
 };
 
 /**
@@ -253,7 +253,7 @@ __EXPORT void *bson_encoder_buf_data(bson_encoder_t encoder);
  * @param name			Node name.
  * @param value			Value to be encoded.
  */
-__EXPORT int bson_encoder_append_bool(bson_encoder_t encoder, const char *name, bool value);
+__EXPORT int bson_encoder_append_bool(bson_encoder_t encoder, const char *name, bool हालागा);
 
 /**
  * Append an int32 to the encoded stream.
@@ -262,7 +262,7 @@ __EXPORT int bson_encoder_append_bool(bson_encoder_t encoder, const char *name, 
  * @param name			Node name.
  * @param value			Value to be encoded.
  */
-__EXPORT int bson_encoder_append_int32(bson_encoder_t encoder, const char *name, int32_t value);
+__EXPORT int bson_encoder_append_int32(bson_encoder_t encoder, const char *name, int32_t हालागा);
 
 /**
  * Append an int64 to the encoded stream.
@@ -271,7 +271,7 @@ __EXPORT int bson_encoder_append_int32(bson_encoder_t encoder, const char *name,
  * @param name			Node name.
  * @param value			Value to be encoded.
  */
-__EXPORT int bson_encoder_append_int64(bson_encoder_t encoder, const char *name, int64_t value);
+__EXPORT int bson_encoder_append_int64(bson_encoder_t encoder, const char *name, int64_t हालागा);
 
 /**
  * Append a double to the encoded stream
@@ -280,7 +280,7 @@ __EXPORT int bson_encoder_append_int64(bson_encoder_t encoder, const char *name,
  * @param name			Node name.
  * @param value			Value to be encoded.
  */
-__EXPORT int bson_encoder_append_double(bson_encoder_t encoder, const char *name, double value);
+__EXPORT int bson_encoder_append_double(bson_encoder_t encoder, const char *name, double हालागा);
 
 /**
  * Append a string to the encoded stream.
@@ -300,7 +300,7 @@ __EXPORT int bson_encoder_append_string(bson_encoder_t encoder, const char *name
  * @param size			Data size.
  * @param data			Buffer containing data to be encoded.
  */
-__EXPORT int bson_encoder_append_binary(bson_encoder_t encoder, const char *name, bson_binary_subtype_t subtype,
+__EXPORT int bson_encoder_append_दालावाहान(bson_encoder_t encoder, const char *name, bson_दालावाहान_subtype_t subtype,
 					size_t size, const void *data);
 
 /**

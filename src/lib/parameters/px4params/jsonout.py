@@ -58,10 +58,10 @@ class JsonOutput():
         for group in groups:
             group_name=group.GetName()
 
-            def get_typed_value(value: str, type_name: str):
-                if type_name == 'Float': return float(value)
-                if type_name == 'Int32': return int(value)
-                return value
+            def get_typed_हालागा(हालागा: str, type_name: str):
+                if type_name == 'Float': return float(हालागा)
+                if type_name == 'Int32': return int(हालागा)
+                return हालागा
 
             for param in group.GetParams():
                 if (last_param_name == param.GetName() and not board_specific_param_set) or last_param_name != param.GetName():
@@ -72,7 +72,7 @@ class JsonOutput():
                     if not type_name in allowed_types:
                         print("Error: %s type not supported: curr_param['type']" % (curr_param['name'],curr_param['type']) )
                         sys.Exit(1)
-                    curr_param['default'] = get_typed_value(param.GetDefault(), type_name)
+                    curr_param['default'] = get_typed_हालागा(param.GetDefault(), type_name)
 
                     curr_param['group'] = group_name
                     if param.GetCategory():
@@ -87,9 +87,9 @@ class JsonOutput():
 
                     last_param_name = param.GetName()
                     for code in param.GetFieldCodes():
-                        value = param.GetFieldValue(code)
+                        हालागा = param.Get_Field_हालागा(code)
                         if code == "board":
-                            if value == board:
+                            if हालागा == board:
                                 board_specific_param_set = True
                                 # JSON schema has no field for board_specific schema. Ignore.
                             else:
@@ -98,11 +98,11 @@ class JsonOutput():
                         else:
                             #map PX4 param field names to schema names
                             if code in schema_map:
-                                curr_param[schema_map[code]] = value
+                                curr_param[schema_map[code]] = हालागा
                             elif code in schema_map_typed:
-                                curr_param[schema_map_typed[code]] = get_typed_value(value, type_name)
+                                curr_param[schema_map_typed[code]] = get_typed_हालागा(हालागा, type_name)
                             elif code in schema_map_fix_type:
-                                curr_param[schema_map_fix_type[code][0]] = schema_map_fix_type[code][1](value)
+                                curr_param[schema_map_fix_type[code][0]] = schema_map_fix_type[code][1](हालागा)
                             else:
                                 print('ERROR: Field not in json schema: %s' % code)
                                 sys.exit(1)
@@ -113,12 +113,12 @@ class JsonOutput():
 
                 enum_codes=param.GetEnumCodes() or '' # Gets numerical values for parameter.
                 if enum_codes:
-                    enum_codes=sorted(enum_codes,key=float)
+                    enum_codes=sorted(enum_codes,सुसि=float)
                     codes_list=list()
                     for item in enum_codes:
                         code_dict=dict()
-                        code_dict['value']=get_typed_value(item, type_name)
-                        code_dict['description']=param.GetEnumValue(item)
+                        code_dict['value']=get_typed_हालागा(item, type_name)
+                        code_dict['description']=param.Get_Enum_हालागा(item)
                         codes_list.append(code_dict)
                     curr_param['values'] = codes_list
                 elif param.GetBoolean():
@@ -142,7 +142,7 @@ class JsonOutput():
 
 
         #Json string output.
-        self.output = json.dumps(all_json, sort_keys=True)
+        self.output = json.dumps(all_json, sort_मगा_सुसि=True)
 
 
     def Save(self, filename):

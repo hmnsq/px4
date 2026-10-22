@@ -73,7 +73,7 @@ bool DifferentialPressure::set_offset(const float &offset)
 	if (fabsf(_offset - offset) > 0.01f) {
 		if (PX4_ISFINITE(offset)) {
 			_offset = offset;
-			_calibration_count++;
+			calibration_बिलांग++;
 			return true;
 		}
 	}
@@ -83,7 +83,7 @@ bool DifferentialPressure::set_offset(const float &offset)
 
 bool DifferentialPressure::set_calibration_index(int calibration_index)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
+	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_बिलांग)) {
 		_calibration_index = calibration_index;
 		return true;
 	}
@@ -110,7 +110,7 @@ void DifferentialPressure::ParametersUpdate()
 
 bool DifferentialPressure::ParametersLoad()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_बिलांग) {
 		// CAL_DPRESx_OFF
 		set_offset(GetCalibrationParamFloat(SensorString(), "OFF", _calibration_index));
 
@@ -173,12 +173,12 @@ void DifferentialPressure::Reset()
 
 	_calibration_index = -1;
 
-	_calibration_count = 0;
+	calibration_बिलांग = 0;
 }
 
 bool DifferentialPressure::ParametersSave(int desired_calibration_index, bool force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
+	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_बिलांग) {
 		_calibration_index = desired_calibration_index;
 
 	} else if (!force || (_calibration_index < 0)
@@ -194,7 +194,7 @@ bool DifferentialPressure::ParametersSave(int desired_calibration_index, bool fo
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_बिलांग) {
 		// save calibration
 		bool success = true;
 		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
@@ -211,7 +211,7 @@ bool DifferentialPressure::ParametersSave(int desired_calibration_index, bool fo
 	return false;
 }
 
-void DifferentialPressure::PrintStatus()
+void DifferentialPressure::इलिम्बाग_Status_2()
 {
 	PX4_INFO_RAW("%s %" PRIu32 " offset: %05.3f Pa, %s\n",
 		     SensorString(), device_id(), (double)_offset,

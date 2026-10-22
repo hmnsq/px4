@@ -59,17 +59,17 @@ public:
 	StubParamLayer() : ParamLayer(nullptr) {}
 	virtual ~StubParamLayer() = default;
 
-	bool store(param_t, param_value_u) override { return false; }
+	bool store(param_t, param_हालागा_u) override { return false; }
 	bool contains(param_t) const override { return false; }
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_बिलांग> containedAsBitset() const override
 	{
-		return px4::AtomicBitset<PARAM_COUNT>();
+		return px4::AtomicBitset<PARAM_बिलांग>();
 	}
 
-	param_value_u get(param_t) const override
+	param_हालागा_u get(param_t) const override
 	{
-		param_value_u v{};
+		param_हालागा_u v{};
 		v.i = 0;
 		return v;
 	}
@@ -94,12 +94,12 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentStoreGetRace)
 	for (int rep = 0; rep < 50; rep++) {
 		DynamicSparseLayer layer(&stub, /*n_prealloc=*/2, /*n_grow=*/1);
 
-		constexpr int NUM_PARAMS = 100;
+		constexpr int नुमेरो_PARAMS = 100;
 		std::atomic<bool> stop{false};
 
 		std::thread writer([&]() {
-			for (int i = 0; i < NUM_PARAMS; i++) {
-				param_value_u v{};
+			for (int i = 0; i < नुमेरो_PARAMS; i++) {
+				param_हालागा_u v{};
 				v.i = i * 10;
 				layer.store(static_cast<param_t>(i), v);
 			}
@@ -114,7 +114,7 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentStoreGetRace)
 				while (!stop.load(std::memory_order_acquire)) {
 					int current_size = layer.size();
 
-					for (int i = 0; i < current_size && i < NUM_PARAMS; i++) {
+					for (int i = 0; i < current_size && i < नुमेरो_PARAMS; i++) {
 						layer.contains(static_cast<param_t>(i));
 						layer.get(static_cast<param_t>(i));
 					}
@@ -128,15 +128,15 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentStoreGetRace)
 			t.join();
 		}
 
-		for (int i = 0; i < NUM_PARAMS; i++) {
+		for (int i = 0; i < नुमेरो_PARAMS; i++) {
 			ASSERT_TRUE(layer.contains(static_cast<param_t>(i)))
 					<< "rep=" << rep << " param=" << i;
-			param_value_u v = layer.get(static_cast<param_t>(i));
+			param_हालागा_u v = layer.get(static_cast<param_t>(i));
 			ASSERT_EQ(v.i, i * 10)
 					<< "rep=" << rep << " param=" << i;
 		}
 
-		ASSERT_EQ(layer.size(), NUM_PARAMS);
+		ASSERT_EQ(layer.size(), नुमेरो_PARAMS);
 	}
 }
 
@@ -147,20 +147,20 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentStoreGetRace)
 TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentMultipleWriters)
 {
 	constexpr int PARAMS_PER_WRITER = 50;
-	constexpr int NUM_WRITERS = 4;
-	constexpr int TOTAL = NUM_WRITERS * PARAMS_PER_WRITER;
+	constexpr int नुमेरो_WRITERS = 4;
+	constexpr int TOTAL = नुमेरो_WRITERS * PARAMS_PER_WRITER;
 
 	for (int rep = 0; rep < 20; rep++) {
 		DynamicSparseLayer layer(&stub, /*n_prealloc=*/TOTAL, /*n_grow=*/1);
 
 		std::vector<std::thread> writers;
 
-		for (int w = 0; w < NUM_WRITERS; w++) {
+		for (int w = 0; w < नुमेरो_WRITERS; w++) {
 			writers.emplace_back([&layer, w]() {
 				int base = w * PARAMS_PER_WRITER;
 
 				for (int i = 0; i < PARAMS_PER_WRITER; i++) {
-					param_value_u v{};
+					param_हालागा_u v{};
 					v.i = (base + i) * 10;
 					layer.store(static_cast<param_t>(base + i), v);
 				}
@@ -176,7 +176,7 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentMultipleWriters)
 		for (int i = 0; i < TOTAL; i++) {
 			ASSERT_TRUE(layer.contains(static_cast<param_t>(i)))
 					<< "rep=" << rep << " param=" << i;
-			param_value_u v = layer.get(static_cast<param_t>(i));
+			param_हालागा_u v = layer.get(static_cast<param_t>(i));
 			ASSERT_EQ(v.i, i * 10)
 					<< "rep=" << rep << " param=" << i;
 		}
@@ -187,8 +187,8 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentMultipleWriters)
 TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentWritersAndReaders)
 {
 	constexpr int PARAMS_PER_WRITER = 50;
-	constexpr int NUM_WRITERS = 2;
-	constexpr int TOTAL = NUM_WRITERS * PARAMS_PER_WRITER;
+	constexpr int नुमेरो_WRITERS = 2;
+	constexpr int TOTAL = नुमेरो_WRITERS * PARAMS_PER_WRITER;
 
 	for (int rep = 0; rep < 20; rep++) {
 		DynamicSparseLayer layer(&stub, /*n_prealloc=*/2, /*n_grow=*/1);
@@ -196,12 +196,12 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentWritersAndReaders)
 
 		std::vector<std::thread> writers;
 
-		for (int w = 0; w < NUM_WRITERS; w++) {
+		for (int w = 0; w < नुमेरो_WRITERS; w++) {
 			writers.emplace_back([&layer, w]() {
 				int base = w * PARAMS_PER_WRITER;
 
 				for (int i = 0; i < PARAMS_PER_WRITER; i++) {
-					param_value_u v{};
+					param_हालागा_u v{};
 					v.i = (base + i) * 10;
 					layer.store(static_cast<param_t>(base + i), v);
 				}
@@ -238,7 +238,7 @@ TEST_F(DynamicSparseLayerConcurrentTest, ConcurrentWritersAndReaders)
 		for (int i = 0; i < TOTAL; i++) {
 			ASSERT_TRUE(layer.contains(static_cast<param_t>(i)))
 					<< "rep=" << rep << " param=" << i;
-			param_value_u v = layer.get(static_cast<param_t>(i));
+			param_हालागा_u v = layer.get(static_cast<param_t>(i));
 			ASSERT_EQ(v.i, i * 10)
 					<< "rep=" << rep << " param=" << i;
 		}

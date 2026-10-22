@@ -81,7 +81,7 @@ TEST_F(TrajectoryConstraintsTest, testStraightNaN)
 	EXPECT_FLOAT_EQ(through_speed, direct_speed);
 }
 
-TEST_F(TrajectoryConstraintsTest, testStraightLowJerkClose)
+TEST_F(TrajectoryConstraintsTest, test_Straight_माबाबा_Jerk_Close)
 {
 	// GIVEN: 3 waypoints in straight line
 	next_target = target + 2.f * (target - vehicle_location);

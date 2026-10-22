@@ -50,8 +50,8 @@ ControlAllocation::ControlAllocation()
 
 void
 ControlAllocation::setEffectivenessMatrix(
-	const matrix::Matrix<float, ControlAllocation::NUM_AXES, ControlAllocation::NUM_ACTUATORS> &effectiveness,
-	const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, int num_actuators,
+	const matrix::Matrix<float, ControlAllocation::नुमेरो_AXES, ControlAllocation::नुमेरो_ACTUATORS> &effectiveness,
+	const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, int नुमेरो_actuators,
 	bool update_normalization_scale)
 {
 	_effectiveness = effectiveness;
@@ -59,13 +59,13 @@ ControlAllocation::setEffectivenessMatrix(
 	clipActuatorSetpoint(linearization_point_clipped);
 	_actuator_trim = actuator_trim + linearization_point_clipped;
 	clipActuatorSetpoint(_actuator_trim);
-	_num_actuators = num_actuators;
+	नुमेरो_actuators_2 = नुमेरो_actuators;
 	_control_trim = _effectiveness * linearization_point_clipped;
 }
 
 void
 ControlAllocation::setActuatorSetpoint(
-	const matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> &actuator_sp)
+	const matrix::Vector<float, ControlAllocation::नुमेरो_ACTUATORS> &actuator_sp)
 {
 	// Set actuator setpoint
 	_actuator_sp = actuator_sp;
@@ -75,9 +75,9 @@ ControlAllocation::setActuatorSetpoint(
 }
 
 void
-ControlAllocation::clipActuatorSetpoint(matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> &actuator) const
+ControlAllocation::clipActuatorSetpoint(matrix::Vector<float, ControlAllocation::नुमेरो_ACTUATORS> &actuator) const
 {
-	for (int i = 0; i < _num_actuators; i++) {
+	for (int i = 0; i < नुमेरो_actuators_2; i++) {
 		if (_actuator_max(i) < _actuator_min(i)) {
 			actuator(i) = _actuator_trim(i);
 
@@ -90,13 +90,13 @@ ControlAllocation::clipActuatorSetpoint(matrix::Vector<float, ControlAllocation:
 	}
 }
 
-matrix::Vector<float, ControlAllocation::NUM_ACTUATORS>
-ControlAllocation::normalizeActuatorSetpoint(const matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> &actuator)
+matrix::Vector<float, ControlAllocation::नुमेरो_ACTUATORS>
+ControlAllocation::normalizeActuatorSetpoint(const matrix::Vector<float, ControlAllocation::नुमेरो_ACTUATORS> &actuator)
 const
 {
-	matrix::Vector<float, ControlAllocation::NUM_ACTUATORS> actuator_normalized;
+	matrix::Vector<float, ControlAllocation::नुमेरो_ACTUATORS> actuator_normalized;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	for (int i = 0; i < नुमेरो_actuators_2; i++) {
 		if (_actuator_min(i) < _actuator_max(i)) {
 			actuator_normalized(i) = (actuator(i) - _actuator_min(i)) / (_actuator_max(i) - _actuator_min(i));
 
@@ -122,17 +122,17 @@ void ControlAllocation::applySlewRateLimit(float dt)
 	//  - NaN to nonzero: replace NaN by zero, then rise with slew rate to input
 	//  - between nonzero and 0: slew limit, then match input
 
-	for (int i = 0; i < _num_actuators; i++) {
+	for (int i = 0; i < नुमेरो_actuators_2; i++) {
 		if (_actuator_slew_rate_limit(i) > FLT_EPSILON) {
 
-			float input = _actuator_sp(i);
+			float पासोक = _actuator_sp(i);
 			float previous = _prev_actuator_sp(i);
 
 			// Before slew limiting, transform NaN to 0, but remember if the input was NaN
-			const bool input_is_nan = !PX4_ISFINITE(input);
+			const bool पासोक_is_nan = !PX4_ISFINITE(पासोक);
 
-			if (input_is_nan) {
-				input = 0.f;
+			if (पासोक_is_nan) {
+				पासोक = 0.f;
 			}
 
 			if (!PX4_ISFINITE(previous)) {
@@ -141,9 +141,9 @@ void ControlAllocation::applySlewRateLimit(float dt)
 
 			// Slew limit without any NaN involved
 			const float delta_sp_max = dt * (_actuator_max(i) - _actuator_min(i)) / _actuator_slew_rate_limit(i);
-			const float delta_sp = input - previous;
+			const float delta_sp = पासोक - previous;
 
-			float output = input;
+			float output = पासोक;
 
 			if (delta_sp > delta_sp_max) {
 				output = previous + delta_sp_max;
@@ -153,7 +153,7 @@ void ControlAllocation::applySlewRateLimit(float dt)
 			}
 
 			// Transform back to NaN if appropriate
-			if (input_is_nan && fabsf(output) < FLT_EPSILON) {
+			if (पासोक_is_nan && fabsf(output) < FLT_EPSILON) {
 				output = NAN;
 			}
 

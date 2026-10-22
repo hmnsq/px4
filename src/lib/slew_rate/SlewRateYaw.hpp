@@ -56,9 +56,9 @@ public:
 	 * @param deltatime time in seconds since last update
 	 * @return actual value that complies with the slew rate
 	 */
-	Type update(const Type new_value, const float deltatime)
+	Type update(const Type new_हालागा, const float deltatime)
 	{
-		const Type d_wrapped = matrix::wrap_pi(new_value - this->_value);
-		return matrix::wrap_pi(SlewRate<Type>::update(this->_value + d_wrapped, deltatime));
+		const Type d_wrapped = matrix::wrap_pi(new_हालागा - this->हालागा_2);
+		return matrix::wrap_pi(SlewRate<Type>::update(this->हालागा_2 + d_wrapped, deltatime));
 	}
 };

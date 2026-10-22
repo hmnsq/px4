@@ -45,15 +45,15 @@
 namespace control
 {
 
-float BlockLowPass::update(float input)
+float Block_माबाबा_Pass::update(float पासोक)
 {
 	if (!PX4_ISFINITE(getState())) {
-		setState(input);
+		setState(पासोक);
 	}
 
 	float b = 2 * M_PI_F * getFCut() * getDt();
 	float a = b / (1 + b);
-	setState(a * input + (1 - a)*getState());
+	setState(a * पासोक + (1 - a)*getState());
 	return getState();
 }
 

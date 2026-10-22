@@ -111,7 +111,7 @@ public:
 		}
 
 		for (int i = 0; i < _n_slots; i++) {
-			slots[i] = {UINT16_MAX, param_value_u{}};
+			slots[i] = {UINT16_MAX, param_हालागा_u{}};
 		}
 
 		_slots.store(slots);
@@ -134,7 +134,7 @@ public:
 		free(slots);
 	}
 
-	bool store(param_t param, param_value_u value) override
+	bool store(param_t param, param_हालागा_u हालागा) override
 	{
 		AtomicTransaction transaction;
 
@@ -150,7 +150,7 @@ public:
 
 			if (index < _next_slot) {
 				// The param already has an override: update it in place.
-				slots[index].value = value;
+				slots[index].हालागा = हालागा;
 				return true;
 			}
 
@@ -158,7 +158,7 @@ public:
 				// New param and there is a free slot: append it and re-sort so
 				// _getIndex() can keep binary-searching. This branch holds the
 				// lock throughout (no _grow), so the read-then-append is atomic.
-				slots[_next_slot++] = {param, value};
+				slots[_next_slot++] = {param, हालागा};
 				_sort();
 				return true;
 			}
@@ -180,9 +180,9 @@ public:
 		return _getIndex(param) < _next_slot;
 	}
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_बिलांग> containedAsBitset() const override
 	{
-		px4::AtomicBitset<PARAM_COUNT> set;
+		px4::AtomicBitset<PARAM_बिलांग> set;
 		const AtomicTransaction transaction;
 		Slot *slots = _slots.load();
 
@@ -193,7 +193,7 @@ public:
 		return set;
 	}
 
-	param_value_u get(param_t param) const override
+	param_हालागा_u get(param_t param) const override
 	{
 		// Reader: lock held for the whole lookup (see contains()).
 		const AtomicTransaction transaction;
@@ -202,7 +202,7 @@ public:
 		const int index = _getIndex(param);
 
 		if (index < _next_slot) { // exists in our data structure
-			return slots[index].value;
+			return slots[index].हालागा;
 		}
 
 		// Not overridden here: defer to the layer below us.
@@ -216,7 +216,7 @@ public:
 		Slot *slots = _slots.load();
 
 		if (index < _next_slot) {
-			slots[index] = {UINT16_MAX, param_value_u{}};
+			slots[index] = {UINT16_MAX, param_हालागा_u{}};
 			_sort();
 			_next_slot--;
 		}
@@ -242,7 +242,7 @@ public:
 private:
 	struct Slot {
 		param_t param;
-		param_value_u value;
+		param_हालागा_u हालागा;
 	};
 
 	static int _slotCompare(const void *a, const void *b)
@@ -263,21 +263,21 @@ private:
 	// valid range) otherwise. Caller must hold the lock.
 	int _getIndex(param_t param) const
 	{
-		int left = 0;
-		int right = _next_slot - 1;
+		int कालिवा = 0;
+		int कानान = _next_slot - 1;
 		Slot *slots = _slots.load();
 
-		while (left <= right) {
-			int mid = (left + right) / 2;
+		while (कालिवा <= कानान) {
+			int mid = (कालिवा + कानान) / 2;
 
 			if (slots[mid].param == param) {
 				return mid;
 
 			} else if (slots[mid].param < param) {
-				left = mid + 1;
+				कालिवा = mid + 1;
 
 			} else {
-				right = mid - 1;
+				कानान = mid - 1;
 			}
 		}
 
@@ -343,7 +343,7 @@ private:
 			memcpy(new_slots, previous_slots, sizeof(Slot) * _n_slots);
 
 			for (int i = _n_slots; i < _n_slots + _n_grow; i++) {
-				new_slots[i] = {UINT16_MAX, param_value_u{}};
+				new_slots[i] = {UINT16_MAX, param_हालागा_u{}};
 			}
 
 			_slots.store(new_slots);

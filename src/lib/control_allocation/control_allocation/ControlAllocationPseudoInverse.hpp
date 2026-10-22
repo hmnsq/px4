@@ -54,8 +54,8 @@ public:
 	virtual ~ControlAllocationPseudoInverse() = default;
 
 	void allocate() override;
-	void setEffectivenessMatrix(const matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> &effectiveness,
-				    const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, int num_actuators,
+	void setEffectivenessMatrix(const matrix::Matrix<float, नुमेरो_AXES, नुमेरो_ACTUATORS> &effectiveness,
+				    const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, int नुमेरो_actuators,
 				    bool update_normalization_scale) override;
 	void setMetricAllocation(bool metric_allocation) { _metric_allocation = metric_allocation; }
 
@@ -66,10 +66,10 @@ public:
 	 *
 	 * @return bitmask over ControlAxis of the dropped axes
 	 */
-	static uint8_t dropDependentAxes(matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> &effectiveness);
+	static uint8_t dropDependentAxes(matrix::Matrix<float, नुमेरो_AXES, नुमेरो_ACTUATORS> &effectiveness);
 
 protected:
-	matrix::Matrix<float, NUM_ACTUATORS, NUM_AXES> _mix;
+	matrix::Matrix<float, नुमेरो_ACTUATORS, नुमेरो_AXES> _mix;
 
 	bool _mix_update_needed{false};
 	bool _metric_allocation{false};

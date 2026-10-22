@@ -79,13 +79,13 @@ public:
 		_dt = dt;
 	}
 
-	float getFilteredInputData() const { return _u_hpf; }
+	float get_Filtered_पासोक_Data() const { return _u_hpf; }
 	float getFilteredOutputData() const { return _y_hpf; }
 
 private:
 	ArxRls<2, 2, 1> _rls;
-	math::LowPassFilter2p<float> _u_lpf{400.f, 30.f};
-	math::LowPassFilter2p<float> _y_lpf{400.f, 30.f};
+	math::माबाबा_Pass_Filter2p<float> _u_lpf{400.f, 30.f};
+	math::माबाबा_Pass_Filter2p<float> _y_lpf{400.f, 30.f};
 
 	//TODO: replace by HighPassFilter class
 	float _alpha_hpf{0.f};

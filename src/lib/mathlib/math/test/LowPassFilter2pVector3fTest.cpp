@@ -44,17 +44,17 @@
 
 using matrix::Vector3f;
 
-class LowPassFilter2pVector3fTest : public ::testing::Test
+class माबाबा_Pass_Filter2p_Vector3f_Test : public ::testing::Test
 {
 public:
 	void runSimulatedFilter(const Vector3f &signal_freq_hz, const Vector3f &phase_delay_deg, const Vector3f &gain_db);
 
-	math::LowPassFilter2p<Vector3f> _lpf{800.f, 30.f};
+	math::माबाबा_Pass_Filter2p<Vector3f> _lpf{800.f, 30.f};
 
 	const float _epsilon_near = 0.08f;
 };
 
-void LowPassFilter2pVector3fTest::runSimulatedFilter(const Vector3f &signal_freq_hz, const Vector3f &phase_delay_deg,
+void माबाबा_Pass_Filter2p_Vector3f_Test::runSimulatedFilter(const Vector3f &signal_freq_hz, const Vector3f &phase_delay_deg,
 		const Vector3f &gain_db)
 {
 	const Vector3f phase_delay = phase_delay_deg * M_PI_F / 180.f;
@@ -71,11 +71,11 @@ void LowPassFilter2pVector3fTest::runSimulatedFilter(const Vector3f &signal_freq
 	float t = 0.f;
 
 	for (int i = 0; i < n_steps; i++) {
-		Vector3f input{0.f, sinf(omega(1) * t), -sinf(omega(2) * t)};
+		Vector3f पासोक{0.f, sinf(omega(1) * t), -sinf(omega(2) * t)};
 		Vector3f output_expected{0.f,
 					 gain(1) *sinf(omega(1) * t - phase_delay(1)),
 					 -gain(2) *sinf(omega(2) * t - phase_delay(2))};
-		Vector3f out = _lpf.apply(input);
+		Vector3f out = _lpf.apply(पासोक);
 		t = i * dt;
 
 		// Let some time for the filter to settle
@@ -87,7 +87,7 @@ void LowPassFilter2pVector3fTest::runSimulatedFilter(const Vector3f &signal_freq
 	}
 }
 
-TEST_F(LowPassFilter2pVector3fTest, setGet)
+TEST_F(माबाबा_Pass_Filter2p_Vector3f_Test, setGet)
 {
 	const float sample_freq = 1000.f;
 	const float cutoff_freq = 80.f;
@@ -97,7 +97,7 @@ TEST_F(LowPassFilter2pVector3fTest, setGet)
 	EXPECT_EQ(_lpf.get_cutoff_freq(), cutoff_freq);
 }
 
-TEST_F(LowPassFilter2pVector3fTest, simulate80HzCutoff)
+TEST_F(माबाबा_Pass_Filter2p_Vector3f_Test, simulate80HzCutoff)
 {
 	const float sample_freqs[4] = {400.f, 1000.f, 8000.f, 16000.f};
 	const float cutoff_freq = 80.f;

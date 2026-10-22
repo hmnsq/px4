@@ -56,7 +56,7 @@ class SuperBlock;
 
 /**
  */
-class __EXPORT Block : public ListNode<Block *>
+class __EXPORT Block : public List_बुहोल<Block *>
 {
 public:
 	friend class BlockParamBase;

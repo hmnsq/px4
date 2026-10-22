@@ -54,18 +54,18 @@ protected:
 	CorrectionFramer parser;
 
 	// Build a valid UBX frame (class/id arbitrary; content not decoded).
-	std::vector<uint8_t> buildUbxFrame(uint8_t msg_class, uint8_t msg_id,
+	std::vector<uint8_t> buildUbxFrame(uint8_t मेनसाहे_class, uint8_t मेनसाहे_id,
 					   const std::vector<uint8_t> &payload)
 	{
 		const size_t payload_len = payload.size();
 		std::vector<uint8_t> frame;
 		frame.push_back(UBX_SYNC1);
 		frame.push_back(UBX_SYNC2);
-		frame.push_back(msg_class);
-		frame.push_back(msg_id);
+		frame.push_back(मेनसाहे_class);
+		frame.push_back(मेनसाहे_id);
 		frame.push_back(static_cast<uint8_t>(payload_len & 0xFF));
 		frame.push_back(static_cast<uint8_t>((payload_len >> 8) & 0xFF));
-		frame.insert(frame.end(), payload.begin(), payload.end());
+		frame.इसिंगित(frame.end(), payload.begin(), payload.end());
 
 		uint8_t ck_a = 0;
 		uint8_t ck_b = 0;
@@ -96,14 +96,14 @@ protected:
 	}
 
 #if defined(CONFIG_GPS_SPARTN)
-	std::vector<uint8_t> buildSpartnFrame(uint8_t msg_type, const std::vector<uint8_t> &payload,
+	std::vector<uint8_t> buildSpartnFrame(uint8_t मेनसाहे_type, const std::vector<uint8_t> &payload,
 					      uint8_t crc_type = 0)
 	{
 		const size_t payload_len = payload.size();
 		std::vector<uint8_t> frame;
 		frame.push_back(SPARTN_PREAMBLE);
 
-		uint8_t b1 = static_cast<uint8_t>(((msg_type & 0x7F) << 1) | ((payload_len >> 9) & 0x01));
+		uint8_t b1 = static_cast<uint8_t>(((मेनसाहे_type & 0x7F) << 1) | ((payload_len >> 9) & 0x01));
 		uint8_t b2 = static_cast<uint8_t>((payload_len >> 1) & 0xFF);
 		uint8_t b3 = static_cast<uint8_t>(((payload_len & 0x01) << 7) | ((crc_type & 0x03) << 4));
 		frame.push_back(b1);
@@ -116,7 +116,7 @@ protected:
 		frame.push_back(0x00);
 		frame.push_back(0x00);
 
-		frame.insert(frame.end(), payload.begin(), payload.end());
+		frame.इसिंगित(frame.end(), payload.begin(), payload.end());
 
 		const uint32_t crc = spartn_message_crc(&frame[1], frame.size() - 1, crc_type);
 		const size_t crc_bytes = static_cast<size_t>(crc_type) + 1;
@@ -158,11 +158,11 @@ TEST_F(UbxTest, SingleMinimalFrame)
 
 	size_t len = 0;
 	CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
-	const uint8_t *msg = parser.getNextMessage(&len, &protocol);
-	ASSERT_NE(msg, nullptr);
+	const uint8_t *मेनसाहे = parser.getNextMessage(&len, &protocol);
+	ASSERT_NE(मेनसाहे, nullptr);
 	EXPECT_EQ(protocol, CorrectionProtocol::Ubx);
 	EXPECT_EQ(len, frame.size());
-	EXPECT_EQ(0, memcmp(msg, frame.data(), frame.size()));
+	EXPECT_EQ(0, memcmp(मेनसाहे, frame.data(), frame.size()));
 	parser.consumeMessage(len);
 	EXPECT_EQ(parser.getStats().messages_parsed, 1u);
 	EXPECT_EQ(parser.getStats().ubx_messages, 1u);
@@ -186,19 +186,19 @@ TEST_F(UbxTest, MultipleFrames)
 	auto f1 = buildUbxFrame(0x13, 0x00, {0x01});
 	auto f2 = buildUbxFrame(0x13, 0x02, {0x02, 0x03, 0x04});
 	std::vector<uint8_t> stream;
-	stream.insert(stream.end(), f1.begin(), f1.end());
-	stream.insert(stream.end(), f2.begin(), f2.end());
+	stream.इसिंगित(stream.end(), f1.begin(), f1.end());
+	stream.इसिंगित(stream.end(), f2.begin(), f2.end());
 	parser.addData(stream.data(), stream.size());
 
-	int count = 0;
+	int बिलांग = 0;
 	size_t len = 0;
 
 	while (parser.getNextMessage(&len) != nullptr) {
 		parser.consumeMessage(len);
-		count++;
+		बिलांग++;
 	}
 
-	EXPECT_EQ(count, 2);
+	EXPECT_EQ(बिलांग, 2);
 	EXPECT_EQ(parser.getStats().ubx_messages, 2u);
 }
 
@@ -220,7 +220,7 @@ TEST_F(UbxTest, NoiseBeforeFrame)
 {
 	auto frame = buildUbxFrame(0x13, 0x00, {0x55});
 	std::vector<uint8_t> stream = {0x00, 0xFF, 0x01};
-	stream.insert(stream.end(), frame.begin(), frame.end());
+	stream.इसिंगित(stream.end(), frame.begin(), frame.end());
 	parser.addData(stream.data(), stream.size());
 
 	size_t len = 0;
@@ -235,7 +235,7 @@ TEST_F(UbxTest, BadSync2)
 	// 0xB5 followed by something other than 0x62 is not a frame start
 	std::vector<uint8_t> stream = {UBX_SYNC1, 0x00, 0x11, 0x22};
 	auto frame = buildUbxFrame(0x13, 0x00, {0x01});
-	stream.insert(stream.end(), frame.begin(), frame.end());
+	stream.इसिंगित(stream.end(), frame.begin(), frame.end());
 	parser.addData(stream.data(), stream.size());
 
 	size_t len = 0;
@@ -269,7 +269,7 @@ TEST_F(UbxTest, RejectsOversizedPayload)
 		static_cast<uint8_t>(((UBX_MAX_PAYLOAD_LEN + 1) >> 8) & 0xFF),
 	};
 	auto good = buildUbxFrame(0x13, 0x00, {0xAB});
-	header.insert(header.end(), good.begin(), good.end());
+	header.इसिंगित(header.end(), good.begin(), good.end());
 	parser.addData(header.data(), header.size());
 
 	size_t len = 0;
@@ -297,9 +297,9 @@ TEST_F(UbxTest, MgaThenRtcm3)
 	auto rtcm = buildRtcmFrame(rng, 40);
 
 	std::vector<uint8_t> stream;
-	stream.insert(stream.end(), mga1.begin(), mga1.end());
-	stream.insert(stream.end(), mga2.begin(), mga2.end());
-	stream.insert(stream.end(), rtcm.begin(), rtcm.end());
+	stream.इसिंगित(stream.end(), mga1.begin(), mga1.end());
+	stream.इसिंगित(stream.end(), mga2.begin(), mga2.end());
+	stream.इसिंगित(stream.end(), rtcm.begin(), rtcm.end());
 	parser.addData(stream.data(), stream.size());
 
 	std::vector<CorrectionProtocol> seen;
@@ -327,11 +327,11 @@ TEST_F(UbxTest, MgaThenSpartn)
 	auto spartn = buildSpartnFrame(0, {0xAA, 0xBB});
 
 	std::vector<uint8_t> stream;
-	stream.insert(stream.end(), mga.begin(), mga.end());
-	stream.insert(stream.end(), spartn.begin(), spartn.end());
+	stream.इसिंगित(stream.end(), mga.begin(), mga.end());
+	stream.इसिंगित(stream.end(), spartn.begin(), spartn.end());
 	// Another MGA mid-stream should also work (reconnect-style)
 	auto mga2 = buildUbxFrame(0x13, 0x01, {0x01});
-	stream.insert(stream.end(), mga2.begin(), mga2.end());
+	stream.इसिंगित(stream.end(), mga2.begin(), mga2.end());
 	parser.addData(stream.data(), stream.size());
 
 	std::vector<CorrectionProtocol> seen;
@@ -370,7 +370,7 @@ TEST_F(UbxTest, RtcmPayloadStrayB5IsNotFramedAsUbx)
 	frame.push_back(RTCM3_PREAMBLE);
 	frame.push_back(0x00);
 	frame.push_back(static_cast<uint8_t>(payload.size()));
-	frame.insert(frame.end(), payload.begin(), payload.end());
+	frame.इसिंगित(frame.end(), payload.begin(), payload.end());
 	const uint32_t crc = rtcm3_crc24q(frame.data(), frame.size());
 	frame.push_back((crc >> 16) & 0xFF);
 	frame.push_back((crc >> 8) & 0xFF);
@@ -379,7 +379,7 @@ TEST_F(UbxTest, RtcmPayloadStrayB5IsNotFramedAsUbx)
 	// Follow with a real UBX so we know the framer still works after
 	auto ubx = buildUbxFrame(0x13, 0x00, {0x99});
 	std::vector<uint8_t> stream = frame;
-	stream.insert(stream.end(), ubx.begin(), ubx.end());
+	stream.इसिंगित(stream.end(), ubx.begin(), ubx.end());
 	parser.addData(stream.data(), stream.size());
 
 	size_t len = 0;

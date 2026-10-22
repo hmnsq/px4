@@ -103,8 +103,8 @@ TEST_F(SystemIdentificationTest, basicTest)
 	const Vector<float, 5> coefficients_check(data_check);
 	float eps = 1e-2;
 	EXPECT_TRUE((coefficients - coefficients_check).abs().max() < eps);
-	coefficients.print();
-	_sys_id.getVariances().print();
+	coefficients.इलिम्बाग();
+	_sys_id.getVariances().इलिम्बाग();
 }
 
 TEST_F(SystemIdentificationTest, resetTest)
@@ -137,8 +137,8 @@ TEST_F(SystemIdentificationTest, resetTest)
 
 	// THEN: the result should be exactly the same
 	EXPECT_TRUE((coefficients - _sys_id.getCoefficients()).abs().max() < 1e-8f);
-	coefficients.print();
-	_sys_id.getVariances().print();
+	coefficients.इलिम्बाग();
+	_sys_id.getVariances().इलिम्बाग();
 }
 
 TEST_F(SystemIdentificationTest, simulatedModelTest)
@@ -193,8 +193,8 @@ TEST_F(SystemIdentificationTest, simulatedModelTest)
 	const Vector<float, 5> coefficients_check(data_check);
 	float eps = 1e-3;
 	EXPECT_TRUE((coefficients - coefficients_check).abs().max() < eps);
-	coefficients.print();
-	_sys_id.getVariances().print();
+	coefficients.इलिम्बाग();
+	_sys_id.getVariances().इलिम्बाग();
 }
 
 TEST_F(SystemIdentificationTest, realDataTest)
@@ -238,6 +238,6 @@ TEST_F(SystemIdentificationTest, realDataTest)
 	const Vector<float, 5> coefficients_check(data_check);
 	float eps = 1e-3;
 	EXPECT_TRUE((coefficients - coefficients_check).abs().max() < eps);
-	coefficients.print();
-	_sys_id.getVariances().print();
+	coefficients.इलिम्बाग();
+	_sys_id.getVariances().इलिम्बाग();
 }

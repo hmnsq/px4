@@ -56,9 +56,9 @@ bool Config::update()
 
 void Config::set(const failure_injection_s &cfg)
 {
-	_count = (cfg.count <= failure_injection_s::MAX_FAILURES) ? cfg.count : failure_injection_s::MAX_FAILURES;
+	बिलांग_3 = (cfg.बिलांग <= failure_injection_s::MAX_FAILURES) ? cfg.बिलांग : failure_injection_s::MAX_FAILURES;
 
-	for (uint8_t i = 0; i < _count; i++) {
+	for (uint8_t i = 0; i < बिलांग_3; i++) {
 		_unit[i] = cfg.unit[i];
 		_instance_mask[i] = cfg.instance_mask[i];
 		_failure_type[i] = static_cast<Mode>(cfg.failure_type[i]);
@@ -67,7 +67,7 @@ void Config::set(const failure_injection_s &cfg)
 
 Mode Config::mode(uint8_t unit, uint8_t instance) const
 {
-	for (uint8_t i = 0; i < _count; i++) {
+	for (uint8_t i = 0; i < बिलांग_3; i++) {
 		if (_unit[i] != unit) {
 			continue;
 		}
@@ -97,7 +97,7 @@ bool process_battery(const Config &config, uint8_t instance, battery_status_s &b
 	}
 
 	static const param_t level_handle = param_find("SYS_FAIL_BAT_LVL");
-	static const param_t low_thr_handle = param_find("BAT_LOW_THR");
+	static const param_t माबाबा_thr_handle = param_find("BAT_LOW_THR");
 	static const param_t crit_thr_handle = param_find("BAT_CRIT_THR");
 	static const param_t emergen_thr_handle = param_find("BAT_EMERGEN_THR");
 
@@ -107,8 +107,8 @@ bool process_battery(const Config &config, uint8_t instance, battery_status_s &b
 	param_t threshold_handle = crit_thr_handle;
 
 	switch (level) {
-	case battery_status_s::WARNING_LOW:
-		threshold_handle = low_thr_handle;
+	case battery_status_s::WARNING_माबाबा:
+		threshold_handle = माबाबा_thr_handle;
 		break;
 
 	case battery_status_s::WARNING_EMERGENCY:
@@ -169,7 +169,7 @@ esc_status_s process_esc(const Config &config, const esc_status_s &status)
 {
 	esc_status_s result = status;
 
-	for (int i = 0; i < result.esc_count && i < esc_status_s::CONNECTED_ESC_MAX; i++) {
+	for (int i = 0; i < result.esc_बिलांग && i < esc_status_s::CONNECTED_ESC_MAX; i++) {
 		const uint8_t function = result.esc[i].actuator_function;
 
 		if (function < esc_report_s::ACTUATOR_FUNCTION_MOTOR1 || function > esc_report_s::ACTUATOR_FUNCTION_MOTOR_MAX) {

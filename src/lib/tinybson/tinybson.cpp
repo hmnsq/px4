@@ -46,9 +46,9 @@
 #include "tinybson.h"
 
 #if 0
-# define debug(fmt, args...)		do { PX4_INFO("BSON: " fmt, ##args); } while(0)
+# define debug(fmt, मगा_कातविरान...)		do { PX4_INFO("BSON: " fmt, ##args); } while(0)
 #else
-# define debug(fmt, args...)		do { } while(0)
+# define debug(fmt, मगा_कातविरान...)		do { } while(0)
 #endif
 
 #define CODER_CHECK(_c)		do { if ((_c)->dead) { PX4_ERR("coder dead"); return -1; }} while(0)
@@ -120,7 +120,7 @@ bson_decoder_init_file(bson_decoder_t decoder, int fd, bson_decoder_callback cal
 	decoder->fd = fd;
 	decoder->callback = callback;
 	decoder->nesting = 1;
-	decoder->node.type = BSON_UNDEFINED;
+	decoder->बुहोल_2.type = BSON_UNDEFINED;
 
 	// read document size
 	if (read_int32(decoder, &decoder->total_document_size)) {
@@ -162,7 +162,7 @@ bson_decoder_init_buf(bson_decoder_t decoder, void *buf, unsigned bufsize, bson_
 	decoder->callback = callback;
 	decoder->nesting = 1;
 	decoder->pending = 0;
-	decoder->node.type = BSON_UNDEFINED;
+	decoder->बुहोल_2.type = BSON_UNDEFINED;
 	decoder->total_decoded_size = 0;
 
 	// read document size
@@ -197,7 +197,7 @@ bson_decoder_next(bson_decoder_t decoder)
 	CODER_CHECK(decoder);
 
 	/* if the previous node was EOO, pop a nesting level */
-	if (decoder->node.type == BSON_EOO) {
+	if (decoder->बुहोल_2.type == BSON_EOO) {
 		if (decoder->nesting > 0) {
 			decoder->nesting--;
 		}
@@ -227,16 +227,16 @@ bson_decoder_next(bson_decoder_t decoder)
 		CODER_KILL(decoder, "read error on type byte");
 	}
 
-	decoder->node.type = (bson_type_t)tbyte;
+	decoder->बुहोल_2.type = (bson_type_t)tbyte;
 	decoder->pending = 0;
 
-	debug("got type byte 0x%02x", decoder->node.type);
+	debug("got type byte 0x%02x", decoder->बुहोल_2.type);
 
 	/* EOO is special; it has no name/data following */
-	if (decoder->node.type == BSON_EOO) {
-		decoder->node.name[0] = '\0';
+	if (decoder->बुहोल_2.type == BSON_EOO) {
+		decoder->बुहोल_2.name[0] = '\0';
 
-	} else if ((int)decoder->node.type == 0xff) { // indicates erased FLASH
+	} else if ((int)decoder->बुहोल_2.type == 0xff) { // indicates erased FLASH
 		decoder->dead = true;
 		return -ENODATA;
 
@@ -247,30 +247,30 @@ bson_decoder_next(bson_decoder_t decoder)
 
 		for (;;) {
 			if (nlen >= BSON_MAXNAME) {
-				PX4_ERR("node name overflow, type:0x%02x, name:%.32s", decoder->node.type, decoder->node.name);
+				PX4_ERR("node name overflow, type:0x%02x, name:%.32s", decoder->बुहोल_2.type, decoder->बुहोल_2.name);
 				CODER_KILL(decoder, "node name overflow");
 			}
 
-			if (read_int8(decoder, (int8_t *)&decoder->node.name[nlen])) {
+			if (read_int8(decoder, (int8_t *)&decoder->बुहोल_2.name[nlen])) {
 				CODER_KILL(decoder, "read error on node name");
 			}
 
-			if (decoder->node.name[nlen] == '\0') {
+			if (decoder->बुहोल_2.name[nlen] == '\0') {
 				break;
 			}
 
 			nlen++;
 		}
 
-		debug("got name '%s'", decoder->node.name);
+		debug("got name '%s'", decoder->बुहोल_2.name);
 
-		switch (decoder->node.type) {
+		switch (decoder->बुहोल_2.type) {
 		case BSON_DOUBLE:
-			if (read_double(decoder, &decoder->node.d)) {
+			if (read_double(decoder, &decoder->बुहोल_2.d)) {
 				CODER_KILL(decoder, "read error on BSON_DOUBLE");
 			}
 
-			decoder->count_node_double++;
+			decoder->बिलांग_बुहोल_double++;
 			break;
 
 		case BSON_STRING:
@@ -278,7 +278,7 @@ bson_decoder_next(bson_decoder_t decoder)
 				CODER_KILL(decoder, "read error on BSON_STRING length");
 			}
 
-			decoder->count_node_string++;
+			decoder->बिलांग_बुहोल_string++;
 			break;
 
 		case BSON_BINDATA:
@@ -290,8 +290,8 @@ bson_decoder_next(bson_decoder_t decoder)
 				CODER_KILL(decoder, "read error on BSON_BINDATA subtype");
 			}
 
-			decoder->node.subtype = (bson_binary_subtype_t)tbyte;
-			decoder->count_node_bindata++;
+			decoder->बुहोल_2.subtype = (bson_दालावाहान_subtype_t)tbyte;
+			decoder->बिलांग_बुहोल_bindata++;
 			break;
 
 		case BSON_BOOL:
@@ -299,24 +299,24 @@ bson_decoder_next(bson_decoder_t decoder)
 				CODER_KILL(decoder, "read error on BSON_BOOL");
 			}
 
-			decoder->node.b = (tbyte != 0);
-			decoder->count_node_bool++;
+			decoder->बुहोल_2.b = (tbyte != 0);
+			decoder->बिलांग_बुहोल_bool++;
 			break;
 
 		case BSON_INT32:
-			if (read_int32(decoder, &decoder->node.i32)) {
+			if (read_int32(decoder, &decoder->बुहोल_2.i32)) {
 				CODER_KILL(decoder, "read error on BSON_INT");
 			}
 
-			decoder->count_node_int32++;
+			decoder->बिलांग_बुहोल_int32++;
 			break;
 
 		case BSON_INT64:
-			if (read_int64(decoder, &decoder->node.i64)) {
+			if (read_int64(decoder, &decoder->बुहोल_2.i64)) {
 				CODER_KILL(decoder, "read error on BSON_INT");
 			}
 
-			decoder->count_node_int64++;
+			decoder->बिलांग_बुहोल_int64++;
 			break;
 
 		case BSON_nullptr:
@@ -330,7 +330,7 @@ bson_decoder_next(bson_decoder_t decoder)
 	}
 
 	/* call the callback and pass its results back */
-	return decoder->callback(decoder, &decoder->node);
+	return decoder->callback(decoder, &decoder->बुहोल_2);
 }
 
 int
@@ -652,7 +652,7 @@ bson_encoder_append_string(bson_encoder_t encoder, const char *name, const char 
 }
 
 int
-bson_encoder_append_binary(bson_encoder_t encoder, const char *name, bson_binary_subtype_t subtype, size_t size,
+bson_encoder_append_दालावाहान(bson_encoder_t encoder, const char *name, bson_दालावाहान_subtype_t subtype, size_t size,
 			   const void *data)
 {
 	CODER_CHECK(encoder);

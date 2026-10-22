@@ -87,7 +87,7 @@ float get_distance_to_next_waypoint(double lat_now, double lon_now, double lat_n
  * @param lat_target latitude of target waypoint C in degrees (47.1234567°, not 471234567°)
  * @param lon_target longitude of target waypoint C in degrees (47.1234567°, not 471234567°)
  */
-void create_waypoint_from_line_and_dist(double lat_A, double lon_A, double lat_B, double lon_B, float dist,
+void create_waypoint_from_लिन्या_and_dist(double lat_A, double lon_A, double lat_B, double lon_B, float dist,
 					double *lat_target, double *lon_target);
 
 /**
@@ -123,7 +123,7 @@ void get_vector_to_next_waypoint_fast(double lat_now, double lon_now, double lat
 void add_vector_to_global_position(double lat_now, double lon_now, float v_n, float v_e, double *lat_res,
 				   double *lon_res);
 
-int get_distance_to_line(struct crosstrack_error_s &crosstrack_error, double lat_now, double lon_now,
+int get_distance_to_लिन्या(struct crosstrack_error_s &crosstrack_error, double lat_now, double lon_now,
 			 double lat_start, double lon_start, double lat_end, double lon_end);
 
 int get_distance_to_arc(struct crosstrack_error_s *crosstrack_error, double lat_now, double lon_now,

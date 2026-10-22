@@ -61,7 +61,7 @@ public:
 	 */
 	virtual float value(OutputFunction func) = 0;
 
-	virtual float defaultFailsafeValue(OutputFunction func) const { return NAN; }
+	virtual float default_Failsafe_हालागा(OutputFunction func) const { return NAN; }
 	virtual bool allowPrearmControl() const { return true; }
 
 	virtual uORB::SubscriptionCallbackWorkItem *subscriptionCallback() { return nullptr; }

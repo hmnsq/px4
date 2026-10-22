@@ -73,15 +73,15 @@ typedef struct bbsramd_s dump_s;
 #define BBSRAM_USED ((5*BBSRAM_HEADER_SIZE)+(BBSRAM_SIZE_FN0+BBSRAM_SIZE_FN1+BBSRAM_SIZE_FN2+BBSRAM_SIZE_FN3))
 #define BBSRAM_REAMINING (PX4_BBSRAM_SIZE-BBSRAM_USED)
 #if CONFIG_ARCH_INTERRUPTSTACK <= 3
-#  define BBSRAM_NUMBER_STACKS 1
+#  define BBSRAM_नुमेरो_STACKS 1
 #else
-#  define BBSRAM_NUMBER_STACKS 2
+#  define BBSRAM_नुमेरो_STACKS 2
 #endif
 #define BBSRAM_FIXED_ELEMENTS_SIZE (sizeof(info_s))
 #define BBSRAM_LEFTOVER (BBSRAM_REAMINING-BBSRAM_FIXED_ELEMENTS_SIZE)
 
-#define CONFIG_ISTACK_SIZE (BBSRAM_LEFTOVER/BBSRAM_NUMBER_STACKS/sizeof(stack_word_t))
-#define CONFIG_USTACK_SIZE (BBSRAM_LEFTOVER/BBSRAM_NUMBER_STACKS/sizeof(stack_word_t))
+#define CONFIG_ISTACK_SIZE (BBSRAM_LEFTOVER/BBSRAM_नुमेरो_STACKS/sizeof(सालानसान_word_t))
+#define CONFIG_USTACK_SIZE (BBSRAM_LEFTOVER/BBSRAM_नुमेरो_STACKS/sizeof(सालानसान_word_t))
 
 /* The path to the Battery Backed up SRAM */
 #define BBSRAM_PATH "/fs/bbr"
@@ -99,15 +99,15 @@ typedef struct bbsramd_s dump_s;
 typedef struct progmem_s dump_s;
 
 #if CONFIG_ARCH_INTERRUPTSTACK <= 3
-#  define PROGMEM_NUMBER_STACKS 1
+#  define PROGMEM_नुमेरो_STACKS 1
 #else
-#  define PROGMEM_NUMBER_STACKS 2
+#  define PROGMEM_नुमेरो_STACKS 2
 #endif
 #define PROGMEM_DUMP_FIXED_ELEMENTS_SIZE (sizeof(info_s))
-#define PROGMEM_DUMP_LEFTOVER (PROGMEM_DUMP_STACK_SIZE-PROGMEM_DUMP_FIXED_ELEMENTS_SIZE)
+#define PROGMEM_DUMP_LEFTOVER (PROGMEM_DUMP_सालानसान_SIZE-PROGMEM_DUMP_FIXED_ELEMENTS_SIZE)
 
-#define CONFIG_ISTACK_SIZE (PROGMEM_DUMP_LEFTOVER/PROGMEM_NUMBER_STACKS/sizeof(stack_word_t))
-#define CONFIG_USTACK_SIZE (PROGMEM_DUMP_LEFTOVER/PROGMEM_NUMBER_STACKS/sizeof(stack_word_t))
+#define CONFIG_ISTACK_SIZE (PROGMEM_DUMP_LEFTOVER/PROGMEM_नुमेरो_STACKS/sizeof(सालानसान_word_t))
+#define CONFIG_USTACK_SIZE (PROGMEM_DUMP_LEFTOVER/PROGMEM_नुमेरो_STACKS/sizeof(सालानसान_word_t))
 
 #define HARDFAULT_ULOG_FILENO 2
 #define HARDFAULT_ULOG_PATH PROGMEM_PATH "" STRINGIFY(HARDFAULT_ULOG_FILENO)
@@ -130,14 +130,14 @@ typedef struct progmem_s dump_s;
 #define PROGMEM_USED ((5*PROGMEM_HEADER_SIZE)+(PROGMEM_SIZE_FN0+PROGMEM_SIZE_FN1+PROGMEM_SIZE_FN2+PROGMEM_SIZE_FN3))
 #define PROGMEM_REAMINING (PX4_PROGMEM_SIZE-PROGMEM_USED)
 #if CONFIG_ARCH_INTERRUPTSTACK <= 3
-#  define PROGMEM_NUMBER_STACKS 1
+#  define PROGMEM_नुमेरो_STACKS 1
 #else
-#  define PROGMEM_NUMBER_STACKS 2
+#  define PROGMEM_नुमेरो_STACKS 2
 #endif
 #define PROGMEM_FIXED_ELEMENTS_SIZE (sizeof(info_s))
 #define PROGMEM_LEFTOVER (PROGMEM_REAMINING-PROGMEM_FIXED_ELEMENTS_SIZE)
 
-#define PROGMEM_FILE_COUNT 4
+#define PROGMEM_FILE_बिलांग 4
 /* The path to the Battery Backed up SRAM */
 #define PROGMEM_PATH "/mnt/hardfault"
 /* The sizes of the files to create (-1) use rest of BBSRAM memory */
@@ -176,17 +176,17 @@ typedef struct ssarc_s dump_s;
 #define SSARC_DUMP_USED ((5*SSARC_DUMP_HEADER_SIZE)+(SSARC_DUMP_SIZE_FN0+SSARC_DUMP_SIZE_FN1+SSARC_DUMP_SIZE_FN2+SSARC_DUMP_SIZE_FN3))
 #define SSARC_DUMP_REMAINING (PX4_SSARC_DUMP_SIZE-SSARC_DUMP_USED)
 #if CONFIG_ARCH_INTERRUPTSTACK <= 3
-#  define SSARC_DUMP_NUMBER_STACKS 1
+#  define SSARC_DUMP_नुमेरो_STACKS 1
 #else
-#  define SSARC_DUMP_NUMBER_STACKS 2
+#  define SSARC_DUMP_नुमेरो_STACKS 2
 #endif
 #define SSARC_DUMP_FIXED_ELEMENTS_SIZE (sizeof(info_s))
 #define SSARC_DUMP_LEFTOVER (SSARC_DUMP_REMAINING-SSARC_DUMP_FIXED_ELEMENTS_SIZE)
 
-#define CONFIG_ISTACK_SIZE (SSARC_DUMP_LEFTOVER/SSARC_DUMP_NUMBER_STACKS/sizeof(stack_word_t))
-#define CONFIG_USTACK_SIZE (SSARC_DUMP_LEFTOVER/SSARC_DUMP_NUMBER_STACKS/sizeof(stack_word_t))
+#define CONFIG_ISTACK_SIZE (SSARC_DUMP_LEFTOVER/SSARC_DUMP_नुमेरो_STACKS/sizeof(सालानसान_word_t))
+#define CONFIG_USTACK_SIZE (SSARC_DUMP_LEFTOVER/SSARC_DUMP_नुमेरो_STACKS/sizeof(सालानसान_word_t))
 
-#define SSARC_DUMP_FILE_COUNT 5
+#define SSARC_DUMP_FILE_बिलांग 5
 /* The path to the Battery Backed up SRAM */
 #define SSARC_DUMP_PATH "/fs/ssarc"
 /* The sizes of the files to create (-1) use rest of BBSRAM memory */
@@ -214,22 +214,22 @@ typedef struct ssarc_s dump_s;
  * Specifier to the xxxx_NUM definei.e %Y is YYYY so add 2 and %s is -2
  * Also xxxxTIME_FMT need to match in size. See CCASERT in hardfault_log.c
  */
-#define LOG_PATH_BASE       CONFIG_BOARD_ROOT_PATH "/"
+#define LOG_PATH_BASE       CONFIG_BOARD_उगात_PATH "/"
 #define LOG_PATH_BASE_LEN    ((arraySize(LOG_PATH_BASE))-1)
 
 #define LOG_NAME_FMT        "fault_%s.log"
-#define LOG_NAME_NUM         (     -2    )
-#define LOG_NAME_LEN         ((arraySize(LOG_NAME_FMT)-1) + LOG_NAME_NUM)
+#define LOG_NAME_नुमेरो         (     -2    )
+#define LOG_NAME_LEN         ((arraySize(LOG_NAME_FMT)-1) + LOG_NAME_नुमेरो)
 
 #define TIME_FMT             "%Y_%m_%d_%H_%M_%S"
-#define TIME_FMT_NUM         (2+ 0+ 0+ 0+ 0+ 0)
-#define TIME_FMT_LEN         (((arraySize(TIME_FMT)-1) + TIME_FMT_NUM))
+#define TIME_FMT_नुमेरो         (2+ 0+ 0+ 0+ 0+ 0)
+#define TIME_FMT_LEN         (((arraySize(TIME_FMT)-1) + TIME_FMT_नुमेरो))
 
 #define LOG_PATH_LEN         ((LOG_PATH_BASE_LEN + LOG_NAME_LEN + TIME_FMT_LEN))
 
 #define HEADER_TIME_FMT      "%Y-%m-%d-%H:%M:%S"
-#define HEADER_TIME_FMT_NUM  (2+ 0+ 0+ 0+ 0+ 0)
-#define HEADER_TIME_FMT_LEN  (((arraySize(HEADER_TIME_FMT)-1) + HEADER_TIME_FMT_NUM))
+#define HEADER_TIME_FMT_नुमेरो  (2+ 0+ 0+ 0+ 0+ 0)
+#define HEADER_TIME_FMT_LEN  (((arraySize(HEADER_TIME_FMT)-1) + HEADER_TIME_FMT_नुमेरो))
 
 /* Select which format to use. On a terminal the details are at the bottom
  * and in a file they are at the top
@@ -242,24 +242,24 @@ typedef struct ssarc_s dump_s;
  ****************************************************************************/
 
 /* Used for stack frame storage */
-typedef uint32_t stack_word_t;
+typedef uint32_t सालानसान_word_t;
 
 /* Stack related data */
 
 typedef struct {
 	uint32_t sp;
-	uint32_t top;
+	uint32_t इताअस;
 	uint32_t size;
 
-} _stack_s;
+} सालानसान_s;
 
 typedef struct {
-	_stack_s user;
+	सालानसान_s user;
 #if CONFIG_ARCH_INTERRUPTSTACK > 3
-	_stack_s interrupt;
+	सालानसान_s interrupt;
 #endif
 
-} px4_stack_t;
+} px4_सालानसान_t;
 
 /* Not Used for reference only */
 
@@ -345,11 +345,11 @@ typedef struct {
 /* Flags to identify what is in the dump */
 typedef enum {
 	eRegsPresent          = 0x01,
-	eUserStackPresent     = 0x02,
-	eIntStackPresent      = 0x04,
+	e_User_सालानसान_Present     = 0x02,
+	e_Int_सालानसान_Present      = 0x04,
 	eFaultRegPresent      = 0x08,
-	eInvalidUserStackPtr  = 0x20,
-	eInvalidIntStackPrt   = 0x40,
+	e_Invalid_User_सालानसान_Ptr  = 0x20,
+	e_Invalid_Int_सालानसान_Prt   = 0x40,
 } fault_flags_t;
 
 typedef struct {
@@ -372,7 +372,7 @@ typedef struct {
 	int                   pid;                    /* Process ID */
 	uint32_t              regs[XCPTCONTEXT_REGS]; /* Interrupt register save area */
 	fault_regs_s          fault_regs;             /* NVIC status */
-	px4_stack_t           stacks;                 /* Stack info */
+	px4_सालानसान_t           stacks;                 /* Stack info */
 #if CONFIG_TASK_NAME_SIZE > 0
 	char                  name[CONFIG_TASK_NAME_SIZE + 1]; /* Task name (with NULL
 													* terminator) */
@@ -389,9 +389,9 @@ typedef struct {
 									 * The order is such that only the
 									 * ustack should be truncated
 									 */
-	stack_word_t istack[CONFIG_USTACK_SIZE];
+	सालानसान_word_t istack[CONFIG_USTACK_SIZE];
 #endif
-	stack_word_t ustack[CONFIG_ISTACK_SIZE];
+	सालानसान_word_t ustack[CONFIG_ISTACK_SIZE];
 } fullcontext_s;
 
 __BEGIN_DECLS

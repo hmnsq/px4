@@ -39,7 +39,7 @@ namespace open_drone_id
 {
 
 static constexpr uint8_t UAS_ID_SIZE = 20;
-static constexpr uint8_t UAS_ID_TYPE_SERIAL_NUMBER = 1;
+static constexpr uint8_t UAS_ID_TYPE_SERIAL_नुमेरो = 1;
 static constexpr int32_t UAS_ID_MODE_LOCK_FIRST_BASIC_ID = 1;
 
 struct UasId {

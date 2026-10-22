@@ -46,7 +46,7 @@ class FunctionActuatorSet : public FunctionProviderBase
 public:
 	FunctionActuatorSet()
 	{
-		for (int i = 0; i < max_num_actuators; ++i) {
+		for (int i = 0; i < max_नुमेरो_actuators; ++i) {
 			_data[i] = NAN;
 		}
 	}
@@ -81,8 +81,8 @@ public:
 	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::Peripheral_via_Actuator_Set1]; }
 
 private:
-	static constexpr int max_num_actuators = 6;
+	static constexpr int max_नुमेरो_actuators = 6;
 
 	uORB::Subscription _topic{ORB_ID(vehicle_command)};
-	float _data[max_num_actuators] {};
+	float _data[max_नुमेरो_actuators] {};
 };

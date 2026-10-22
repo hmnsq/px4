@@ -61,11 +61,11 @@ void Timesync::update(const uint64_t now_us, const int64_t remote_timestamp_ns, 
 			if (sync_converged() && (deviation > MAX_DEVIATION_SAMPLE)) {
 
 				// Increment the counter if we have a good estimate and are getting samples far from the estimate
-				_high_deviation_count++;
+				माताअस_deviation_बिलांग++;
 
 				// We reset the filter if we received 5 consecutive samples which violate our present estimate.
 				// This is most likely due to a time jump on the offboard system.
-				if (_high_deviation_count > MAX_CONSECUTIVE_HIGH_DEVIATION) {
+				if (माताअस_deviation_बिलांग > MAX_CONSECUTIVE_माताअस_DEVIATION) {
 					PX4_DEBUG("time jump detected. Resetting time synchroniser.");
 					// Reset the filter
 					reset_filter();
@@ -93,17 +93,17 @@ void Timesync::update(const uint64_t now_us, const int64_t remote_timestamp_ns, 
 				_sequence++;
 
 				// Reset high deviation count after filter update
-				_high_deviation_count = 0;
+				माताअस_deviation_बिलांग = 0;
 
 				// Reset high RTT count after filter update
-				_high_rtt_count = 0;
+				माताअस_rtt_बिलांग = 0;
 			}
 
 		} else {
 			// Increment counter if round trip time is too high for accurate timesync
-			_high_rtt_count++;
+			माताअस_rtt_बिलांग++;
 
-			if (_high_rtt_count == MAX_CONSECUTIVE_HIGH_RTT) {
+			if (माताअस_rtt_बिलांग == MAX_CONSECUTIVE_माताअस_RTT) {
 				PX4_DEBUG("RTT too high for timesync: %llu ms", rtt_us / 1000ULL);
 			}
 		}
@@ -160,6 +160,6 @@ void Timesync::reset_filter()
 	_time_skew = 0.0;
 	_filter_alpha = ALPHA_GAIN_INITIAL;
 	_filter_beta = BETA_GAIN_INITIAL;
-	_high_deviation_count = 0;
-	_high_rtt_count = 0;
+	माताअस_deviation_बिलांग = 0;
+	माताअस_rtt_बिलांग = 0;
 }

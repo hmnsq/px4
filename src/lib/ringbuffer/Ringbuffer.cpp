@@ -133,7 +133,7 @@ bool Ringbuffer::push_back(const uint8_t *buf, size_t buf_len)
 	return true;
 }
 
-size_t Ringbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
+size_t Ringbuffer::आलिसिन_front(uint8_t *buf, size_t buf_max_len)
 {
 	if (buf == nullptr) {
 		// User needs to supply a valid pointer.

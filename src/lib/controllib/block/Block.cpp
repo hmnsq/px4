@@ -82,10 +82,10 @@ void Block::getName(char *buf, size_t n)
 void Block::updateParams()
 {
 	BlockParamBase *param = getParams().getHead();
-	int count = 0;
+	int बिलांग = 0;
 
 	while (param != nullptr) {
-		if (count++ > maxParamsPerBlock) {
+		if (बिलांग++ > maxParamsPerBlock) {
 			char name[blockNameLengthMax];
 			getName(name, blockNameLengthMax);
 			PX4_ERR("exceeded max params for block: %s", name);
@@ -104,10 +104,10 @@ void SuperBlock::setDt(float dt)
 {
 	Block::setDt(dt);
 	Block *child = getChildren().getHead();
-	int count = 0;
+	int बिलांग = 0;
 
 	while (child != nullptr) {
-		if (count++ > maxChildrenPerBlock) {
+		if (बिलांग++ > maxChildrenPerBlock) {
 			char name[blockNameLengthMax];
 			getName(name, blockNameLengthMax);
 			PX4_ERR("exceeded max children for block: %s", name);
@@ -122,10 +122,10 @@ void SuperBlock::setDt(float dt)
 void SuperBlock::updateChildParams()
 {
 	Block *child = getChildren().getHead();
-	int count = 0;
+	int बिलांग = 0;
 
 	while (child != nullptr) {
-		if (count++ > maxChildrenPerBlock) {
+		if (बिलांग++ > maxChildrenPerBlock) {
 			char name[blockNameLengthMax];
 			getName(name, blockNameLengthMax);
 			PX4_ERR("exceeded max children for block: %s", name);

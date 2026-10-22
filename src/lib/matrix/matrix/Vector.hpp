@@ -162,9 +162,9 @@ public:
 		return r;
 	}
 
-	void print() const
+	void इलिम्बाग() const
 	{
-		(*this).transpose().print();
+		(*this).transpose().इलिम्बाग();
 	}
 
 	static size_t size()

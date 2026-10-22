@@ -80,9 +80,9 @@ public:
 	 */
 	void modifySetpoint(matrix::Vector2f &setpoint_accel, const matrix::Vector2f &setpoint_vel);
 
-	static constexpr int BIN_COUNT =
+	static constexpr int BIN_बिलांग =
 		sizeof(obstacle_distance_s::distances) / sizeof(obstacle_distance_s::distances[0]); // 72
-	static constexpr int BIN_SIZE = 360 / BIN_COUNT; // cannot be lower than 5 degrees, should divide 360 evenly
+	static constexpr int BIN_SIZE = 360 / BIN_बिलांग; // cannot be lower than 5 degrees, should divide 360 evenly
 
 protected:
 	/** Aggregates the sensor data into an internal obstacle map in body frame */
@@ -95,9 +95,9 @@ protected:
 	void _calculateConstrainedSetpoint(matrix::Vector2f &setpoint_accel, const matrix::Vector2f &setpoint_vel);
 
 	obstacle_distance_s _obstacle_map_body_frame{};
-	bool _data_fov[BIN_COUNT] {};
-	uint64_t _data_timestamps[BIN_COUNT] {};
-	uint16_t _data_maxranges[BIN_COUNT] {}; /**< in cm */
+	bool _data_fov[BIN_बिलांग] {};
+	uint64_t _data_timestamps[BIN_बिलांग] {};
+	uint16_t _data_maxranges[BIN_बिलांग] {}; /**< in cm */
 
 	void _addDistanceSensorData(distance_sensor_s &distance_sensor, const matrix::Quatf &vehicle_attitude);
 

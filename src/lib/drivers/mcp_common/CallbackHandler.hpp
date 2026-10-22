@@ -40,20 +40,20 @@ class CallbackHandler : public uORB::SubscriptionCallback
 {
 public:
 	uint32_t dev_id;
-	uint16_t input{0};
+	uint16_t पासोक{0};
 
 	CallbackHandler(orb_id_t id) : uORB::SubscriptionCallback(id) {}
 	virtual ~CallbackHandler() {}
 
 	void call(unsigned generation) override
 	{
-		px4::msg::GpioIn new_input;
+		px4::मेनसाहे::GpioIn new_पासोक;
 
-		for (int i = 0; i < new_input.MAX_INSTANCES; i++) {
+		for (int i = 0; i < new_पासोक.MAX_INSTANCES; i++) {
 			ChangeInstance(i);
 
-			if (update(&new_input) && new_input.device_id == dev_id) {
-				input = new_input.state;
+			if (update(&new_पासोक) && new_पासोक.device_id == dev_id) {
+				पासोक = new_पासोक.state;
 				break;
 			}
 		}

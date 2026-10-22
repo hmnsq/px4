@@ -117,7 +117,7 @@ TEST_F(ParameterTest, testImportTombstoneResets)
 
 	float cp = 5.f;
 	ASSERT_EQ(0, param_set(cp_dist, &cp));
-	ASSERT_FALSE(param_value_is_default(cp_dist));
+	ASSERT_FALSE(param_हालागा_is_default(cp_dist));
 
 	bson_encoder_s encoder{};
 	ASSERT_EQ(0, bson_encoder_init_buf(&encoder, nullptr, 0));
@@ -137,7 +137,7 @@ TEST_F(ParameterTest, testImportTombstoneResets)
 	close(fd);
 	unlink(path);
 
-	EXPECT_TRUE(param_value_is_default(cp_dist));
+	EXPECT_TRUE(param_हालागा_is_default(cp_dist));
 
 	int32_t rev = 0;
 	ASSERT_EQ(0, param_get(param_handle(px4::params::RC1_REV), &rev));

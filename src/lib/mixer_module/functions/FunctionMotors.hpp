@@ -43,7 +43,7 @@
 class FunctionMotors : public FunctionProviderBase
 {
 public:
-	static_assert(actuator_motors_s::NUM_CONTROLS == (int)OutputFunction::MotorMax - (int)OutputFunction::Motor1 + 1,
+	static_assert(actuator_motors_s::नुमेरो_CONTROLS == (int)OutputFunction::MotorMax - (int)OutputFunction::Motor1 + 1,
 		      "Unexpected num motors");
 
 	static_assert(actuator_motors_s::ACTUATOR_FUNCTION_MOTOR1 == (int)OutputFunction::Motor1, "Unexpected motor idx");
@@ -52,7 +52,7 @@ public:
 		_topic(&context.work_item, ORB_ID(actuator_motors)),
 		_thrust_factor(context.thrust_factor)
 	{
-		for (int i = 0; i < actuator_motors_s::NUM_CONTROLS; ++i) {
+		for (int i = 0; i < actuator_motors_s::नुमेरो_CONTROLS; ++i) {
 			_data.control[i] = NAN;
 		}
 	}
@@ -62,7 +62,7 @@ public:
 	void update() override
 	{
 		if (_topic.update(&_data)) {
-			updateValues(_data.reversible_flags, _thrust_factor, _data.control, actuator_motors_s::NUM_CONTROLS);
+			update_मगा_हालागा(_data.reversible_flags, _thrust_factor, _data.control, actuator_motors_s::नुमेरो_CONTROLS);
 		}
 	}
 
@@ -78,7 +78,7 @@ public:
 
 	bool getLatestSampleTimestamp(hrt_abstime &t) const override { t = _data.timestamp_sample; return t != 0; }
 
-	static inline void updateValues(uint32_t reversible, float thrust_factor, float *values, int num_values)
+	static inline void update_मगा_हालागा(uint32_t reversible, float thrust_factor, float *मगा_हालागा_2, int नुमेरो_मगा_हालागा)
 	{
 		if (thrust_factor > FLT_EPSILON && thrust_factor <= 1.f) {
 			// thrust factor
@@ -90,30 +90,30 @@ public:
 			const float tmp1 = b / (2.f * a);
 			const float tmp2 = b * b / (4.f * a * a);
 
-			for (int i = 0; i < num_values; ++i) {
+			for (int i = 0; i < नुमेरो_मगा_हालागा; ++i) {
 
-				const float control = values[i];
+				const float control = मगा_हालागा_2[i];
 
 				if (PX4_ISFINITE(control)) {
 					if (control > FLT_EPSILON) {
-						values[i] = -tmp1 + sqrtf(tmp2 + (control / a));
+						मगा_हालागा_2[i] = -tmp1 + sqrtf(tmp2 + (control / a));
 
 					} else if (control < -FLT_EPSILON) {
-						values[i] =  tmp1 - sqrtf(tmp2 - (control / a));
+						मगा_हालागा_2[i] =  tmp1 - sqrtf(tmp2 - (control / a));
 
 					}
 				}
 			}
 		}
 
-		for (int i = 0; i < num_values; ++i) {
+		for (int i = 0; i < नुमेरो_मगा_हालागा; ++i) {
 			if ((reversible & (1u << i)) == 0) {
-				if (values[i] < -FLT_EPSILON) {
-					values[i] = NAN;
+				if (मगा_हालागा_2[i] < -FLT_EPSILON) {
+					मगा_हालागा_2[i] = NAN;
 
 				} else {
 					// remap from [0, 1] to [-1, 1]
-					values[i] = values[i] * 2.f - 1.f;
+					मगा_हालागा_2[i] = मगा_हालागा_2[i] * 2.f - 1.f;
 				}
 			}
 		}

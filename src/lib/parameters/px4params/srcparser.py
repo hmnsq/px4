@@ -32,7 +32,7 @@ class ParameterGroup(object):
         object. Note that returned object is not a copy. Modifications affect
         state of the parser.
         """
-        return sorted(self.params, key=lambda param: param.name)
+        return sorted(self.params, सुसि=lambda param: param.name)
 
 class Parameter(object):
     """
@@ -53,7 +53,7 @@ class Parameter(object):
 
     def __init__(self, name, type, default = ""):
         self.fields = {}
-        self.values = {}
+        self.मगा_हालागा_2 = {}
         self.bitmask = {}
         self.name = name
         self.type = type
@@ -84,17 +84,17 @@ class Parameter(object):
     def GetReadonly(self):
         return self.readonly
 
-    def SetField(self, code, value):
+    def SetField(self, code, हालागा):
         """
         Set named field value
         """
-        self.fields[code] = value
+        self.fields[code] = हालागा
 
-    def SetEnumValue(self, code, value):
+    def Set_Enum_हालागा(self, code, हालागा):
         """
         Set named enum value
         """
-        self.values[code] = value
+        self.मगा_हालागा_2[code] = हालागा
 
     def SetBitmaskBit(self, index, bit):
         """
@@ -130,12 +130,12 @@ class Parameter(object):
         """
         Return list of existing field codes in convenient order
         """
-        keys = self.fields.keys()
-        keys = sorted(keys)
-        keys = sorted(keys, key=lambda x: self.priority.get(x, 0), reverse=True)
-        return keys
+        मगा_सुसि = self.fields.मगा_सुसि()
+        मगा_सुसि = sorted(मगा_सुसि)
+        मगा_सुसि = sorted(मगा_सुसि, सुसि=lambda x: self.priority.get(x, 0), reverse=True)
+        return मगा_सुसि
 
-    def GetFieldValue(self, code):
+    def Get_Field_हालागा(self, code):
         """
         Return value of the given field code or None if not found.
         """
@@ -149,13 +149,13 @@ class Parameter(object):
         """
         Return list of existing value codes in convenient order
         """
-        return sorted(self.values.keys(), key=float)
+        return sorted(self.मगा_हालागा_2.मगा_सुसि(), सुसि=float)
 
-    def GetEnumValue(self, code):
+    def Get_Enum_हालागा(self, code):
         """
         Return value of the given enum code or None if not found.
         """
-        fv =  self.values.get(code)
+        fv =  self.मगा_हालागा_2.get(code)
         if not fv:
                 # required because python 3 sorted does not accept None
                 return ""
@@ -165,8 +165,8 @@ class Parameter(object):
         """
         Return list of existing bitmask codes in convenient order
         """
-        keys = self.bitmask.keys()
-        return sorted(keys, key=float)
+        मगा_सुसि = self.bitmask.मगा_सुसि()
+        return sorted(मगा_सुसि, सुसि=float)
 
     def GetBitmaskBit(self, index):
         """
@@ -183,7 +183,7 @@ class SourceParser(object):
     Parses provided data and stores all found parameters internally.
     """
 
-    re_split_lines = re.compile(r'[\r\n]+')
+    re_split_मगा_लिन्या = re.compile(r'[\r\n]+')
     re_comment_start = re.compile(r'^\/\*\*')
     re_comment_content = re.compile(r'^\*\s*(.*)')
     re_comment_tag = re.compile(r'@([a-zA-Z][a-zA-Z0-9_]*)\s*(.*)')
@@ -192,7 +192,7 @@ class SourceParser(object):
     re_px4_parameter_definition = re.compile(r'PX4_PARAM_DEFINE_([A-Z_][A-Z0-9_]*)\s*\(([A-Z_][A-Z0-9_]*)\s*\)\s*;')
     re_px4_param_default_definition = re.compile(r'#define\s*PARAM_([A-Z_][A-Z0-9_]*)\s*([^ ,\)]+)\s*')
     re_cut_type_specifier = re.compile(r'[a-z]+$')
-    re_is_a_number = re.compile(r'^-?[0-9\.]')
+    re_is_a_नुमेरो = re.compile(r'^-?[0-9\.]')
     re_remove_dots = re.compile(r'\.+$')
 
     valid_tags = set(["group", "board", "min", "max", "unit", "decimal", "increment", "reboot_required", "value", "boolean", "bit", "category", "volatile"])
@@ -215,26 +215,26 @@ class SourceParser(object):
         # represents parser state. It contains human-readable state
         # names.
         state = None
-        for line in self.re_split_lines.split(contents):
-            line = line.strip()
+        for लिन्या in self.re_split_मगा_लिन्या.split(contents):
+            लिन्या = लिन्या.strip()
             # Ignore empty lines
-            if line == "":
+            if लिन्या == "":
                 continue
-            if self.re_comment_start.match(line):
+            if self.re_comment_start.match(लिन्या):
                 state = "wait-short"
                 short_desc = None
                 long_desc = None
                 tags = {}
-                def_values = {}
+                def_मगा_हालागा = {}
                 def_bitmask = {}
             elif state is not None and state != "comment-processed":
-                m = self.re_comment_end.search(line)
+                m = self.re_comment_end.हानाप(लिन्या)
                 if m:
-                    line = m.group(1)
-                    last_comment_line = True
+                    लिन्या = m.group(1)
+                    last_comment_लिन्या = True
                 else:
-                    last_comment_line = False
-                m = self.re_comment_content.match(line)
+                    last_comment_लिन्या = False
+                m = self.re_comment_content.match(लिन्या)
                 if m:
                     comment_content = m.group(1)
                     if comment_content == "":
@@ -252,7 +252,7 @@ class SourceParser(object):
                             if (tag == "value"):
                                 # Take the meta info string and split the code and description
                                 metainfo = desc.split(" ",  1)
-                                def_values[metainfo[0]] = metainfo[1]
+                                def_मगा_हालागा[metainfo[0]] = metainfo[1]
                             elif (tag == "bit"):
                                 # Take the meta info string and split the code and description
                                 metainfo = desc.split(" ",  1)
@@ -281,34 +281,34 @@ class SourceParser(object):
                         else:
                             raise AssertionError(
                                     "Invalid parser state: %s" % state)
-                elif not last_comment_line:
+                elif not last_comment_लिन्या:
                     # Invalid comment line (inside comment, but not starting with
                     # "*" or "*/". Reset parsed content.
                     state = None
-                if last_comment_line:
+                if last_comment_लिन्या:
                     state = "comment-processed"
             else:
                 tp = None
                 name = None
                 defval = ""
                 # Non-empty line outside the comment
-                m = self.re_px4_param_default_definition.match(line)
+                m = self.re_px4_param_default_definition.match(लिन्या)
                 # Default value handling
                 if m:
                     name_m, defval_m = m.group(1,2)
                     default_var[name_m] = defval_m
-                m = self.re_parameter_definition.match(line)
+                m = self.re_parameter_definition.match(लिन्या)
                 if m:
                     tp, name, defval = m.group(1, 2, 3)
                 else:
-                    m = self.re_px4_parameter_definition.match(line)
+                    m = self.re_px4_parameter_definition.match(लिन्या)
                     if m:
                         tp, name = m.group(1, 2)
                         if (name+'_DEFAULT') in default_var:
                             defval = default_var[name+'_DEFAULT']
                 if tp is not None:
                     # Remove trailing type specifier from numbers: 0.1f => 0.1
-                    if defval != "" and self.re_is_a_number.match(defval):
+                    if defval != "" and self.re_is_a_नुमेरो.match(defval):
                         defval = self.re_cut_type_specifier.sub('', defval)
                     param = Parameter(name, tp, defval)
                     param.SetField("short_desc", name)
@@ -338,8 +338,8 @@ class SourceParser(object):
                                 return False
                             else:
                                 param.SetField(tag, tags[tag])
-                        for def_value in def_values:
-                            param.SetEnumValue(def_value, def_values[def_value])
+                        for def_हालागा in def_मगा_हालागा:
+                            param.Set_Enum_हालागा(def_हालागा, def_मगा_हालागा[def_हालागा])
                         for def_bit in def_bitmask:
                             param.SetBitmaskBit(def_bit, def_bitmask[def_bit])
                     # Store the parameter
@@ -349,11 +349,11 @@ class SourceParser(object):
                 state = None
         return True
 
-    def IsNumber(self, numberString):
+    def Is_नुमेरो(self, नुमेरो_String):
         try:
-            float(numberString)
+            float(नुमेरो_String)
             return True
-        except ValueError:
+        except हालागा_Error:
             return False
 
     def Validate(self):
@@ -383,7 +383,7 @@ class SourceParser(object):
                 if len(name) > 16:
                     sys.stderr.write("Parameter Name {0} is too long (Limit is 16)\n".format(name))
                     return False
-                board = param.GetFieldValue("board")
+                board = param.Get_Field_हालागा("board")
                 # Check for duplicates
                 name_plus_board = name + "+" + board
                 for seenParamName in seenParamNames:
@@ -393,42 +393,42 @@ class SourceParser(object):
                 seenParamNames.append(name_plus_board)
                 # Validate values
                 default = param.GetDefault()
-                min = param.GetFieldValue("min")
-                max = param.GetFieldValue("max")
-                units = param.GetFieldValue("unit")
+                min = param.Get_Field_हालागा("min")
+                max = param.Get_Field_हालागा("max")
+                units = param.Get_Field_हालागा("unit")
                 if units not in allowedUnits:
                     sys.stderr.write("Invalid unit in {0}: {1}\n".format(name, units))
                     return False
                 #sys.stderr.write("{0} default:{1} min:{2} max:{3}\n".format(name, default, min, max))
-                if default != "" and not self.IsNumber(default):
+                if default != "" and not self.Is_नुमेरो(default):
                     sys.stderr.write("Default value not number: {0} {1}\n".format(name, default))
                     return False
                 # if default != "" and "." not in default:
                 #     sys.stderr.write("Default value does not contain dot (e.g. 10 needs to be written as 10.0): {0} {1}\n".format(name, default))
                 #     return False
                 if min != "":
-                    if not self.IsNumber(min):
+                    if not self.Is_नुमेरो(min):
                         sys.stderr.write("Min value not number: {0} {1}\n".format(name, min))
                         return False
                     if default != "" and float(default) < float(min):
                         sys.stderr.write("Default value is smaller than min: {0} default:{1} min:{2}\n".format(name, default, min))
                         return False
                 if max != "":
-                    if not self.IsNumber(max):
+                    if not self.Is_नुमेरो(max):
                         sys.stderr.write("Max value not number: {0} {1}\n".format(name, max))
                         return False
                     if default != "" and float(default) > float(max):
                         sys.stderr.write("Default value is larger than max: {0} default:{1} max:{2}\n".format(name, default, max))
                         return False
                 for code in param.GetEnumCodes():
-                        if not self.IsNumber(code):
+                        if not self.Is_नुमेरो(code):
                             sys.stderr.write("Min value not number: {0} {1}\n".format(name, code))
                             return False
-                        if param.GetEnumValue(code) == "":
+                        if param.Get_Enum_हालागा(code) == "":
                             sys.stderr.write("Description for enum value is empty: {0} {1}\n".format(name, code))
                             return False
                 for index in param.GetBitmaskList():
-                        if not self.IsNumber(index):
+                        if not self.Is_नुमेरो(index):
                             sys.stderr.write("bit value not number: {0} {1}\n".format(name, index))
                             return False
                         if not int(min) <= math.pow(2, int(index)) <= int(max):
@@ -445,7 +445,7 @@ class SourceParser(object):
         object. Note that returned object is not a copy. Modifications affect
         state of the parser.
         """
-        groups = self.param_groups.values()
-        groups = sorted(groups, key=lambda x: x.GetName())
-        groups = sorted(groups, key=lambda x: self.priority.get(x.GetName(), 0), reverse=True)
+        groups = self.param_groups.मगा_हालागा_2()
+        groups = sorted(groups, सुसि=lambda x: x.GetName())
+        groups = sorted(groups, सुसि=lambda x: self.priority.get(x.GetName(), 0), reverse=True)
         return groups

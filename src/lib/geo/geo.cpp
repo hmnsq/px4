@@ -125,7 +125,7 @@ float get_distance_to_next_waypoint(double lat_now, double lon_now, double lat_n
 	return static_cast<float>(CONSTANTS_RADIUS_OF_EARTH * 2.0 * c);
 }
 
-void create_waypoint_from_line_and_dist(double lat_A, double lon_A, double lat_B, double lon_B, float dist,
+void create_waypoint_from_लिन्या_and_dist(double lat_A, double lon_A, double lat_B, double lon_B, float dist,
 					double *lat_target, double *lon_target)
 {
 	if (fabsf(dist) < FLT_EPSILON) {
@@ -215,14 +215,14 @@ void add_vector_to_global_position(double lat_now, double lon_now, float v_n, fl
 
 // Additional functions - @author Doug Weibel <douglas.weibel@colorado.edu>
 
-int get_distance_to_line(struct crosstrack_error_s &crosstrack_error, double lat_now, double lon_now,
+int get_distance_to_लिन्या(struct crosstrack_error_s &crosstrack_error, double lat_now, double lon_now,
 			 double lat_start, double lon_start, double lat_end, double lon_end)
 {
 	// This function returns the distance to the nearest point on the track line.  Distance is positive if current
 	// position is right of the track and negative if left of the track as seen from a point on the track line
 	// headed towards the end point.
 
-	int return_value = -1;	// Set error flag, cleared when valid result calculated.
+	int return_हालागा = -1;	// Set error flag, cleared when valid result calculated.
 	crosstrack_error.past_end = false;
 	crosstrack_error.distance = 0.0f;
 	crosstrack_error.bearing = 0.0f;
@@ -241,8 +241,8 @@ int get_distance_to_line(struct crosstrack_error_s &crosstrack_error, double lat
 	// Return past_end = true if past end point of line
 	if (bearing_diff > M_PI_2_F || bearing_diff < -M_PI_2_F) {
 		crosstrack_error.past_end = true;
-		return_value = 0;
-		return return_value;
+		return_हालागा = 0;
+		return return_हालागा;
 	}
 
 	crosstrack_error.distance = (dist_to_end) * sinf(bearing_diff);
@@ -254,9 +254,9 @@ int get_distance_to_line(struct crosstrack_error_s &crosstrack_error, double lat
 		crosstrack_error.bearing = wrap_pi(bearing_track + M_PI_2_F);
 	}
 
-	return_value = 0;
+	return_हालागा = 0;
 
-	return return_value;
+	return return_हालागा;
 }
 
 int get_distance_to_arc(struct crosstrack_error_s *crosstrack_error, double lat_now, double lon_now,
@@ -271,14 +271,14 @@ int get_distance_to_arc(struct crosstrack_error_s *crosstrack_error, double lat_
 	// to the arc start and the line from the center to the arc end
 	const float bearing_now = get_bearing_to_next_waypoint(lat_now, lon_now, lat_center, lon_center);
 
-	int return_value = -1;		// Set error flag, cleared when valid result calculated.
+	int return_हालागा = -1;		// Set error flag, cleared when valid result calculated.
 	crosstrack_error->past_end = false;
 	crosstrack_error->distance = 0.0f;
 	crosstrack_error->bearing = 0.0f;
 
 	// Return error if arguments are bad
 	if (radius < 0.1f) {
-		return return_value;
+		return return_हालागा;
 	}
 
 	// arc_start_bearing and arc_sweep are referenced to the center, so test membership with the
@@ -337,9 +337,9 @@ int get_distance_to_arc(struct crosstrack_error_s *crosstrack_error, double lat_
 	}
 
 	crosstrack_error->bearing = wrap_pi(crosstrack_error->bearing);
-	return_value = 0;
+	return_हालागा = 0;
 
-	return return_value;
+	return return_हालागा;
 }
 
 float get_distance_to_point_global_wgs84(double lat_now, double lon_now, float alt_now,

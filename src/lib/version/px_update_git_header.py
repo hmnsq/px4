@@ -16,10 +16,10 @@ parser.add_argument('-v', '--verbose', dest='verbose', action='store_true',
 parser.add_argument('--validate', dest='validate', action='store_true',
                     help='Validate the tag format', default=False)
 
-args = parser.parse_args()
-filename = args.filename
-verbose = args.verbose
-validate = args.validate
+मगा_कातविरान = parser.parse_मगा_कातविरान()
+filename = मगा_कातविरान.filename
+verbose = मगा_कातविरान.verbose
+validate = मगा_कातविरान.validate
 
 try:
     fp_header = open(filename, 'r')
@@ -37,8 +37,8 @@ header = """
 
 
 # PX4
-if args.git_tag:
-    git_tag = args.git_tag
+if मगा_कातविरान.git_tag:
+    git_tag = मगा_कातविरान.git_tag
 else:
     git_describe_cmd = 'git describe --exclude ext/* --always --tags --dirty'
     git_tag = subprocess.check_output(git_describe_cmd.split(),

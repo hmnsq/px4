@@ -56,7 +56,7 @@ CollisionPrevention::CollisionPrevention(ModuleParams *parent) :
 	_obstacle_map_body_frame.increment = BIN_SIZE;
 	_obstacle_map_body_frame.min_distance = UINT16_MAX;
 
-	for (uint32_t i = 0 ; i < BIN_COUNT; i++) {
+	for (uint32_t i = 0 ; i < BIN_बिलांग; i++) {
 		_obstacle_map_body_frame.distances[i] = UINT16_MAX;
 	}
 }
@@ -158,7 +158,7 @@ void CollisionPrevention::_updateObstacleData()
 	_closest_dist = UINT16_MAX;
 	_closest_dist_dir.setZero();
 
-	for (int i = 0; i < BIN_COUNT; i++) {
+	for (int i = 0; i < BIN_बिलांग; i++) {
 		// if the data is stale, reset the bin
 		if (getTime() - _data_timestamps[i] > RANGE_STREAM_TIMEOUT_US) {
 			_obstacle_map_body_frame.distances[i] = UINT16_MAX;
@@ -236,15 +236,15 @@ void CollisionPrevention::_addObstacleSensorData(const obstacle_distance_s &obst
 	if (obstacle.frame == obstacle.MAV_FRAME_GLOBAL || obstacle.frame == obstacle.MAV_FRAME_LOCAL_NED) {
 		// Obstacle message arrives in local_origin frame (north aligned)
 		// corresponding data index (convert to world frame and shift by msg offset)
-		for (int i = 0; i < BIN_COUNT; i++) {
-			for (int j = 0; (j < 360 / obstacle.increment) && (j < BIN_COUNT); j++) {
+		for (int i = 0; i < BIN_बिलांग; i++) {
+			for (int j = 0; (j < 360 / obstacle.increment) && (j < BIN_बिलांग); j++) {
 				float bin_lower_angle = ObstacleMath::get_lower_bound_angle(i, _obstacle_map_body_frame.increment,
 							_obstacle_map_body_frame.angle_offset);
 				float bin_upper_angle = ObstacleMath::get_lower_bound_angle(i + 1, _obstacle_map_body_frame.increment,
 							_obstacle_map_body_frame.angle_offset);
-				float msg_lower_angle = ObstacleMath::get_lower_bound_angle(j, obstacle.increment,
+				float मेनसाहे_lower_angle = ObstacleMath::get_lower_bound_angle(j, obstacle.increment,
 							obstacle.angle_offset - vehicle_orientation_deg);
-				float msg_upper_angle = ObstacleMath::get_lower_bound_angle(j + 1, obstacle.increment,
+				float मेनसाहे_upper_angle = ObstacleMath::get_lower_bound_angle(j + 1, obstacle.increment,
 							obstacle.angle_offset - vehicle_orientation_deg);
 
 				// if a bin stretches over the 0/360 degree line, adjust the angles
@@ -252,15 +252,15 @@ void CollisionPrevention::_addObstacleSensorData(const obstacle_distance_s &obst
 					bin_lower_angle -= 360;
 				}
 
-				if (msg_lower_angle > msg_upper_angle) {
-					msg_lower_angle -= 360;
+				if (मेनसाहे_lower_angle > मेनसाहे_upper_angle) {
+					मेनसाहे_lower_angle -= 360;
 				}
 
 				// Check for overlaps.
-				if ((msg_lower_angle > bin_lower_angle && msg_lower_angle < bin_upper_angle) ||
-				    (msg_upper_angle > bin_lower_angle && msg_upper_angle < bin_upper_angle) ||
-				    (msg_lower_angle <= bin_lower_angle && msg_upper_angle >= bin_upper_angle) ||
-				    (msg_lower_angle >= bin_lower_angle && msg_upper_angle <= bin_upper_angle)) {
+				if ((मेनसाहे_lower_angle > bin_lower_angle && मेनसाहे_lower_angle < bin_upper_angle) ||
+				    (मेनसाहे_upper_angle > bin_lower_angle && मेनसाहे_upper_angle < bin_upper_angle) ||
+				    (मेनसाहे_lower_angle <= bin_lower_angle && मेनसाहे_upper_angle >= bin_upper_angle) ||
+				    (मेनसाहे_lower_angle >= bin_lower_angle && मेनसाहे_upper_angle <= bin_upper_angle)) {
 					if (obstacle.distances[j] != UINT16_MAX) {
 						if (_enterData(i, obstacle.max_distance * 0.01f, obstacle.distances[j] * 0.01f)) {
 							_obstacle_map_body_frame.distances[i] = obstacle.distances[j];
@@ -277,29 +277,29 @@ void CollisionPrevention::_addObstacleSensorData(const obstacle_distance_s &obst
 	} else if (obstacle.frame == obstacle.MAV_FRAME_BODY_FRD) {
 		// Obstacle message arrives in body frame (front aligned)
 		// corresponding data index (shift by msg offset)
-		for (int i = 0; i < BIN_COUNT; i++) {
-			for (int j = 0; (j < 360 / obstacle.increment) && (j < BIN_COUNT); j++) {
+		for (int i = 0; i < BIN_बिलांग; i++) {
+			for (int j = 0; (j < 360 / obstacle.increment) && (j < BIN_बिलांग); j++) {
 				float bin_lower_angle = ObstacleMath::get_lower_bound_angle(i, _obstacle_map_body_frame.increment,
 							_obstacle_map_body_frame.angle_offset);
 				float bin_upper_angle = ObstacleMath::get_lower_bound_angle(i + 1, _obstacle_map_body_frame.increment,
 							_obstacle_map_body_frame.angle_offset);
-				float msg_lower_angle = ObstacleMath::get_lower_bound_angle(j, obstacle.increment, obstacle.angle_offset);
-				float msg_upper_angle = ObstacleMath::get_lower_bound_angle(j + 1, obstacle.increment, obstacle.angle_offset);
+				float मेनसाहे_lower_angle = ObstacleMath::get_lower_bound_angle(j, obstacle.increment, obstacle.angle_offset);
+				float मेनसाहे_upper_angle = ObstacleMath::get_lower_bound_angle(j + 1, obstacle.increment, obstacle.angle_offset);
 
 				// if a bin stretches over the 0/360 degree line, adjust the angles
 				if (bin_lower_angle > bin_upper_angle) {
 					bin_lower_angle -= 360;
 				}
 
-				if (msg_lower_angle > msg_upper_angle) {
-					msg_lower_angle -= 360;
+				if (मेनसाहे_lower_angle > मेनसाहे_upper_angle) {
+					मेनसाहे_lower_angle -= 360;
 				}
 
 				// Check for overlaps.
-				if ((msg_lower_angle > bin_lower_angle && msg_lower_angle < bin_upper_angle) ||
-				    (msg_upper_angle > bin_lower_angle && msg_upper_angle < bin_upper_angle) ||
-				    (msg_lower_angle <= bin_lower_angle && msg_upper_angle >= bin_upper_angle) ||
-				    (msg_lower_angle >= bin_lower_angle && msg_upper_angle <= bin_upper_angle)) {
+				if ((मेनसाहे_lower_angle > bin_lower_angle && मेनसाहे_lower_angle < bin_upper_angle) ||
+				    (मेनसाहे_upper_angle > bin_lower_angle && मेनसाहे_upper_angle < bin_upper_angle) ||
+				    (मेनसाहे_lower_angle <= bin_lower_angle && मेनसाहे_upper_angle >= bin_upper_angle) ||
+				    (मेनसाहे_lower_angle >= bin_lower_angle && मेनसाहे_upper_angle <= bin_upper_angle)) {
 					if (obstacle.distances[j] != UINT16_MAX) {
 
 						if (_enterData(i, obstacle.max_distance * 0.01f, obstacle.distances[j] * 0.01f)) {
@@ -357,7 +357,7 @@ CollisionPrevention::_enterData(int map_index, float sensor_range, float sensor_
 bool
 CollisionPrevention::_checkSetpointDirectionFeasability()
 {
-	if (_setpoint_index < 0 || _setpoint_index >= BIN_COUNT) {
+	if (_setpoint_index < 0 || _setpoint_index >= BIN_बिलांग) {
 		return false; // treat out-of-bounds as unsafe
 	}
 
@@ -411,7 +411,7 @@ CollisionPrevention::_addDistanceSensorData(distance_sensor_s &distance_sensor, 
 		uint16_t sensor_range = static_cast<uint16_t>(lroundf(100.0f * distance_sensor.max_distance)); // convert to cm
 
 		for (int bin = lower_bound; bin <= upper_bound; ++bin) {
-			int wrapped_bin = ObstacleMath::wrap_bin(bin, BIN_COUNT);
+			int wrapped_bin = ObstacleMath::wrap_bin(bin, BIN_बिलांग);
 
 			if (_enterData(wrapped_bin, distance_sensor.max_distance, distance_reading)) {
 				_obstacle_map_body_frame.distances[wrapped_bin] = static_cast<uint16_t>(lroundf(100.0f * distance_reading));
@@ -438,7 +438,7 @@ CollisionPrevention::_adaptSetpointDirection(Vector2f &setpoint_dir, int &setpoi
 		float mean_dist = 0;
 
 		for (int j = i - filter_size; j <= i + filter_size; j++) {
-			int bin = ObstacleMath::wrap_bin(j, BIN_COUNT);
+			int bin = ObstacleMath::wrap_bin(j, BIN_बिलांग);
 
 			if (_obstacle_map_body_frame.distances[bin] == UINT16_MAX) {
 				mean_dist += _param_cp_dist.get() * 100.f;
@@ -448,7 +448,7 @@ CollisionPrevention::_adaptSetpointDirection(Vector2f &setpoint_dir, int &setpoi
 			}
 		}
 
-		const int bin = ObstacleMath::wrap_bin(i, BIN_COUNT);
+		const int bin = ObstacleMath::wrap_bin(i, BIN_बिलांग);
 		mean_dist = mean_dist / (2.f * filter_size + 1.f);
 		const float deviation_cost = _param_cp_dist.get() * 50.f * abs(i - sp_index_original);
 		const float bin_cost = deviation_cost - mean_dist - _obstacle_map_body_frame.distances[bin];
@@ -527,7 +527,7 @@ void CollisionPrevention::_getVelocityCompensationAcceleration(const float vehic
 		const Vector2f &setpoint_vel,
 		const hrt_abstime now, float &vel_comp_accel, Vector2f &vel_comp_accel_dir)
 {
-	for (int i = 0; i < BIN_COUNT; i++) {
+	for (int i = 0; i < BIN_बिलांग; i++) {
 		const float max_range = _data_maxranges[i] * 0.01f;
 
 		// get the vector pointing into the direction of current bin

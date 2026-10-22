@@ -71,9 +71,9 @@ public:
 	}
 
 	virtual ~BlockOutput() = default;
-	void update(float input)
+	void update(float पासोक)
 	{
-		_val = _limit.update(input + getTrim());
+		_val = _limit.update(पासोक + getTrim());
 	}
 // accessors
 	float getMin() { return _limit.getMin(); }

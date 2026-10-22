@@ -63,24 +63,24 @@ bool Sticks::checkAndUpdateStickInputs()
 		_aux_positions(5) = manual_control_setpoint.aux6;
 
 		// valid stick inputs are required
-		_input_available = manual_control_setpoint.valid && _positions.isAllFinite();
+		पासोक_available = manual_control_setpoint.valid && _positions.isAllFinite();
 
 	} else {
 		failsafe_flags_s failsafe_flags;
 
 		if (_failsafe_flags_sub.update(&failsafe_flags)) {
 			if (failsafe_flags.manual_control_signal_lost) {
-				_input_available = false;
+				पासोक_available = false;
 			}
 		}
 	}
 
-	if (!_input_available) {
+	if (!पासोक_available) {
 		// Timeout: set all sticks to zero
 		_positions.zero();
 	}
 
-	return _input_available;
+	return पासोक_available;
 }
 
 float Sticks::expoDeadzone(float value, float expo, float deadzone)

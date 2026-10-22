@@ -69,7 +69,7 @@ public:
 		_max(this, "MAX")
 	{}
 	virtual ~BlockLimitSym() = default;
-	float update(float input);
+	float update(float पासोक);
 // accessors
 	float getMax() { return _max.get(); }
 protected:

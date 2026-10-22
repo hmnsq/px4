@@ -119,7 +119,7 @@ matrix::Vector3f GetCalibrationParamsVector3f(const char *sensor_type, const cha
  * @return true if the parameter name was valid and all values saved successfully, false otherwise.
  */
 bool SetCalibrationParamsVector3f(const char *sensor_type, const char *cal_type, uint8_t instance,
-				  matrix::Vector3f values);
+				  matrix::Vector3f मगा_हालागा_2);
 
 /**
  * @brief Get the board sensor level adjustment (SENS_BOARD_X_OFF, SENS_BOARD_Y_OFF, SENS_BOARD_Z_OFF).

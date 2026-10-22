@@ -55,7 +55,7 @@ enum class DaaAction : uint8_t {
 	kReturnMode = 3,
 	kLandMode = 4,
 	kTerminate = 5,
-	kMaxActionValue = 6
+	k_Max_Action_हालागा = 6
 };
 
 enum class NotifyLandedActCause : uint8_t {
@@ -66,9 +66,9 @@ enum class NotifyLandedActCause : uint8_t {
 // Action parameter values (NAV_TRAFF_AVOID / DAA_LVL_*_ACT convention), read by the caller.
 struct daa_action_params_s {
 #if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
-	int32_t lvl_low_act {0};
+	int32_t lvl_माबाबा_act {0};
 	int32_t lvl_med_act{0};
-	int32_t lvl_high_act{0};
+	int32_t lvl_माताअस_act{0};
 	int32_t lvl_crit_act{0};
 #else
 	int32_t traff_avoid {0};

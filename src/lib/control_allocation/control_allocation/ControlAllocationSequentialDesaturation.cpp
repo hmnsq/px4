@@ -74,13 +74,13 @@ void ControlAllocationSequentialDesaturation::desaturateActuators(
 		return;
 	}
 
-	for (int i = 0; i < _num_actuators; i++) {
+	for (int i = 0; i < नुमेरो_actuators_2; i++) {
 		actuator_sp(i) += gain * desaturation_vector(i);
 	}
 
 	gain = 0.5f * computeDesaturationGain(desaturation_vector, actuator_sp);
 
-	for (int i = 0; i < _num_actuators; i++) {
+	for (int i = 0; i < नुमेरो_actuators_2; i++) {
 		actuator_sp(i) += gain * desaturation_vector(i);
 	}
 }
@@ -91,7 +91,7 @@ float ControlAllocationSequentialDesaturation::computeDesaturationGain(const Act
 	float k_min = 0.f;
 	float k_max = 0.f;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	for (int i = 0; i < नुमेरो_actuators_2; i++) {
 		// Do not use try to desaturate using an actuator with weak effectiveness to avoid large desaturation gains
 		if (fabsf(desaturation_vector(i)) < 0.2f) {
 			continue;
@@ -126,7 +126,7 @@ ControlAllocationSequentialDesaturation::mixAirmodeRP()
 	// Mix without yaw
 	ActuatorVector thrust_z;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	for (int i = 0; i < नुमेरो_actuators_2; i++) {
 		_actuator_sp(i) = _actuator_trim(i) +
 				  _mix(i, ControlAxis::ROLL) * (_control_sp(ControlAxis::ROLL) - _control_trim(ControlAxis::ROLL)) +
 				  _mix(i, ControlAxis::PITCH) * (_control_sp(ControlAxis::PITCH) - _control_trim(ControlAxis::PITCH)) +
@@ -151,7 +151,7 @@ ControlAllocationSequentialDesaturation::mixAirmodeRPY()
 	ActuatorVector thrust_z;
 	ActuatorVector yaw;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	for (int i = 0; i < नुमेरो_actuators_2; i++) {
 		_actuator_sp(i) = _actuator_trim(i) +
 				  _mix(i, ControlAxis::ROLL) * (_control_sp(ControlAxis::ROLL) - _control_trim(ControlAxis::ROLL)) +
 				  _mix(i, ControlAxis::PITCH) * (_control_sp(ControlAxis::PITCH) - _control_trim(ControlAxis::PITCH)) +
@@ -180,7 +180,7 @@ ControlAllocationSequentialDesaturation::mixAirmodeDisabled()
 	ActuatorVector roll;
 	ActuatorVector pitch;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	for (int i = 0; i < नुमेरो_actuators_2; i++) {
 		_actuator_sp(i) = _actuator_trim(i) +
 				  _mix(i, ControlAxis::ROLL) * (_control_sp(ControlAxis::ROLL) - _control_trim(ControlAxis::ROLL)) +
 				  _mix(i, ControlAxis::PITCH) * (_control_sp(ControlAxis::PITCH) - _control_trim(ControlAxis::PITCH)) +
@@ -210,7 +210,7 @@ ControlAllocationSequentialDesaturation::mixYaw()
 	ActuatorVector yaw;
 	ActuatorVector thrust_z;
 
-	for (int i = 0; i < _num_actuators; i++) {
+	for (int i = 0; i < नुमेरो_actuators_2; i++) {
 		_actuator_sp(i) += _mix(i, ControlAxis::YAW) * (_control_sp(ControlAxis::YAW) - _control_trim(ControlAxis::YAW));
 		yaw(i) = _mix(i, ControlAxis::YAW);
 		thrust_z(i) = _mix(i, ControlAxis::THRUST_Z);

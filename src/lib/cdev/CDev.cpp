@@ -148,15 +148,15 @@ CDev::open(file_t *filep)
 
 	lock();
 	/* increment the open count */
-	_open_count++;
+	open_बिलांग++;
 
-	if (_open_count == 1) {
+	if (open_बिलांग == 1) {
 
 		/* first-open callback may decline the open */
 		ret = open_first(filep);
 
 		if (ret != PX4_OK) {
-			_open_count--;
+			open_बिलांग--;
 		}
 	}
 
@@ -173,12 +173,12 @@ CDev::close(file_t *filep)
 
 	lock();
 
-	if (_open_count > 0) {
+	if (open_बिलांग > 0) {
 		/* decrement the open count */
-		_open_count--;
+		open_बिलांग--;
 
 		/* callback cannot decline the close */
-		if (_open_count == 0) {
+		if (open_बिलांग == 0) {
 			ret = close_last(filep);
 		}
 
@@ -222,14 +222,14 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 				break;
 			}
 
-			const uint8_t new_count = _max_pollwaiters > 0 ? _max_pollwaiters * 2 : 1;
+			const uint8_t new_बिलांग = _max_pollwaiters > 0 ? _max_pollwaiters * 2 : 1;
 			px4_pollfd_struct_t **prev_pollset = _pollset;
 
 #ifdef __PX4_NUTTX
 			// malloc uses a semaphore, we need to call it enabled IRQ's
 			px4_leave_critical_section(flags);
 #endif
-			px4_pollfd_struct_t **new_pollset = new px4_pollfd_struct_t *[new_count];
+			px4_pollfd_struct_t **new_pollset = new px4_pollfd_struct_t *[new_बिलांग];
 
 #ifdef __PX4_NUTTX
 			flags = px4_enter_critical_section();
@@ -243,13 +243,13 @@ CDev::poll(file_t *filep, px4_pollfd_struct_t *fds, bool setup)
 				}
 
 				if (_max_pollwaiters > 0) {
-					memset(new_pollset + _max_pollwaiters, 0, sizeof(px4_pollfd_struct_t *) * (new_count - _max_pollwaiters));
+					memset(new_pollset + _max_pollwaiters, 0, sizeof(px4_pollfd_struct_t *) * (new_बिलांग - _max_pollwaiters));
 					memcpy(new_pollset, _pollset, sizeof(px4_pollfd_struct_t *) * _max_pollwaiters);
 				}
 
 				_pollset = new_pollset;
 				_pollset[_max_pollwaiters] = fds;
-				_max_pollwaiters = new_count;
+				_max_pollwaiters = new_बिलांग;
 
 				// free the previous _pollset (we need to unlock here which is fine because we don't access _pollset anymore)
 #ifdef __PX4_NUTTX

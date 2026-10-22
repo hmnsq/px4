@@ -66,12 +66,12 @@ TEST(DaaEncodedIdTest, CallsignRoundTrip)
 	};
 
 	for (const char *callsign : callsigns) {
-		const uint64_t key = DaaEncodedId::callsign_to_uint64(callsign);
+		const uint64_t सुसि = DaaEncodedId::callsign_to_uint64(callsign);
 
 		char recovered[kCallsignLength];
-		DaaEncodedId::convert_uint64_callsign_to_str(key, recovered);
+		DaaEncodedId::convert_uint64_callsign_to_str(सुसि, recovered);
 
-		EXPECT_EQ(key, DaaEncodedId::callsign_to_uint64(recovered));
+		EXPECT_EQ(सुसि, DaaEncodedId::callsign_to_uint64(recovered));
 	}
 
 	// unterminated input -> 0
@@ -108,11 +108,11 @@ TEST(DaaEncodedIdTest, CallsignParamsUseDocumentedCharacterOrder)
 TEST(DaaEncodedIdTest, CallsignDecodeClearsUnusedBytes)
 {
 	const char callsign[kCallsignLength] {'A', 'B', '\0'};
-	const uint64_t key = DaaEncodedId::callsign_to_uint64(callsign);
+	const uint64_t सुसि = DaaEncodedId::callsign_to_uint64(callsign);
 
 	char recovered[kCallsignLength];
 	memset(recovered, 0x7F, sizeof(recovered));
-	DaaEncodedId::convert_uint64_callsign_to_str(key, recovered);
+	DaaEncodedId::convert_uint64_callsign_to_str(सुसि, recovered);
 
 	EXPECT_STREQ(recovered, "AB");
 
@@ -151,12 +151,12 @@ TEST(DaaEncodedIdTest, UasIdPackingPreservesTailBytes)
 			uas_id[b] = static_cast<uint8_t>(0x10 * i + b);
 		}
 
-		const uint64_t key = DaaEncodedId::last_uas_id_bytes_to_uint64(uas_id);
+		const uint64_t सुसि = DaaEncodedId::last_uas_id_bytes_to_uint64(uas_id);
 
 		// key byte k == GUID tail byte k
 		for (int k = 0; k < kIdEncodingNbBytes; ++k) {
-			const uint8_t key_byte = static_cast<uint8_t>((key >>(k * 8)) & 0xFF);
-			EXPECT_EQ(uas_id[kUasIdByteLength - kIdEncodingNbBytes + k], key_byte);
+			const uint8_t सुसि_byte = static_cast<uint8_t>((सुसि >>(k * 8)) & 0xFF);
+			EXPECT_EQ(uas_id[kUasIdByteLength - kIdEncodingNbBytes + k], सुसि_byte);
 		}
 	}
 
@@ -167,15 +167,15 @@ TEST(DaaEncodedIdTest, UasIdPackingPreservesTailBytes)
 // to_string() renders each encoding, plus an explicit placeholder for an unknown one.
 TEST(DaaEncodedIdTest, ToStringRendersEachEncoding)
 {
-	char buffer[kUtmGuidMsgLength];
+	char buffer[k_Utm_Guid_मेनसाहे_Length];
 
 	// ICAO -> fixed-width uppercase hex of the low 24 bits.
 	DaaEncodedId{0xABCu, detect_and_avoid_s::UNIQUE_ID_ENCODING_ICAO}.to_string(buffer, sizeof(buffer));
 	EXPECT_STREQ(buffer, "000ABC");
 
 	// Callsign -> the decoded callsign string.
-	const uint64_t callsign_key = DaaEncodedId::callsign_to_uint64("AB");
-	DaaEncodedId{callsign_key, detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN}.to_string(buffer, sizeof(buffer));
+	const uint64_t callsign_सुसि = DaaEncodedId::callsign_to_uint64("AB");
+	DaaEncodedId{callsign_सुसि, detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN}.to_string(buffer, sizeof(buffer));
 	EXPECT_STREQ(buffer, "AB");
 
 	const char callsign_with_controls[kCallsignLength] {'A', '\n', static_cast<char>(0x7f), 'B', '\0'};
@@ -201,8 +201,8 @@ TEST(DaaEncodedIdTest, ToStringRespectsBufferSize)
 	};
 
 	guarded_buffer_s callsign_buffer{{}, 'X'};
-	const uint64_t callsign_key = DaaEncodedId::callsign_to_uint64("ABCDEFGH");
-	DaaEncodedId{callsign_key, detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN}.to_string(
+	const uint64_t callsign_सुसि = DaaEncodedId::callsign_to_uint64("ABCDEFGH");
+	DaaEncodedId{callsign_सुसि, detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN}.to_string(
 		callsign_buffer.output, sizeof(callsign_buffer.output));
 	EXPECT_STREQ(callsign_buffer.output, "ABC");
 	EXPECT_EQ(callsign_buffer.guard, 'X');
@@ -214,7 +214,7 @@ TEST(DaaEncodedIdTest, ToStringRespectsBufferSize)
 	EXPECT_EQ(uas_id_buffer.guard, 'X');
 
 	char one_byte_buffer{'X'};
-	DaaEncodedId{callsign_key, detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN}.to_string(&one_byte_buffer, 1);
+	DaaEncodedId{callsign_सुसि, detect_and_avoid_s::UNIQUE_ID_ENCODING_ADSB_CALLSIGN}.to_string(&one_byte_buffer, 1);
 	EXPECT_EQ(one_byte_buffer, '\0');
 }
 

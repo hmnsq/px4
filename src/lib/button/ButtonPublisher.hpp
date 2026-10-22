@@ -67,7 +67,7 @@ public:
 	 */
 	void pairingButtonTriggerEvent();
 
-	static constexpr uint8_t PAIRING_BUTTON_EVENT_COUNT{3};
+	static constexpr uint8_t PAIRING_BUTTON_EVENT_बिलांग{3};
 
 private:
 	uORB::Publication<button_event_s>		_safety_button_pub{ORB_ID(safety_button)};

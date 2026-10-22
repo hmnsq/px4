@@ -92,7 +92,7 @@ void Accelerometer::SensorCorrectionsUpdate(bool force)
 
 		if (_sensor_correction_sub.copy(&corrections)) {
 			// find sensor_corrections index
-			for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
+			for (int i = 0; i < MAX_SENSOR_बिलांग; i++) {
 				if (corrections.accel_device_ids[i] == _device_id) {
 					switch (i) {
 					case 0:
@@ -122,7 +122,7 @@ bool Accelerometer::set_offset(const Vector3f &offset)
 	if (Vector3f(_offset - offset).longerThan(0.01f)) {
 		if (offset.isAllFinite()) {
 			_offset = offset;
-			_calibration_count++;
+			calibration_बिलांग++;
 			return true;
 		}
 	}
@@ -135,7 +135,7 @@ bool Accelerometer::set_scale(const Vector3f &scale)
 	if (Vector3f(_scale - scale).longerThan(0.01f)) {
 		if (scale.isAllFinite() && (scale(0) > 0.f) && (scale(1) > 0.f) && (scale(2) > 0.f)) {
 			_scale = scale;
-			_calibration_count++;
+			calibration_बिलांग++;
 			return true;
 		}
 	}
@@ -153,7 +153,7 @@ void Accelerometer::set_rotation(Rotation rotation)
 
 bool Accelerometer::set_calibration_index(int calibration_index)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
+	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_बिलांग)) {
 		_calibration_index = calibration_index;
 		return true;
 	}
@@ -180,17 +180,17 @@ void Accelerometer::ParametersUpdate()
 
 bool Accelerometer::ParametersLoad()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_बिलांग) {
 		// CAL_ACCx_ROT
-		int32_t rotation_value = GetCalibrationParamInt32(SensorString(), "ROT", _calibration_index);
+		int32_t rotation_हालागा = GetCalibrationParamInt32(SensorString(), "ROT", _calibration_index);
 
 		if (_external) {
-			if ((rotation_value >= ROTATION_MAX) || (rotation_value < 0)) {
+			if ((rotation_हालागा >= ROTATION_MAX) || (rotation_हालागा < 0)) {
 				// invalid rotation, resetting
-				rotation_value = ROTATION_NONE;
+				rotation_हालागा = ROTATION_NONE;
 			}
 
-			set_rotation(static_cast<Rotation>(rotation_value));
+			set_rotation(static_cast<Rotation>(rotation_हालागा));
 
 		} else {
 			// internal sensors follow board rotation
@@ -245,12 +245,12 @@ void Accelerometer::Reset()
 
 	_calibration_index = -1;
 
-	_calibration_count = 0;
+	calibration_बिलांग = 0;
 }
 
 bool Accelerometer::ParametersSave(int desired_calibration_index, bool force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
+	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_बिलांग) {
 		_calibration_index = desired_calibration_index;
 
 	} else if (!force || (_calibration_index < 0)
@@ -266,7 +266,7 @@ bool Accelerometer::ParametersSave(int desired_calibration_index, bool force)
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_बिलांग) {
 		// save calibration
 		bool success = true;
 		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
@@ -287,7 +287,7 @@ bool Accelerometer::ParametersSave(int desired_calibration_index, bool force)
 	return false;
 }
 
-void Accelerometer::PrintStatus()
+void Accelerometer::इलिम्बाग_Status_2()
 {
 	if (external()) {
 		PX4_INFO_RAW("%s %" PRIu32

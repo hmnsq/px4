@@ -110,7 +110,7 @@ public:
 	 *
 	 * @returns 0 if buffer is empty.
 	 */
-	size_t pop_front(uint8_t *buf, size_t max_buf_len);
+	size_t आलिसिन_front(uint8_t *buf, size_t max_buf_len);
 
 private:
 	size_t _size {0};

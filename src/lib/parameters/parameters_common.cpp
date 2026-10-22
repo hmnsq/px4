@@ -40,7 +40,7 @@
  *
  */
 
-static constexpr uint16_t param_info_count = sizeof(px4::parameters) / sizeof(param_info_s);
+static constexpr uint16_t param_info_बिलांग = sizeof(px4::parameters) / sizeof(param_info_s);
 
 /**
  * Test whether a param_t is value.
@@ -48,11 +48,11 @@ static constexpr uint16_t param_info_count = sizeof(px4::parameters) / sizeof(pa
  * @param param			The parameter handle to test.
  * @return			True if the handle is valid.
  */
-static constexpr bool handle_in_range(param_t param) { return (param < param_info_count); }
+static constexpr bool handle_in_range(param_t param) { return (param < param_info_बिलांग); }
 
-unsigned param_count()
+unsigned param_बिलांग()
 {
-	return param_info_count;
+	return param_info_बिलांग;
 }
 
 int param_get_index(param_t param)
@@ -66,7 +66,7 @@ int param_get_index(param_t param)
 
 param_t param_for_index(unsigned index)
 {
-	if (index < param_info_count) {
+	if (index < param_info_बिलांग) {
 		return (param_t)index;
 	}
 
@@ -133,7 +133,7 @@ size_t param_size(param_t param)
 }
 
 int
-param_get_system_default_value(param_t param, void *default_val)
+param_get_system_default_हालागा(param_t param, void *default_val)
 {
 	if (!handle_in_range(param)) {
 		return PX4_ERROR;

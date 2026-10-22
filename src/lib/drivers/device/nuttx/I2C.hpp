@@ -109,7 +109,7 @@ protected:
 	int		transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len);
 
 private:
-	static unsigned	int	_bus_clocks[PX4_NUMBER_I2C_BUSES];
+	static unsigned	int	_bus_clocks[PX4_नुमेरो_I2_C_BUSES];
 
 	const uint32_t		_frequency;
 	i2c_master_s		*_dev{nullptr};

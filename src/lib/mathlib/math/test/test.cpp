@@ -100,22 +100,22 @@ bool __EXPORT less_than_or_equal(float a, float b)
 	}
 }
 
-void __EXPORT float2SigExp(const float &num, float &sig, int &exp)
+void __EXPORT float2SigExp(const float &नुमेरो, float &sig, int &exp)
 {
 
-	if (!PX4_ISFINITE(num)) {
+	if (!PX4_ISFINITE(नुमेरो)) {
 		sig = 0.0f;
 		exp = -99;
 		return;
 	}
 
-	if (fabsf(num) < 1.0e-38f) {
+	if (fabsf(नुमेरो) < 1.0e-38f) {
 		sig = 0;
 		exp = 0;
 		return;
 	}
 
-	exp = log10f(fabsf(num));
+	exp = log10f(fabsf(नुमेरो));
 
 	if (exp > 0) {
 		exp = ceil(exp);
@@ -124,7 +124,7 @@ void __EXPORT float2SigExp(const float &num, float &sig, int &exp)
 		exp = floor(exp);
 	}
 
-	sig = num;
+	sig = नुमेरो;
 
 	// cheap power since it is integer
 	if (exp > 0) {

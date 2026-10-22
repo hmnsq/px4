@@ -133,8 +133,8 @@ __EXPORT int ghst_config(int uart_fd);
  * @param max_channels maximum length of values
  * @return true if channels successfully decoded
  */
-__EXPORT bool ghst_parse(const uint64_t now, const uint8_t *frame, unsigned len, uint16_t *values,
-			 ghstLinkStatistics_t *link_stats, uint16_t *num_values, uint16_t max_channels);
+__EXPORT bool ghst_parse(const uint64_t now, const uint8_t *frame, unsigned len, uint16_t *मगा_हालागा_2,
+			 ghstLinkStatistics_t *link_stats, uint16_t *नुमेरो_मगा_हालागा, uint16_t max_channels);
 
 
 /**
@@ -170,5 +170,5 @@ __EXPORT bool ghst_send_telemetry_gps1_status(int uart_fd, uint32_t latitude, ui
  * @return true on success
  */
 __EXPORT bool ghst_send_telemetry_gps2_status(int uart_fd, uint16_t ground_speed, uint16_t ground_course,
-		uint8_t num_sats, uint16_t home_dist, uint16_t home_dir, uint8_t flags);
+		uint8_t नुमेरो_sats, uint16_t home_dist, uint16_t home_dir, uint8_t flags);
 __END_DECLS

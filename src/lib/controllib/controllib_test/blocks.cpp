@@ -51,9 +51,9 @@ namespace control
 int basicBlocksTest();
 int blockLimitTest();
 int blockLimitSymTest();
-int blockLowPassTest();
-int blockHighPassTest();
-int blockLowPass2Test();
+int block_माबाबा_Pass_Test();
+int block_माताअस_Pass_Test();
+int block_माबाबा_Pass2_Test();
 int blockIntegralTest();
 int blockIntegralTrapTest();
 int blockDerivativeTest();
@@ -71,9 +71,9 @@ int basicBlocksTest()
 {
 	blockLimitTest();
 	blockLimitSymTest();
-	blockLowPassTest();
-	blockHighPassTest();
-	blockLowPass2Test();
+	block_माबाबा_Pass_Test();
+	block_माताअस_Pass_Test();
+	block_माबाबा_Pass2_Test();
 	blockIntegralTest();
 	blockIntegralTrapTest();
 	blockDerivativeTest();
@@ -121,89 +121,89 @@ int blockLimitSymTest()
 	return 0;
 }
 
-int blockLowPassTest()
+int block_माबाबा_Pass_Test()
 {
 	printf("Test BlockLowPass\t\t: ");
-	BlockLowPass lowPass(NULL, "TEST_LP");
+	Block_माबाबा_Pass माबाबा_Pass_2(NULL, "TEST_LP");
 	// test initial state
-	ASSERT_CL(equal(10.0f, lowPass.getFCut()));
-	ASSERT_CL(equal(0.0f, lowPass.getState()));
-	ASSERT_CL(equal(0.0f, lowPass.getDt()));
+	ASSERT_CL(equal(10.0f, माबाबा_Pass_2.getFCut()));
+	ASSERT_CL(equal(0.0f, माबाबा_Pass_2.getState()));
+	ASSERT_CL(equal(0.0f, माबाबा_Pass_2.getDt()));
 	// set dt
-	lowPass.setDt(0.1f);
-	ASSERT_CL(equal(0.1f, lowPass.getDt()));
+	माबाबा_Pass_2.setDt(0.1f);
+	ASSERT_CL(equal(0.1f, माबाबा_Pass_2.getDt()));
 	// set state
-	lowPass.setState(1.0f);
-	ASSERT_CL(equal(1.0f, lowPass.getState()));
+	माबाबा_Pass_2.setState(1.0f);
+	ASSERT_CL(equal(1.0f, माबाबा_Pass_2.getState()));
 	// test update
-	ASSERT_CL(equal(1.8626974f, lowPass.update(2.0f)));
+	ASSERT_CL(equal(1.8626974f, माबाबा_Pass_2.update(2.0f)));
 
 	// test end condition
 	for (int i = 0; i < 100; i++) {
-		lowPass.update(2.0f);
+		माबाबा_Pass_2.update(2.0f);
 	}
 
-	ASSERT_CL(equal(2.0f, lowPass.getState()));
-	ASSERT_CL(equal(2.0f, lowPass.update(2.0f)));
+	ASSERT_CL(equal(2.0f, माबाबा_Pass_2.getState()));
+	ASSERT_CL(equal(2.0f, माबाबा_Pass_2.update(2.0f)));
 	printf("PASS\n");
 	return 0;
 };
 
-int blockHighPassTest()
+int block_माताअस_Pass_Test()
 {
 	printf("Test BlockHighPass\t\t: ");
-	BlockHighPass highPass(NULL, "TEST_HP");
+	Block_माताअस_Pass माताअस_Pass(NULL, "TEST_HP");
 	// test initial state
-	ASSERT_CL(equal(10.0f, highPass.getFCut()));
-	ASSERT_CL(equal(0.0f, highPass.getU()));
-	ASSERT_CL(equal(0.0f, highPass.getY()));
-	ASSERT_CL(equal(0.0f, highPass.getDt()));
+	ASSERT_CL(equal(10.0f, माताअस_Pass.getFCut()));
+	ASSERT_CL(equal(0.0f, माताअस_Pass.getU()));
+	ASSERT_CL(equal(0.0f, माताअस_Pass.getY()));
+	ASSERT_CL(equal(0.0f, माताअस_Pass.getDt()));
 	// set dt
-	highPass.setDt(0.1f);
-	ASSERT_CL(equal(0.1f, highPass.getDt()));
+	माताअस_Pass.setDt(0.1f);
+	ASSERT_CL(equal(0.1f, माताअस_Pass.getDt()));
 	// set state
-	highPass.setU(1.0f);
-	ASSERT_CL(equal(1.0f, highPass.getU()));
-	highPass.setY(1.0f);
-	ASSERT_CL(equal(1.0f, highPass.getY()));
+	माताअस_Pass.setU(1.0f);
+	ASSERT_CL(equal(1.0f, माताअस_Pass.getU()));
+	माताअस_Pass.setY(1.0f);
+	ASSERT_CL(equal(1.0f, माताअस_Pass.getY()));
 	// test update
-	ASSERT_CL(equal(0.2746051f, highPass.update(2.0f)));
+	ASSERT_CL(equal(0.2746051f, माताअस_Pass.update(2.0f)));
 
 	// test end condition
 	for (int i = 0; i < 100; i++) {
-		highPass.update(2.0f);
+		माताअस_Pass.update(2.0f);
 	}
 
-	ASSERT_CL(equal(0.0f, highPass.getY()));
-	ASSERT_CL(equal(0.0f, highPass.update(2.0f)));
+	ASSERT_CL(equal(0.0f, माताअस_Pass.getY()));
+	ASSERT_CL(equal(0.0f, माताअस_Pass.update(2.0f)));
 	printf("PASS\n");
 	return 0;
 }
 
-int blockLowPass2Test()
+int block_माबाबा_Pass2_Test()
 {
 	printf("Test BlockLowPass2\t\t: ");
-	BlockLowPass2 lowPass(NULL, "TEST_LP", 100);
+	Block_माबाबा_Pass2 माबाबा_Pass_2(NULL, "TEST_LP", 100);
 	// test initial state
-	ASSERT_CL(equal(10.0f, lowPass.getFCutParam()));
-	ASSERT_CL(equal(0.0f, lowPass.getState()));
-	ASSERT_CL(equal(0.0f, lowPass.getDt()));
+	ASSERT_CL(equal(10.0f, माबाबा_Pass_2.getFCutParam()));
+	ASSERT_CL(equal(0.0f, माबाबा_Pass_2.getState()));
+	ASSERT_CL(equal(0.0f, माबाबा_Pass_2.getDt()));
 	// set dt
-	lowPass.setDt(0.1f);
-	ASSERT_CL(equal(0.1f, lowPass.getDt()));
+	माबाबा_Pass_2.setDt(0.1f);
+	ASSERT_CL(equal(0.1f, माबाबा_Pass_2.getDt()));
 	// set state
-	lowPass.setState(1.0f);
-	ASSERT_CL(equal(1.0f, lowPass.getState()));
+	माबाबा_Pass_2.setState(1.0f);
+	ASSERT_CL(equal(1.0f, माबाबा_Pass_2.getState()));
 	// test update
-	ASSERT_CL(equal(1.06745527f, lowPass.update(2.0f)));
+	ASSERT_CL(equal(1.06745527f, माबाबा_Pass_2.update(2.0f)));
 
 	// test end condition
 	for (int i = 0; i < 100; i++) {
-		lowPass.update(2.0f);
+		माबाबा_Pass_2.update(2.0f);
 	}
 
-	ASSERT_CL(equal(2.0f, lowPass.getState()));
-	ASSERT_CL(equal(2.0f, lowPass.update(2.0f)));
+	ASSERT_CL(equal(2.0f, माबाबा_Pass_2.getState()));
+	ASSERT_CL(equal(2.0f, माबाबा_Pass_2.update(2.0f)));
 	printf("PASS\n");
 	return 0;
 };

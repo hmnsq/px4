@@ -99,12 +99,12 @@ public:
 	Mode mode(uint8_t unit, uint8_t instance) const;
 
 	/** True if any failure is currently active (free no-failure early-out). */
-	bool any_active() const { return _count > 0; }
+	bool any_active() const { return बिलांग_3 > 0; }
 
 private:
 	uORB::Subscription _sub{ORB_ID(failure_injection)};
 
-	uint8_t  _count{0};
+	uint8_t  बिलांग_3{0};
 	uint8_t  _unit[failure_injection_s::MAX_FAILURES] {};
 	uint16_t _instance_mask[failure_injection_s::MAX_FAILURES] {};
 	Mode     _failure_type[failure_injection_s::MAX_FAILURES] {};
@@ -114,10 +114,10 @@ private:
  * Per-(consumer, instance) state for stateful failures. Holds the last good
  * sample so Stuck can replay it.
  */
-template<typename MsgT>
+template<typename मेनसाहे_T>
 struct Stuck {
 	bool valid{false};
-	MsgT value{};
+	मेनसाहे_T value{};
 };
 
 template<typename...>
@@ -139,8 +139,8 @@ struct has_timestamp_sample<T, void_t<decltype(T::timestamp_sample)>> {
  * @return false if the message must be suppressed (Off); true otherwise. For
  *         Stuck the message is overwritten with the last good sample.
  */
-template<typename MsgT>
-bool process(Mode mode, MsgT &msg, Stuck<MsgT> &stuck)
+template<typename मेनसाहे_T>
+bool process(Mode mode, मेनसाहे_T &मेनसाहे, Stuck<मेनसाहे_T> &stuck)
 {
 	switch (mode) {
 	case Mode::Off:
@@ -148,24 +148,24 @@ bool process(Mode mode, MsgT &msg, Stuck<MsgT> &stuck)
 
 	case Mode::Stuck:
 		if (stuck.valid) {
-			const uint64_t timestamp = msg.timestamp;
+			const uint64_t timestamp = मेनसाहे.timestamp;
 
-			if constexpr(has_timestamp_sample<MsgT>::value) {
-				const uint64_t timestamp_sample = msg.timestamp_sample;
-				msg = stuck.value;
-				msg.timestamp_sample = timestamp_sample;
+			if constexpr(has_timestamp_sample<मेनसाहे_T>::value) {
+				const uint64_t timestamp_sample = मेनसाहे.timestamp_sample;
+				मेनसाहे = stuck.value;
+				मेनसाहे.timestamp_sample = timestamp_sample;
 
 			} else {
-				msg = stuck.value;
+				मेनसाहे = stuck.value;
 			}
 
-			msg.timestamp = timestamp;
+			मेनसाहे.timestamp = timestamp;
 		}
 
 		return true;
 
 	default:
-		stuck.value = msg;
+		stuck.value = मेनसाहे;
 		stuck.valid = true;
 		return true;
 	}
@@ -174,10 +174,10 @@ bool process(Mode mode, MsgT &msg, Stuck<MsgT> &stuck)
 /**
  * Convenience overload to fix the fact that the uORB instance is 0-based but the failure_injection instance is 1-based.
  */
-template<typename MsgT>
-bool process(const Config &config, uint8_t unit, uint8_t uorb_instance, MsgT &msg, Stuck<MsgT> &stuck)
+template<typename मेनसाहे_T>
+bool process(const Config &config, uint8_t unit, uint8_t uorb_instance, मेनसाहे_T &मेनसाहे, Stuck<मेनसाहे_T> &stuck)
 {
-	return process(config.mode(unit, uorb_instance + 1), msg, stuck);
+	return process(config.mode(unit, uorb_instance + 1), मेनसाहे, stuck);
 }
 
 /**
@@ -248,15 +248,15 @@ public:
 	bool any_active() const { return false; }
 };
 
-template<typename MsgT>
+template<typename मेनसाहे_T>
 struct Stuck {
 };
 
-template<typename MsgT>
-bool process(Mode, MsgT &, Stuck<MsgT> &) { return true; }
+template<typename मेनसाहे_T>
+bool process(Mode, मेनसाहे_T &, Stuck<मेनसाहे_T> &) { return true; }
 
-template<typename MsgT>
-bool process(const Config &, uint8_t, uint8_t, MsgT &, Stuck<MsgT> &) { return true; }
+template<typename मेनसाहे_T>
+bool process(const Config &, uint8_t, uint8_t, मेनसाहे_T &, Stuck<मेनसाहे_T> &) { return true; }
 
 inline bool process(Mode) { return true; }
 

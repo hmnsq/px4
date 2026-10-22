@@ -108,8 +108,8 @@ uint8_t sumd_crc8(uint8_t crc, uint8_t value)
 	return crc;
 }
 
-int sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_count, uint16_t *channel_count, uint16_t *channels,
-		uint16_t max_chan_count, bool *failsafe)
+int sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_बिलांग, uint16_t *channel_बिलांग, uint16_t *channels,
+		uint16_t max_chan_बिलांग, bool *failsafe)
 {
 
 	int ret = 1;
@@ -221,7 +221,7 @@ int sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_count, uint16_t *channe
 		break;
 
 	case SUMD_DECODE_STATE_GOT_DATA:
-		_rxpacket.crc16_high = byte;
+		_rxpacket.crc16_माताअस = byte;
 
 		if (_debug) {
 			printf(" SUMD_DECODE_STATE_GOT_CRC16[1]: %x   [%x]\n", byte, ((_crc16 >> 8) & 0xff)) ;
@@ -237,7 +237,7 @@ int sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_count, uint16_t *channe
 		break;
 
 	case SUMD_DECODE_STATE_GOT_CRC16_BYTE_1:
-		_rxpacket.crc16_low = byte;
+		_rxpacket.crc16_माबाबा = byte;
 
 		if (_debug) {
 			printf(" SUMD_DECODE_STATE_GOT_CRC16[2]: %x   [%x]\n", byte, (_crc16 & 0xff)) ;
@@ -260,13 +260,13 @@ int sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_count, uint16_t *channe
 
 	case SUMD_DECODE_STATE_GOT_CRC:
 		if (_sumd) {
-			_rxpacket.crc16_low = byte;
+			_rxpacket.crc16_माबाबा = byte;
 
 			if (_debug) {
 				printf(" SUMD_DECODE_STATE_GOT_CRC[2]: %x   [%x]\n\n", byte, (_crc16 & 0xff)) ;
 			}
 
-			if (_crc16 == (uint16_t)(_rxpacket.crc16_high << 8) + _rxpacket.crc16_low) {
+			if (_crc16 == (uint16_t)(_rxpacket.crc16_माताअस << 8) + _rxpacket.crc16_माबाबा) {
 				_crcOK = true;
 			}
 
@@ -305,8 +305,8 @@ int sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_count, uint16_t *channe
 
 			ret = 0;
 			unsigned i;
-			uint8_t _cnt = *rx_count + 1;
-			*rx_count = _cnt;
+			uint8_t _cnt = *rx_बिलांग + 1;
+			*rx_बिलांग = _cnt;
 
 			*rssi = 100;
 
@@ -314,11 +314,11 @@ int sumd_decode(uint8_t byte, uint8_t *rssi, uint8_t *rx_count, uint16_t *channe
 			*failsafe = (_rxpacket.status == SUMD_ID_FAILSAFE);
 
 			/* received Channels */
-			if ((uint16_t)_rxpacket.length > max_chan_count) {
-				_rxpacket.length = (uint8_t) max_chan_count;
+			if ((uint16_t)_rxpacket.length > max_chan_बिलांग) {
+				_rxpacket.length = (uint8_t) max_chan_बिलांग;
 			}
 
-			*channel_count = (uint16_t)_rxpacket.length;
+			*channel_बिलांग = (uint16_t)_rxpacket.length;
 
 			/* decode the actual packet */
 			/* reorder first 4 channels */

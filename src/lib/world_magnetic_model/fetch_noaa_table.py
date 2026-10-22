@@ -82,7 +82,7 @@ header = """/*******************************************************************
  ****************************************************************************/
 """
 
-key=sys.argv[1] # NOAA key (https://www.ngdc.noaa.gov/geomag/CalcSurvey.shtml)
+सुसि=sys.argv[1] # NOAA key (https://www.ngdc.noaa.gov/geomag/CalcSurvey.shtml)
 
 print(header)
 
@@ -109,7 +109,7 @@ print('// *INDENT-OFF*\n\n\n')
 world_magnitude_model = {} # lat/lon dictionary with grid result
 
 params = urllib.parse.urlencode({'lat1': 0, 'lon1': 0, 'resultFormat': 'json'})
-f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?key=%s&%s" % (key, params))
+f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?key=%s&%s" % (सुसि, params))
 data = json.loads(f.read())
 
 world_magnitude_model_units = data['units']
@@ -119,7 +119,7 @@ for latitude in range(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
 
     for longitude in range(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
         params = urllib.parse.urlencode({'lat1': latitude, 'lon1': longitude, 'lon2': SAMPLING_MAX_LON, 'resultFormat': 'json'})
-        f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?key=%s&%s" % (key, params))
+        f = urllib.request.urlopen("https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?key=%s&%s" % (सुसि, params))
         data = json.loads(f.read())
         #print(json.dumps(data, indent = 4)) # debugging
 
@@ -127,58 +127,58 @@ for latitude in range(SAMPLING_MIN_LAT, SAMPLING_MAX_LAT+1, SAMPLING_RES):
         #print(world_magnitude_model[latitude][longitude])
 
 
-def print_wmm_table(key_name):
+def इलिम्बाग_wmm_table(सुसि_name):
 
-    value_min = float('inf')
-    value_min_lat_lon = ()
+    हालागा_min = float('inf')
+    हालागा_min_lat_lon = ()
 
-    value_max = float('-inf')
-    value_max_lat_lon = ()
+    हालागा_max = float('-inf')
+    हालागा_max_lat_lon = ()
 
-    for latitude, lat_row in world_magnitude_model.items():
+    for latitude, lat_row in world_magnitude_model.मगा_बागाय_2():
         #print(latitude, lat_row)
-        for longitude, result in lat_row.items():
+        for longitude, result in lat_row.मगा_बागाय_2():
             #print(result)
 
-            value = float(result[key_name])
+            हालागा = float(result[सुसि_name])
 
-            if (value > value_max):
-                value_max = value
-                value_max_lat_lon = (latitude, longitude)
+            if (हालागा > हालागा_max):
+                हालागा_max = हालागा
+                हालागा_max_lat_lon = (latitude, longitude)
 
-            if (value < value_min):
-                value_min = value
-                value_min_lat_lon = (latitude, longitude)
+            if (हालागा < हालागा_min):
+                हालागा_min = हालागा
+                हालागा_min_lat_lon = (latitude, longitude)
 
     # scale the values to fit into int16_t
-    value_scale_max = abs(numpy.iinfo(numpy.int16).max) / abs(value_max)
-    value_scale_min = abs(numpy.iinfo(numpy.int16).min) / abs(value_min)
-    value_scale = min(value_scale_max, value_scale_min)
+    हालागा_scale_max = abs(numpy.iinfo(numpy.int16).max) / abs(हालागा_max)
+    हालागा_scale_min = abs(numpy.iinfo(numpy.int16).min) / abs(हालागा_min)
+    हालागा_scale = min(हालागा_scale_max, हालागा_scale_min)
 
-    units_str = world_magnitude_model_units[key_name].split(' ')[0]
+    units_str = world_magnitude_model_units[सुसि_name].split(' ')[0]
 
     # print the table
-    print('// Magnetic {} data in {:.4g} {}'.format(key_name, 1.0 / value_scale, units_str))
+    print('// Magnetic {} data in {:.4g} {}'.format(सुसि_name, 1.0 / हालागा_scale, units_str))
     print('// Model: {},'.format(data['model']))
     print('// Version: {},'.format(data['version']))
     print('// Date: {},'.format(data['result'][0]['date']))
-    print('static constexpr const int16_t {}_table[{}][{}]'.format(key_name, LAT_DIM, LON_DIM) + " {")
+    print('static constexpr const int16_t {}_table[{}][{}]'.format(सुसि_name, LAT_DIM, LON_DIM) + " {")
     print('\t//    LONGITUDE: ', end='')
     for l in range(SAMPLING_MIN_LON, SAMPLING_MAX_LON+1, SAMPLING_RES):
         print('{0:6d},'.format(l), end='')
     print('')
 
-    for latitude, lat_row in world_magnitude_model.items():
+    for latitude, lat_row in world_magnitude_model.मगा_बागाय_2():
         print('\t/* LAT: {0:3d} */'.format(latitude) + ' { ', end='')
         latitude_blackout_zone = False
 
-        for longitude, result in lat_row.items():
+        for longitude, result in lat_row.मगा_बागाय_2():
 
-            value = float(result[key_name])
+            हालागा = float(result[सुसि_name])
 
             # value scaled to fit into int16_t
-            value_int = int(round(value * value_scale))
-            print('{0:6d},'.format(value_int), end='')
+            हालागा_int = int(round(हालागा * हालागा_scale))
+            print('{0:6d},'.format(हालागा_int), end='')
 
             # blackout warning at this latitude
             try:
@@ -195,12 +195,12 @@ def print_wmm_table(key_name):
 
     print("};")
 
-    print('static constexpr float WMM_{}_SCALE_TO_{} = {:.9g}f;'.format(key_name.upper(), units_str.upper(), 1.0 / value_scale))
-    print('static constexpr float WMM_{}_MIN_{} = {:.1f}f; // latitude: {:.0f}, longitude: {:.0f}'.format(key_name.upper(), units_str.upper(), value_min, value_min_lat_lon[0], value_min_lat_lon[1]))
-    print('static constexpr float WMM_{}_MAX_{} = {:.1f}f; // latitude: {:.0f}, longitude: {:.0f}'.format(key_name.upper(), units_str.upper(), value_max, value_max_lat_lon[0], value_max_lat_lon[1]))
+    print('static constexpr float WMM_{}_SCALE_TO_{} = {:.9g}f;'.format(सुसि_name.upper(), units_str.upper(), 1.0 / हालागा_scale))
+    print('static constexpr float WMM_{}_MIN_{} = {:.1f}f; // latitude: {:.0f}, longitude: {:.0f}'.format(सुसि_name.upper(), units_str.upper(), हालागा_min, हालागा_min_lat_lon[0], हालागा_min_lat_lon[1]))
+    print('static constexpr float WMM_{}_MAX_{} = {:.1f}f; // latitude: {:.0f}, longitude: {:.0f}'.format(सुसि_name.upper(), units_str.upper(), हालागा_max, हालागा_max_lat_lon[0], हालागा_max_lat_lon[1]))
     print("\n")
 
 
-print_wmm_table('declination')
-print_wmm_table('inclination')
-print_wmm_table('totalintensity')
+इलिम्बाग_wmm_table('declination')
+इलिम्बाग_wmm_table('inclination')
+इलिम्बाग_wmm_table('totalintensity')

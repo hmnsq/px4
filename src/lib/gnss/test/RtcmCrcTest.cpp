@@ -39,7 +39,7 @@ TEST_F(RtcmTest, CRC24Q_EmptyData)
 	EXPECT_EQ(crc, 0u);
 }
 
-TEST_F(RtcmTest, CRC24Q_KnownValue)
+TEST_F(RtcmTest, CRC24_Q_Known_हालागा)
 {
 	// Test with known RTCM data
 	uint8_t data[] = {0xD3, 0x00, 0x04, 0x01, 0x02, 0x03, 0x04};

@@ -48,8 +48,8 @@ TEST(WelfordMeanVectorTest, NoisySignal)
 	WelfordMeanVector<float, 3> welford{};
 
 	for (int i = 0; i < 1000; i++) {
-		const float noisy_value = standard_normal_distribution(random_generator);
-		welford.update(Vector3f(noisy_value, noisy_value - 1.f, noisy_value + 1.f));
+		const float noisy_हालागा = standard_normal_distribution(random_generator);
+		welford.update(Vector3f(noisy_हालागा, noisy_हालागा - 1.f, noisy_हालागा + 1.f));
 	}
 
 	EXPECT_TRUE(welford.valid());

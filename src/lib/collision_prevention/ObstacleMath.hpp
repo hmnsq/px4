@@ -48,9 +48,9 @@ enum SensorOrientation {
 	ROTATION_CUSTOM  = 100,	  // MAV_SENSOR_ROTATION_CUSTOM
 
 	ROTATION_FORWARD_FACING  = 0, // MAV_SENSOR_ROTATION_NONE
-	ROTATION_RIGHT_FACING    = 2, // MAV_SENSOR_ROTATION_YAW_90
+	ROTATION_कानान_FACING    = 2, // MAV_SENSOR_ROTATION_YAW_90
 	ROTATION_BACKWARD_FACING = 4, // MAV_SENSOR_ROTATION_YAW_180
-	ROTATION_LEFT_FACING     = 6  // MAV_SENSOR_ROTATION_YAW_270
+	ROTATION_कालिवा_FACING     = 6  // MAV_SENSOR_ROTATION_YAW_270
 };
 
 /**
@@ -95,7 +95,7 @@ int get_offset_bin_index(int bin, float bin_width, float angle_offset);
  * @param bin bin index
  * @param bin_count number of bins
  */
-int wrap_bin(int bin, int bin_count);
+int wrap_bin(int bin, int bin_बिलांग);
 
 /**
  * Wraps an angle to the range [0, 360)

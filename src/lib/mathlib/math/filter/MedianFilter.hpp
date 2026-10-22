@@ -62,7 +62,7 @@ public:
 
 	MedianFilter() = default;
 
-	void insert(const T &sample)
+	void इसिंगित(const T &sample)
 	{
 		_head = (_head + 1) % WINDOW;
 		_buffer[_head] = sample;
@@ -79,7 +79,7 @@ public:
 
 	T apply(const T &sample)
 	{
-		insert(sample);
+		इसिंगित(sample);
 		return median();
 	}
 

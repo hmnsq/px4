@@ -50,7 +50,7 @@ class SMBus : public device::I2C
 public:
 	static constexpr uint8_t MAX_BLOCK_LEN = 34;
 
-	SMBus(uint8_t device_id, int bus_num, uint16_t address);
+	SMBus(uint8_t device_id, int bus_नुमेरो, uint16_t address);
 	~SMBus() override;
 
 	/**
@@ -60,7 +60,7 @@ public:
 	 * @param length The number of bytes being written. Maximum is SMBus::MAX_BLOCK_LEN.
 	 * @return Returns PX4_OK on success, -errno on failure.
 	 */
-	int block_write(const uint8_t cmd_code, const void *data, uint8_t byte_count, const bool use_pec);
+	int block_write(const uint8_t cmd_code, const void *data, uint8_t byte_बिलांग, const bool use_pec);
 
 	/**
 	 * @brief Sends a block read command.
@@ -95,6 +95,6 @@ public:
 	 */
 	uint8_t get_pec(uint8_t *buffer, uint8_t length);
 
-	perf_counter_t _interface_errors{perf_alloc(PC_COUNT, MODULE_NAME": errors")};
+	perf_counter_t _interface_errors{perf_alloc(PC_बिलांग, MODULE_NAME": errors")};
 
 };

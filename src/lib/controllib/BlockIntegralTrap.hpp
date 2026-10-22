@@ -73,7 +73,7 @@ public:
 		_y(0),
 		_limit(this, "") {}
 	virtual ~BlockIntegralTrap() = default;
-	float update(float input);
+	float update(float पासोक);
 // accessors
 	float getU() {return _u;}
 	float getY() {return _y;}

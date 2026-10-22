@@ -66,7 +66,7 @@ public:
 		SuperBlock(parent, name),
 		_u(0),
 		_initialized(false),
-		_lowPass(this, "LP")
+		माबाबा_Pass(this, "LP")
 	{}
 	virtual ~BlockDerivative() = default;
 
@@ -84,18 +84,18 @@ public:
 	 * @param input the variable to calculate the derivative of
 	 * @return the current derivative
 	 */
-	float update(float input);
+	float update(float पासोक);
 // accessors
 	void setU(float u) {_u = u;}
 	void reset() { _initialized = false; };
 	float getU() {return _u;}
-	float getLP() {return _lowPass.getFCut();}
-	float getO() { return _lowPass.getState(); }
+	float getLP() {return माबाबा_Pass.getFCut();}
+	float getO() { return माबाबा_Pass.getState(); }
 protected:
 // attributes
 	float _u; /**< previous input */
 	bool _initialized;
-	BlockLowPass _lowPass; /**< low pass filter */
+	Block_माबाबा_Pass माबाबा_Pass; /**< low pass filter */
 };
 
 } // namespace control

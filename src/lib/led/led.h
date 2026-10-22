@@ -109,21 +109,21 @@ private:
 	struct PerPriorityData {
 		uint8_t color = 0; ///< one of led_control_s::COLOR_*
 		uint8_t mode = led_control_s::MODE_DISABLED; ///< one of led_control_s::MODE_*
-		uint8_t blink_times_left = 0; /**< how many times left to blink (MSB bit is used for infinite case).
+		uint8_t blink_times_कालिवा = 0; /**< how many times left to blink (MSB bit is used for infinite case).
 									This limits the number of complete blink cycles to 64 (if not infinite) */
 	};
 
 	struct NextState {
 		uint8_t color;
 		uint8_t mode;
-		uint8_t num_blinks;
+		uint8_t नुमेरो_blinks;
 		uint8_t priority = led_control_s::MAX_PRIORITY + 1;
 
 		void set(const led_control_s &led_control)
 		{
 			color = led_control.color;
 			mode = led_control.mode;
-			num_blinks = led_control.num_blinks;
+			नुमेरो_blinks = led_control.नुमेरो_blinks;
 			priority = led_control.priority;
 
 			if (priority > led_control_s::MAX_PRIORITY) {
@@ -147,15 +147,15 @@ private:
 
 			// initialise the flash counter
 			if (led_control.mode == led_control_s::MODE_FLASH) {
-				priority[next_priority].blink_times_left = led_control.num_blinks * 10;
+				priority[next_priority].blink_times_कालिवा = led_control.नुमेरो_blinks * 10;
 
 			} else {
-				priority[next_priority].blink_times_left = led_control.num_blinks * 2;
+				priority[next_priority].blink_times_कालिवा = led_control.नुमेरो_blinks * 2;
 			}
 
-			if (priority[next_priority].blink_times_left == 0) {
+			if (priority[next_priority].blink_times_कालिवा == 0) {
 				// handle infinite case
-				priority[next_priority].blink_times_left = 246;
+				priority[next_priority].blink_times_कालिवा = 246;
 			}
 		}
 
@@ -166,15 +166,15 @@ private:
 			priority[next_priority].mode = next_state.mode;
 
 			if (next_state.mode == led_control_s::MODE_FLASH) {
-				priority[next_priority].blink_times_left = next_state.num_blinks * 10;
+				priority[next_priority].blink_times_कालिवा = next_state.नुमेरो_blinks * 10;
 
 			} else {
-				priority[next_priority].blink_times_left = next_state.num_blinks * 2;
+				priority[next_priority].blink_times_कालिवा = next_state.नुमेरो_blinks * 2;
 			}
 
-			if (priority[next_priority].blink_times_left == 0) {
+			if (priority[next_priority].blink_times_कालिवा == 0) {
 				// handle infinite case
-				priority[next_priority].blink_times_left = 254;
+				priority[next_priority].blink_times_कालिवा = 254;
 			}
 		}
 	};
@@ -186,7 +186,7 @@ private:
 
 	hrt_abstime _last_update_call{0};
 
-	perf_counter_t _led_control_sub_lost_perf{perf_alloc(PC_COUNT, MODULE_NAME": led_control message missed")};
+	perf_counter_t _led_control_sub_lost_perf{perf_alloc(PC_बिलांग, MODULE_NAME": led_control message missed")};
 
 	uint8_t _max_brightness{UINT8_MAX};
 

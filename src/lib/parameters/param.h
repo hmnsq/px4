@@ -111,14 +111,14 @@ __EXPORT param_t	param_find_no_notification(const char *name);
  *
  * @return		The number of parameters.
  */
-__EXPORT unsigned	param_count(void);
+__EXPORT unsigned	param_बिलांग(void);
 
 /**
  * Return the actually used number of parameters.
  *
  * @return		The number of parameters.
  */
-__EXPORT unsigned	param_count_used(void);
+__EXPORT unsigned	param_बिलांग_used(void);
 
 /**
  * Wether a parameter is in use in the system.
@@ -197,14 +197,14 @@ __EXPORT void		param_lock_readonly(void);
  *
  * @return		If true, the parameter's value has not been changed from the default.
  */
-__EXPORT bool		param_value_is_default(param_t param);
+__EXPORT bool		param_हालागा_is_default(param_t param);
 
 /**
  * Test whether a parameter's value has been changed but not saved.
  *
  * @return		If true, the parameter's value has not been saved.
  */
-__EXPORT bool		param_value_unsaved(param_t param);
+__EXPORT bool		param_हालागा_unsaved(param_t param);
 
 /**
  * Obtain the type of a parameter.
@@ -250,7 +250,7 @@ __EXPORT int		param_get_mark_used(param_t param, void *val);
  * @param default_val		Where to return the value, assumed to point to suitable storage for the parameter type.
  * @return		Zero if the parameter's deafult value could be returned, nonzero otherwise.
  */
-__EXPORT int		param_get_default_value(param_t param, void *default_val);
+__EXPORT int		param_get_default_हालागा(param_t param, void *default_val);
 
 /**
  * Copy the system-wide default value of a parameter.
@@ -259,7 +259,7 @@ __EXPORT int		param_get_default_value(param_t param, void *default_val);
  * @param default_val		Where to return the value, assumed to point to suitable storage for the parameter type.
  * @return		Zero if the parameter's deafult value could be returned, nonzero otherwise.
  */
-__EXPORT int		param_get_system_default_value(param_t param, void *default_val);
+__EXPORT int		param_get_system_default_हालागा(param_t param, void *default_val);
 
 /**
  * Set the value of a parameter.
@@ -277,7 +277,7 @@ __EXPORT int		param_set(param_t param, const void *val);
  * @param val		The default value to set; assumed to point to a variable of the parameter type.
  * @return		Zero if the parameter's default value could be set from a scalar, nonzero otherwise.
  */
-__EXPORT int		param_set_default_value(param_t param, const void *val);
+__EXPORT int		param_set_default_हालागा(param_t param, const void *val);
 
 /**
  * Mark a parameter as used. Only marked parameters will be sent to a GCS.
@@ -342,7 +342,7 @@ __EXPORT void		param_reset_all(void);
  *							at the end to exclude parameters with a certain prefix.
  * @param num_excludes		The number of excludes provided.
  */
-__EXPORT void		param_reset_excludes(const char *excludes[], int num_excludes);
+__EXPORT void		param_reset_excludes(const char *excludes[], int नुमेरो_excludes);
 
 typedef bool(*param_filter_func)(param_t handle);
 
@@ -352,7 +352,7 @@ typedef bool(*param_filter_func)(param_t handle);
  * @param resets Array of param names to reset. Use a wildcard at the end to reset parameters with a certain prefix.
  * @param num_resets The number of passed reset conditions in the resets array.
  */
-__EXPORT void		param_reset_specific(const char *resets[], int num_resets);
+__EXPORT void		param_reset_specific(const char *resets[], int नुमेरो_resets);
 
 /**
  * Export changed parameters to a file.
@@ -474,7 +474,7 @@ __EXPORT uint32_t	param_hash_check(void);
  * Print the status of the param system
  *
  */
-__EXPORT void	param_print_status(void);
+__EXPORT void	param_इलिम्बाग_status(void);
 
 /**
  * Enable/disable the param autosaving.
@@ -486,7 +486,7 @@ __EXPORT void	param_control_autosave(bool enable);
 /**
  * Parameter value union.
  */
-union param_value_u {
+union param_हालागा_u {
 	int32_t		i;
 	float		f;
 };
@@ -499,7 +499,7 @@ union param_value_u {
  */
 struct param_info_s {
 	const char *name;
-	union param_value_u val;
+	union param_हालागा_u val;
 };
 
 __END_DECLS

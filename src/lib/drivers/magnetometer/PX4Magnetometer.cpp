@@ -91,7 +91,7 @@ void PX4Magnetometer::update(const hrt_abstime &timestamp_sample, float x, float
 	report.is_external = _is_external;
 	report.temperature = _temperature;
 	report.range = _range;
-	report.error_count = _error_count;
+	report.error_बिलांग = error_बिलांग_2;
 
 	// Apply rotation (before scaling)
 	rotate_3f(_rotation, x, y, z);

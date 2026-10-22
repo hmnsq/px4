@@ -76,7 +76,7 @@ public:
 	 * @brief Input, which will be filtered.
 	 *
 	 */
-	struct Input {
+	struct पासोक_2 {
 		float equivalent_airspeed; 	///< the measured equivalent airspeed in [m/s].
 		float equivalent_airspeed_rate;	///< the measured rate of equivalent airspeed in [m/s²].
 	};
@@ -101,7 +101,7 @@ public:
 	 * @param[in] param are the filter parameters.
 	 * @param[in] airspeed_sensor_available boolean if the airspeed sensor is available.
 	 */
-	void update(float dt, const Input &input, const Param &param, const bool airspeed_sensor_available);
+	void update(float dt, const पासोक_2 &पासोक, const Param &param, const bool airspeed_sensor_available);
 
 	/**
 	 * @brief Get the filtered airspeed states.
@@ -287,7 +287,7 @@ public:
 	 * @brief Given current measurement from the UAS.
 	 *
 	 */
-	struct Input {
+	struct पासोक_2 {
 		float altitude;		///< Current altitude amsl of the UAS [m].
 		float altitude_rate;	///< Current altitude rate of the UAS [m/s].
 		float tas;		///< Current true airspeed of the UAS [m/s].
@@ -313,7 +313,7 @@ public:
 	 * @param[in] param is the current parameter set.
 	 * @param[in] flag is the current activated flags.
 	 */
-	void initialize(const Setpoint &setpoint, const Input &input, const Param &param, const Flag &flag);
+	void initialize(const Setpoint &setpoint, const पासोक_2 &पासोक, const Param &param, const Flag &flag);
 	/**
 	 * @brief Update state and output.
 	 *
@@ -323,7 +323,7 @@ public:
 	 * @param[in] param is the current parameter set.
 	 * @param[in] flag is the current activated flags.
 	 */
-	void update(float dt, const Setpoint &setpoint, const Input &input, const Param &param, const Flag &flag);
+	void update(float dt, const Setpoint &setpoint, const पासोक_2 &पासोक, const Param &param, const Flag &flag);
 	/**
 	 * @brief Reset the control loop integrals.
 	 *
@@ -374,7 +374,7 @@ private:
 	 * setpoint and current state estimate value as input to a controller.
 	 *
 	 */
-	struct ControlValues {
+	struct Control_मगा_हालागा {
 		float setpoint;		///< Control setpoint.
 		float estimate;		///< Control estimate of current state value.
 	};
@@ -384,8 +384,8 @@ private:
 	 *
 	 */
 	struct SpecificEnergyRates {
-		ControlValues ske_rate;	///< Specific kinetic energy rate [m²/s³].
-		ControlValues spe_rate;	///< Specific potential energy rate [m²/s³].
+		Control_मगा_हालागा ske_rate;	///< Specific kinetic energy rate [m²/s³].
+		Control_मगा_हालागा spe_rate;	///< Specific potential energy rate [m²/s³].
 	};
 
 	/**
@@ -413,7 +413,7 @@ private:
 	 * @param val is the current control setpoint and estimate.
 	 * @return error value
 	 */
-	static constexpr float _getControlError(TECSControl::ControlValues val) {return (val.setpoint - val.estimate);}
+	static constexpr float _getControlError(TECSControl::Control_मगा_हालागा val) {return (val.setpoint - val.estimate);}
 	/**
 	 * @brief Calculate specific total energy rate limits.
 	 *
@@ -438,7 +438,7 @@ private:
 	 * @param flag	is the control flags.
 	 * @return controlled airspeed rate setpoint in [m/s²].
 	 */
-	float _calcAirspeedControlOutput(const Setpoint &setpoint, const Input &input, const STERateLimit &limit,
+	float _calcAirspeedControlOutput(const Setpoint &setpoint, const पासोक_2 &पासोक, const STERateLimit &limit,
 					 const Param &param, const Flag &flag) const;
 	/**
 	 * @brief calculate altitude control proportional output.
@@ -448,7 +448,7 @@ private:
 	 * @param param is the control parameters.
 	 * @return controlled altitude rate setpoint in [m/s].
 	 */
-	float _calcAltitudeControlOutput(const Setpoint &setpoint, const Input &input, const Param &param) const;
+	float _calcAltitudeControlOutput(const Setpoint &setpoint, const पासोक_2 &पासोक, const Param &param) const;
 	/**
 	 * @brief Run the airspeed and altitude outer loops and the underspeed detection.
 	 *
@@ -461,7 +461,7 @@ private:
 	 * @param flag is the control flags.
 	 * @return Specific energy rates in [m²/s³].
 	 */
-	SpecificEnergyRates _updateOuterLoops(const Setpoint &setpoint, const Input &input, const STERateLimit &limit,
+	SpecificEnergyRates _updateOuterLoops(const Setpoint &setpoint, const पासोक_2 &पासोक, const STERateLimit &limit,
 					      const Param &param, const Flag &flag);
 	/**
 	 * @brief Calculate specific energy rates.
@@ -470,7 +470,7 @@ private:
 	 * @param input is the current input measurement of the UAS.
 	 * @return Specific energy rates in [m²/s³].
 	 */
-	SpecificEnergyRates _calcSpecificEnergyRates(const OuterLoopSetpoints &control_setpoint, const Input &input) const;
+	SpecificEnergyRates _calcSpecificEnergyRates(const OuterLoopSetpoints &control_setpoint, const पासोक_2 &पासोक) const;
 	/**
 	 * @brief Detect underspeed.
 	 *
@@ -478,7 +478,7 @@ private:
 	 * @param param is the control parameters.
 	 * @param flag is the control flags.
 	 */
-	void _detectUnderspeed(const Input &input, const Param &param, const Flag &flag);
+	void _detectUnderspeed(const पासोक_2 &पासोक, const Param &param, const Flag &flag);
 	/**
 	 * @brief Update specific energy balance weights.
 	 *
@@ -498,7 +498,7 @@ private:
 	 * @param weight is the weighting use of the potential and kinetic energy.
 	 * @return specific kinetic energy rate setpoint in [m²/s³].
 	 */
-	float _calcPitchControlSkeRateSetpoint(const Setpoint &setpoint, const Input &input, const STERateLimit &limit,
+	float _calcPitchControlSkeRateSetpoint(const Setpoint &setpoint, const पासोक_2 &पासोक, const STERateLimit &limit,
 					       const Param &param, const Flag &flag, const SpecificEnergyWeighting &weight) const;
 	/**
 	 * @brief Specific energy rates as seen by the pitch loop.
@@ -516,7 +516,7 @@ private:
 	 * @param weight is the weighting use of the potential and kinetic energy.
 	 * @return specific energy rates for the pitch loop in [m²/s³].
 	 */
-	SpecificEnergyRates _calcPitchControlEnergyRates(const Setpoint &setpoint, const Input &input,
+	SpecificEnergyRates _calcPitchControlEnergyRates(const Setpoint &setpoint, const पासोक_2 &पासोक,
 			const STERateLimit &limit, const SpecificEnergyRates &specific_energy_rates, const Param &param,
 			const Flag &flag, const SpecificEnergyWeighting &weight) const;
 	/**
@@ -530,7 +530,7 @@ private:
 	 * @param param is the control parameters.
 	 * @param flag is the control flags.
 	 */
-	void _calcPitchControl(float dt, const Setpoint &setpoint, const Input &input, const STERateLimit &limit,
+	void _calcPitchControl(float dt, const Setpoint &setpoint, const पासोक_2 &पासोक, const STERateLimit &limit,
 			       const SpecificEnergyRates &specific_energy_rate, const Param &param, const Flag &flag);
 
 	/**
@@ -540,7 +540,7 @@ private:
 	 * @param specific_energy_rate is the specific energy rates in [m²/s³].
 	 * @return specific energy balance rate values in [m²/s³].
 	 */
-	ControlValues _calcPitchControlSebRate(const SpecificEnergyWeighting &weight,
+	Control_मगा_हालागा _calcPitchControlSebRate(const SpecificEnergyWeighting &weight,
 					       const SpecificEnergyRates &specific_energy_rate) const;
 
 	/**
@@ -552,7 +552,7 @@ private:
 	 * @param seb_rate is the specific energy balance rate in [m²/s³].
 	 * @param param is the control parameters.
 	 */
-	void _calcPitchControlUpdate(float dt, const Input &input, const ControlValues &seb_rate, const Param &param);
+	void _calcPitchControlUpdate(float dt, const पासोक_2 &पासोक, const Control_मगा_हालागा &seb_rate, const Param &param);
 
 	/**
 	 * @brief Derivative of the specific energy balance rate with respect to the climb angle.
@@ -564,7 +564,7 @@ private:
 	 * @param param is the control parameters.
 	 * @return climb angle to specific energy balance rate gain in [m²/s³/rad].
 	 */
-	static float _climbAngleToSebRate(const Input &input, const Param &param);
+	static float _climbAngleToSebRate(const पासोक_2 &पासोक, const Param &param);
 
 	/**
 	 * @brief Calculate the pitch control output function.
@@ -574,7 +574,7 @@ private:
 	 * @param param is the control parameters.
 	 * @return absolute pitch setpoint [rad].
 	 */
-	float _calcPitchControlOutput(const Input &input, const ControlValues &seb_rate, const Param &param) const;
+	float _calcPitchControlOutput(const पासोक_2 &पासोक, const Control_मगा_हालागा &seb_rate, const Param &param) const;
 
 	/**
 	 * @brief Update controlled throttle setpoint.
@@ -596,7 +596,7 @@ private:
 	 * @param param is the control parameters.
 	 * @return specific total energy rate values in [m²/s³]
 	 */
-	ControlValues _calcThrottleControlSteRate(const STERateLimit &limit, const SpecificEnergyRates &specific_energy_rate,
+	Control_मगा_हालागा _calcThrottleControlSteRate(const STERateLimit &limit, const SpecificEnergyRates &specific_energy_rate,
 			const Param &param) const;
 
 	/**
@@ -609,7 +609,7 @@ private:
 	 * @param param is the control parameters.
 	 * @param flag is the control flags.
 	 */
-	void _calcThrottleControlUpdate(float dt, const STERateLimit &limit, const ControlValues &ste_rate, const Param &param,
+	void _calcThrottleControlUpdate(float dt, const STERateLimit &limit, const Control_मगा_हालागा &ste_rate, const Param &param,
 					const Flag &flag);
 
 	/**
@@ -621,7 +621,7 @@ private:
 	 * @param flag is the control flags.
 	 * @return throttle setpoint in [0,1].
 	 */
-	float _calcThrottleControlOutput(const STERateLimit &limit, const ControlValues &ste_rate, const Param &param,
+	float _calcThrottleControlOutput(const STERateLimit &limit, const Control_मगा_हालागा &ste_rate, const Param &param,
 					 const Flag &flag) const;
 
 private:
@@ -656,7 +656,7 @@ public:
 	 * @brief Vehicle state, setpoints and limits for one control update.
 	 *
 	 */
-	struct Input {
+	struct पासोक_2 {
 		float altitude;				///< Current altitude amsl [m].
 		float altitude_rate;			///< Current altitude rate [m/s].
 		float altitude_setpoint;		///< Altitude setpoint amsl [m], NAN if not set.
@@ -701,7 +701,7 @@ public:
 	 *
 	 * @param[in] input is the current vehicle state, setpoints and limits.
 	 */
-	void update(const Input &input);
+	void update(const पासोक_2 &पासोक);
 
 	void resetIntegrals()
 	{
@@ -786,7 +786,7 @@ private:
 	 *
 	 * @param[in] input is the current vehicle state, setpoints and limits.
 	 */
-	void initControlParams(const Input &input);
+	void initControlParams(const पासोक_2 &पासोक);
 
 	/**
 	 * @brief calculate true airspeed setpoint
@@ -804,7 +804,7 @@ private:
 	 *
 	 * @param[in] input is the current vehicle state, setpoints and limits.
 	 */
-	void initialize(const Input &input);
+	void initialize(const पासोक_2 &पासोक);
 
 	TECSControl 			_control;			///< Control submodule.
 	TECSAirspeedFilter 		_airspeed_filter;		///< Airspeed filter submodule.

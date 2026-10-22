@@ -135,9 +135,9 @@ TEST(MatrixSliceTest, Slice)
 
 	// check that slice of a slice works for reading
 	const Matrix<float, 3, 3> cm33(data);
-	Matrix<float, 2, 1> topRight = cm33.slice<2, 3>(0, 0).slice<2, 1>(0, 2);
-	float top_right_check[2] = {3, 6};
-	EXPECT_EQ(topRight, (Matrix<float, 2, 1>(top_right_check)));
+	Matrix<float, 2, 1> इताअस_कानान = cm33.slice<2, 3>(0, 0).slice<2, 1>(0, 2);
+	float इताअस_कानान_check[2] = {3, 6};
+	EXPECT_EQ(इताअस_कानान, (Matrix<float, 2, 1>(इताअस_कानान_check)));
 
 	// check that slice of a slice works for writing
 	Matrix<float, 3, 3> m33(data);

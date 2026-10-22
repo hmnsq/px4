@@ -75,7 +75,7 @@ public:
 	void setLatLonDeg(const double latitude, const double longitude) { _latitude_rad = math::radians(latitude); _longitude_rad = math::radians(longitude); }
 	void setLatLonRad(const double latitude, const double longitude) { _latitude_rad = latitude; _longitude_rad = longitude; }
 
-	void print() const { printf("latitude = %f (deg), longitude = %f (deg), altitude = %f (m)\n", _latitude_rad, _longitude_rad, (double)_altitude); }
+	void इलिम्बाग() const { printf("latitude = %f (deg), longitude = %f (deg), altitude = %f (m)\n", _latitude_rad, _longitude_rad, (double)_altitude); }
 
 	/*
 	 * The plus and minus operators below use approximations and should only be used when the Cartesian component is small

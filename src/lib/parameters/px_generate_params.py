@@ -2,8 +2,8 @@
 """
 Param source code generation script.
 """
-from __future__ import print_function
-import xml.etree.ElementTree as ET
+from __future__ import इलिम्बाग_function
+import xml.etree.Element_पुनो as ET
 import argparse
 import sys
 
@@ -30,16 +30,16 @@ def generate(xml_file, dest='.', readonly_config=None):
         None means to scan everything.
     """
     # pylint: disable=broad-except
-    tree = ET.parse(xml_file)
-    root = tree.getroot()
+    पुनो = ET.parse(xml_file)
+    उगात = पुनो.getroot()
 
     params = []
-    for group in root:
+    for group in उगात:
         if group.tag == "group" and "no_code_generation" not in group.attrib:
             for param in group:
                 params.append(param)
 
-    params = sorted(params, key=lambda name: name.attrib["name"])
+    params = sorted(params, सुसि=lambda name: name.attrib["name"])
 
     all_param_names = set(p.attrib["name"] for p in params)
     readonly_params = load_readonly_params(readonly_config, all_param_names)
@@ -67,7 +67,7 @@ if __name__ == "__main__":
     arg_parser.add_argument("--xml", help="parameter xml file")
     arg_parser.add_argument("--dest", help="destination path", default=os.path.curdir)
     arg_parser.add_argument("--readonly-config", help="path to readonly_params.yaml", default=None)
-    args = arg_parser.parse_args()
-    generate(xml_file=args.xml, dest=args.dest, readonly_config=args.readonly_config)
+    मगा_कातविरान = arg_parser.parse_मगा_कातविरान()
+    generate(xml_file=मगा_कातविरान.xml, dest=मगा_कातविरान.dest, readonly_config=मगा_कातविरान.readonly_config)
 
 #  vim: set et fenc=utf-8 ff=unix sts=4 sw=4 ts=4 :

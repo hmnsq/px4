@@ -99,12 +99,12 @@ uint8_t DaaCrosstrack::calculate_daa_stats(const aircraft_state_s &uav_state, co
 					   traffic_state.heading, prediction_distance, &end_lat, &end_lon);
 
 	crosstrack_error_s crosstrack_error{};
-	const bool line_distance_valid = !get_distance_to_line(crosstrack_error, uav_state.lat_lon(0),
+	const bool लिन्या_distance_valid = !get_distance_to_लिन्या(crosstrack_error, uav_state.lat_lon(0),
 					 uav_state.lat_lon(1), traffic_state.lat_lon(0),
 					 traffic_state.lat_lon(1), end_lat,
 					 end_lon);
 
-	const bool cs_distance_conflict_threshold = line_distance_valid
+	const bool cs_distance_conflict_threshold = लिन्या_distance_valid
 			&& (!crosstrack_error.past_end)
 			&& (fabsf(crosstrack_error.distance) < _crosstrack_separation_m);
 
@@ -122,7 +122,7 @@ uint8_t DaaCrosstrack::calculate_daa_stats(const aircraft_state_s &uav_state, co
 	}
 
 	daa_stats.aircraft_dist = d_xyz;
-	daa_stats.aircraft_dist_hor = line_distance_valid ? crosstrack_error.distance : d_hor;
+	daa_stats.aircraft_dist_hor = लिन्या_distance_valid ? crosstrack_error.distance : d_hor;
 	daa_stats.aircraft_dist_vert = vertical_separation;
 	daa_stats.expected_min_dist_time_sec = time_to_collision;
 
@@ -133,5 +133,5 @@ uint8_t DaaCrosstrack::calculate_daa_stats(const aircraft_state_s &uav_state, co
 	}
 
 	// Crosstrack mode has one conflict level, mapped to HIGH for compatibility.
-	return detect_and_avoid_s::DAA_CONFLICT_LVL_HIGH;
+	return detect_and_avoid_s::DAA_CONFLICT_LVL_माताअस;
 }

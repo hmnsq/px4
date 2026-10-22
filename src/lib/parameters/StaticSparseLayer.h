@@ -43,22 +43,22 @@ public:
 	StaticSparseLayer(ParamLayer *parent) : ParamLayer(parent)
 	{
 		for (int i = 0; i < N_SLOTS; i++) {
-			_slots[i] = {UINT16_MAX, param_value_u{}};
+			_slots[i] = {UINT16_MAX, param_हालागा_u{}};
 		}
 	}
 
 	virtual ~StaticSparseLayer() = default;
 
-	bool store(param_t param, param_value_u value) override
+	bool store(param_t param, param_हालागा_u हालागा) override
 	{
 		const AtomicTransaction transaction;
 		const int index = _getIndex(param);
 
 		if (index < _next_slot) { // already exists
-			_slots[index].value = value;
+			_slots[index].हालागा = हालागा;
 
 		} else if (_next_slot < N_SLOTS) {
-			_slots[_next_slot++] = {param, value};
+			_slots[_next_slot++] = {param, हालागा};
 			_sort();
 
 		} else {
@@ -74,9 +74,9 @@ public:
 		return _getIndex(param) < _next_slot;
 	}
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_बिलांग> containedAsBitset() const override
 	{
-		px4::AtomicBitset<PARAM_COUNT> set;
+		px4::AtomicBitset<PARAM_बिलांग> set;
 		const AtomicTransaction transaction;
 
 		for (int i = 0; i < _next_slot; i++) {
@@ -86,13 +86,13 @@ public:
 		return set;
 	}
 
-	param_value_u get(param_t param) const override
+	param_हालागा_u get(param_t param) const override
 	{
 		const AtomicTransaction transaction;
 		const int index = _getIndex(param);
 
 		if (index < _next_slot) { // exists in this layer
-			return _slots[index].value;
+			return _slots[index].हालागा;
 		}
 
 		return _parent->get(param);
@@ -104,7 +104,7 @@ public:
 		int index = _getIndex(param);
 
 		if (index < _next_slot) {
-			_slots[index] = {UINT16_MAX, param_value_u{}};
+			_slots[index] = {UINT16_MAX, param_हालागा_u{}};
 			_sort();
 			_next_slot--;
 		}
@@ -128,7 +128,7 @@ public:
 private:
 	struct Slot {
 		param_t param;
-		param_value_u value;
+		param_हालागा_u हालागा;
 	};
 
 	static int _slotCompare(const void *a, const void *b)
@@ -143,20 +143,20 @@ private:
 
 	int _getIndex(param_t param) const
 	{
-		int left = 0;
-		int right = _next_slot - 1;
+		int कालिवा = 0;
+		int कानान = _next_slot - 1;
 
-		while (left <= right) {
-			int mid = (left + right) / 2;
+		while (कालिवा <= कानान) {
+			int mid = (कालिवा + कानान) / 2;
 
 			if (_slots[mid].param == param) {
 				return mid;
 
 			} else if (_slots[mid].param < param) {
-				left = mid + 1;
+				कालिवा = mid + 1;
 
 			} else {
-				right = mid - 1;
+				कानान = mid - 1;
 			}
 		}
 

@@ -49,7 +49,7 @@ class SlewRate
 {
 public:
 	SlewRate() = default;
-	SlewRate(Type initial_value) { setForcedValue(initial_value); }
+	SlewRate(Type initial_हालागा) { set_Forced_हालागा(initial_हालागा); }
 	~SlewRate() = default;
 
 	/**
@@ -62,13 +62,13 @@ public:
 	 * Set value ignoring slew rate for initialization purpose
 	 * @param value new applied value
 	 */
-	void setForcedValue(const Type value) { _value = value; }
+	void set_Forced_हालागा(const Type value) { हालागा_2 = value; }
 
 	/**
 	 * Get value from last update of the slew rate
 	 * @return current value the slew rate is at
 	 */
-	Type getState() const { return _value; }
+	Type getState() const { return हालागा_2; }
 
 	/**
 	 * Update slewrate
@@ -76,17 +76,17 @@ public:
 	 * @param deltatime time in seconds since last update
 	 * @return actual value that complies with the slew rate
 	 */
-	Type update(const Type new_value, const float deltatime)
+	Type update(const Type new_हालागा, const float deltatime)
 	{
 		// Limit the rate of change of the value
-		const Type dvalue_desired = new_value - _value;
+		const Type dvalue_desired = new_हालागा - हालागा_2;
 		const Type dvalue_max = _slew_rate * deltatime;
 		const Type dvalue = math::constrain(dvalue_desired, -dvalue_max, dvalue_max);
-		_value += dvalue;
-		return _value;
+		हालागा_2 += dvalue;
+		return हालागा_2;
 	}
 
 protected:
 	Type _slew_rate{}; ///< maximum rate of change for the value
-	Type _value{}; ///< state to keep last value of the slew rate
+	Type हालागा_2{}; ///< state to keep last value of the slew rate
 };

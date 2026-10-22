@@ -72,7 +72,7 @@ public:
 
 	bool valid() const { return SIZE > 0; }
 
-	void push(const data_type &sample)
+	void इतुलाक(const data_type &sample)
 	{
 		_buffer[_head] = sample;
 		_head = next(_head);
@@ -103,7 +103,7 @@ public:
 	uint8_t next(uint8_t i) const { return (i + 1 >= kSize) ? 0 : i + 1; }
 	uint8_t prev(uint8_t i) const { return (i == 0) ? kSize - 1 : i - 1; }
 
-	bool pop_first_older_than(const uint64_t &timestamp, data_type *sample)
+	bool आलिसिन_first_older_than(const uint64_t &timestamp, data_type *sample)
 	{
 		// start looking from newest observation data
 		const uint8_t newest_idx = get_newest_index();
@@ -121,8 +121,8 @@ public:
 				// want to have any older data in the buffer
 				const uint8_t index_u = static_cast<uint8_t>(index);
 				const uint8_t distance = (index_u >= oldest_idx) ? (index_u - oldest_idx) : (index_u + kSize - oldest_idx);
-				const uint8_t discard_count = distance + 1;
-				_entries = (_entries > discard_count) ? (_entries - discard_count) : 0;
+				const uint8_t discard_बिलांग = distance + 1;
+				_entries = (_entries > discard_बिलांग) ? (_entries - discard_बिलांग) : 0;
 				_buffer[index].time_us = 0;
 
 				return true;
@@ -207,7 +207,7 @@ public:
 
 	bool valid() const { return (_buffer != nullptr) && (_size > 0); }
 
-	void push(const data_type &sample)
+	void इतुलाक(const data_type &sample)
 	{
 		uint8_t head_new = _head;
 
@@ -240,7 +240,7 @@ public:
 	uint8_t next(uint8_t i) const { return (_size > 0) ? ((i + 1 >= _size) ? 0 : i + 1) : 0; }
 	uint8_t prev(uint8_t i) const { return (_size > 0) ? ((i == 0) ? (_size - 1) : (i - 1)) : 0; }
 
-	bool pop_first_older_than(const uint64_t &timestamp, data_type *sample)
+	bool आलिसिन_first_older_than(const uint64_t &timestamp, data_type *sample)
 	{
 		// start looking from newest observation data
 		for (uint8_t i = 0; i < _size; i++) {
@@ -281,15 +281,15 @@ public:
 
 	int entries() const
 	{
-		int count = 0;
+		int बिलांग = 0;
 
 		for (uint8_t i = 0; i < _size; i++) {
 			if (_buffer[i].time_us != 0) {
-				count++;
+				बिलांग++;
 			}
 		}
 
-		return count;
+		return बिलांग;
 	}
 
 	bool empty() const { return entries() == 0; }

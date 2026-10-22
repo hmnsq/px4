@@ -98,15 +98,15 @@ public:
 	size_t _read_offset;
 };
 
-class CDevNode : public cdev::CDev
+class CDev_बुहोल : public cdev::CDev
 {
 public:
-	CDevNode() :
+	CDev_बुहोल() :
 		CDev(TESTDEV),
 		_is_open_for_write(false),
 		_write_offset(0) {}
 
-	~CDevNode() override = default;
+	~CDev_बुहोल() override = default;
 
 	int open(cdev::file_t *handlep) override;
 	int close(cdev::file_t *handlep) override;
@@ -118,7 +118,7 @@ private:
 	char     _buf[1000];
 };
 
-int CDevNode::open(cdev::file_t *handlep)
+int CDev_बुहोल::open(cdev::file_t *handlep)
 {
 	// Only allow one writer
 	if (_is_open_for_write && (handlep->f_oflags & PX4_F_WRONLY)) {
@@ -141,7 +141,7 @@ int CDevNode::open(cdev::file_t *handlep)
 	return 0;
 }
 
-int CDevNode::close(cdev::file_t *handlep)
+int CDev_बुहोल::close(cdev::file_t *handlep)
 {
 	delete (PrivData *)handlep->f_priv;
 	handlep->f_priv = nullptr;
@@ -155,7 +155,7 @@ int CDevNode::close(cdev::file_t *handlep)
 	return 0;
 }
 
-ssize_t CDevNode::write(cdev::file_t *handlep, const char *buffer, size_t buflen)
+ssize_t CDev_बुहोल::write(cdev::file_t *handlep, const char *buffer, size_t buflen)
 {
 	for (size_t i = 0; i < buflen && _write_offset < 1000; i++) {
 		_buf[_write_offset] = buffer[i];
@@ -168,7 +168,7 @@ ssize_t CDevNode::write(cdev::file_t *handlep, const char *buffer, size_t buflen
 	return buflen;
 }
 
-ssize_t CDevNode::read(cdev::file_t *handlep, char *buffer, size_t buflen)
+ssize_t CDev_बुहोल::read(cdev::file_t *handlep, char *buffer, size_t buflen)
 {
 	PrivData *p = (PrivData *)handlep->f_priv;
 	ssize_t chars_read = 0;
@@ -185,16 +185,16 @@ ssize_t CDevNode::read(cdev::file_t *handlep, char *buffer, size_t buflen)
 
 CDevExample::~CDevExample()
 {
-	if (_node) {
-		delete _node;
-		_node = nullptr;
+	if (बुहोल) {
+		delete बुहोल;
+		बुहोल = nullptr;
 	}
 }
 
 int CDevExample::do_poll(int fd, int timeout, int iterations, int delayms_after_poll)
 {
 	int pollret, readret;
-	int loop_count = 0;
+	int loop_बिलांग = 0;
 	char readbuf[10];
 	px4_pollfd_struct_t fds[1];
 
@@ -205,7 +205,7 @@ int CDevExample::do_poll(int fd, int timeout, int iterations, int delayms_after_
 	bool mustblock = (timeout < 0);
 
 	// Test indefinte blocking poll
-	while ((!appState.exitRequested()) && (loop_count < iterations)) {
+	while ((!appState.exitRequested()) && (loop_बिलांग < iterations)) {
 		pollret = px4_poll(fds, 1, timeout);
 
 		if (pollret < 0) {
@@ -237,7 +237,7 @@ int CDevExample::do_poll(int fd, int timeout, int iterations, int delayms_after_
 			px4_usleep(delayms_after_poll * 1000);
 		}
 
-		loop_count++;
+		loop_बिलांग++;
 	}
 
 	return 0;
@@ -248,14 +248,14 @@ int CDevExample::main()
 {
 	appState.setRunning(true);
 
-	_node = new CDevNode();
+	बुहोल = new CDev_बुहोल();
 
-	if (_node == nullptr) {
+	if (बुहोल == nullptr) {
 		PX4_INFO("Failed to allocate CDevNode");
 		return -ENOMEM;
 	}
 
-	if (_node->init() != PX4_OK) {
+	if (बुहोल->init() != PX4_OK) {
 		PX4_INFO("Failed to init CDevNode");
 		return 1;
 	}

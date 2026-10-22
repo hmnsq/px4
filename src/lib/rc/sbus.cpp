@@ -63,9 +63,9 @@ using namespace time_literals;
 #include <termios.h>
 #endif
 
-#define SBUS_START_SYMBOL	0x0f
+#define SBUS_START_सिम्बोलो	0x0f
 
-#define SBUS_INPUT_CHANNELS	16
+#define SBUS_पासोक_CHANNELS	16
 #define SBUS_FLAGS_BYTE		23
 #define SBUS_FAILSAFE_BIT	3
 #define SBUS_FRAMELOST_BIT	2
@@ -121,7 +121,7 @@ static enum SBUS2_DECODE_STATE {
 
 static sbus_frame_t	 &sbus_frame = rc_decode_buf.sbus_frame;
 
-static unsigned partial_frame_count;
+static unsigned partial_frame_बिलांग;
 static unsigned sbus1_frame_delay = (1000U * 1000U) / SBUS1_DEFAULT_RATE_HZ;
 
 static unsigned sbus_frame_drops;
@@ -133,8 +133,8 @@ sbus_dropped_frames()
 }
 
 static bool
-sbus_decode(uint64_t frame_time, uint8_t *frame, uint16_t *values, uint16_t *num_values,
-	    bool *sbus_failsafe, bool *sbus_frame_drop, uint16_t max_values);
+sbus_decode(uint64_t frame_time, uint8_t *frame, uint16_t *मगा_हालागा_2, uint16_t *नुमेरो_मगा_हालागा,
+	    bool *sbus_failsafe, bool *sbus_frame_drop, uint16_t max_मगा_हालागा);
 
 int
 sbus_init(const char *device, bool singlewire)
@@ -212,7 +212,7 @@ sbus_config(int sbus_fd, bool singlewire)
 
 #endif
 	/* initialise the decoder */
-	partial_frame_count = 0;
+	partial_frame_बिलांग = 0;
 	last_rx_time = hrt_absolute_time();
 	sbus_frame_drops = 0;
 
@@ -220,7 +220,7 @@ sbus_config(int sbus_fd, bool singlewire)
 }
 
 void
-sbus1_output(int sbus_fd, uint16_t *values, uint16_t num_values)
+sbus1_output(int sbus_fd, uint16_t *मगा_हालागा_2, uint16_t नुमेरो_मगा_हालागा)
 {
 	uint8_t byteindex = 1; /*Data starts one byte into the sbus frame. */
 	uint8_t offset = 0;
@@ -236,8 +236,8 @@ sbus1_output(int sbus_fd, uint16_t *values, uint16_t num_values)
 		/* 16 is sbus number of servos/channels minus 2 single bit channels.
 		* currently ignoring single bit channels.  */
 
-		for (unsigned i = 0; (i < num_values) && (i < 16); ++i) {
-			long scaled = lround((values[i] - SBUS_SCALE_OFFSET) / SBUS_SCALE_FACTOR);
+		for (unsigned i = 0; (i < नुमेरो_मगा_हालागा) && (i < 16); ++i) {
+			long scaled = lround((मगा_हालागा_2[i] - SBUS_SCALE_OFFSET) / SBUS_SCALE_FACTOR);
 
 			/* limit to 11 bits before the cast: a value below the scale offset (an output with no
 			 * function is 0) is negative and would wrap to full scale */
@@ -265,13 +265,13 @@ sbus1_output(int sbus_fd, uint16_t *values, uint16_t num_values)
 	}
 }
 void
-sbus2_output(int sbus_fd, uint16_t *values, uint16_t num_values)
+sbus2_output(int sbus_fd, uint16_t *मगा_हालागा_2, uint16_t नुमेरो_मगा_हालागा)
 {
-	sbus1_output(sbus_fd, values, num_values);
+	sbus1_output(sbus_fd, मगा_हालागा_2, नुमेरो_मगा_हालागा);
 }
 
 bool
-sbus_input(int sbus_fd, uint16_t *values, uint16_t *num_values, bool *sbus_failsafe, bool *sbus_frame_drop,
+sbus_पासोक(int sbus_fd, uint16_t *मगा_हालागा_2, uint16_t *नुमेरो_मगा_हालागा, bool *sbus_failsafe, bool *sbus_frame_drop,
 	   uint16_t max_channels)
 {
 	/*
@@ -306,8 +306,8 @@ sbus_input(int sbus_fd, uint16_t *values, uint16_t *num_values, bool *sbus_fails
 	 * if we didn't drop bytes...
 	 */
 	if (now - last_rx_time > 4_ms) {
-		if (partial_frame_count > 0) {
-			partial_frame_count = 0;
+		if (partial_frame_बिलांग > 0) {
+			partial_frame_बिलांग = 0;
 			sbus_decode_state = SBUS2_DECODE_STATE_DESYNC;
 #if defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 0
 			printf("SBUS: RESET (TIME LIM)\n");
@@ -320,13 +320,13 @@ sbus_input(int sbus_fd, uint16_t *values, uint16_t *num_values, bool *sbus_fails
 	/*
 	 * Try to decode something with what we got
 	 */
-	return sbus_parse(now, &buf[0], ret, values, num_values, sbus_failsafe,
+	return sbus_parse(now, &buf[0], ret, मगा_हालागा_2, नुमेरो_मगा_हालागा, sbus_failsafe,
 			  sbus_frame_drop, &sbus_frame_drops, max_channels);
 }
 
 bool
-sbus_parse(uint64_t now, uint8_t *frame, unsigned len, uint16_t *values,
-	   uint16_t *num_values, bool *sbus_failsafe, bool *sbus_frame_drop, unsigned *frame_drops, uint16_t max_channels)
+sbus_parse(uint64_t now, uint8_t *frame, unsigned len, uint16_t *मगा_हालागा_2,
+	   uint16_t *नुमेरो_मगा_हालागा, bool *sbus_failsafe, bool *sbus_frame_drop, unsigned *frame_drops, uint16_t max_channels)
 {
 
 	last_rx_time = now;
@@ -340,16 +340,16 @@ sbus_parse(uint64_t now, uint8_t *frame, unsigned len, uint16_t *values,
 	for (unsigned d = 0; d < len; d++) {
 
 		/* overflow check */
-		if (partial_frame_count == sizeof(sbus_frame) / sizeof(sbus_frame[0])) {
-			partial_frame_count = 0;
+		if (partial_frame_बिलांग == sizeof(sbus_frame) / sizeof(sbus_frame[0])) {
+			partial_frame_बिलांग = 0;
 			sbus_decode_state = SBUS2_DECODE_STATE_DESYNC;
 #if defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 0
 			printf("SBUS2: RESET (BUF LIM)\n");
 #endif
 		}
 
-		if (partial_frame_count == SBUS_FRAME_SIZE) {
-			partial_frame_count = 0;
+		if (partial_frame_बिलांग == SBUS_FRAME_SIZE) {
+			partial_frame_बिलांग = 0;
 			sbus_decode_state = SBUS2_DECODE_STATE_DESYNC;
 #if defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 0
 			printf("SBUS2: RESET (PACKET LIM)\n");
@@ -364,7 +364,7 @@ sbus_parse(uint64_t now, uint8_t *frame, unsigned len, uint16_t *values,
 		       (sbus_decode_state == SBUS2_DECODE_STATE_SBUS2_SYNC) ? "SBUS2_DECODE_STATE_SBUS2_SYNC" : "",
 		       (sbus_decode_state == SBUS2_DECODE_STATE_SBUS2_RX_VOLTAGE) ? "SBUS2_DECODE_STATE_SBUS2_RX_VOLTAGE" : "",
 		       (sbus_decode_state == SBUS2_DECODE_STATE_SBUS2_GPS) ? "SBUS2_DECODE_STATE_SBUS2_GPS" : "",
-		       partial_frame_count,
+		       partial_frame_बिलांग,
 		       (unsigned)frame[d]);
 #endif
 
@@ -375,10 +375,10 @@ sbus_parse(uint64_t now, uint8_t *frame, unsigned len, uint16_t *values,
 		case SBUS2_DECODE_STATE_SBUS_START:
 
 			/* we are de-synced and only interested in the frame marker */
-			if (frame[d] == SBUS_START_SYMBOL) {
+			if (frame[d] == SBUS_START_सिम्बोलो) {
 				sbus_decode_state = SBUS2_DECODE_STATE_SBUS2_SYNC;
-				partial_frame_count = 0;
-				sbus_frame[partial_frame_count++] = frame[d];
+				partial_frame_बिलांग = 0;
+				sbus_frame[partial_frame_बिलांग++] = frame[d];
 			}
 
 			break;
@@ -387,17 +387,17 @@ sbus_parse(uint64_t now, uint8_t *frame, unsigned len, uint16_t *values,
 
 		/* fall through */
 		case SBUS2_DECODE_STATE_SBUS2_SYNC: {
-				sbus_frame[partial_frame_count++] = frame[d];
+				sbus_frame[partial_frame_बिलांग++] = frame[d];
 
 				/* decode whatever we got and expect */
-				if (partial_frame_count < SBUS_FRAME_SIZE) {
+				if (partial_frame_बिलांग < SBUS_FRAME_SIZE) {
 					break;
 				}
 
 				/*
 				 * Great, it looks like we might have a frame. Go ahead and decode it.
 				 */
-				decode_ret = sbus_decode(now, sbus_frame, values, num_values, sbus_failsafe, sbus_frame_drop, max_channels);
+				decode_ret = sbus_decode(now, sbus_frame, मगा_हालागा_2, नुमेरो_मगा_हालागा, sbus_failsafe, sbus_frame_drop, max_channels);
 
 				/*
 				 * Offset recovery: If decoding failed, check if there is a second
@@ -407,8 +407,8 @@ sbus_parse(uint64_t now, uint8_t *frame, unsigned len, uint16_t *values,
 
 				if (!decode_ret && sbus_decode_state == SBUS2_DECODE_STATE_DESYNC) {
 
-					for (unsigned i = 1; i < partial_frame_count; i++) {
-						if (sbus_frame[i] == SBUS_START_SYMBOL) {
+					for (unsigned i = 1; i < partial_frame_बिलांग; i++) {
+						if (sbus_frame[i] == SBUS_START_सिम्बोलो) {
 							start_index = i;
 							break;
 						}
@@ -417,11 +417,11 @@ sbus_parse(uint64_t now, uint8_t *frame, unsigned len, uint16_t *values,
 					/* we found a second start marker */
 					if (start_index != 0) {
 						/* shift everything in the buffer and reset the state machine */
-						for (unsigned i = 0; i < partial_frame_count - start_index; i++) {
+						for (unsigned i = 0; i < partial_frame_बिलांग - start_index; i++) {
 							sbus_frame[i] = sbus_frame[i + start_index];
 						}
 
-						partial_frame_count -= start_index;
+						partial_frame_बिलांग -= start_index;
 						sbus_decode_state = SBUS2_DECODE_STATE_SBUS_START;
 
 #if defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 0
@@ -435,7 +435,7 @@ sbus_parse(uint64_t now, uint8_t *frame, unsigned len, uint16_t *values,
 				 * unsuccessful decode runs.
 				 */
 				if (start_index == 0) {
-					partial_frame_count = 0;
+					partial_frame_बिलांग = 0;
 				}
 
 				if (decode_ret) {
@@ -446,14 +446,14 @@ sbus_parse(uint64_t now, uint8_t *frame, unsigned len, uint16_t *values,
 			break;
 
 		case SBUS2_DECODE_STATE_SBUS2_RX_VOLTAGE: {
-				sbus_frame[partial_frame_count++] = frame[d];
+				sbus_frame[partial_frame_बिलांग++] = frame[d];
 
-				if (partial_frame_count == 1 && sbus_frame[0] == SBUS_START_SYMBOL) {
+				if (partial_frame_बिलांग == 1 && sbus_frame[0] == SBUS_START_सिम्बोलो) {
 					/* this slot is unused and in fact S.BUS2 sync */
 					sbus_decode_state = SBUS2_DECODE_STATE_SBUS2_SYNC;
 				}
 
-				if (partial_frame_count < SBUS2_FRAME_SIZE_RX_VOLTAGE) {
+				if (partial_frame_बिलांग < SBUS2_FRAME_SIZE_RX_VOLTAGE) {
 					break;
 				}
 
@@ -471,7 +471,7 @@ sbus_parse(uint64_t now, uint8_t *frame, unsigned len, uint16_t *values,
 #endif
 					}
 
-					partial_frame_count = 0;
+					partial_frame_बिलांग = 0;
 					break;
 
 				default:
@@ -484,14 +484,14 @@ sbus_parse(uint64_t now, uint8_t *frame, unsigned len, uint16_t *values,
 			break;
 
 		case SBUS2_DECODE_STATE_SBUS2_GPS: {
-				sbus_frame[partial_frame_count++] = frame[d];
+				sbus_frame[partial_frame_बिलांग++] = frame[d];
 
-				if (partial_frame_count == 1 && sbus_frame[0] == SBUS_START_SYMBOL) {
+				if (partial_frame_बिलांग == 1 && sbus_frame[0] == SBUS_START_सिम्बोलो) {
 					/* this slot is unused and in fact S.BUS2 sync */
 					sbus_decode_state = SBUS2_DECODE_STATE_SBUS2_SYNC;
 				}
 
-				if (partial_frame_count < 24) {
+				if (partial_frame_बिलांग < 24) {
 					break;
 				}
 
@@ -504,7 +504,7 @@ sbus_parse(uint64_t now, uint8_t *frame, unsigned len, uint16_t *values,
 #endif
 					}
 
-					partial_frame_count = 0;
+					partial_frame_बिलांग = 0;
 					break;
 
 				default:
@@ -551,7 +551,7 @@ struct sbus_bit_pick {
 	uint8_t mask;
 	uint8_t lshift;
 };
-static const struct sbus_bit_pick sbus_decoder[SBUS_INPUT_CHANNELS][3] = {
+static const struct sbus_bit_pick sbus_decoder[SBUS_पासोक_CHANNELS][3] = {
 	/*  0 */ { { 0, 0, 0xff, 0}, { 1, 0, 0x07, 8}, { 0, 0, 0x00,  0} },
 	/*  1 */ { { 1, 3, 0x1f, 0}, { 2, 0, 0x3f, 5}, { 0, 0, 0x00,  0} },
 	/*  2 */ { { 2, 6, 0x03, 0}, { 3, 0, 0xff, 2}, { 4, 0, 0x01, 10} },
@@ -571,12 +571,12 @@ static const struct sbus_bit_pick sbus_decoder[SBUS_INPUT_CHANNELS][3] = {
 };
 
 bool
-sbus_decode(uint64_t frame_time, uint8_t *frame, uint16_t *values, uint16_t *num_values,
-	    bool *sbus_failsafe, bool *sbus_frame_drop, uint16_t max_values)
+sbus_decode(uint64_t frame_time, uint8_t *frame, uint16_t *मगा_हालागा_2, uint16_t *नुमेरो_मगा_हालागा,
+	    bool *sbus_failsafe, bool *sbus_frame_drop, uint16_t max_मगा_हालागा)
 {
 
 	/* check frame boundary markers to avoid out-of-sync cases */
-	if (frame[0] != SBUS_START_SYMBOL) {
+	if (frame[0] != SBUS_START_सिम्बोलो) {
 		sbus_frame_drops++;
 #if defined(SBUS_DEBUG_LEVEL) && SBUS_DEBUG_LEVEL > 0
 		printf("DECODE FAIL: ");
@@ -627,8 +627,8 @@ sbus_decode(uint64_t frame_time, uint8_t *frame, uint16_t *values, uint16_t *num
 	}
 
 	/* we have received something we think is a frame */
-	unsigned chancount = (max_values > SBUS_INPUT_CHANNELS) ?
-			     SBUS_INPUT_CHANNELS : max_values;
+	unsigned chancount = (max_मगा_हालागा > SBUS_पासोक_CHANNELS) ?
+			     SBUS_पासोक_CHANNELS : max_मगा_हालागा;
 
 	/* use the decoder matrix to extract channel data */
 	for (unsigned channel = 0; channel < chancount; channel++) {
@@ -649,21 +649,21 @@ sbus_decode(uint64_t frame_time, uint8_t *frame, uint16_t *values, uint16_t *num
 
 
 		/* convert 0-2048 values to 1000-2000 ppm encoding in a not too sloppy fashion */
-		values[channel] = static_cast<uint16_t>(lround(value * SBUS_SCALE_FACTOR) + SBUS_SCALE_OFFSET);
+		मगा_हालागा_2[channel] = static_cast<uint16_t>(lround(value * SBUS_SCALE_FACTOR) + SBUS_SCALE_OFFSET);
 	}
 
 	/* decode switch channels if data fields are wide enough */
-	if (max_values > 17 && chancount > 15) {
+	if (max_मगा_हालागा > 17 && chancount > 15) {
 		chancount = 18;
 
 		/* channel 17 (index 16) */
-		values[16] = ((frame[SBUS_FLAGS_BYTE] & (1 << 0)) ? 1000 : 0) + 998;
+		मगा_हालागा_2[16] = ((frame[SBUS_FLAGS_BYTE] & (1 << 0)) ? 1000 : 0) + 998;
 		/* channel 18 (index 17) */
-		values[17] = ((frame[SBUS_FLAGS_BYTE] & (1 << 1)) ? 1000 : 0) + 998;
+		मगा_हालागा_2[17] = ((frame[SBUS_FLAGS_BYTE] & (1 << 1)) ? 1000 : 0) + 998;
 	}
 
 	/* note the number of channels decoded */
-	*num_values = chancount;
+	*नुमेरो_मगा_हालागा = chancount;
 
 	/* decode and handle failsafe and frame-lost flags */
 	if (frame[SBUS_FLAGS_BYTE] & (1 << SBUS_FAILSAFE_BIT)) { /* failsafe */

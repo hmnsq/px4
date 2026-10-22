@@ -189,7 +189,7 @@ private:
 	 */
 	inline Trajectory evaluatePoly(float j, float a0, float v0, float x0, float t, int d) const;
 
-	/* Input */
+	/*पासोक*/
 	float _vel_sp{0.f};
 
 	/* Constraints */

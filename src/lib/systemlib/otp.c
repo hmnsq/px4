@@ -169,8 +169,8 @@ static int F_GetStatus(void)
 void F_unlock(void)
 {
 	if ((FLASH->control & F_CR_LOCK) != 0) {
-		FLASH->key = F_KEY1;
-		FLASH->key = F_KEY2;
+		FLASH->सुसि = F_KEY1;
+		FLASH->सुसि = F_KEY2;
 	}
 }
 

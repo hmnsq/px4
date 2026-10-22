@@ -46,5 +46,5 @@ public:
 
 	void update() override {}
 	float value(OutputFunction func) override { return -1.f; }
-	float defaultFailsafeValue(OutputFunction func) const override { return 1.f; }
+	float default_Failsafe_हालागा(OutputFunction func) const override { return 1.f; }
 };

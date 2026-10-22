@@ -71,7 +71,7 @@
 #define GHST_FRAME_TYPE_SIZE			(1U)
 #define GHST_TYPE_DATA_CRC_SIZE			(12U)
 #define GHST_ADDR_FC				(130U)
-#define GHST_MAX_NUM_CHANNELS			(16)
+#define GHST_MAX_नुमेरो_CHANNELS			(16)
 
 enum class ghst_parser_state_t : uint8_t {
 	unsynced = 0U,
@@ -85,12 +85,12 @@ static ghst_frame_t &ghst_frame = rc_decode_buf.ghst_frame;
 static uint32_t current_frame_position = 0U;
 static ghst_parser_state_t parser_state = ghst_parser_state_t::unsynced;
 
-static uint16_t prev_rc_vals[GHST_MAX_NUM_CHANNELS];
+static uint16_t prev_rc_vals[GHST_MAX_नुमेरो_CHANNELS];
 
 /**
  * parse the current ghst_frame buffer
  */
-static bool ghst_parse_buffer(uint16_t *values, ghstLinkStatistics_t *link_stats, uint16_t *num_values,
+static bool ghst_parse_buffer(uint16_t *मगा_हालागा_2, ghstLinkStatistics_t *link_stats, uint16_t *नुमेरो_मगा_हालागा,
 			      uint16_t max_channels);
 
 int ghst_config(int uart_fd)
@@ -102,7 +102,7 @@ int ghst_config(int uart_fd)
 	tcgetattr(uart_fd, &t);
 	cfsetspeed(&t, GHST_BAUDRATE);
 	t.c_cflag &= ~(CSTOPB | PARENB);
-	memset(prev_rc_vals, static_cast<int>(UINT16_MAX), sizeof(uint16_t) * GHST_MAX_NUM_CHANNELS);
+	memset(prev_rc_vals, static_cast<int>(UINT16_MAX), sizeof(uint16_t) * GHST_MAX_नुमेरो_CHANNELS);
 	ret_val = tcsetattr(uart_fd, TCSANOW, &t);
 	return ret_val;
 }
@@ -112,16 +112,16 @@ int ghst_config(int uart_fd)
  * @param chan_value channel value in [172, 1811]
  * @return PWM channel value in [1000, 2000]
  */
-static uint16_t convert_channel_value(unsigned chan_value);
+static uint16_t convert_channel_हालागा(unsigned chan_हालागा);
 
 
-bool ghst_parse(const uint64_t now, const uint8_t *frame, unsigned len, uint16_t *values,
-		ghstLinkStatistics_t *link_stats, uint16_t *num_values, uint16_t max_channels)
+bool ghst_parse(const uint64_t now, const uint8_t *frame, unsigned len, uint16_t *मगा_हालागा_2,
+		ghstLinkStatistics_t *link_stats, uint16_t *नुमेरो_मगा_हालागा, uint16_t max_channels)
 {
 	bool success = false;
 	uint8_t *ghst_frame_ptr = (uint8_t *)&ghst_frame;
 
-	memcpy(values, prev_rc_vals, sizeof(uint16_t) * GHST_MAX_NUM_CHANNELS);
+	memcpy(मगा_हालागा_2, prev_rc_vals, sizeof(uint16_t) * GHST_MAX_नुमेरो_CHANNELS);
 
 	while (len > 0U) {
 
@@ -147,7 +147,7 @@ bool ghst_parse(const uint64_t now, const uint8_t *frame, unsigned len, uint16_t
 			len -= current_len;
 			frame += current_len;
 
-			if (ghst_parse_buffer(values, link_stats, num_values, max_channels)) {
+			if (ghst_parse_buffer(मगा_हालागा_2, link_stats, नुमेरो_मगा_हालागा, max_channels)) {
 				success = true;
 			}
 		}
@@ -167,7 +167,7 @@ uint8_t ghst_frame_CRC(const ghst_frame_t &frame)
 	return crc;
 }
 
-static uint16_t convert_channel_value(unsigned int chan_value)
+static uint16_t convert_channel_हालागा(unsigned int chan_हालागा)
 {
 	/*
 	 *       RC     PWM
@@ -177,14 +177,14 @@ static uint16_t convert_channel_value(unsigned int chan_value)
 	 */
 	static constexpr float scale = (2012.0F - 988.0F) / (1811.0F - 172.0F);
 	static constexpr float offset = 988.0F - (172.0F * scale);
-	float scaled_chan_value = scale * static_cast<float>(chan_value);
-	float scaled_chan_value_with_offset = scaled_chan_value + offset;
-	uint16_t converted_chan_value = static_cast<uint16_t>(scaled_chan_value_with_offset);
+	float scaled_chan_हालागा = scale * static_cast<float>(chan_हालागा);
+	float scaled_chan_हालागा_with_offset = scaled_chan_हालागा + offset;
+	uint16_t converted_chan_हालागा = static_cast<uint16_t>(scaled_chan_हालागा_with_offset);
 
-	return converted_chan_value;
+	return converted_chan_हालागा;
 }
 
-static bool ghst_parse_buffer(uint16_t *values, ghstLinkStatistics_t *link_stats, uint16_t *num_values,
+static bool ghst_parse_buffer(uint16_t *मगा_हालागा_2, ghstLinkStatistics_t *link_stats, uint16_t *नुमेरो_मगा_हालागा,
 			      uint16_t max_channels)
 {
 	uint8_t *ghst_frame_ptr = (uint8_t *)&ghst_frame;
@@ -261,51 +261,51 @@ static bool ghst_parse_buffer(uint16_t *values, ghstLinkStatistics_t *link_stats
 
 		if (crc == ghst_frame_CRC(ghst_frame)) {
 			const ghstPayloadData_t *const rcChannels = (ghstPayloadData_t *)&ghst_frame.payload;
-			*num_values = MIN(max_channels, GHST_MAX_NUM_CHANNELS);
+			*नुमेरो_मगा_हालागा = MIN(max_channels, GHST_MAX_नुमेरो_CHANNELS);
 
 			// all frames contain data from chan1to4
-			if (max_channels > 0U) { values[0] = convert_channel_value(rcChannels->chan1to4.chan1 >> 1U); }
+			if (max_channels > 0U) { मगा_हालागा_2[0] = convert_channel_हालागा(rcChannels->chan1to4.chan1 >> 1U); }
 
-			if (max_channels > 1U) { values[1] = convert_channel_value(rcChannels->chan1to4.chan2 >> 1U); }
+			if (max_channels > 1U) { मगा_हालागा_2[1] = convert_channel_हालागा(rcChannels->chan1to4.chan2 >> 1U); }
 
-			if (max_channels > 2U) { values[2] = convert_channel_value(rcChannels->chan1to4.chan3 >> 1U); }
+			if (max_channels > 2U) { मगा_हालागा_2[2] = convert_channel_हालागा(rcChannels->chan1to4.chan3 >> 1U); }
 
-			if (max_channels > 3U) { values[3] = convert_channel_value(rcChannels->chan1to4.chan4 >> 1U); }
+			if (max_channels > 3U) { मगा_हालागा_2[3] = convert_channel_हालागा(rcChannels->chan1to4.chan4 >> 1U); }
 
 			if (ghst_frame.type == static_cast<uint8_t>(ghstFrameType::frameType5to8)) {
-				if (max_channels > 4U) { values[4] = convert_channel_value(rcChannels->chanA << 3U); }
+				if (max_channels > 4U) { मगा_हालागा_2[4] = convert_channel_हालागा(rcChannels->chanA << 3U); }
 
-				if (max_channels > 5U) { values[5] = convert_channel_value(rcChannels->chanB << 3U); }
+				if (max_channels > 5U) { मगा_हालागा_2[5] = convert_channel_हालागा(rcChannels->chanB << 3U); }
 
-				if (max_channels > 6U) { values[6] = convert_channel_value(rcChannels->chanC << 3U); }
+				if (max_channels > 6U) { मगा_हालागा_2[6] = convert_channel_हालागा(rcChannels->chanC << 3U); }
 
-				if (max_channels > 7U) { values[7] = convert_channel_value(rcChannels->chanD << 3U); }
+				if (max_channels > 7U) { मगा_हालागा_2[7] = convert_channel_हालागा(rcChannels->chanD << 3U); }
 
 			} else if (ghst_frame.type == static_cast<uint8_t>(ghstFrameType::frameType9to12)) {
-				if (max_channels > 8U) { values[8] = convert_channel_value(rcChannels->chanA << 3U); }
+				if (max_channels > 8U) { मगा_हालागा_2[8] = convert_channel_हालागा(rcChannels->chanA << 3U); }
 
-				if (max_channels > 9U) { values[9] = convert_channel_value(rcChannels->chanB << 3U); }
+				if (max_channels > 9U) { मगा_हालागा_2[9] = convert_channel_हालागा(rcChannels->chanB << 3U); }
 
-				if (max_channels > 10U) { values[10] = convert_channel_value(rcChannels->chanC << 3U); }
+				if (max_channels > 10U) { मगा_हालागा_2[10] = convert_channel_हालागा(rcChannels->chanC << 3U); }
 
-				if (max_channels > 11U) { values[11] = convert_channel_value(rcChannels->chanD << 3U); }
+				if (max_channels > 11U) { मगा_हालागा_2[11] = convert_channel_हालागा(rcChannels->chanD << 3U); }
 
 			} else if (ghst_frame.type == static_cast<uint8_t>(ghstFrameType::frameType13to16)) {
-				if (max_channels > 12U) { values[12] = convert_channel_value(rcChannels->chanA << 3U); }
+				if (max_channels > 12U) { मगा_हालागा_2[12] = convert_channel_हालागा(rcChannels->chanA << 3U); }
 
-				if (max_channels > 13U) { values[13] = convert_channel_value(rcChannels->chanB << 3U); }
+				if (max_channels > 13U) { मगा_हालागा_2[13] = convert_channel_हालागा(rcChannels->chanB << 3U); }
 
-				if (max_channels > 14U) { values[14] = convert_channel_value(rcChannels->chanC << 3U); }
+				if (max_channels > 14U) { मगा_हालागा_2[14] = convert_channel_हालागा(rcChannels->chanC << 3U); }
 
-				if (max_channels > 15U) { values[15] = convert_channel_value(rcChannels->chanD << 3U); }
+				if (max_channels > 15U) { मगा_हालागा_2[15] = convert_channel_हालागा(rcChannels->chanD << 3U); }
 
 			} else if (ghst_frame.type == static_cast<uint8_t>(ghstFrameType::frameTypeRssi)) {
-				const ghstPayloadRssi_t *const rssiValues = (ghstPayloadRssi_t *)&ghst_frame.payload;
+				const ghstPayloadRssi_t *const rssi_मगा_हालागा = (ghstPayloadRssi_t *)&ghst_frame.payload;
 				// TODO: call function for RSSI dBm to percentage conversion for ghost receiver
 				last_link_stats.rssi_pct = spek_dbm_to_percent(static_cast<int8_t>
-							   (rssiValues->rssidBm));	// rssidBm sign inverted (90 = -90dBm)
-				last_link_stats.rssi_dbm = -rssiValues->rssidBm;
-				last_link_stats.link_quality = rssiValues->lq;						// 0 - 100
+							   (rssi_मगा_हालागा->rssidBm));	// rssidBm sign inverted (90 = -90dBm)
+				last_link_stats.rssi_dbm = -rssi_मगा_हालागा->rssidBm;
+				last_link_stats.link_quality = rssi_मगा_हालागा->lq;						// 0 - 100
 
 			} else {
 				GHST_DEBUG("Frame type: %u", ghst_frame.type);
@@ -313,7 +313,7 @@ static bool ghst_parse_buffer(uint16_t *values, ghstLinkStatistics_t *link_stats
 
 			*link_stats = last_link_stats;
 
-			memcpy(prev_rc_vals, values, sizeof(uint16_t) * GHST_MAX_NUM_CHANNELS);
+			memcpy(prev_rc_vals, मगा_हालागा_2, sizeof(uint16_t) * GHST_MAX_नुमेरो_CHANNELS);
 
 			GHST_VERBOSE("Got Channels");
 
@@ -420,7 +420,7 @@ bool ghst_send_telemetry_gps1_status(int uart_fd, uint32_t latitude, uint32_t lo
 	return write(uart_fd, buf, offset) == offset;
 }
 
-bool ghst_send_telemetry_gps2_status(int uart_fd, uint16_t ground_speed, uint16_t ground_course, uint8_t numSats,
+bool ghst_send_telemetry_gps2_status(int uart_fd, uint16_t ground_speed, uint16_t ground_course, uint8_t नुमेरो_Sats,
 				     uint16_t home_dist, uint16_t home_dir, uint8_t flags)
 {
 	uint8_t buf[GHST_FRAME_PAYLOAD_SIZE_TELEMETRY + 4U]; // address, frame length, type, crc
@@ -428,7 +428,7 @@ bool ghst_send_telemetry_gps2_status(int uart_fd, uint16_t ground_speed, uint16_
 	write_frame_header(buf, offset, ghstTelemetryType::gpsSecondary, GHST_FRAME_PAYLOAD_SIZE_TELEMETRY);
 	write_uint16_t(buf, offset, ground_speed);
 	write_uint16_t(buf, offset, ground_course);
-	write_uint8_t(buf, offset, numSats);
+	write_uint8_t(buf, offset, नुमेरो_Sats);
 	write_uint16_t(buf, offset, home_dist);
 	write_uint16_t(buf, offset, home_dir);
 	write_uint8_t(buf, offset, flags);

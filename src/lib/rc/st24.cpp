@@ -96,8 +96,8 @@ uint8_t st24_common_crc8(uint8_t *ptr, uint8_t len)
 }
 
 
-int st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *channel_count, uint16_t *channels,
-		uint16_t max_chan_count)
+int st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_बिलांग, uint16_t *channel_बिलांग, uint16_t *channels,
+		uint16_t max_chan_बिलांग)
 {
 	int ret = 1;
 
@@ -170,15 +170,15 @@ int st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *chan
 
 					// Scale from 0..255 to 100%.
 					*rssi = d->rssi * (100.0f / 255.0f);
-					*lost_count = d->lost_count;
+					*lost_बिलांग = d->lost_बिलांग;
 
 					/* this can lead to rounding of the strides */
-					*channel_count = (max_chan_count < 12) ? max_chan_count : 12;
+					*channel_बिलांग = (max_chan_बिलांग < 12) ? max_chan_बिलांग : 12;
 
-					unsigned stride_count = (*channel_count * 3) / 2;
+					unsigned stride_बिलांग = (*channel_बिलांग * 3) / 2;
 					unsigned chan_index = 0;
 
-					for (unsigned i = 0; i < stride_count; i += 3) {
+					for (unsigned i = 0; i < stride_बिलांग; i += 3) {
 						channels[chan_index] = ((uint16_t)d->channel[i] << 4);
 						channels[chan_index] |= ((uint16_t)(0xF0 & d->channel[i + 1]) >> 4);
 						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */
@@ -199,15 +199,15 @@ int st24_decode(uint8_t byte, uint8_t *rssi, uint8_t *lost_count, uint16_t *chan
 
 					// Scale from 0..255 to 100%.
 					*rssi = d->rssi * (100.0f / 255.0f);
-					*lost_count = d->lost_count;
+					*lost_बिलांग = d->lost_बिलांग;
 
 					/* this can lead to rounding of the strides */
-					*channel_count = (max_chan_count < 24) ? max_chan_count : 24;
+					*channel_बिलांग = (max_chan_बिलांग < 24) ? max_chan_बिलांग : 24;
 
-					unsigned stride_count = (*channel_count * 3) / 2;
+					unsigned stride_बिलांग = (*channel_बिलांग * 3) / 2;
 					unsigned chan_index = 0;
 
-					for (unsigned i = 0; i < stride_count; i += 3) {
+					for (unsigned i = 0; i < stride_बिलांग; i += 3) {
 						channels[chan_index] = ((uint16_t)d->channel[i] << 4);
 						channels[chan_index] |= ((uint16_t)(0xF0 & d->channel[i + 1]) >> 4);
 						/* convert values to 1000-2000 ppm encoding in a not too sloppy fashion */

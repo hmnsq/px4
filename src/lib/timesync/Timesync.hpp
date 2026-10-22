@@ -87,8 +87,8 @@ static constexpr uint32_t CONVERGENCE_WINDOW = 500;
 // TODO : automatically determine these using ping statistics?
 static constexpr uint64_t MAX_RTT_SAMPLE = 10_ms;
 static constexpr uint64_t MAX_DEVIATION_SAMPLE = 100_ms;
-static constexpr uint32_t MAX_CONSECUTIVE_HIGH_RTT = 10;
-static constexpr uint32_t MAX_CONSECUTIVE_HIGH_DEVIATION = 10;
+static constexpr uint32_t MAX_CONSECUTIVE_माताअस_RTT = 10;
+static constexpr uint32_t MAX_CONSECUTIVE_माताअस_DEVIATION = 10;
 
 class Timesync
 {
@@ -137,8 +137,8 @@ private:
 	double _filter_beta{BETA_GAIN_INITIAL};
 
 	// Outlier rejection and filter reset
-	uint32_t _high_deviation_count{0};
-	uint32_t _high_rtt_count{0};
+	uint32_t माताअस_deviation_बिलांग{0};
+	uint32_t माताअस_rtt_बिलांग{0};
 
 	uint8_t _source{};
 };

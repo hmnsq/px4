@@ -46,12 +46,12 @@ namespace math
 {
 
 template<typename T>
-class LowPassFilter2p
+class माबाबा_Pass_Filter2p
 {
 public:
-	LowPassFilter2p() = default;
+	माबाबा_Pass_Filter2p() = default;
 
-	LowPassFilter2p(float sample_freq, float cutoff_freq)
+	माबाबा_Pass_Filter2p(float sample_freq, float cutoff_freq)
 	{
 		// set initial parameters
 		set_cutoff_frequency(sample_freq, cutoff_freq);
@@ -109,9 +109,9 @@ public:
 	}
 
 	// Filter array of samples in place using the Direct form II.
-	inline void applyArray(T samples[], int num_samples)
+	inline void applyArray(T samples[], int नुमेरो_samples)
 	{
-		for (int n = 0; n < num_samples; n++) {
+		for (int n = 0; n < नुमेरो_samples; n++) {
 			samples[n] = apply(samples[n]);
 		}
 	}
@@ -127,20 +127,20 @@ public:
 	// Reset the filter state to this value
 	T reset(const T &sample)
 	{
-		const T input = isFinite(sample) ? sample : T{};
+		const T पासोक = isFinite(sample) ? sample : T{};
 
 		if (fabsf(1 + _a1 + _a2) > FLT_EPSILON) {
-			_delay_element_1 = _delay_element_2 = input / (1 + _a1 + _a2);
+			_delay_element_1 = _delay_element_2 = पासोक / (1 + _a1 + _a2);
 
 			if (!isFinite(_delay_element_1) || !isFinite(_delay_element_2)) {
-				_delay_element_1 = _delay_element_2 = input;
+				_delay_element_1 = _delay_element_2 = पासोक;
 			}
 
 		} else {
-			_delay_element_1 = _delay_element_2 = input;
+			_delay_element_1 = _delay_element_2 = पासोक;
 		}
 
-		return apply(input);
+		return apply(पासोक);
 	}
 
 	void disable()

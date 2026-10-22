@@ -45,12 +45,12 @@
 namespace control
 {
 
-float BlockHighPass::update(float input)
+float Block_माताअस_Pass::update(float पासोक)
 {
 	float b = 2 * M_PI_F * getFCut() * getDt();
 	float a = 1 / (1 + b);
-	setY(a * (getY() + input - getU()));
-	setU(input);
+	setY(a * (getY() + पासोक - getU()));
+	setU(पासोक);
 	return getY();
 }
 

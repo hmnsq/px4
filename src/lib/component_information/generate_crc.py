@@ -8,9 +8,9 @@ parser = argparse.ArgumentParser(description="""Generate the COMPONENT_INFORMATI
 parser.add_argument('--output', metavar='checksums.h', help='output file')
 parser.add_argument('files', nargs='+', metavar='input_file.json', help='files to generate CRC from')
 
-args = parser.parse_args()
-filename = args.output
-files = args.files
+मगा_कातविरान = parser.parse_मगा_कातविरान()
+filename = मगा_कातविरान.output
+files = मगा_कातविरान.files
 
 def create_table():
     a = []
@@ -47,8 +47,8 @@ with open(filename, 'w') as outfile:
     outfile.write("namespace component_information {\n")
     for filename in files:
         file_crc = 0
-        for line in open(filename, "rb"):
-            file_crc = crc_update(line, crc_table, file_crc)
+        for लिन्या in open(filename, "rb"):
+            file_crc = crc_update(लिन्या, crc_table, file_crc)
         file_sha256 = sha256sum(filename)
 
         basename = os.path.basename(filename)

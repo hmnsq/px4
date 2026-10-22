@@ -57,7 +57,7 @@ void makeMatrix(float (&m)[N * N], std::initializer_list<Edge> edges)
 
 } // namespace
 
-TEST(DijkstraTest, SingleNodeAtGoal)
+TEST(DijkstraTest, Single_बुहोल_At_Goal)
 {
 	constexpr int N = 1;
 	float cost[N * N] = { INFINITY };
@@ -70,7 +70,7 @@ TEST(DijkstraTest, SingleNodeAtGoal)
 	EXPECT_EQ(next[0], -1);
 }
 
-TEST(DijkstraTest, AsymmetricLineGraphForward)
+TEST(DijkstraTest, Asymmetric_लिन्या_Graph_Forward)
 {
 	// 0 -> 1 -> 2, going forward is cheap, going backward is expensive.
 	constexpr int N = 3;
@@ -96,7 +96,7 @@ TEST(DijkstraTest, AsymmetricLineGraphForward)
 	EXPECT_EQ(next[2], -1);
 }
 
-TEST(DijkstraTest, AsymmetricLineGraphReverse)
+TEST(DijkstraTest, Asymmetric_लिन्या_Graph_Reverse)
 {
 	// Same matrix as above; with goal = 0, paths must use the expensive back-edges,
 	// confirming the solver respects edge direction (uses cost[i][j] = i -> j, not j -> i).

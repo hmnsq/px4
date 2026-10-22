@@ -45,7 +45,7 @@ class FunctionICEControl : public FunctionProviderBase
 public:
 	FunctionICEControl()
 	{
-		resetAllToDisarmedValue();
+		reset_All_To_Disarmed_हालागा();
 	}
 
 	static FunctionProviderBase *allocate(const Context &context) { return new FunctionICEControl(); }
@@ -67,18 +67,18 @@ public:
 	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::IC_Engine_Ignition]; }
 
 private:
-	static constexpr int num_data_points = 4;
+	static constexpr int नुमेरो_data_points = 4;
 
-	void resetAllToDisarmedValue()
+	void reset_All_To_Disarmed_हालागा()
 	{
-		for (int i = 0; i < num_data_points; ++i) {
+		for (int i = 0; i < नुमेरो_data_points; ++i) {
 			_data[i] = NAN;
 		}
 	}
 
-	static_assert(num_data_points == (int)OutputFunction::IC_Engine_Starter - (int)OutputFunction::IC_Engine_Ignition + 1,
+	static_assert(नुमेरो_data_points == (int)OutputFunction::IC_Engine_Starter - (int)OutputFunction::IC_Engine_Ignition + 1,
 		      "number of functions mismatch");
 
 	uORB::Subscription _internal_combustion_engine_control_sub{ORB_ID(internal_combustion_engine_control)};
-	float _data[num_data_points] {};
+	float _data[नुमेरो_data_points] {};
 };

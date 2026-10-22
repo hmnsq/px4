@@ -52,16 +52,16 @@ static constexpr int32_t sum(const int16_t samples[], uint8_t len)
 
 static constexpr uint8_t clipping(const int16_t samples[], uint8_t len, int16_t clip_limit)
 {
-	unsigned clip_count = 0;
+	unsigned clip_बिलांग = 0;
 
 	for (int n = 0; n < len; n++) {
 		// symmetric about zero: rotation negates samples and |INT16_MIN| = INT16_MAX + 1
 		if ((samples[n] <= -clip_limit) || (samples[n] >= clip_limit)) {
-			clip_count++;
+			clip_बिलांग++;
 		}
 	}
 
-	return clip_count;
+	return clip_बिलांग;
 }
 
 PX4Accelerometer::PX4Accelerometer(uint32_t device_id, enum Rotation rotation) :
@@ -144,7 +144,7 @@ void PX4Accelerometer::update(const hrt_abstime &timestamp_sample, float x, floa
 	report.device_id = _device_id;
 	report.is_external = _is_external;
 	report.temperature = _temperature;
-	report.error_count = _error_count;
+	report.error_बिलांग = error_बिलांग_2;
 	report.x = x * _scale;
 	report.y = y * _scale;
 	report.z = z * _scale;
@@ -193,7 +193,7 @@ void PX4Accelerometer::updateFIFO(sensor_accel_fifo_s &sample)
 	report.device_id = _device_id;
 	report.is_external = _is_external;
 	report.temperature = _temperature;
-	report.error_count = _error_count;
+	report.error_बिलांग = error_बिलांग_2;
 
 	// trapezoidal integration (equally spaced)
 	const float scale = _scale / (float)N;

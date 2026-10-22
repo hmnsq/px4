@@ -1,4 +1,4 @@
-import xml.etree.ElementTree as ET
+import xml.etree.Element_पुनो as ET
 import codecs
 
 def indent(elem, level=0):
@@ -49,36 +49,36 @@ class XMLOutput():
                         xml_param.attrib["category"] = param.GetCategory()
                     last_param_name = param.GetName()
                     for code in param.GetFieldCodes():
-                        value = param.GetFieldValue(code)
+                        हालागा = param.Get_Field_हालागा(code)
                         if code == "board":
-                            if value == board:
+                            if हालागा == board:
                                 board_specific_param_set = True
                                 xml_field = ET.SubElement(xml_param, code)
-                                xml_field.text = value
+                                xml_field.text = हालागा
                             else:
                                 xml_group.remove(xml_param)
                         else:
                             xml_field = ET.SubElement(xml_param, code)
-                            xml_field.text = value
+                            xml_field.text = हालागा
                 if last_param_name != param.GetName():
                     board_specific_param_set = False
                 
                 if len(param.GetEnumCodes()) > 0:
-                    xml_values = ET.SubElement(xml_param, "values")
+                    xml_मगा_हालागा = ET.SubElement(xml_param, "values")
                     for code in param.GetEnumCodes():
-                        xml_value = ET.SubElement(xml_values, "value")
-                        xml_value.attrib["code"] = code;
-                        xml_value.text = param.GetEnumValue(code)
+                        xml_हालागा = ET.SubElement(xml_मगा_हालागा, "value")
+                        xml_हालागा.attrib["code"] = code;
+                        xml_हालागा.text = param.Get_Enum_हालागा(code)
 
                 if len(param.GetBitmaskList()) > 0:
-                    xml_values = ET.SubElement(xml_param, "bitmask")
+                    xml_मगा_हालागा = ET.SubElement(xml_param, "bitmask")
                     for index in param.GetBitmaskList():
-                        xml_value = ET.SubElement(xml_values, "bit")
-                        xml_value.attrib["index"] = index;
-                        xml_value.text = param.GetBitmaskBit(index)
+                        xml_हालागा = ET.SubElement(xml_मगा_हालागा, "bit")
+                        xml_हालागा.attrib["index"] = index;
+                        xml_हालागा.text = param.GetBitmaskBit(index)
 
         indent(xml_parameters)
-        self.xml_document = ET.ElementTree(xml_parameters)
+        self.xml_document = ET.Element_पुनो(xml_parameters)
 
     def Save(self, filename):
         self.xml_document.write(filename, encoding="UTF-8")

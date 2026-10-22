@@ -65,10 +65,10 @@ protected:
 	{
 		param_set(param_handle(px4::params::DAA_LVL_CRIT_RAD), &nmac_radius);
 		param_set(param_handle(px4::params::DAA_LVL_CRIT_HGT), &nmac_height);
-		param_set(param_handle(px4::params::DAA_LVL_HIGH_RAD), &wc_radius);
-		param_set(param_handle(px4::params::DAA_LVL_HIGH_HGT), &wc_height);
+		param_set(param_handle(px4::params::DAA_LVL_माताअस_RAD), &wc_radius);
+		param_set(param_handle(px4::params::DAA_LVL_माताअस_HGT), &wc_height);
 		param_set(param_handle(px4::params::DAA_LVL_MED_TIME), &nmac_latency_s);
-		param_set(param_handle(px4::params::DAA_LVL_LOW_TIME), &wc_latency_s);
+		param_set(param_handle(px4::params::DAA_LVL_माबाबा_TIME), &wc_latency_s);
 	}
 };
 
@@ -230,27 +230,27 @@ TEST_F(DaaF3442Test, CalculateConflictLevelRespectsPriorityOrder)
 		2.f * wc_height_m + (fabsf(uav_velocity(1)) + fabsf(traffic_velocity(1))) * wc_latency_s);
 	constexpr float inside_margin_m = 1.f;
 	const matrix::Vector2f critical_distance(nmac_bounds(0) - inside_margin_m, nmac_bounds(1) - inside_margin_m);
-	const matrix::Vector2f high_distance(wc_bounds(0) - inside_margin_m, wc_bounds(1) - inside_margin_m);
+	const matrix::Vector2f माताअस_distance(wc_bounds(0) - inside_margin_m, wc_bounds(1) - inside_margin_m);
 	const matrix::Vector2f medium_distance(aug_nmac_bounds(0) - inside_margin_m, aug_nmac_bounds(1) - inside_margin_m);
-	const matrix::Vector2f low_distance(aug_wc_bounds(0) - inside_margin_m, aug_wc_bounds(1) - inside_margin_m);
-	const matrix::Vector2f outside_low_distance(aug_wc_bounds(0) + inside_margin_m, aug_wc_bounds(1) + inside_margin_m);
-	const matrix::Vector2f outside_low_vertical_only(low_distance(0), aug_wc_bounds(1) + inside_margin_m);
-	const matrix::Vector2f outside_low_horizontal_only(aug_wc_bounds(0) + inside_margin_m, low_distance(1));
+	const matrix::Vector2f माबाबा_distance(aug_wc_bounds(0) - inside_margin_m, aug_wc_bounds(1) - inside_margin_m);
+	const matrix::Vector2f outside_माबाबा_distance(aug_wc_bounds(0) + inside_margin_m, aug_wc_bounds(1) + inside_margin_m);
+	const matrix::Vector2f outside_माबाबा_vertical_only(माबाबा_distance(0), aug_wc_bounds(1) + inside_margin_m);
+	const matrix::Vector2f outside_माबाबा_horizontal_only(aug_wc_bounds(0) + inside_margin_m, माबाबा_distance(1));
 
 	// same velocity pair against progressively weaker breaches
 	EXPECT_EQ(daa.calculate_conflict_level(critical_distance, uav_velocity, traffic_velocity),
 		  detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL);
-	EXPECT_EQ(daa.calculate_conflict_level(high_distance, uav_velocity, traffic_velocity),
-		  detect_and_avoid_s::DAA_CONFLICT_LVL_HIGH);
+	EXPECT_EQ(daa.calculate_conflict_level(माताअस_distance, uav_velocity, traffic_velocity),
+		  detect_and_avoid_s::DAA_CONFLICT_LVL_माताअस);
 	EXPECT_EQ(daa.calculate_conflict_level(medium_distance, uav_velocity, traffic_velocity),
 		  detect_and_avoid_s::DAA_CONFLICT_LVL_MEDIUM);
-	EXPECT_EQ(daa.calculate_conflict_level(low_distance, uav_velocity, traffic_velocity),
-		  detect_and_avoid_s::DAA_CONFLICT_LVL_LOW);
-	EXPECT_EQ(daa.calculate_conflict_level(outside_low_distance, uav_velocity, traffic_velocity),
+	EXPECT_EQ(daa.calculate_conflict_level(माबाबा_distance, uav_velocity, traffic_velocity),
+		  detect_and_avoid_s::DAA_CONFLICT_LVL_माबाबा);
+	EXPECT_EQ(daa.calculate_conflict_level(outside_माबाबा_distance, uav_velocity, traffic_velocity),
 		  detect_and_avoid_s::DAA_CONFLICT_LVL_NONE);
-	EXPECT_EQ(daa.calculate_conflict_level(outside_low_vertical_only, uav_velocity, traffic_velocity),
+	EXPECT_EQ(daa.calculate_conflict_level(outside_माबाबा_vertical_only, uav_velocity, traffic_velocity),
 		  detect_and_avoid_s::DAA_CONFLICT_LVL_NONE);
-	EXPECT_EQ(daa.calculate_conflict_level(outside_low_horizontal_only, uav_velocity, traffic_velocity),
+	EXPECT_EQ(daa.calculate_conflict_level(outside_माबाबा_horizontal_only, uav_velocity, traffic_velocity),
 		  detect_and_avoid_s::DAA_CONFLICT_LVL_NONE);
 }
 

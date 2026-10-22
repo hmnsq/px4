@@ -57,7 +57,7 @@ enum class ActuatorType {
 	MOTORS = 0,
 	SERVOS,
 
-	COUNT
+	बिलांग_2
 };
 
 enum class EffectivenessUpdateReason {
@@ -72,8 +72,8 @@ public:
 	ActuatorEffectiveness() = default;
 	virtual ~ActuatorEffectiveness() = default;
 
-	static constexpr int NUM_ACTUATORS = 16;
-	static constexpr int NUM_AXES = 6;
+	static constexpr int नुमेरो_ACTUATORS = 16;
+	static constexpr int नुमेरो_AXES = 6;
 
 	enum ControlAxis {
 		ROLL = 0,
@@ -84,13 +84,13 @@ public:
 		THRUST_Z
 	};
 
-	static constexpr int MAX_NUM_MATRICES = 2;
+	static constexpr int MAX_नुमेरो_MATRICES = 2;
 
-	using EffectivenessMatrix = matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS>;
-	using ActuatorVector = matrix::Vector<float, NUM_ACTUATORS>;
+	using EffectivenessMatrix = matrix::Matrix<float, नुमेरो_AXES, नुमेरो_ACTUATORS>;
+	using ActuatorVector = matrix::Vector<float, नुमेरो_ACTUATORS>;
 	using ActuatorBitmask = uint32_t;
 
-	static_assert(NUM_ACTUATORS <= 8 * sizeof(ActuatorBitmask),
+	static_assert(नुमेरो_ACTUATORS <= 8 * sizeof(ActuatorBitmask),
 		      "NUM_ACTUATORS exceeds the number of bits available in the mask type.");
 
 	enum class FlightPhase {
@@ -109,22 +109,22 @@ public:
 		/**
 		 * Call this after manually adding N actuators to the selected matrix
 		 */
-		void actuatorsAdded(ActuatorType type, int count);
+		void actuatorsAdded(ActuatorType type, int बिलांग);
 
-		int totalNumActuators() const;
+		int total_नुमेरो_Actuators() const;
 
 		/// Configured effectiveness matrix. Actuators are expected to be filled in order, motors first, then servos
-		EffectivenessMatrix effectiveness_matrices[MAX_NUM_MATRICES];
+		EffectivenessMatrix effectiveness_matrices[MAX_नुमेरो_MATRICES];
 
-		int num_actuators_matrix[MAX_NUM_MATRICES]; ///< current amount, and next actuator index to fill in to effectiveness_matrices
-		ActuatorVector trim[MAX_NUM_MATRICES];
+		int नुमेरो_actuators_matrix[MAX_नुमेरो_MATRICES]; ///< current amount, and next actuator index to fill in to effectiveness_matrices
+		ActuatorVector trim[MAX_नुमेरो_MATRICES];
 
-		ActuatorVector linearization_point[MAX_NUM_MATRICES];
+		ActuatorVector linearization_point[MAX_नुमेरो_MATRICES];
 
 		int selected_matrix;
 
-		uint8_t matrix_selection_indexes[NUM_ACTUATORS * MAX_NUM_MATRICES];
-		int num_actuators[(int)ActuatorType::COUNT];
+		uint8_t matrix_selection_indexes[नुमेरो_ACTUATORS * MAX_नुमेरो_MATRICES];
+		int नुमेरो_actuators[(int)ActuatorType::बिलांग_2];
 	};
 
 	/**
@@ -141,14 +141,14 @@ public:
 	 * Get the number of effectiveness matrices. Must be <= MAX_NUM_MATRICES.
 	 * This is expected to stay constant.
 	 */
-	virtual int numMatrices() const { return 1; }
+	virtual int नुमेरो_Matrices() const { return 1; }
 
 	/**
 	 * Get the desired allocation method(s) for each matrix, if configured as AUTO
 	 */
-	virtual void getDesiredAllocationMethod(AllocationMethod allocation_method_out[MAX_NUM_MATRICES]) const
+	virtual void getDesiredAllocationMethod(AllocationMethod allocation_method_out[MAX_नुमेरो_MATRICES]) const
 	{
-		for (int i = 0; i < MAX_NUM_MATRICES; ++i) {
+		for (int i = 0; i < MAX_नुमेरो_MATRICES; ++i) {
 			allocation_method_out[i] = AllocationMethod::PSEUDO_INVERSE;
 		}
 	}
@@ -156,9 +156,9 @@ public:
 	/**
 	 * Query if the roll, pitch and yaw columns of the mixing matrix should be normalized
 	 */
-	virtual void getNormalizeRPY(bool normalize[MAX_NUM_MATRICES]) const
+	virtual void getNormalizeRPY(bool normalize[MAX_नुमेरो_MATRICES]) const
 	{
-		for (int i = 0; i < MAX_NUM_MATRICES; ++i) {
+		for (int i = 0; i < MAX_नुमेरो_MATRICES; ++i) {
 			normalize[i] = false;
 		}
 	}
@@ -199,7 +199,7 @@ public:
 	 * It is called after the matrix multiplication and before final clipping.
 	 * @param actuator_sp input & output setpoint
 	 */
-	virtual void updateSetpoint(const matrix::Vector<float, NUM_AXES> &control_sp, int matrix_index,
+	virtual void updateSetpoint(const matrix::Vector<float, नुमेरो_AXES> &control_sp, int matrix_index,
 				    ActuatorVector &actuator_sp, const ActuatorVector &actuator_min, const ActuatorVector &actuator_max) {}
 
 	/**

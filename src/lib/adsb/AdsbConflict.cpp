@@ -45,19 +45,19 @@ bool AdsbConflict::valid_wgs84_coordinates(const double latitude, const double l
 	       && fabs(longitude) <= 180.0;
 }
 
-bool AdsbConflict::calculate_daa_output(const daa_input_s &daa_input, detect_and_avoid_s &daa_output)
+bool AdsbConflict::calculate_daa_output(const daa_पासोक_s &daa_पासोक, detect_and_avoid_s &daa_output)
 {
-	const transponder_report_s &transponder_report = daa_input.transponder_report;
+	const transponder_report_s &transponder_report = daa_पासोक.transponder_report;
 
 	const matrix::Vector2d traffic_lat_lon{transponder_report.lat, transponder_report.lon};
 
-	if (!valid_wgs84_coordinates(daa_input.uav_lat_lon(0), daa_input.uav_lat_lon(1))
+	if (!valid_wgs84_coordinates(daa_पासोक.uav_lat_lon(0), daa_पासोक.uav_lat_lon(1))
 	    || !valid_wgs84_coordinates(traffic_lat_lon(0), traffic_lat_lon(1))) {
 		PX4_DEBUG("DAA lib: invalid coordinates");
 		return false;
 	}
 
-	if (!PX4_ISFINITE(daa_input.uav_alt) || !PX4_ISFINITE(transponder_report.altitude)) {
+	if (!PX4_ISFINITE(daa_पासोक.uav_alt) || !PX4_ISFINITE(transponder_report.altitude)) {
 		PX4_DEBUG("DAA lib: invalid altitude");
 		return false;
 	}
@@ -68,7 +68,7 @@ bool AdsbConflict::calculate_daa_output(const daa_input_s &daa_input, detect_and
 		return false;
 	}
 
-	if (!daa_input.uav_vel_ned.isAllFinite()) {
+	if (!daa_पासोक.uav_vel_ned.isAllFinite()) {
 		PX4_DEBUG("DAA lib: invalid ownship velocity");
 		return false;
 	}
@@ -83,9 +83,9 @@ bool AdsbConflict::calculate_daa_output(const daa_input_s &daa_input, detect_and
 #endif // !CONFIG_NAVIGATOR_ADSB_F3442
 
 	aircraft_state_s uav_state{};
-	uav_state.lat_lon = daa_input.uav_lat_lon;
-	uav_state.altitude = daa_input.uav_alt;
-	uav_state.velocity_ned = daa_input.uav_vel_ned;
+	uav_state.lat_lon = daa_पासोक.uav_lat_lon;
+	uav_state.altitude = daa_पासोक.uav_alt;
+	uav_state.velocity_ned = daa_पासोक.uav_vel_ned;
 
 	aircraft_state_s traffic_state{};
 	traffic_state.lat_lon = traffic_lat_lon;

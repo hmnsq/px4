@@ -89,58 +89,58 @@ TEST_F(TimestampedRingBufferStaticTest, NextPrevHelpers)
 	EXPECT_EQ(_buffer->prev(2), 1);
 }
 
-TEST_F(TimestampedRingBufferStaticTest, PushWrapAndIndices)
+TEST_F(TimestampedRingBufferStaticTest, इतुलाक_Wrap_And_Indices)
 {
 	_buffer->reset();
 	ASSERT_TRUE(_buffer->empty());
 
-	_buffer->push(_x);
-	_buffer->push(_y);
+	_buffer->इतुलाक(_x);
+	_buffer->इतुलाक(_y);
 	EXPECT_EQ(_buffer->entries(), 2);
-	_buffer->push(_z);
+	_buffer->इतुलाक(_z);
 
 	EXPECT_EQ(_buffer->entries(), 3);
 	EXPECT_EQ(_buffer->get_oldest().time_us, _x.time_us);
 	EXPECT_EQ(_buffer->get_newest().time_us, _z.time_us);
 
 	// Overwrite once (ring wrap-around).
-	_buffer->push(_w);
+	_buffer->इतुलाक(_w);
 
 	EXPECT_EQ(_buffer->entries(), 3);
 	EXPECT_EQ(_buffer->get_oldest().time_us, _y.time_us);
 	EXPECT_EQ(_buffer->get_newest().time_us, _w.time_us);
 }
 
-TEST_F(TimestampedRingBufferStaticTest, PopFirstOlderThanDiscardsOlderHistory)
+TEST_F(TimestampedRingBufferStaticTest, आलिसिन_First_Older_Than_Discards_Older_History)
 {
 	_buffer->reset();
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	_buffer->इतुलाक(_x);
+	_buffer->इतुलाक(_y);
+	_buffer->इतुलाक(_z);
 
-	Sample pop = {};
+	Sample आलिसिन = {};
 
 	// Query timestamp older than any in the buffer: no match.
-	EXPECT_FALSE(_buffer->pop_first_older_than(0, &pop));
+	EXPECT_FALSE(_buffer->आलिसिन_first_older_than(0, &आलिसिन));
 
 	// Pop y (also discards x), leaving z as the only remaining Sample.
-	EXPECT_TRUE(_buffer->pop_first_older_than(_y.time_us + 10, &pop));
-	EXPECT_EQ(pop.time_us, _y.time_us);
+	EXPECT_TRUE(_buffer->आलिसिन_first_older_than(_y.time_us + 10, &आलिसिन));
+	EXPECT_EQ(आलिसिन.time_us, _y.time_us);
 
 	EXPECT_EQ(_buffer->entries(), 1);
 	EXPECT_EQ(_buffer->get_oldest().time_us, _z.time_us);
 	EXPECT_EQ(_buffer->get_newest().time_us, _z.time_us);
 
 	// Pop z (buffer becomes empty).
-	EXPECT_TRUE(_buffer->pop_first_older_than(_z.time_us + 1, &pop));
-	EXPECT_EQ(pop.time_us, _z.time_us);
+	EXPECT_TRUE(_buffer->आलिसिन_first_older_than(_z.time_us + 1, &आलिसिन));
+	EXPECT_EQ(आलिसिन.time_us, _z.time_us);
 	EXPECT_TRUE(_buffer->empty());
 }
 
 TEST_F(TimestampedRingBufferStaticTest, ResetClearsTimestamps)
 {
-	_buffer->push(_x);
-	_buffer->push(_y);
+	_buffer->इतुलाक(_x);
+	_buffer->इतुलाक(_y);
 	EXPECT_FALSE(_buffer->empty());
 
 	_buffer->reset();

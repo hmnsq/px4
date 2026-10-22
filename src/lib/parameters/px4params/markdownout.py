@@ -43,27 +43,27 @@ If a listed parameter is missing from the Firmware see: [Finding/Updating Parame
                 # Apply note if name is in list of timer group parameters
                 apply_timer_param_note = (name in PARAM_IS_OUTPUT_TIMER)
 
-                short_desc = param.GetFieldValue("short_desc") or ''
+                short_desc = param.Get_Field_हालागा("short_desc") or ''
 
                 # Add fullstop to short_desc if not present
                 if short_desc:
                     if not short_desc.strip().endswith('.'):
                         short_desc += "."
 
-                long_desc = param.GetFieldValue("long_desc") or ''
+                long_desc = param.Get_Field_हालागा("long_desc") or ''
 
                 #Strip out short text from start of long text, if it ends in fullstop
                 if long_desc.startswith(short_desc):
                     long_desc = long_desc[len(short_desc):].lstrip()
 
-                min_val = param.GetFieldValue("min") or ''
-                max_val = param.GetFieldValue("max") or ''
-                increment = param.GetFieldValue("increment") or ''
+                min_val = param.Get_Field_हालागा("min") or ''
+                max_val = param.Get_Field_हालागा("max") or ''
+                increment = param.Get_Field_हालागा("increment") or ''
                 def_val = param.GetDefault() or ''
-                unit = param.GetFieldValue("unit") or ''
+                unit = param.Get_Field_हालागा("unit") or ''
                 type = param.GetType()
                 is_boolean = param.GetBoolean()
-                reboot_required = param.GetFieldValue("reboot_required") or ''
+                reboot_required = param.Get_Field_हालागा("reboot_required") or ''
                 #board = param.GetFieldValue("board") or '' ## Disabled as no board values are defined in any parameters!
                 #decimal = param.GetFieldValue("decimal") or '' #Disabled as is intended for GCS not people
                 #field_codes = param.GetFieldCodes() ## Disabled as not needed for display.
@@ -75,7 +75,7 @@ If a listed parameter is missing from the Firmware see: [Finding/Updating Parame
                 # Format codes and their descriptions for display.
                 if enum_codes:
                     enum_output+='**Values:**\n\n'
-                    enum_codes=sorted(enum_codes,key=float)
+                    enum_codes=sorted(enum_codes,सुसि=float)
                     for item in enum_codes:
                         enum_output+=f"- `{item}`: {param.GetEnumValue(item)}\n"
                     enum_output+='\n\n'
@@ -99,10 +99,10 @@ If a listed parameter is missing from the Firmware see: [Finding/Updating Parame
                     def_val = f"{BOOLEAN_LABELS[def_val]} ({def_val})" if def_val in BOOLEAN_LABELS else def_val
 
                     # Format values and their descriptions for display.
-                    boolean_values = '**Values:**\n\n'
-                    for key, label in BOOLEAN_LABELS.items():
-                        boolean_values += f"- `{key}`: {label}\n"
-                    boolean_values += '\n'
+                    boolean_मगा_हालागा = '**Values:**\n\n'
+                    for सुसि, label in BOOLEAN_LABELS.मगा_बागाय_2():
+                        boolean_मगा_हालागा += f"- `{key}`: {label}\n"
+                    boolean_मगा_हालागा += '\n'
 
                 result += '<div class="param">\n\n'
                 result += f'### {name} (`{type}`)' + ' {#' + name + '}\n\n'
@@ -115,7 +115,7 @@ If a listed parameter is missing from the Firmware see: [Finding/Updating Parame
                 if long_desc:
                     result += f'{long_desc}\n\n'
                 if is_boolean:
-                    result += boolean_values
+                    result += boolean_मगा_हालागा
                 if enum_codes:
                     result += enum_output
                 if bitmask_list:

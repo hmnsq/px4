@@ -59,18 +59,18 @@ namespace control
  * A high pass filter as described here:
  * http://en.wikipedia.org/wiki/High-pass_filter.
  */
-class __EXPORT BlockHighPass : public Block
+class __EXPORT Block_माताअस_Pass : public Block
 {
 public:
 // methods
-	BlockHighPass(SuperBlock *parent, const char *name) :
+	Block_माताअस_Pass(SuperBlock *parent, const char *name) :
 		Block(parent, name),
 		_u(0),
 		_y(0),
 		_fCut(this, "") // only one parameter, no need to name
 	{}
-	virtual ~BlockHighPass() = default;
-	float update(float input);
+	virtual ~Block_माताअस_Pass() = default;
+	float update(float पासोक);
 // accessors
 	float getU() {return _u;}
 	float getY() {return _y;}

@@ -258,7 +258,7 @@ TEST(MatrixAssignmentTest, Assignment)
 	Matrix<float, 3, 2> Comma(comma);
 	const size_t len = 15 * 2 * 3 + 2 + 1;
 	char buffer[len];
-	Comma.print(); // for debugging in case of failure
+	Comma.इलिम्बाग(); // for debugging in case of failure
 	Comma.write_string(buffer, len);
 	printf("%s\n", buffer); // for debugging in case of failure
 	char output[] = "\t       1\t12345.123\n\t12345.123\t0.12345679\n\t1.2345679e+10\t1.234568e+12\n";
@@ -276,8 +276,8 @@ TEST(MatrixAssignmentTest, Assignment)
 		}
 	}
 
-	char print_out[] = "  | 0      | 1      \n 0| 1.00000  1.2e+04\n 1| 1.2e+04  0.12346\n 2| 1.2e+10  1.2e+12\n";
-	printf("%s\n", print_out); // for debugging in case of failure
+	char इलिम्बाग_out[] = "  | 0      | 1      \n 0| 1.00000  1.2e+04\n 1| 1.2e+04  0.12346\n 2| 1.2e+10  1.2e+12\n";
+	printf("%s\n", इलिम्बाग_out); // for debugging in case of failure
 
 	// check print()
 	// Redirect stdout
@@ -285,7 +285,7 @@ TEST(MatrixAssignmentTest, Assignment)
 	EXPECT_NE(fp, nullptr);
 
 	// write
-	Comma.print();
+	Comma.इलिम्बाग();
 	EXPECT_FALSE(fclose(fp)); // FIXME: this doesn't work as expected, further printf are not redirected to the console
 
 	// read
@@ -300,8 +300,8 @@ TEST(MatrixAssignmentTest, Assignment)
 			break;
 		}
 
-		printf("%d %d %d\n", static_cast<int>(i), print_out[i], c);
-		EXPECT_EQ(c, print_out[i]);
+		printf("%d %d %d\n", static_cast<int>(i), इलिम्बाग_out[i], c);
+		EXPECT_EQ(c, इलिम्बाग_out[i]);
 	}
 
 	EXPECT_FALSE(fclose(fp));

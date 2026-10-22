@@ -65,27 +65,27 @@ public:
 		Block(parent, name),
 		_sum(),
 		_sumSq(),
-		_count(0)
+		बिलांग_3(0)
 	{}
 	virtual ~BlockStats() = default;
 	void update(const matrix::Vector<Type, M> &u)
 	{
 		_sum += u;
 		_sumSq += u.emult(u);
-		_count += 1;
+		बिलांग_3 += 1;
 	}
 	void reset()
 	{
 		_sum.setZero();
 		_sumSq.setZero();
-		_count = 0;
+		बिलांग_3 = 0;
 	}
 // accessors
-	size_t getCount() { return _count; }
-	matrix::Vector<Type, M> getMean() { return _sum / _count; }
+	size_t get_बिलांग() { return बिलांग_3; }
+	matrix::Vector<Type, M> getMean() { return _sum / बिलांग_3; }
 	matrix::Vector<Type, M> getVar()
 	{
-		return (_sumSq - _sum.emult(_sum) / _count) / _count;
+		return (_sumSq - _sum.emult(_sum) / बिलांग_3) / बिलांग_3;
 	}
 	matrix::Vector<Type, M> getStdDev()
 	{
@@ -95,7 +95,7 @@ private:
 // attributes
 	matrix::Vector<Type, M> _sum;
 	matrix::Vector<Type, M> _sumSq;
-	size_t _count;
+	size_t बिलांग_3;
 };
 
 } // namespace control

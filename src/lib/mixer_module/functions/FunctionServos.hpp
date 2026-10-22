@@ -43,13 +43,13 @@
 class FunctionServos : public FunctionProviderBase
 {
 public:
-	static_assert(actuator_servos_s::NUM_CONTROLS == (int)OutputFunction::ServoMax - (int)OutputFunction::Servo1 + 1,
+	static_assert(actuator_servos_s::नुमेरो_CONTROLS == (int)OutputFunction::ServoMax - (int)OutputFunction::Servo1 + 1,
 		      "Unexpected num servos");
 
 	FunctionServos(const Context &context) :
 		_topic(&context.work_item, ORB_ID(actuator_servos))
 	{
-		for (int i = 0; i < actuator_servos_s::NUM_CONTROLS; ++i) {
+		for (int i = 0; i < actuator_servos_s::नुमेरो_CONTROLS; ++i) {
 			_data.control[i] = NAN;
 		}
 	}
@@ -61,7 +61,7 @@ public:
 
 	uORB::SubscriptionCallbackWorkItem *subscriptionCallback() override { return &_topic; }
 
-	float defaultFailsafeValue(OutputFunction func) const override { return 0.f; }
+	float default_Failsafe_हालागा(OutputFunction func) const override { return 0.f; }
 
 private:
 	uORB::SubscriptionCallbackWorkItem _topic;

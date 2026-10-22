@@ -94,7 +94,7 @@ TEST_F(PerformanceModelTest, weightRatioScalesWithFuelFraction)
 	EXPECT_FLOAT_EQ(_model.getWeightRatio(), 0.8f);
 }
 
-TEST_F(PerformanceModelTest, fuelFractionKeptOnNonFiniteInput)
+TEST_F(PerformanceModelTest, fuel_Fraction_Kept_On_Non_Finite_पासोक)
 {
 	// GIVEN: base and gross weight set, 4kg full fuel load, and a known fuel fraction
 	setWeightParams(10.0f, 12.0f, 4.0f);

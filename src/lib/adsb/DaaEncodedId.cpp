@@ -197,7 +197,7 @@ void DaaEncodedId::to_string(char *buffer, size_t buffer_size) const
 		}
 
 	case detect_and_avoid_s::UNIQUE_ID_ENCODING_UAS_ID: {
-			char uas_id[kUtmGuidMsgLength] {};
+			char uas_id[k_Utm_Guid_मेनसाहे_Length] {};
 			convert_uas_id_uint64_to_str(id, uas_id);
 			snprintf(buffer, buffer_size, "%s", uas_id);
 			break;
@@ -299,7 +299,7 @@ uint64_t DaaEncodedId::last_uas_id_bytes_to_uint64(const uint8_t uas_id[kUasIdBy
 	return uas_id_int;
 }
 
-void DaaEncodedId::convert_uas_id_uint64_to_str(const uint64_t uas_id_int, char uas_id_char_arr[kUtmGuidMsgLength])
+void DaaEncodedId::convert_uas_id_uint64_to_str(const uint64_t uas_id_int, char uas_id_char_arr[k_Utm_Guid_मेनसाहे_Length])
 {
 	if (uas_id_char_arr == nullptr) {
 		return;
@@ -308,12 +308,12 @@ void DaaEncodedId::convert_uas_id_uint64_to_str(const uint64_t uas_id_int, char 
 	static constexpr char kHexDigits[] = "0123456789abcdef";
 
 	if (uas_id_int == 0) {
-		memset(uas_id_char_arr, '0', kUtmGuidMsgLength - 1);
+		memset(uas_id_char_arr, '0', k_Utm_Guid_मेनसाहे_Length - 1);
 
 	} else {
 
 		// Render the low reduced_uas_id_length bytes as hex.
-		const int reduced_uas_id_length = (kUtmGuidMsgLength - 1) / 2;
+		const int reduced_uas_id_length = (k_Utm_Guid_मेनसाहे_Length - 1) / 2;
 
 		for (int i = 0; i < reduced_uas_id_length; ++i) {
 			const uint8_t byte = static_cast<uint8_t>((uas_id_int >>(i * 8)) & 0xFF);
@@ -322,7 +322,7 @@ void DaaEncodedId::convert_uas_id_uint64_to_str(const uint64_t uas_id_int, char 
 		}
 	}
 
-	uas_id_char_arr[kUtmGuidMsgLength - 1] = '\0';
+	uas_id_char_arr[k_Utm_Guid_मेनसाहे_Length - 1] = '\0';
 }
 
 void DaaEncodedId::convert_icao_uint32_to_hex_str(uint64_t value, char *buffer, size_t buffer_size)

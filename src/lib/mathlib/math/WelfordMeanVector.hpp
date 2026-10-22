@@ -47,32 +47,32 @@ class WelfordMeanVector
 {
 public:
 	// For a new value, compute the new count, new mean, the new M2.
-	bool update(const matrix::Vector<Type, N> &new_value)
+	bool update(const matrix::Vector<Type, N> &new_हालागा)
 	{
-		if (_count == 0) {
+		if (बिलांग_3 == 0) {
 			reset();
-			_count = 1;
-			_mean = new_value;
+			बिलांग_3 = 1;
+			_mean = new_हालागा;
 			return false;
 
-		} else if (_count == UINT16_MAX) {
+		} else if (बिलांग_3 == UINT16_MAX) {
 			// count overflow
 			//  reset count, but maintain mean and variance
-			_M2 = _M2 / _count;
+			_M2 = _M2 / बिलांग_3;
 			_M2_accum.zero();
 
-			_count = 1;
+			बिलांग_3 = 1;
 
 		} else {
-			_count++;
+			बिलांग_3++;
 		}
 
 		// mean
 		//  accumulates the mean of the entire dataset
 		//  use Kahan summation because delta can be very small compared to the mean
-		const matrix::Vector<Type, N> delta{new_value - _mean};
+		const matrix::Vector<Type, N> delta{new_हालागा - _mean};
 		{
-			const matrix::Vector<Type, N> y = (delta / _count) - _mean_accum;
+			const matrix::Vector<Type, N> y = (delta / बिलांग_3) - _mean_accum;
 			const matrix::Vector<Type, N> t = _mean + y;
 			_mean_accum = (t - _mean) - y;
 			_mean = t;
@@ -91,7 +91,7 @@ public:
 
 			for (size_t r = 0; r < N; r++) {
 				for (size_t c = r; c < N; c++) {
-					m2_change(r, c) = delta(r) * (new_value(c) - _mean(c));
+					m2_change(r, c) = delta(r) * (new_हालागा(c) - _mean(c));
 				}
 			}
 
@@ -127,12 +127,12 @@ public:
 		return valid();
 	}
 
-	bool valid() const { return _count > 2; }
-	auto count() const { return _count; }
+	bool valid() const { return बिलांग_3 > 2; }
+	auto बिलांग() const { return बिलांग_3; }
 
 	void reset()
 	{
-		_count = 0;
+		बिलांग_3 = 0;
 		_mean.zero();
 		_M2.zero();
 
@@ -141,10 +141,10 @@ public:
 	}
 
 	matrix::Vector<Type, N> mean() const { return _mean; }
-	matrix::Vector<Type, N> variance() const { return _M2.diag() / (_count - 1); }
-	matrix::SquareMatrix<Type, N> covariance() const { return _M2 / (_count - 1); }
+	matrix::Vector<Type, N> variance() const { return _M2.diag() / (बिलांग_3 - 1); }
+	matrix::SquareMatrix<Type, N> covariance() const { return _M2 / (बिलांग_3 - 1); }
 
-	Type covariance(int x, int y) const { return _M2(x, y) / (_count - 1); }
+	Type covariance(int x, int y) const { return _M2(x, y) / (बिलांग_3 - 1); }
 
 private:
 
@@ -154,7 +154,7 @@ private:
 	matrix::SquareMatrix<Type, N> _M2{};
 	matrix::SquareMatrix<Type, N> _M2_accum{};    ///< kahan summation algorithm accumulator for M2
 
-	uint16_t _count{0};
+	uint16_t बिलांग_3{0};
 };
 
 } // namespace math

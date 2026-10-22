@@ -59,7 +59,7 @@ Tunes::Tunes(unsigned default_note_length, NoteMode default_note_mode,
 	_default_octave(default_octave),
 	_default_tempo(default_tempo)
 {
-	if (circuit_breaker_enabled("CBRK_BUZZER", CBRK_BUZZER_KEY)) {
+	if (circuit_breaker_enabled("CBRK_BUZZER", CBRK_BUZZER_सुसि)) {
 		_tunes_disabled = true;
 	}
 
@@ -120,13 +120,13 @@ Tunes::ControlResult Tunes::set_control(const tune_control_s &tune_control)
 
 		// Special treatment for custom tunes
 		if (tune_control.tune_id == static_cast<int>(TuneID::CUSTOM)) {
-			_using_custom_msg = true;
+			using_custom_मेनसाहे = true;
 			_frequency        = (unsigned)tune_control.frequency;
 			_duration         = (unsigned)tune_control.duration;
 			_silence          = (unsigned)tune_control.silence;
 
 		} else {
-			_using_custom_msg = false;
+			using_custom_मेनसाहे = false;
 			_tune             = _default_tunes[tune_control.tune_id];
 			_tune_start_ptr   = _tune;
 			_next_tune        = _tune;
@@ -190,8 +190,8 @@ Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsi
 	}
 
 	// Return the values for frequency and duration if the custom msg was received.
-	if (_using_custom_msg) {
-		_using_custom_msg = false;
+	if (using_custom_मेनसाहे) {
+		using_custom_मेनसाहे = false;
 		duration  = _duration;
 		frequency = _frequency;
 		silence   = _silence;
@@ -223,11 +223,11 @@ Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsi
 		case 'V':	// Select volume.
 			// Consume volume if specified in tune but ignore
 			// MML compatibility
-			next_number();
+			next_नुमेरो();
 			break;
 
 		case 'L':	// Select note length.
-			_note_length = next_number();
+			_note_length = next_नुमेरो();
 
 			if (_note_length < 1) {
 				return tune_error();
@@ -236,7 +236,7 @@ Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsi
 			break;
 
 		case 'O':	// Select octave.
-			_octave = next_number();
+			_octave = next_नुमेरो();
 
 			if (_octave > 6) {
 				_octave = 6;
@@ -298,12 +298,12 @@ Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsi
 		case 'R':
 			frequency = 0;
 			duration = 0;
-			note_length = next_number();
+			note_length = next_नुमेरो();
 			silence = rest_duration(note_length, next_dots());
 			return Tunes::Status::Continue;
 
 		case 'T': {	// Change tempo.
-				unsigned nt = next_number();
+				unsigned nt = next_नुमेरो();
 
 				if ((nt >= 32) && (nt <= 255)) {
 					_tempo = nt;
@@ -316,7 +316,7 @@ Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsi
 			}
 
 		case 'N':	// Play an arbitrary note.
-			note = next_number();
+			note = next_नुमेरो();
 
 			if (note > 84) {
 				return tune_error();
@@ -358,7 +358,7 @@ Tunes::Status Tunes::get_next_note(unsigned &frequency, unsigned &duration, unsi
 			}
 
 			// Shorthand length notation.
-			note_length = next_number();
+			note_length = next_नुमेरो();
 
 			if (note_length == 0) {
 				note_length = _note_length;
@@ -485,20 +485,20 @@ int Tunes::next_char()
 	return toupper(*_next_tune);
 }
 
-unsigned Tunes::next_number()
+unsigned Tunes::next_नुमेरो()
 {
-	unsigned number = 0;
+	unsigned नुमेरो_2 = 0;
 	int next_character;
 
 	for (;;) {
 		next_character = next_char();
 
 		if (!isdigit(next_character)) {
-			return number;
+			return नुमेरो_2;
 		}
 
 		_next_tune++;
-		number = (number * 10) + (next_character - '0');
+		नुमेरो_2 = (नुमेरो_2 * 10) + (next_character - '0');
 	}
 }
 

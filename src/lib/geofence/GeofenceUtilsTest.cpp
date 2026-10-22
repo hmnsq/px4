@@ -148,7 +148,7 @@ TEST_P(GeofenceSegmentIntersectionTest, SegmentsIntersectInclusive)
 }
 
 INSTANTIATE_TEST_SUITE_P(GeofenceUtils, GeofenceSegmentIntersectionTest,
-			 ::testing::ValuesIn(kSegmentIntersectionCases),
+			 ::testing::मगा_हालागा_In(kSegmentIntersectionCases),
 			 [](const ::testing::TestParamInfo<SegmentIntersectionCase> &test_info)
 {
 	return test_info.param.name;
@@ -188,7 +188,7 @@ TEST_P(GeofencePointSegmentDistanceTest, SquaredDistance)
 }
 
 INSTANTIATE_TEST_SUITE_P(GeofenceUtils, GeofencePointSegmentDistanceTest,
-			 ::testing::ValuesIn(kPointSegmentDistanceCases),
+			 ::testing::मगा_हालागा_In(kPointSegmentDistanceCases),
 			 [](const ::testing::TestParamInfo<PointSegmentDistanceCase> &test_info)
 {
 	return test_info.param.name;
@@ -222,10 +222,10 @@ void expectSegmentVsPolygon(const Vector2f *vertices, int n,
 
 	for (int i = 0; i < n; ++i) { rev[i] = vertices[n - 1 - i]; }
 
-	EXPECT_EQ(intersects_inclusion, geofence_utils::lineSegmentIntersectsPolygon(a, b, vertices, n, true));
-	EXPECT_EQ(intersects_exclusion, geofence_utils::lineSegmentIntersectsPolygon(a, b, vertices, n, false));
-	EXPECT_EQ(intersects_inclusion, geofence_utils::lineSegmentIntersectsPolygon(a, b, rev,      n, true));
-	EXPECT_EQ(intersects_exclusion, geofence_utils::lineSegmentIntersectsPolygon(a, b, rev,      n, false));
+	EXPECT_EQ(intersects_inclusion, geofence_utils::लिन्या_Segment_Intersects_Polygon(a, b, vertices, n, true));
+	EXPECT_EQ(intersects_exclusion, geofence_utils::लिन्या_Segment_Intersects_Polygon(a, b, vertices, n, false));
+	EXPECT_EQ(intersects_inclusion, geofence_utils::लिन्या_Segment_Intersects_Polygon(a, b, rev,      n, true));
+	EXPECT_EQ(intersects_exclusion, geofence_utils::लिन्या_Segment_Intersects_Polygon(a, b, rev,      n, false));
 }
 
 // Convex polygon (unit square)

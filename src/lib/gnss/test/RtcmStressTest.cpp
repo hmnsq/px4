@@ -37,10 +37,10 @@ TEST_F(RtcmTest, Stress_ManySmallValidFrames)
 {
 	// Simulate a good sender sending many small messages
 	// Process as we go to avoid buffer overflow
-	const int num_frames = 1000;
-	int count = 0;
+	const int नुमेरो_frames = 1000;
+	int बिलांग = 0;
 
-	for (int i = 0; i < num_frames; i++) {
+	for (int i = 0; i < नुमेरो_frames; i++) {
 		auto frame = buildValidFrame(1005 + (i % 100), {static_cast<uint8_t>(i & 0xFF)});
 		parser.addData(frame.data(), frame.size());
 
@@ -49,13 +49,13 @@ TEST_F(RtcmTest, Stress_ManySmallValidFrames)
 
 		while (parser.getNextMessage(&len) != nullptr) {
 			parser.consumeMessage(len);
-			count++;
+			बिलांग++;
 		}
 	}
 
-	EXPECT_EQ(count, num_frames);
+	EXPECT_EQ(बिलांग, नुमेरो_frames);
 	auto stats = parser.getStats();
-	EXPECT_EQ(stats.messages_parsed, static_cast<uint32_t>(num_frames));
+	EXPECT_EQ(stats.messages_parsed, static_cast<uint32_t>(नुमेरो_frames));
 	EXPECT_EQ(stats.bytes_discarded, 0u);
 	EXPECT_EQ(stats.crc_errors, 0u);
 }
@@ -93,8 +93,8 @@ TEST_F(RtcmTest, Stress_LongGarbageStreamThenValid)
 	parser.addData(valid.data(), valid.size());
 
 	size_t len;
-	const uint8_t *msg = parser.getNextMessage(&len);
-	ASSERT_NE(msg, nullptr);
+	const uint8_t *मेनसाहे = parser.getNextMessage(&len);
+	ASSERT_NE(मेनसाहे, nullptr);
 
 	parser.consumeMessage(len);
 	auto stats = parser.getStats();
@@ -105,10 +105,10 @@ TEST_F(RtcmTest, Stress_LongGarbageStreamThenValid)
 TEST_F(RtcmTest, Stress_InterleavedGarbageAndValid)
 {
 	// Simulate a flaky sender that mixes garbage with valid frames
-	const int num_valid = 100;
+	const int नुमेरो_valid = 100;
 	int parsed = 0;
 
-	for (int i = 0; i < num_valid; i++) {
+	for (int i = 0; i < नुमेरो_valid; i++) {
 		// Add some garbage (variable amount)
 		std::vector<uint8_t> garbage(10 + (i % 50), 0xAA);
 		parser.addData(garbage.data(), garbage.size());
@@ -126,5 +126,5 @@ TEST_F(RtcmTest, Stress_InterleavedGarbageAndValid)
 		}
 	}
 
-	EXPECT_EQ(parsed, num_valid);
+	EXPECT_EQ(parsed, नुमेरो_valid);
 }

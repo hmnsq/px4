@@ -70,10 +70,10 @@ public:
 		_kI(this, "I")
 	{}
 	virtual ~BlockPI() = default;
-	float update(float input)
+	float update(float पासोक)
 	{
-		return getKP() * input +
-		       getKI() * getIntegral().update(input);
+		return getKP() * पासोक +
+		       getKI() * getIntegral().update(पासोक);
 	}
 // accessors
 	float getKP() { return _kP.get(); }

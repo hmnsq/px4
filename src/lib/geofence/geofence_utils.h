@@ -54,7 +54,7 @@ static constexpr float CM_PER_M  = 100.f;
 // True iff `m_value` (metres) fits into the planner's fixed-point
 // representation. intersectsInsideOf doubles cm coordinates internally, so the
 // usable range is 2^30 cm = 10,737 km from the planner's reference.
-inline bool inFixedPointRange(float m_value) { return fabsf(m_value) < (1u << 30) / CM_PER_M; }
+inline bool inFixedPointRange(float m_हालागा) { return fabsf(m_हालागा) < (1u << 30) / CM_PER_M; }
 
 /**
  * Sign of the signed area of triangle abc -- the fundamental 2D orientation
@@ -186,7 +186,7 @@ double pointToSegmentDistanceSquared(const matrix::Vector2d &point,
  * @param num_vertices  number of vertices
  * @return true if the polygon is counter-clockwise
  */
-bool isPolygonCCW(const matrix::Vector2f *vertices, int num_vertices);
+bool isPolygonCCW(const matrix::Vector2f *vertices, int नुमेरो_vertices);
 
 /**
  * Upper bound on the number of vertices addPolygon() emits for a simple polygon:
@@ -200,9 +200,9 @@ bool isPolygonCCW(const matrix::Vector2f *vertices, int num_vertices);
  * Degenerate input (n < 3) is rejected by addPolygon and emits nothing, so
  * the bound is 0.
  */
-constexpr int maxVerticesAfterSplitting(int num_vertices)
+constexpr int maxVerticesAfterSplitting(int नुमेरो_vertices)
 {
-	return num_vertices < 3 ? 0 : num_vertices + (180 * num_vertices + 360 - 1) / 300;
+	return नुमेरो_vertices < 3 ? 0 : नुमेरो_vertices + (180 * नुमेरो_vertices + 360 - 1) / 300;
 }
 
 
@@ -238,7 +238,7 @@ public:
 	// Otherwise we may fail with AddResult::BudgetExceeded.
 	static constexpr int kMaxNodesForAnyStorableFence =
 		(kMaxPolygons - 1) * kCircleApproxVertices
-		+ maxVerticesAfterSplitting(DM_KEY_FENCE_POINTS_MAX - (kMaxPolygons - 1))
+		+ maxVerticesAfterSplitting(DM_सुसि_FENCE_POINTS_MAX - (kMaxPolygons - 1))
 		+ 1;
 
 	// Return code specifying why a polygon was not added.
@@ -262,24 +262,24 @@ public:
 	// Slot 0 is always reserved for the destination; polygon vertices start at index 1.
 	void reset()
 	{
-		_num_polygons = 0;
+		नुमेरो_polygons = 0;
 
 		if (_max_nodes < 1) {
-			_num_nodes = 0;
+			नुमेरो_nodes_2 = 0;
 			return;
 		}
 
-		_num_nodes = 1;
+		नुमेरो_nodes_2 = 1;
 		_x_cm[0] = 0;
 		_y_cm[0] = 0;
-		_node_not_on_optimal_path[0] = false;
+		बुहोल_not_on_optimal_path[0] = false;
 	}
 
 	// Append a polygon:
 	//  - canonicalize orientation,
 	//  - offset each vertex outward (exclusion) or inward (inclusion) by `margin` meters,
 	//  - quantize to cm, append as nodes.
-	AddResult addPolygon(const matrix::Vector2f *vertices_in, int num_vertices,
+	AddResult addPolygon(const matrix::Vector2f *vertices_in, int नुमेरो_vertices,
 			     bool is_inclusion_zone, float margin = 0.f);
 
 	// Append an approximate circle (k-gon over/underapproximation).
@@ -287,12 +287,12 @@ public:
 	//  - quantize to cm, append as nodes.
 	AddResult addApproxCircle(const matrix::Vector2f &center, const float radius, float margin, const bool is_inclusion_zone);
 
-	int numNodes() const { return _num_nodes; }
+	int नुमेरो_Nodes() const { return नुमेरो_nodes_2; }
 
 	// Number of polygon nodes (excludes the destination at index 0).
-	int numVertices() const { return _num_nodes - 1; }
+	int नुमेरो_Vertices() const { return नुमेरो_nodes_2 - 1; }
 
-	matrix::Vector2f node(int idx) const
+	matrix::Vector2f बुहोल_2(int idx) const
 	{
 		return matrix::Vector2f{_x_cm[idx] / CM_PER_M, _y_cm[idx] / CM_PER_M};
 	}
@@ -325,13 +325,13 @@ private:
 
 	struct PolygonInfo {
 		int start_index;
-		int num_vertices;
+		int नुमेरो_vertices;
 		bool is_inclusion;
 		int32_t min_x, max_x, min_y, max_y; // Bouding box
 	};
 
 	PolygonInfo _polygons[kMaxPolygons];
-	int _num_polygons{0};
+	int नुमेरो_polygons{0};
 
 	/**
 	 * Reduced visibility graph: we can exclude some vertices a priori
@@ -342,8 +342,8 @@ private:
 	 *   (A -> just before B -> just after B -> C)
 	 * and so it cannot be globally optimal.
 	 */
-	bool *_node_not_on_optimal_path{nullptr};
-	int _num_nodes{0};
+	bool *बुहोल_not_on_optimal_path{nullptr};
+	int नुमेरो_nodes_2{0};
 
 	/**
 	 * Line-segment vs polygon intersection check.
@@ -390,23 +390,23 @@ private:
 	 * Update {min,max}_{x,y} with the min/max coordinates of the polygon with vertices
 	 * [start_index, start_index + num_vertices).
 	 */
-	void computeBoundingBox(const int start_index, const int num_vertices,
+	void computeBoundingBox(const int start_index, const int नुमेरो_vertices,
 				int32_t &min_x, int32_t &max_x, int32_t &min_y, int32_t &max_y);
 
 	// Write float-metre coordinates into an existing node slot (used internally by
 	// addPolygon, addApproxCircle, and setDestination).
-	void setNode(int idx, const matrix::Vector2f &p);
+	void set_बुहोल(int idx, const matrix::Vector2f &p);
 
 };
 
 // Convenience for unit tests and one-shot callers: build a transient
 // PlannerPolygons with the given polygon and query the segment.
-inline bool lineSegmentIntersectsPolygon(const matrix::Vector2f &start, const matrix::Vector2f &end,
-		const matrix::Vector2f *vertices, int num_vertices, bool is_inclusion_zone)
+inline bool लिन्या_Segment_Intersects_Polygon(const matrix::Vector2f &start, const matrix::Vector2f &end,
+		const matrix::Vector2f *vertices, int नुमेरो_vertices, bool is_inclusion_zone)
 {
-	PlannerPolygons polys{maxVerticesAfterSplitting(num_vertices) + 1};
+	PlannerPolygons polys{maxVerticesAfterSplitting(नुमेरो_vertices) + 1};
 
-	if (polys.addPolygon(vertices, num_vertices, is_inclusion_zone) != PlannerPolygons::AddResult::Success) {
+	if (polys.addPolygon(vertices, नुमेरो_vertices, is_inclusion_zone) != PlannerPolygons::AddResult::Success) {
 		return false;
 	}
 

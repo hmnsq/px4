@@ -114,7 +114,7 @@ public:
 	 * @param count		The number of items to read.
 	 * @return		The number of items read on success, negative errno otherwise.
 	 */
-	virtual int	read(unsigned address, void *data, unsigned count) { return -ENODEV; }
+	virtual int	read(unsigned address, void *data, unsigned बिलांग) { return -ENODEV; }
 
 	/**
 	 * Write directly to the device.
@@ -126,7 +126,7 @@ public:
 	 * @param count		The number of items to write.
 	 * @return		The number of items written on success, negative errno otherwise.
 	 */
-	virtual int	write(unsigned address, void *data, unsigned count) { return -ENODEV; }
+	virtual int	write(unsigned address, void *data, unsigned बिलांग) { return -ENODEV; }
 
 	/**
 	 * Read a register from the device.
@@ -252,17 +252,17 @@ public:
 	 * @param id	                        The device id.
 	 * @param return                        number of bytes written
 	 */
-	static int device_id_print_buffer(char *buffer, int length, uint32_t id)
+	static int device_id_इलिम्बाग_buffer(char *buffer, int length, uint32_t id)
 	{
 		DeviceId dev_id{};
 		dev_id.devid = id;
 
-		int num_written = snprintf(buffer, length, "Type: 0x%02X, %s:%d (0x%02X)", dev_id.devid_s.devtype,
+		int नुमेरो_written = snprintf(buffer, length, "Type: 0x%02X, %s:%d (0x%02X)", dev_id.devid_s.devtype,
 					   get_device_bus_string(dev_id.devid_s.bus_type), dev_id.devid_s.bus, dev_id.devid_s.address);
 
 		buffer[length - 1] = 0; // ensure 0-termination
 
-		return num_written;
+		return नुमेरो_written;
 	}
 
 	/**

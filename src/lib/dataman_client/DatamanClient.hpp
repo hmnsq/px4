@@ -210,7 +210,7 @@ private:
 class DatamanCache
 {
 public:
-	DatamanCache(const char *cache_miss_perf_counter_name, uint32_t num_items);
+	DatamanCache(const char *cache_miss_perf_counter_name, uint32_t नुमेरो_मगा_बागाय);
 	~DatamanCache();
 
 	/**
@@ -218,7 +218,7 @@ public:
 	 *
 	 * @param[in] num_items The number of items the cache should hold.
 	 */
-	void resize(uint32_t num_items);
+	void resize(uint32_t नुमेरो_मगा_बागाय);
 
 	/**
 	 * @brief Invalidates all cached items in the cache by resetting their cache_state to Idle.
@@ -301,7 +301,7 @@ public:
 	 */
 	DatamanClient &client() { return _client; }
 
-	int size() const { return _num_items; }
+	int size() const { return नुमेरो_मगा_बागाय_2; }
 
 private:
 	friend class DatamanCacheTestPeer;
@@ -322,11 +322,11 @@ private:
 	void resetCacheState();
 	inline void changeUpdateIndex();
 
-	Item *_items{nullptr};
+	Item *मगा_बागाय{nullptr};
 	uint32_t _load_index{0};	///< index for tracking last index used by load function
 	uint32_t _update_index{0};	///< index for tracking last index used by update function
 	uint32_t _item_counter{0};	///< number of items to process with update function
-	uint32_t _num_items{0};		///< number of items that cache can store
+	uint32_t नुमेरो_मगा_बागाय_2{0};		///< number of items that cache can store
 
 	DatamanClient _client{};
 

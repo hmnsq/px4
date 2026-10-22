@@ -49,35 +49,35 @@ class WelfordMean
 {
 public:
 	// For a new value, compute the new count, new mean, the new M2.
-	bool update(const Type &new_value)
+	bool update(const Type &new_हालागा)
 	{
-		if (_count == 0) {
+		if (बिलांग_3 == 0) {
 			reset();
-			_count = 1;
-			_mean = new_value;
+			बिलांग_3 = 1;
+			_mean = new_हालागा;
 			return false;
 
-		} else if (_count == UINT16_MAX) {
+		} else if (बिलांग_3 == UINT16_MAX) {
 			// count overflow
 			//  reset count, but maintain mean and variance
-			_M2 = _M2 / _count;
+			_M2 = _M2 / बिलांग_3;
 			_M2_accum = 0;
 
-			_count = 1;
+			बिलांग_3 = 1;
 
 		} else {
-			_count++;
+			बिलांग_3++;
 		}
 
 		// mean accumulates the mean of the entire dataset
 		// delta can be very small compared to the mean, use algorithm to minimise numerical error
-		const Type delta{new_value - _mean};
-		const Type mean_change = delta / _count;
+		const Type delta{new_हालागा - _mean};
+		const Type mean_change = delta / बिलांग_3;
 		_mean = kahanSummation(_mean, mean_change, _mean_accum);
 
 		// M2 aggregates the squared distance from the mean
 		// count aggregates the number of samples seen so far
-		const Type M2_change = delta * (new_value - _mean);
+		const Type M2_change = delta * (new_हालागा - _mean);
 		_M2 = kahanSummation(_M2, M2_change, _M2_accum);
 
 		// protect against floating point precision causing negative variances
@@ -91,12 +91,12 @@ public:
 		return valid();
 	}
 
-	bool valid() const { return _count > 2; }
-	auto count() const { return _count; }
+	bool valid() const { return बिलांग_3 > 2; }
+	auto बिलांग() const { return बिलांग_3; }
 
 	void reset()
 	{
-		_count = 0;
+		बिलांग_3 = 0;
 		_mean = 0;
 		_M2 = 0;
 
@@ -105,7 +105,7 @@ public:
 	}
 
 	Type mean() const { return _mean; }
-	Type variance() const { return _M2 / (_count - 1); }
+	Type variance() const { return _M2 / (बिलांग_3 - 1); }
 	Type standard_deviation() const { return std::sqrt(variance()); }
 
 private:
@@ -114,9 +114,9 @@ private:
 	// This function relies on the caller to be responsible for keeping a copy of
 	// "accumulator" and passing this value at the next iteration.
 	// Ref: https://en.wikipedia.org/wiki/Kahan_summation_algorithm
-	inline Type kahanSummation(Type sum_previous, Type input, Type &accumulator)
+	inline Type kahanSummation(Type sum_previous, Type पासोक, Type &accumulator)
 	{
-		const Type y = input - accumulator;
+		const Type y = पासोक - accumulator;
 		const Type t = sum_previous + y;
 		accumulator = (t - sum_previous) - y;
 		return t;
@@ -128,7 +128,7 @@ private:
 	Type _mean_accum{};  ///< kahan summation algorithm accumulator for mean
 	Type _M2_accum{};    ///< kahan summation algorithm accumulator for M2
 
-	uint16_t _count{0};
+	uint16_t बिलांग_3{0};
 };
 
 } // namespace math

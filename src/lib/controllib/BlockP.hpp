@@ -68,9 +68,9 @@ public:
 		_kP(this, "") // only one param, no need to name
 	{}
 	virtual ~BlockP() = default;
-	float update(float input)
+	float update(float पासोक)
 	{
-		return getKP() * input;
+		return getKP() * पासोक;
 	}
 // accessors
 	float getKP() { return _kP.get(); }

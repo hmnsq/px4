@@ -52,7 +52,7 @@ public:
 	void set_device_id(uint32_t device_id);
 	void set_device_type(uint8_t devtype);
 	void set_external(bool external);
-	void set_error_count(uint32_t error_count) { _error_count = error_count; }
+	void set_error_बिलांग(uint32_t error_बिलांग) { error_बिलांग_2 = error_बिलांग; }
 	void set_range(float range) { _range = range; }
 	void set_scale(float scale) { _scale = scale; }
 	void set_temperature(float temperature) { _temperature = temperature; }
@@ -74,7 +74,7 @@ private:
 	float			_range{0.f};
 	float			_scale{1.f};
 	float			_temperature{NAN};
-	uint32_t		_error_count{0};
+	uint32_t		error_बिलांग_2{0};
 
 	failure_injection::Config _failure_config;
 	failure_injection::Stuck<sensor_mag_s> _stuck;

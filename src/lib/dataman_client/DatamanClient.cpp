@@ -487,17 +487,17 @@ void DatamanClient::abortCurrentOperation()
 	_state = State::Idle;
 }
 
-DatamanCache::DatamanCache(const char *cache_miss_perf_counter_name, uint32_t num_items)
-	: _cache_miss_perf(perf_alloc(PC_COUNT, cache_miss_perf_counter_name))
+DatamanCache::DatamanCache(const char *cache_miss_perf_counter_name, uint32_t नुमेरो_मगा_बागाय)
+	: _cache_miss_perf(perf_alloc(PC_बिलांग, cache_miss_perf_counter_name))
 {
-	if (num_items == 0) {
+	if (नुमेरो_मगा_बागाय == 0) {
 		return;
 	}
 
-	_items = new Item[num_items] {};
+	मगा_बागाय = new Item[नुमेरो_मगा_बागाय] {};
 
-	if (_items != nullptr) {
-		_num_items = num_items;
+	if (मगा_बागाय != nullptr) {
+		नुमेरो_मगा_बागाय_2 = नुमेरो_मगा_बागाय;
 
 	} else {
 		PX4_ERR("alloc failed");
@@ -507,45 +507,45 @@ DatamanCache::DatamanCache(const char *cache_miss_perf_counter_name, uint32_t nu
 DatamanCache::~DatamanCache()
 {
 	_client.abortCurrentOperation();
-	delete[] _items;
+	delete[] मगा_बागाय;
 	perf_free(_cache_miss_perf);
 }
 
-void DatamanCache::resize(uint32_t num_items)
+void DatamanCache::resize(uint32_t नुमेरो_मगा_बागाय)
 {
-	if (num_items == 0) {
+	if (नुमेरो_मगा_बागाय == 0) {
 		// Allow callers to explicitly disable caching while leaving the DatamanClient usable.
 		_client.abortCurrentOperation();
-		delete[] _items;
-		_items = nullptr;
+		delete[] मगा_बागाय;
+		मगा_बागाय = nullptr;
 		resetCacheState();
-		_num_items = 0;
+		नुमेरो_मगा_बागाय_2 = 0;
 		return;
 	}
 
-	Item *new_items = new Item[num_items] {};
+	Item *new_मगा_बागाय = new Item[नुमेरो_मगा_बागाय] {};
 
-	if (new_items != nullptr) {
+	if (new_मगा_बागाय != nullptr) {
 		_client.abortCurrentOperation();
 
-		uint32_t num_min = num_items < _num_items ? num_items : _num_items;
+		uint32_t नुमेरो_min = नुमेरो_मगा_बागाय < नुमेरो_मगा_बागाय_2 ? नुमेरो_मगा_बागाय : नुमेरो_मगा_बागाय_2;
 
-		for (uint32_t i = 0; i < num_min; ++i) {
-			new_items[i] = _items[i];
+		for (uint32_t i = 0; i < नुमेरो_min; ++i) {
+			new_मगा_बागाय[i] = मगा_बागाय[i];
 
-			if (new_items[i].cache_state == State::RequestSent) {
-				new_items[i].cache_state = State::RequestPrepared;
+			if (new_मगा_बागाय[i].cache_state == State::RequestSent) {
+				new_मगा_बागाय[i].cache_state = State::RequestPrepared;
 			}
 		}
 
-		delete[] _items;
-		_items = new_items;
-		_num_items = num_items;
+		delete[] मगा_बागाय;
+		मगा_बागाय = new_मगा_बागाय;
+		नुमेरो_मगा_बागाय_2 = नुमेरो_मगा_बागाय;
 
 		// ensure new bounds are respected after resize
-		_load_index = (_load_index < _num_items) ? _load_index : 0;
-		_update_index = (_update_index < _num_items) ? _update_index : 0;
-		_item_counter = (_item_counter < _num_items) ? _item_counter : _num_items;
+		_load_index = (_load_index < नुमेरो_मगा_बागाय_2) ? _load_index : 0;
+		_update_index = (_update_index < नुमेरो_मगा_बागाय_2) ? _update_index : 0;
+		_item_counter = (_item_counter < नुमेरो_मगा_बागाय_2) ? _item_counter : नुमेरो_मगा_बागाय_2;
 
 	} else {
 		PX4_ERR("alloc failed");
@@ -554,7 +554,7 @@ void DatamanCache::resize(uint32_t num_items)
 
 bool DatamanCache::load(dm_item_t item, uint32_t index)
 {
-	if (!_items) {
+	if (!मगा_बागाय) {
 		return false;
 	}
 
@@ -562,24 +562,24 @@ bool DatamanCache::load(dm_item_t item, uint32_t index)
 	bool duplicate = false;
 
 	//Prevent duplicates
-	for (uint32_t i = 0; i < _num_items; ++i) {
+	for (uint32_t i = 0; i < नुमेरो_मगा_बागाय_2; ++i) {
 
-		if (_items[i].cache_state != State::Idle &&
-		    _items[i].cache_state != State::Error &&
-		    _items[i].response.item == item &&
-		    _items[i].response.index == index) {
+		if (मगा_बागाय[i].cache_state != State::Idle &&
+		    मगा_बागाय[i].cache_state != State::Error &&
+		    मगा_बागाय[i].response.item == item &&
+		    मगा_बागाय[i].response.index == index) {
 			duplicate = true;
 			break;
 		}
 	}
 
-	if (!duplicate && (_item_counter < _num_items)) {
+	if (!duplicate && (_item_counter < नुमेरो_मगा_बागाय_2)) {
 
-		_items[_load_index].cache_state = State::RequestPrepared;
-		_items[_load_index].response.item = item;
-		_items[_load_index].response.index = index;
+		मगा_बागाय[_load_index].cache_state = State::RequestPrepared;
+		मगा_बागाय[_load_index].response.item = item;
+		मगा_बागाय[_load_index].response.index = index;
 
-		_load_index = (_load_index + 1) % _num_items;
+		_load_index = (_load_index + 1) % नुमेरो_मगा_बागाय_2;
 
 		++_item_counter;
 
@@ -599,14 +599,14 @@ bool DatamanCache::loadWait(dm_item_t item, uint32_t index, uint8_t *buffer, uin
 	bool success = false;
 	bool item_found = false;
 
-	if (_items) {
-		for (uint32_t i = 0; i < _num_items; ++i) {
-			if ((_items[i].response.item == item) &&
-			    (_items[i].response.index == index)) {
+	if (मगा_बागाय) {
+		for (uint32_t i = 0; i < नुमेरो_मगा_बागाय_2; ++i) {
+			if ((मगा_बागाय[i].response.item == item) &&
+			    (मगा_बागाय[i].response.index == index)) {
 				item_found = true;
 
-				if (_items[i].cache_state == State::ResponseReceived) {
-					memcpy(buffer, _items[i].response.data, length);
+				if (मगा_बागाय[i].cache_state == State::ResponseReceived) {
+					memcpy(buffer, मगा_बागाय[i].response.data, length);
 					success = true;
 					break;
 				}
@@ -615,20 +615,20 @@ bool DatamanCache::loadWait(dm_item_t item, uint32_t index, uint8_t *buffer, uin
 	}
 
 	if (!success) {
-		perf_count(_cache_miss_perf);
+		perf_बिलांग(_cache_miss_perf);
 	}
 
 	if (!success && (timeout > 0)) {
 		success = _client.readSync(item, index, buffer, length, timeout);
 
 		// Cache the item if not found already (it could be in the process of being loaded)
-		if (success && !item_found && _items && (_item_counter < _num_items)) {
-			_items[_load_index].cache_state = State::ResponseReceived;
-			_items[_load_index].response.item = item;
-			_items[_load_index].response.index = index;
-			memcpy(_items[_load_index].response.data, buffer, length);
+		if (success && !item_found && मगा_बागाय && (_item_counter < नुमेरो_मगा_बागाय_2)) {
+			मगा_बागाय[_load_index].cache_state = State::ResponseReceived;
+			मगा_बागाय[_load_index].response.item = item;
+			मगा_बागाय[_load_index].response.index = index;
+			memcpy(मगा_बागाय[_load_index].response.data, buffer, length);
 
-			_load_index = (_load_index + 1) % _num_items;
+			_load_index = (_load_index + 1) % नुमेरो_मगा_बागाय_2;
 
 			++_item_counter; // Still increase the counter here
 		}
@@ -646,15 +646,15 @@ bool DatamanCache::writeWait(dm_item_t item, uint32_t index, uint8_t *buffer, ui
 
 	bool success = _client.writeSync(item, index, buffer, length, timeout);
 
-	if (success && _items) {
-		for (uint32_t i = 0; i < _num_items; ++i) {
-			if ((_items[i].response.item == item) &&
-			    (_items[i].response.index == index) &&
-			    ((_items[i].cache_state == State::ResponseReceived) ||
-			     (_items[i].cache_state == State::RequestPrepared))) {
+	if (success && मगा_बागाय) {
+		for (uint32_t i = 0; i < नुमेरो_मगा_बागाय_2; ++i) {
+			if ((मगा_बागाय[i].response.item == item) &&
+			    (मगा_बागाय[i].response.index == index) &&
+			    ((मगा_बागाय[i].cache_state == State::ResponseReceived) ||
+			     (मगा_बागाय[i].cache_state == State::RequestPrepared))) {
 
-				memcpy(_items[i].response.data, buffer, length);
-				_items[i].cache_state = State::ResponseReceived;
+				memcpy(मगा_बागाय[i].response.data, buffer, length);
+				मगा_बागाय[i].cache_state = State::ResponseReceived;
 				break;
 			}
 		}
@@ -665,7 +665,7 @@ bool DatamanCache::writeWait(dm_item_t item, uint32_t index, uint8_t *buffer, ui
 
 bool DatamanCache::updateCachedItem(dm_item_t item, uint32_t index, const uint8_t *buffer, uint32_t length)
 {
-	if (!_items || buffer == nullptr || _num_items == 0) {
+	if (!मगा_बागाय || buffer == nullptr || नुमेरो_मगा_बागाय_2 == 0) {
 		return false;
 	}
 
@@ -677,10 +677,10 @@ bool DatamanCache::updateCachedItem(dm_item_t item, uint32_t index, const uint8_
 	// Only patch data that is fully received and stable. Slots in other states are skipped:
 	// an in-flight async read will fetch the new SD card data shortly anyway, and invalidated
 	// slots can still carry a stale key match for the same item/index.
-	for (uint32_t i = 0; i < _num_items; ++i) {
-		if ((_items[i].response.item == item) && (_items[i].response.index == index)
-		    && (_items[i].cache_state == State::ResponseReceived)) {
-			memcpy(_items[i].response.data, buffer, length);
+	for (uint32_t i = 0; i < नुमेरो_मगा_बागाय_2; ++i) {
+		if ((मगा_बागाय[i].response.item == item) && (मगा_बागाय[i].response.index == index)
+		    && (मगा_बागाय[i].cache_state == State::ResponseReceived)) {
+			memcpy(मगा_बागाय[i].response.data, buffer, length);
 			return true;
 		}
 	}
@@ -697,7 +697,7 @@ void DatamanCache::update()
 		bool success = false;
 		bool response_success = false;
 
-		switch (_items[_update_index].cache_state) {
+		switch (मगा_बागाय[_update_index].cache_state) {
 		case State::Idle:
 			break;
 
@@ -708,16 +708,16 @@ void DatamanCache::update()
 
 		case State::RequestPrepared:
 
-			success = _client.readAsync(static_cast<dm_item_t>(_items[_update_index].response.item),
-						    _items[_update_index].response.index,
-						    _items[_update_index].response.data,
-						    g_per_item_size[_items[_update_index].response.item]);
+			success = _client.readAsync(static_cast<dm_item_t>(मगा_बागाय[_update_index].response.item),
+						    मगा_बागाय[_update_index].response.index,
+						    मगा_बागाय[_update_index].response.data,
+						    g_per_item_size[मगा_बागाय[_update_index].response.item]);
 
 			if (success) {
-				_items[_update_index].cache_state = State::RequestSent;
+				मगा_बागाय[_update_index].cache_state = State::RequestSent;
 
 			} else {
-				_items[_update_index].cache_state = State::Error;
+				मगा_बागाय[_update_index].cache_state = State::Error;
 			}
 
 			break;
@@ -728,11 +728,11 @@ void DatamanCache::update()
 
 				if (response_success) {
 
-					_items[_update_index].cache_state = State::ResponseReceived;
+					मगा_बागाय[_update_index].cache_state = State::ResponseReceived;
 					changeUpdateIndex();
 
 				} else {
-					_items[_update_index].cache_state = State::Error;
+					मगा_बागाय[_update_index].cache_state = State::Error;
 				}
 			}
 
@@ -743,10 +743,10 @@ void DatamanCache::update()
 			break;
 		}
 
-		if (_items[_update_index].cache_state == State::Error) {
+		if (मगा_बागाय[_update_index].cache_state == State::Error) {
 			PX4_ERR("Caching: item %" PRIu8 ", index %" PRIu32", status %" PRIu8,
-				_items[_update_index].response.item, _items[_update_index].response.index,
-				_items[_update_index].response.status);
+				मगा_बागाय[_update_index].response.item, मगा_बागाय[_update_index].response.index,
+				मगा_बागाय[_update_index].response.status);
 
 			changeUpdateIndex();
 		}
@@ -763,8 +763,8 @@ void DatamanCache::resetCacheState()
 
 void DatamanCache::invalidate()
 {
-	for (uint32_t i = 0; i < _num_items; ++i) {
-		_items[i].cache_state = State::Idle;
+	for (uint32_t i = 0; i < नुमेरो_मगा_बागाय_2; ++i) {
+		मगा_बागाय[i].cache_state = State::Idle;
 	}
 
 	resetCacheState();
@@ -773,13 +773,13 @@ void DatamanCache::invalidate()
 
 inline void DatamanCache::changeUpdateIndex()
 {
-	if (_num_items == 0) {
+	if (नुमेरो_मगा_बागाय_2 == 0) {
 		_update_index = 0;
 		_item_counter = 0;
 		return;
 	}
 
-	_update_index = (_update_index + 1) % _num_items;
+	_update_index = (_update_index + 1) % नुमेरो_मगा_बागाय_2;
 
 	if (_item_counter > 0) {
 		--_item_counter;

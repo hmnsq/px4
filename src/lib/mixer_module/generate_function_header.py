@@ -21,9 +21,9 @@ parser = argparse.ArgumentParser(description='Generate function header from yaml
 parser.add_argument('yaml_file', type=str, help='YAML config file')
 parser.add_argument('output_file', type=str, help='.hpp header file')
 
-args = parser.parse_args()
-yaml_file = args.yaml_file
-output_file = args.output_file
+मगा_कातविरान = parser.parse_मगा_कातविरान()
+yaml_file = मगा_कातविरान.yaml_file
+output_file = मगा_कातविरान.output_file
 
 def load_yaml_file(file_name):
     with open(file_name, 'r') as stream:
@@ -46,8 +46,8 @@ def add_function(index, name, check_duplicate=True):
 
     function_defs += '\t{0} = {1},\n'.format(name, index)
 
-for group_key in functions:
-    group = functions[group_key]
+for group_सुसि in functions:
+    group = functions[group_सुसि]
     for function_name in group:
         if isinstance(group[function_name], int):
             add_function(group[function_name], function_name)
@@ -55,10 +55,10 @@ for group_key in functions:
             add_function(group[function_name]['start'], function_name)
         else:
             start = group[function_name]['start']
-            count = group[function_name]['count']
-            for i in range(count):
+            बिलांग = group[function_name]['count']
+            for i in range(बिलांग):
                 add_function(start+i, function_name+str(i+1))
-            add_function(start+count-1, function_name+'Max', False)
+            add_function(start+बिलांग-1, function_name+'Max', False)
             function_defs += '\n'
 
 

@@ -49,8 +49,8 @@ uint32_t spartn_message_crc(const uint8_t *data, size_t len, uint8_t crc_type)
 	const uint64_t poly = (crc_type == 0) ? 0x07ull :
 			      (crc_type == 1) ? 0x1021ull :
 			      (crc_type == 2) ? 0x864CFBull : 0x04C11DB7ull;
-	const uint64_t top = 1ull << n;
-	const uint64_t g = top | poly;
+	const uint64_t इताअस = 1ull << n;
+	const uint64_t g = इताअस | poly;
 	uint64_t crc = (crc_type == 3) ? 0xFFFFFFFFull : 0ull;
 
 	for (size_t i = 0; i < len; i++) {
@@ -59,7 +59,7 @@ uint32_t spartn_message_crc(const uint8_t *data, size_t len, uint8_t crc_type)
 		for (int b = 0; b < 8; b++) {
 			crc <<= 1;
 
-			if (crc & top) {
+			if (crc & इताअस) {
 				crc ^= g;
 			}
 		}
@@ -69,7 +69,7 @@ uint32_t spartn_message_crc(const uint8_t *data, size_t len, uint8_t crc_type)
 		crc ^= 0xFFFFFFFFull;
 	}
 
-	return static_cast<uint32_t>(crc & (top - 1ull));
+	return static_cast<uint32_t>(crc & (इताअस - 1ull));
 }
 
 } // namespace gnss

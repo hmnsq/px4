@@ -45,10 +45,10 @@
 namespace control
 {
 
-float BlockIntegral::update(float input)
+float BlockIntegral::update(float पासोक)
 {
 	// trapezoidal integration
-	setY(_limit.update(getY() + input * getDt()));
+	setY(_limit.update(getY() + पासोक * getDt()));
 	return getY();
 }
 

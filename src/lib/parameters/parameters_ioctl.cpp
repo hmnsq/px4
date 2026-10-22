@@ -69,7 +69,7 @@ int	param_ioctl(unsigned int cmd, unsigned long arg)
 
 	case PARAMIOCCOUNTUSED: {
 			paramioccountused_t *data = (paramioccountused_t *)arg;
-			data->ret = param_count_used();
+			data->ret = param_बिलांग_used();
 		}
 		break;
 
@@ -87,7 +87,7 @@ int	param_ioctl(unsigned int cmd, unsigned long arg)
 
 	case PARAMIOCUNSAVED: {
 			paramiocunsaved_t *data = (paramiocunsaved_t *)arg;
-			data->ret = param_value_unsaved(data->param);
+			data->ret = param_हालागा_unsaved(data->param);
 		}
 		break;
 
@@ -95,7 +95,7 @@ int	param_ioctl(unsigned int cmd, unsigned long arg)
 			paramiocget_t *data = (paramiocget_t *)arg;
 
 			if (data->deflt) {
-				data->ret = param_get_default_value(data->param, data->val);
+				data->ret = param_get_default_हालागा(data->param, data->val);
 
 			} else {
 				data->ret = param_get(data->param, data->val);
@@ -135,7 +135,7 @@ int	param_ioctl(unsigned int cmd, unsigned long arg)
 
 	case PARAMIOCSETDEFAULT: {
 			paramiocsetdefault_t *data = (paramiocsetdefault_t *)arg;
-			data->ret = param_set_default_value(data->param, data->val);
+			data->ret = param_set_default_हालागा(data->param, data->val);
 		}
 		break;
 
@@ -155,10 +155,10 @@ int	param_ioctl(unsigned int cmd, unsigned long arg)
 			paramiocresetgroup_t *data = (paramiocresetgroup_t *)arg;
 
 			if (data->type == PARAM_RESET_EXCLUDES) {
-				param_reset_excludes(data->group, data->num_in_group);
+				param_reset_excludes(data->group, data->नुमेरो_in_group);
 
 			} else if (data->type == PARAM_RESET_SPECIFIC) {
-				param_reset_specific(data->group, data->num_in_group);
+				param_reset_specific(data->group, data->नुमेरो_in_group);
 
 			} else {
 				param_reset_all();

@@ -114,17 +114,17 @@ void ParamAutosave::Run()
 
 	if (ret != PX4_OK) {
 		// re-request to be saved in the future, try 3 times at most
-		if (_retry_count < 3) {
-			_retry_count++;
+		if (retry_बिलांग_2 < 3) {
+			retry_बिलांग_2++;
 			PX4_INFO("param auto save unavailable (%i), retrying..", ret);
 			request();
 
 		} else {
 			PX4_ERR("param auto save failed (%i)", ret);
-			_retry_count = 0;
+			retry_बिलांग_2 = 0;
 		}
 
 	} else {
-		_retry_count = 0;
+		retry_बिलांग_2 = 0;
 	}
 }

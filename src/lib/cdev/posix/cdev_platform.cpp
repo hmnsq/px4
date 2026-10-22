@@ -338,7 +338,7 @@ extern "C" {
 		}
 
 		px4_sem_t sem;
-		int count = 0;
+		int बिलांग = 0;
 		int ret = -1;
 
 		const unsigned NAMELEN = 32;
@@ -438,7 +438,7 @@ extern "C" {
 					}
 
 					if (fds[i].revents) {
-						count += 1;
+						बिलांग += 1;
 					}
 				}
 			}
@@ -448,7 +448,7 @@ extern "C" {
 
 		// Return the positive count if present,
 		// return the negative error number if failed
-		return (count) ? count : ret;
+		return (बिलांग) ? बिलांग : ret;
 	}
 
 	int px4_access(const char *pathname, int mode)

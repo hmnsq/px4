@@ -135,7 +135,7 @@ typedef enum {
 typedef struct paramiocresetgroup {
 	param_reset_type_t type;
 	const char **group;
-	const int num_in_group;
+	const int नुमेरो_in_group;
 } paramiocresetgroup_t;
 
 #define PARAMIOCSAVEDEFAULT	_PARAMIOC(15)

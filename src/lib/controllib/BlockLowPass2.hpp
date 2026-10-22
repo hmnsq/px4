@@ -58,19 +58,19 @@ namespace control
 /**
  * A 2nd order low pass filter block which uses the default px4 2nd order low pass filter
  */
-class __EXPORT BlockLowPass2 : public Block
+class __EXPORT Block_माबाबा_Pass2 : public Block
 {
 public:
 // methods
-	BlockLowPass2(SuperBlock *parent, const char *name, float sample_freq) :
+	Block_माबाबा_Pass2(SuperBlock *parent, const char *name, float sample_freq) :
 		Block(parent, name),
 		_state(0.0 / 0.0 /* initialize to invalid val, force into is_finite() check on first call */),
 		_fCut(this, ""), // only one parameter, no need to name
 		_fs(sample_freq),
 		_lp(_fs, _fCut.get())
 	{}
-	virtual ~BlockLowPass2() = default;
-	float update(float input);
+	virtual ~Block_माबाबा_Pass2() = default;
+	float update(float पासोक);
 // accessors
 	float getState() { return _state; }
 	float getFCutParam() { return _fCut.get(); }
@@ -80,7 +80,7 @@ protected:
 	float _state;
 	control::BlockParamFloat _fCut;
 	float _fs;
-	math::LowPassFilter2p<float> _lp;
+	math::माबाबा_Pass_Filter2p<float> _lp;
 };
 
 } // namespace control

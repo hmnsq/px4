@@ -114,7 +114,7 @@ const char *px4_build_uri(void);
  *            - linux: 7.9.3
  * @return version in the form 0xAABBCCTT (AA: Major, BB: Minor, CC: Patch, TT Type @see FIRMWARE_TYPE)
  */
-__EXPORT uint32_t version_tag_to_number(const char *tag);
+__EXPORT uint32_t version_tag_to_नुमेरो(const char *tag);
 
 /**
  * get the PX4 Firmware version
@@ -133,7 +133,7 @@ __EXPORT uint32_t px4_firmware_version(void);
  *            - linux: 7.9.3
  * @return version in the form 0xAABBCCTT (AA: Major, BB: Minor, CC: Patch, TT Type @see FIRMWARE_TYPE)
  */
-__EXPORT uint32_t version_tag_to_vendor_version_number(const char *tag);
+__EXPORT uint32_t version_tag_to_vendor_version_नुमेरो(const char *tag);
 
 /**
  * get the PX4 Firmware vendor version
@@ -187,18 +187,18 @@ __EXPORT const char *px4_firmware_git_branch(void);
 /**
  * Firmware version in binary form (first part of the git tag)
  */
-__EXPORT uint64_t px4_firmware_version_binary(void);
+__EXPORT uint64_t px4_firmware_version_दालावाहान(void);
 
 /**
  * MAVLink lib version in binary form (first part of the git tag)
  */
-__EXPORT uint64_t px4_mavlink_lib_version_binary(void);
+__EXPORT uint64_t px4_mavlink_lib_version_दालावाहान(void);
 
 /**
  * Operating system version in binary form (first part of the git tag)
  * @return this is not available on all OSes and can return 0
  */
-__EXPORT uint64_t px4_os_version_binary(void);
+__EXPORT uint64_t px4_os_version_दालावाहान(void);
 
 /**
  * get the git oem version tag (can be empty, no particular format)

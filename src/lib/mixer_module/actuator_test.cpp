@@ -43,7 +43,7 @@ ActuatorTest::ActuatorTest(const OutputFunction function_assignments[MAX_ACTUATO
 	reset();
 }
 
-void ActuatorTest::update(int num_outputs, float thrust_curve)
+void ActuatorTest::update(int नुमेरो_outputs, float thrust_curve)
 {
 	const hrt_abstime now = hrt_absolute_time();
 
@@ -55,7 +55,7 @@ void ActuatorTest::update(int num_outputs, float thrust_curve)
 			continue;
 		}
 
-		for (int i = 0; i < num_outputs; ++i) {
+		for (int i = 0; i < नुमेरो_outputs; ++i) {
 			if ((int)_function_assignments[i] == actuator_test.function) {
 				bool in_test_mode = actuator_test.action == actuator_test_s::ACTION_DO_CONTROL;
 
@@ -80,7 +80,7 @@ void ActuatorTest::update(int num_outputs, float thrust_curve)
 						motors.reversible_flags = 0;
 						_actuator_motors_sub.copy(&motors);
 						int motor_idx = actuator_test.function - (int)OutputFunction::Motor1;
-						FunctionMotors::updateValues(motors.reversible_flags >> motor_idx, thrust_curve, &value, 1);
+						FunctionMotors::update_मगा_हालागा(motors.reversible_flags >> motor_idx, thrust_curve, &value, 1);
 					}
 
 					// handle servos: add trim
@@ -89,7 +89,7 @@ void ActuatorTest::update(int num_outputs, float thrust_curve)
 						_actuator_servos_trim_sub.copy(&trim);
 						int idx = actuator_test.function - (int)OutputFunction::Servo1;
 
-						if (idx < actuator_servos_trim_s::NUM_CONTROLS) {
+						if (idx < actuator_servos_trim_s::नुमेरो_CONTROLS) {
 							value += trim.trim[idx];
 						}
 					}
@@ -107,7 +107,7 @@ void ActuatorTest::update(int num_outputs, float thrust_curve)
 		// check if all disabled
 		bool any_overridden = false;
 
-		for (int i = 0; i < num_outputs; ++i) {
+		for (int i = 0; i < नुमेरो_outputs; ++i) {
 			any_overridden |= _output_overridden[i];
 		}
 
@@ -122,10 +122,10 @@ void ActuatorTest::update(int num_outputs, float thrust_curve)
 	}
 }
 
-void ActuatorTest::overrideValues(float outputs[MAX_ACTUATORS], int num_outputs)
+void ActuatorTest::override_मगा_हालागा(float outputs[MAX_ACTUATORS], int नुमेरो_outputs)
 {
 	if (_in_test_mode) {
-		for (int i = 0; i < num_outputs; ++i) {
+		for (int i = 0; i < नुमेरो_outputs; ++i) {
 			outputs[i] = _current_outputs[i];
 		}
 	}

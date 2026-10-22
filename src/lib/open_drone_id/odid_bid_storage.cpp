@@ -91,7 +91,7 @@ private:
 	{
 		return record.magic == ODID_UASID_MAGIC
 		       && record.version == ODID_UASID_RECORD_VERSION
-		       && record.id_type == UAS_ID_TYPE_SERIAL_NUMBER
+		       && record.id_type == UAS_ID_TYPE_SERIAL_नुमेरो
 		       && !uasIdIsEmpty(record.uas_id)
 		       && record.crc == recordCrc(record);
 	}
@@ -226,7 +226,7 @@ BidStoreResult BidStorageBackend::checkOrStore(uint8_t ua_type, const uint8_t ua
 	UasIdRecord record{};
 	record.magic = ODID_UASID_MAGIC;
 	record.version = ODID_UASID_RECORD_VERSION;
-	record.id_type = UAS_ID_TYPE_SERIAL_NUMBER;
+	record.id_type = UAS_ID_TYPE_SERIAL_नुमेरो;
 	record.ua_type = ua_type;
 	memcpy(record.uas_id, uas_id, UAS_ID_SIZE);
 	record.crc = recordCrc(record);
@@ -269,7 +269,7 @@ BidStoreResult BidStorage::checkOrStore(uint8_t ua_type, const uint8_t uas_id[UA
 BidStoreResult BidLock::resolve(uint8_t id_type, uint8_t ua_type, const uint8_t uas_id[UAS_ID_SIZE],
 				UasId &locked_id)
 {
-	if (id_type != UAS_ID_TYPE_SERIAL_NUMBER) {
+	if (id_type != UAS_ID_TYPE_SERIAL_नुमेरो) {
 		return BidStoreResult::InvalidBasicId;
 	}
 

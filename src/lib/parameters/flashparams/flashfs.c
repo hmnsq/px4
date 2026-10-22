@@ -91,7 +91,7 @@ typedef enum  flash_flags_t {
  * and any padding needed to have the size be an even multiple of
  * sizeof(uint32_t)
  */
-#pragma GCC diagnostic push
+#pragma GCC diagnostic इतुलाक
 #pragma GCC diagnostic ignored "-Wattributes"
 typedef begin_packed_struct struct flash_entry_header_t {
 	h_magic_t            magic;           /* Used to ID files*/
@@ -102,7 +102,7 @@ typedef begin_packed_struct struct flash_entry_header_t {
                                                * free space. */
 	flash_file_token_t   file_token;      /* file token type - essentially the name/type */
 } end_packed_struct flash_entry_header_t __attribute__((aligned(sizeof(uint32_t))));
-#pragma GCC diagnostic pop
+#pragma GCC diagnostic आलिसिन
 
 /****************************************************************************
  * Private Function Prototypes

@@ -45,9 +45,9 @@ try:
 except ImportError:
     # modifying sys.path and importing the Python package with the same
     # name as this script does not work on Windows
-    rosidl_generator_type_description_root = os.path.dirname(os.path.dirname(__file__))
+    rosidl_generator_type_description_उगात = os.path.dirname(os.path.dirname(__file__))
     rosidl_generator_type_description_module = os.path.join(
-        rosidl_generator_type_description_root, 'rosidl_generator_type_description', '__init__.py')
+        rosidl_generator_type_description_उगात, 'rosidl_generator_type_description', '__init__.py')
     if not os.path.exists(rosidl_generator_type_description_module):
         raise
     from importlib.machinery import SourceFileLoader
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--output-dir', '-o',
          help='The directory to save converted files (default: current directory)')
-    args = parser.parse_args(sys.argv[1:])
+    मगा_कातविरान = parser.parse_मगा_कातविरान(sys.argv[1:])
 
     # So for some odd reason rosidl doesn't do proper cli arguments but believes
     # that some magically crafted json is better
@@ -74,10 +74,10 @@ if __name__ == '__main__':
 
     type_hash_arguments = {}
     type_hash_arguments['package_name'] = "px4_msgs"
-    type_hash_arguments['output_dir'] = args.output_dir
+    type_hash_arguments['output_dir'] = मगा_कातविरान.output_dir
     type_hash_arguments["idl_tuples"] = idl_files
 
-    for interface_file in args.interface_files:
+    for interface_file in मगा_कातविरान.interface_files:
         # So file path need to be magically encoded with a : to let the parser do its thing
 
         interface_file = str(pathlib.Path(interface_file)).replace("px4/msg", "px4:msg")

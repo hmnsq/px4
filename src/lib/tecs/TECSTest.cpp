@@ -86,14 +86,14 @@ TECSControl::Flag makeFlag()
 	return flag;
 }
 
-TECSControl::Input makeInput()
+TECSControl::पासोक_2 make_पासोक()
 {
-	TECSControl::Input input{};
-	input.altitude = 100.f;
-	input.altitude_rate = 0.f;
-	input.tas = 15.f;
-	input.tas_rate = 0.f;
-	return input;
+	TECSControl::पासोक_2 पासोक{};
+	पासोक.altitude = 100.f;
+	पासोक.altitude_rate = 0.f;
+	पासोक.tas = 15.f;
+	पासोक.tas_rate = 0.f;
+	return पासोक;
 }
 
 TECSControl::Setpoint makeSetpoint()
@@ -110,11 +110,11 @@ TECSControl::Setpoint makeSetpoint()
 float underspeedRatio(float tas, TECSControl::Param param, const TECSControl::Flag &flag)
 {
 	TECSControl control;
-	TECSControl::Input input = makeInput();
-	input.tas = tas;
+	TECSControl::पासोक_2 पासोक = make_पासोक();
+	पासोक.tas = tas;
 
-	control.initialize(makeSetpoint(), input, param, flag);
-	control.update(0.02f, makeSetpoint(), input, param, flag);
+	control.initialize(makeSetpoint(), पासोक, param, flag);
+	control.update(0.02f, makeSetpoint(), पासोक, param, flag);
 
 	return control.getUnderspeedRatio();
 }
@@ -125,14 +125,14 @@ float underspeedRatio(float tas, TECSControl::Param param, const TECSControl::Fl
 // true airspeed setpoint, mirroring what happens on the energy/speed side when exiting
 // offboard velocity mode) must not permanently corrupt the pitch integrator. Regression
 // test for the in-flight NaN lockup reported in #25906.
-TEST(TECSControlTest, PitchIntegratorRejectsNonFiniteInput)
+TEST(TECSControlTest, Pitch_Integrator_Rejects_Non_Finite_पासोक)
 {
 	TECSControl control;
 	TECSControl::Param param = makeParam();
 	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	const TECSControl::पासोक_2 पासोक = make_पासोक();
 
-	control.initialize(makeSetpoint(), input, param, flag);
+	control.initialize(makeSetpoint(), पासोक, param, flag);
 
 	// Run a few healthy cycles so the integrator builds up some steady-state memory.
 	TECSControl::Setpoint setpoint = makeSetpoint();
@@ -140,7 +140,7 @@ TEST(TECSControlTest, PitchIntegratorRejectsNonFiniteInput)
 	const float dt = 0.02f;
 
 	for (int i = 0; i < 50; i++) {
-		control.update(dt, setpoint, input, param, flag);
+		control.update(dt, setpoint, पासोक, param, flag);
 	}
 
 	const float integrator_before = control.getDebugOutput().pitch_integrator;
@@ -149,7 +149,7 @@ TEST(TECSControlTest, PitchIntegratorRejectsNonFiniteInput)
 	// Inject a single non-finite setpoint, the kind of one-frame glitch seen on mode exit.
 	TECSControl::Setpoint bad_setpoint = setpoint;
 	bad_setpoint.tas_setpoint = NAN;
-	control.update(dt, bad_setpoint, input, param, flag);
+	control.update(dt, bad_setpoint, पासोक, param, flag);
 
 	// The bad frame must not propagate into the integrator or the pitch demand.
 	EXPECT_TRUE(PX4_ISFINITE(control.getDebugOutput().pitch_integrator));
@@ -157,7 +157,7 @@ TEST(TECSControlTest, PitchIntegratorRejectsNonFiniteInput)
 
 	// Resume healthy updates, the controller must still produce finite output.
 	for (int i = 0; i < 10; i++) {
-		control.update(dt, setpoint, input, param, flag);
+		control.update(dt, setpoint, पासोक, param, flag);
 		EXPECT_TRUE(PX4_ISFINITE(control.getDebugOutput().pitch_integrator));
 		EXPECT_TRUE(PX4_ISFINITE(control.getPitchSetpoint()));
 	}
@@ -173,9 +173,9 @@ TEST(TECSControlTest, PitchIntegratorResetsCorruptedState)
 	TECSControl control;
 	TECSControl::Param param = makeParam();
 	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	const TECSControl::पासोक_2 पासोक = make_पासोक();
 
-	control.initialize(makeSetpoint(), input, param, flag);
+	control.initialize(makeSetpoint(), पासोक, param, flag);
 
 	TECSControl::Setpoint setpoint = makeSetpoint();
 	setpoint.altitude_reference.alt = 120.f;
@@ -185,7 +185,7 @@ TEST(TECSControlTest, PitchIntegratorResetsCorruptedState)
 	control._pitch_integ_state = NAN;
 
 	// A single healthy update must detect and clear the corrupted state.
-	control.update(dt, setpoint, input, param, flag);
+	control.update(dt, setpoint, पासोक, param, flag);
 
 	EXPECT_TRUE(PX4_ISFINITE(control._pitch_integ_state));
 	EXPECT_TRUE(PX4_ISFINITE(control.getDebugOutput().pitch_integrator));
@@ -193,7 +193,7 @@ TEST(TECSControlTest, PitchIntegratorResetsCorruptedState)
 
 	// And the controller keeps producing finite output afterwards.
 	for (int i = 0; i < 10; i++) {
-		control.update(dt, setpoint, input, param, flag);
+		control.update(dt, setpoint, पासोक, param, flag);
 		EXPECT_TRUE(PX4_ISFINITE(control._pitch_integ_state));
 		EXPECT_TRUE(PX4_ISFINITE(control.getPitchSetpoint()));
 	}
@@ -201,21 +201,21 @@ TEST(TECSControlTest, PitchIntegratorResetsCorruptedState)
 
 // Repeated non-finite input across many consecutive frames must never brick the controller:
 // every cycle has to keep both the integrator state and the pitch setpoint finite.
-TEST(TECSControlTest, PitchIntegratorSurvivesSustainedNonFiniteInput)
+TEST(TECSControlTest, Pitch_Integrator_Survives_Sustained_Non_Finite_पासोक)
 {
 	TECSControl control;
 	TECSControl::Param param = makeParam();
 	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	const TECSControl::पासोक_2 पासोक = make_पासोक();
 
-	control.initialize(makeSetpoint(), input, param, flag);
+	control.initialize(makeSetpoint(), पासोक, param, flag);
 
 	TECSControl::Setpoint bad_setpoint = makeSetpoint();
 	bad_setpoint.tas_setpoint = NAN;
 	const float dt = 0.02f;
 
 	for (int i = 0; i < 100; i++) {
-		control.update(dt, bad_setpoint, input, param, flag);
+		control.update(dt, bad_setpoint, पासोक, param, flag);
 		EXPECT_TRUE(PX4_ISFINITE(control.getDebugOutput().pitch_integrator));
 		EXPECT_TRUE(PX4_ISFINITE(control.getPitchSetpoint()));
 	}
@@ -237,9 +237,9 @@ TEST(TECSControlTest, PitchOutputUsesMinimumAirspeedBelowIt)
 	TECSControl::Setpoint setpoint = makeSetpoint();
 	setpoint.altitude_reference.alt = 102.f; // small climb demand
 
-	TECSControl::Input below_min = makeInput();
+	TECSControl::पासोक_2 below_min = make_पासोक();
 	below_min.tas = 0.2f * param.tas_min;
-	TECSControl::Input at_min = makeInput();
+	TECSControl::पासोक_2 at_min = make_पासोक();
 	at_min.tas = param.tas_min;
 
 	TECSControl control_below_min;
@@ -272,7 +272,7 @@ TEST(TECSTest, ResetWithoutValidAirspeedKeepsCommandsFinite)
 	tecs.set_integrator_gain_pitch(0.1f);
 	tecs.set_integrator_gain_throttle(0.1f);
 
-	const TECS::Input input{
+	const TECS::पासोक_2 पासोक{
 		.altitude = 100.f,
 		.altitude_rate = 0.f,
 		.altitude_setpoint = 110.f,
@@ -293,7 +293,7 @@ TEST(TECSTest, ResetWithoutValidAirspeedKeepsCommandsFinite)
 	// The first update resets the controller, the following ones run it with a valid time step.
 	for (int i = 0; i < 20; i++) {
 		usleep(20000);
-		tecs.update(input);
+		tecs.update(पासोक);
 		EXPECT_TRUE(PX4_ISFINITE(tecs.get_pitch_setpoint())) << "update " << i;
 		EXPECT_TRUE(PX4_ISFINITE(tecs.get_throttle_setpoint())) << "update " << i;
 	}
@@ -436,7 +436,7 @@ TEST(TECSControlTest, InitializeIgnoresDirectHeightRateSetpoint)
 {
 	const TECSControl::Param param = makeParam();
 	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	const TECSControl::पासोक_2 पासोक = make_पासोक();
 
 	TECSControl::Setpoint without_direct = makeSetpoint();
 	without_direct.altitude_reference.alt = 110.f;
@@ -444,9 +444,9 @@ TEST(TECSControlTest, InitializeIgnoresDirectHeightRateSetpoint)
 	with_direct.altitude_rate_setpoint_direct = 4.f;
 
 	TECSControl control_without;
-	control_without.initialize(without_direct, input, param, flag);
+	control_without.initialize(without_direct, पासोक, param, flag);
 	TECSControl control_with;
-	control_with.initialize(with_direct, input, param, flag);
+	control_with.initialize(with_direct, पासोक, param, flag);
 
 	EXPECT_FLOAT_EQ(control_with.getPitchSetpoint(), control_without.getPitchSetpoint());
 	EXPECT_FLOAT_EQ(control_with.getThrottleSetpoint(), control_without.getThrottleSetpoint());
@@ -459,14 +459,14 @@ TEST(TECSControlTest, UpdateUsesDirectHeightRateSetpoint)
 {
 	const TECSControl::Param param = makeParam();
 	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	const TECSControl::पासोक_2 पासोक = make_पासोक();
 
 	TECSControl control;
-	control.initialize(makeSetpoint(), input, param, flag);
+	control.initialize(makeSetpoint(), पासोक, param, flag);
 
 	TECSControl::Setpoint setpoint = makeSetpoint();
 	setpoint.altitude_rate_setpoint_direct = 2.f;
-	control.update(kDt, setpoint, input, param, flag);
+	control.update(kDt, setpoint, पासोक, param, flag);
 
 	EXPECT_FLOAT_EQ(control.getDebugOutput().altitude_rate_control, 2.f);
 }
@@ -477,23 +477,23 @@ TEST(TECSControlTest, PitchIntegratorDoesNotWindUpAtPitchLimit)
 	TECSControl::Param param = makeParam();
 	param.pitch_max = radians(3.f);
 	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	const TECSControl::पासोक_2 पासोक = make_पासोक();
 
 	TECSControl::Setpoint setpoint = makeSetpoint();
 	setpoint.altitude_reference.alt = 150.f; // climb demand the pitch limit cannot satisfy
 
 	TECSControl control;
-	control.initialize(makeSetpoint(), input, param, flag);
+	control.initialize(makeSetpoint(), पासोक, param, flag);
 
 	for (int i = 0; i < 100; i++) {
-		control.update(kDt, setpoint, input, param, flag);
+		control.update(kDt, setpoint, पासोक, param, flag);
 	}
 
 	ASSERT_FLOAT_EQ(control.getPitchSetpoint(), param.pitch_max);
 	const float integrator_saturated = control.getDebugOutput().pitch_integrator;
 
 	for (int i = 0; i < 500; i++) {
-		control.update(kDt, setpoint, input, param, flag);
+		control.update(kDt, setpoint, पासोक, param, flag);
 		EXPECT_LE(control.getDebugOutput().pitch_integrator, integrator_saturated) << "update " << i;
 	}
 }
@@ -507,17 +507,17 @@ TEST(TECSControlTest, ThrottleIntegratorHoldsWithEqualThrottleLimits)
 	param.throttle_max = 0.4f;
 	param.throttle_trim = 0.4f;
 	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	const TECSControl::पासोक_2 पासोक = make_पासोक();
 
 	for (const float altitude_setpoint : {150.f, 50.f}) {
 		TECSControl::Setpoint setpoint = makeSetpoint();
 		setpoint.altitude_reference.alt = altitude_setpoint;
 
 		TECSControl control;
-		control.initialize(makeSetpoint(), input, param, flag);
+		control.initialize(makeSetpoint(), पासोक, param, flag);
 
 		for (int i = 0; i < 200; i++) {
-			control.update(kDt, setpoint, input, param, flag);
+			control.update(kDt, setpoint, पासोक, param, flag);
 			EXPECT_FLOAT_EQ(control.getThrottleSetpoint(), 0.4f);
 			EXPECT_FLOAT_EQ(control.getDebugOutput().throttle_integrator, 0.f)
 					<< "altitude setpoint " << altitude_setpoint << ", update " << i;
@@ -530,19 +530,19 @@ TEST(TECSControlTest, ThrottleRespectsSlewRate)
 	TECSControl::Param param = makeParam();
 	param.throttle_slewrate = 0.5f;
 	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	const TECSControl::पासोक_2 पासोक = make_पासोक();
 
 	TECSControl::Setpoint setpoint = makeSetpoint();
 	setpoint.altitude_reference.alt = 150.f; // step in demand
 
 	TECSControl control;
-	control.initialize(makeSetpoint(), input, param, flag);
+	control.initialize(makeSetpoint(), पासोक, param, flag);
 	const float max_step = kDt * (param.throttle_max - param.throttle_min) * param.throttle_slewrate;
 
 	float previous = control.getThrottleSetpoint();
 
 	for (int i = 0; i < 100; i++) {
-		control.update(kDt, setpoint, input, param, flag);
+		control.update(kDt, setpoint, पासोक, param, flag);
 		EXPECT_LE(fabsf(control.getThrottleSetpoint() - previous), max_step + 1e-6f) << "update " << i;
 		previous = control.getThrottleSetpoint();
 	}
@@ -556,19 +556,19 @@ TEST(TECSControlTest, PitchRespectsVerticalAccelerationLimit)
 	TECSControl::Param param = makeParam();
 	param.vert_accel_limit = 2.f;
 	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	const TECSControl::पासोक_2 पासोक = make_पासोक();
 
 	TECSControl::Setpoint setpoint = makeSetpoint();
 	setpoint.altitude_reference.alt = 150.f;
 
 	TECSControl control;
-	control.initialize(makeSetpoint(), input, param, flag);
-	const float max_step = kDt * param.vert_accel_limit / input.tas;
+	control.initialize(makeSetpoint(), पासोक, param, flag);
+	const float max_step = kDt * param.vert_accel_limit / पासोक.tas;
 
 	float previous = control.getPitchSetpoint();
 
 	for (int i = 0; i < 100; i++) {
-		control.update(kDt, setpoint, input, param, flag);
+		control.update(kDt, setpoint, पासोक, param, flag);
 		EXPECT_LE(fabsf(control.getPitchSetpoint() - previous), max_step + 1e-6f) << "update " << i;
 		previous = control.getPitchSetpoint();
 	}
@@ -583,13 +583,13 @@ TEST(TECSControlTest, FastDescendCommandsMinimumThrottle)
 	param.throttle_min = 0.1f;
 	param.fast_descend = 1.f;
 	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	const TECSControl::पासोक_2 पासोक = make_पासोक();
 
 	TECSControl control;
-	control.initialize(makeSetpoint(), input, param, flag);
+	control.initialize(makeSetpoint(), पासोक, param, flag);
 
 	for (int i = 0; i < 50; i++) {
-		control.update(kDt, makeSetpoint(), input, param, flag);
+		control.update(kDt, makeSetpoint(), पासोक, param, flag);
 	}
 
 	EXPECT_FLOAT_EQ(control.getThrottleSetpoint(), param.throttle_min);
@@ -600,14 +600,14 @@ TEST(TECSControlTest, UnderspeedCommandsMaximumThrottle)
 {
 	const TECSControl::Param param = makeParam();
 	const TECSControl::Flag flag = makeFlag();
-	TECSControl::Input input = makeInput();
-	input.tas = 0.3f * param.tas_min;
+	TECSControl::पासोक_2 पासोक = make_पासोक();
+	पासोक.tas = 0.3f * param.tas_min;
 
 	TECSControl control;
-	control.initialize(makeSetpoint(), input, param, flag);
+	control.initialize(makeSetpoint(), पासोक, param, flag);
 
 	for (int i = 0; i < 50; i++) {
-		control.update(kDt, makeSetpoint(), input, param, flag);
+		control.update(kDt, makeSetpoint(), पासोक, param, flag);
 	}
 
 	EXPECT_FLOAT_EQ(control.getUnderspeedRatio(), 1.f);
@@ -621,7 +621,7 @@ TEST(TECSControlTest, AirspeedlessIgnoresAirspeed)
 	TECSControl::Flag flag = makeFlag();
 	flag.airspeed_enabled = false;
 
-	TECSControl::Input slow = makeInput();
+	TECSControl::पासोक_2 slow = make_पासोक();
 	slow.tas = 0.3f * param.tas_min;
 	TECSControl::Setpoint fast_setpoint = makeSetpoint();
 	fast_setpoint.tas_setpoint = 25.f;
@@ -657,9 +657,9 @@ TEST(TECSControlTest, PitchIntegratorUsesMinimumAirspeedBelowIt)
 	TECSControl::Setpoint setpoint = makeSetpoint();
 	setpoint.altitude_reference.alt = 102.f;
 
-	TECSControl::Input below_min = makeInput();
+	TECSControl::पासोक_2 below_min = make_पासोक();
 	below_min.tas = 0.2f * param.tas_min;
-	TECSControl::Input at_min = makeInput();
+	TECSControl::पासोक_2 at_min = make_पासोक();
 	at_min.tas = param.tas_min;
 
 	TECSControl control_below_min;
@@ -681,13 +681,13 @@ TEST(TECSControlTest, NonFiniteAirspeedKeepsPitchFinite)
 	const TECSControl::Flag flag = makeFlag();
 
 	TECSControl control;
-	control.initialize(makeSetpoint(), makeInput(), param, flag);
+	control.initialize(makeSetpoint(), make_पासोक(), param, flag);
 
-	TECSControl::Input input = makeInput();
-	input.tas = NAN;
+	TECSControl::पासोक_2 पासोक = make_पासोक();
+	पासोक.tas = NAN;
 
 	for (int i = 0; i < 50; i++) {
-		control.update(kDt, makeSetpoint(), input, param, flag);
+		control.update(kDt, makeSetpoint(), पासोक, param, flag);
 		EXPECT_TRUE(PX4_ISFINITE(control.getPitchSetpoint())) << "update " << i;
 	}
 }
@@ -701,12 +701,12 @@ TEST(TECSControlTest, LoadFactorCorrectionAddsThrottle)
 	TECSControl::Param banked = level;
 	banked.load_factor = 1.f / cosf(radians(30.f));
 	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	const TECSControl::पासोक_2 पासोक = make_पासोक();
 
 	TECSControl control_level;
-	control_level.initialize(makeSetpoint(), input, level, flag);
+	control_level.initialize(makeSetpoint(), पासोक, level, flag);
 	TECSControl control_banked;
-	control_banked.initialize(makeSetpoint(), input, banked, flag);
+	control_banked.initialize(makeSetpoint(), पासोक, banked, flag);
 
 	EXPECT_GT(control_banked.getThrottleSetpoint(), control_level.getThrottleSetpoint());
 }
@@ -716,17 +716,17 @@ TEST(TECSControlTest, LevelFlightPitchIsFedForward)
 {
 	TECSControl::Param param = makeParam();
 	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	const TECSControl::पासोक_2 पासोक = make_पासोक();
 
 	TECSControl::Setpoint setpoint = makeSetpoint();
 	setpoint.altitude_reference.alt = 102.f; // small climb demand, well inside the pitch limits
 
 	TECSControl control_without;
-	control_without.initialize(setpoint, input, param, flag);
+	control_without.initialize(setpoint, पासोक, param, flag);
 
 	param.level_flight_pitch = radians(4.f);
 	TECSControl control_with;
-	control_with.initialize(setpoint, input, param, flag);
+	control_with.initialize(setpoint, पासोक, param, flag);
 
 	EXPECT_NEAR(control_with.getPitchSetpoint() - control_without.getPitchSetpoint(), radians(4.f), 1e-6f);
 }
@@ -738,14 +738,14 @@ TEST(TECSControlTest, PitchLimitsAreAbsolute)
 	param.level_flight_pitch = radians(10.f);
 	param.pitch_max = radians(5.f);
 	const TECSControl::Flag flag = makeFlag();
-	const TECSControl::Input input = makeInput();
+	const TECSControl::पासोक_2 पासोक = make_पासोक();
 
 	TECSControl control;
-	control.initialize(makeSetpoint(), input, param, flag);
+	control.initialize(makeSetpoint(), पासोक, param, flag);
 	EXPECT_FLOAT_EQ(control.getPitchSetpoint(), param.pitch_max);
 
 	for (int i = 0; i < 100; i++) {
-		control.update(kDt, makeSetpoint(), input, param, flag);
+		control.update(kDt, makeSetpoint(), पासोक, param, flag);
 		EXPECT_LE(control.getPitchSetpoint(), param.pitch_max) << "update " << i;
 	}
 
@@ -763,7 +763,7 @@ TEST(TECSControlTest, NonFiniteDemandFallsBackToLevelFlightPitch)
 	bad_setpoint.tas_setpoint = NAN;
 
 	TECSControl control;
-	control.initialize(bad_setpoint, makeInput(), param, flag); // integrator reset to zero
+	control.initialize(bad_setpoint, make_पासोक(), param, flag); // integrator reset to zero
 
 	EXPECT_FLOAT_EQ(control.getPitchSetpoint(), param.level_flight_pitch);
 }
@@ -861,17 +861,17 @@ float pitchSetpointAtSpeed(float tas, float tas_setpoint, float pitch_speed_weig
 	param.pitch_speed_weight = pitch_speed_weight;
 	const TECSControl::Flag flag = makeFlag();
 
-	TECSControl::Input input = makeInput();
-	input.tas = tas;
-	input.tas_rate = tas_rate;
+	TECSControl::पासोक_2 पासोक = make_पासोक();
+	पासोक.tas = tas;
+	पासोक.tas_rate = tas_rate;
 
 	TECSControl::Setpoint setpoint = makeSetpoint();
 	setpoint.tas_setpoint = tas_setpoint;
 
-	control.initialize(setpoint, input, param, flag);
+	control.initialize(setpoint, पासोक, param, flag);
 
 	for (int i = 0; i < 100; i++) {
-		control.update(0.02f, setpoint, input, param, flag);
+		control.update(0.02f, setpoint, पासोक, param, flag);
 	}
 
 	return control.getPitchSetpoint();
@@ -1001,12 +1001,12 @@ TEST(TECSControlTest, KineticSetpointAndEstimateFadeEquallyAboveTrim)
 	TECSControl::Setpoint setpoint = makeSetpoint(); // altitude reference at the current altitude
 	setpoint.tas_setpoint = 18.f;
 
-	TECSControl::Input input = makeInput();
-	input.tas = 17.f; // between trim (15 m/s) and the setpoint
-	input.tas_rate = (setpoint.tas_setpoint - input.tas) * param.airspeed_error_gain; // the commanded acceleration
+	TECSControl::पासोक_2 पासोक = make_पासोक();
+	पासोक.tas = 17.f; // between trim (15 m/s) and the setpoint
+	पासोक.tas_rate = (setpoint.tas_setpoint - पासोक.tas) * param.airspeed_error_gain; // the commanded acceleration
 
 	TECSControl control;
-	control.initialize(setpoint, input, param, flag);
+	control.initialize(setpoint, पासोक, param, flag);
 
 	const TECSControl::DebugOutput &debug = control.getDebugOutput();
 	EXPECT_NEAR(debug.energy_balance_rate_sp, debug.energy_balance_rate_estimate, 1e-4f);

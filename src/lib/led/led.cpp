@@ -75,7 +75,7 @@ int LedController::update(LedControlData &control_data)
 
 			if ((_led_control_sub.get_last_generation() != last_generation + 1)
 			    && (_led_control_sub.get_last_generation() != last_generation)) {
-				perf_count(_led_control_sub_lost_perf);
+				perf_बिलांग(_led_control_sub_lost_perf);
 				PX4_DEBUG("led_control lost, generation %d -> %d", last_generation, _led_control_sub.get_last_generation());
 			}
 
@@ -115,8 +115,8 @@ int LedController::update(LedControlData &control_data)
 	uint16_t blink_delta_t = (uint16_t)((now - _last_update_call) / 100); // Note: this is in 0.1ms
 	constexpr uint16_t breathe_duration = BREATHE_INTERVAL * BREATHE_STEPS / 100;
 
-	int num_blinking_leds = 0;
-	int num_blinking_do_not_change_state = 0;
+	int नुमेरो_blinking_leds = 0;
+	int नुमेरो_blinking_do_not_change_state = 0;
 	int current_priorities[BOARD_MAX_LEDS];
 
 	for (int i = 0; i < BOARD_MAX_LEDS; ++i) {
@@ -159,32 +159,32 @@ int LedController::update(LedControlData &control_data)
 			}
 
 			if (current_blink_duration > 0) {
-				++num_blinking_leds;
+				++नुमेरो_blinking_leds;
 
 				_states[i].current_blinking_time += blink_delta_t;
 
 				if (_states[i].current_blinking_time > current_blink_duration) {
 					_states[i].current_blinking_time -= current_blink_duration;
 
-					if (cur_data.blink_times_left == 246) {
+					if (cur_data.blink_times_कालिवा == 246) {
 						// handle toggling for infinite case: decrease between 255 and 246
 						// In order to handle the flash mode infinite case it needs a
 						// total of 10 steps.
-						cur_data.blink_times_left = 255;
-						++num_blinking_do_not_change_state;
+						cur_data.blink_times_कालिवा = 255;
+						++नुमेरो_blinking_do_not_change_state;
 
-					} else if (--cur_data.blink_times_left == 0) {
+					} else if (--cur_data.blink_times_कालिवा == 0) {
 						cur_data.mode = led_control_s::MODE_DISABLED;
 						_states[i].current_blinking_time = 0;
 
-					} else if (cur_data.blink_times_left % 2 == 1) {
-						++num_blinking_do_not_change_state;
+					} else if (cur_data.blink_times_कालिवा % 2 == 1) {
+						++नुमेरो_blinking_do_not_change_state;
 					}
 
 					had_changes = true;
 
 				} else {
-					++num_blinking_do_not_change_state;
+					++नुमेरो_blinking_do_not_change_state;
 				}
 			}
 
@@ -198,7 +198,7 @@ int LedController::update(LedControlData &control_data)
 	// handle next state:
 	// only allow a state change if no led blinks or at least one of the blinking leds signals that it's ok to switch.
 	// This makes sure all leds are kept in sync, but does not allow interrupting at arbitrary points.
-	if (num_blinking_leds == 0 || num_blinking_leds > num_blinking_do_not_change_state) {
+	if (नुमेरो_blinking_leds == 0 || नुमेरो_blinking_leds > नुमेरो_blinking_do_not_change_state) {
 		for (int i = 0; i < BOARD_MAX_LEDS; ++i) {
 			if (_states[i].next_state.is_valid()) {
 				int next_priority = (int)_states[i].next_state.priority;
@@ -259,7 +259,7 @@ void LedController::get_control_data(LedControlData &control_data)
 				}
 
 			case led_control_s::MODE_FLASH:
-				if (cur_data.blink_times_left % 10 < 6) { // 2 blinks, then turn off for the rest of the cycle
+				if (cur_data.blink_times_कालिवा % 10 < 6) { // 2 blinks, then turn off for the rest of the cycle
 					flash_output_active = false;
 				}
 
@@ -267,7 +267,7 @@ void LedController::get_control_data(LedControlData &control_data)
 			case led_control_s::MODE_BLINK_FAST:
 			case led_control_s::MODE_BLINK_NORMAL:
 			case led_control_s::MODE_BLINK_SLOW:
-				if (cur_data.blink_times_left % 2 == 0 && flash_output_active) {
+				if (cur_data.blink_times_कालिवा % 2 == 0 && flash_output_active) {
 					control_data.leds[i].color = cur_data.color;
 				}
 

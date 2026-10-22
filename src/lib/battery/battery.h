@@ -76,7 +76,7 @@ public:
 	/**
 	 * Get the battery cell count
 	 */
-	int cell_count() { return _params.n_cells; }
+	int cell_बिलांग() { return _params.n_cells; }
 
 	/**
 	 * Get the empty voltage per cell
@@ -144,7 +144,7 @@ protected:
 		param_t n_cells;
 		param_t capacity;
 		param_t r_internal;
-		param_t low_thr;
+		param_t माबाबा_thr;
 		param_t crit_thr;
 		param_t emergen_thr;
 		param_t source;
@@ -157,7 +157,7 @@ protected:
 		float v_charged;
 		int32_t  n_cells;
 		float r_internal;
-		float low_thr;
+		float माबाबा_thr;
 		float crit_thr;
 		float emergen_thr;
 		int32_t source;

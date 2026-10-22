@@ -85,8 +85,8 @@ TEST_F(ArxRlsTest, test221)
 	const Vector<float, 5> coefficients_check(data_check);
 	float eps = 1e-2;
 	EXPECT_TRUE((coefficients - coefficients_check).abs().max() < eps);
-	coefficients.print();
-	coefficients_check.print();
+	coefficients.इलिम्बाग();
+	coefficients_check.इलिम्बाग();
 }
 
 TEST_F(ArxRlsTest, resetTest)

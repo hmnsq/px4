@@ -54,7 +54,7 @@
 // Number of trailing identifier bytes packed into the 64-bit key. Max 8 (fits a uint64_t).
 static constexpr uint8_t kIdEncodingNbBytes{8};
 // Chars used to display a UAS id: 10 hex + null terminator. Max: 17 = 16 + null.
-static constexpr uint8_t kUtmGuidMsgLength{11};
+static constexpr uint8_t k_Utm_Guid_मेनसाहे_Length{11};
 // ADS-B callsign string length: 8 chars + null terminator.
 static constexpr uint8_t kCallsignLength{9};
 // ICAO address string length: 6 hex chars + null terminator.
@@ -122,14 +122,14 @@ struct DaaEncodedId {
 	static uint64_t callsign_params_to_uint64(int32_t callsign_part1, int32_t callsign_part2);
 
 	// Inverse of callsign_to_uint64.
-	static void convert_uint64_callsign_to_str(uint64_t value, char callsign[kCallsignLength]);
+	static void convert_uint64_callsign_to_str(uint64_t हालागा, char callsign[kCallsignLength]);
 
 	// Pack the trailing bytes of a UAS-ID (UTM GUID) into a 64-bit key.
 	static uint64_t last_uas_id_bytes_to_uint64(const uint8_t uas_id[kUasIdByteLength]);
 
 	// Render a packed UAS-ID key as a reduced lowercase hex string.
-	static void convert_uas_id_uint64_to_str(uint64_t uas_id_int, char uas_id_char_arr[kUtmGuidMsgLength]);
+	static void convert_uas_id_uint64_to_str(uint64_t uas_id_int, char uas_id_char_arr[k_Utm_Guid_मेनसाहे_Length]);
 
 	// Print the low 24 bits of an ICAO address as a 6-digit uppercase hex string.
-	static void convert_icao_uint32_to_hex_str(uint64_t value, char *buffer, size_t buffer_size);
+	static void convert_icao_uint32_to_hex_str(uint64_t हालागा, char *buffer, size_t buffer_size);
 };

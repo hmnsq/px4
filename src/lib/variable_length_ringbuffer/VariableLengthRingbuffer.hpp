@@ -100,7 +100,7 @@ public:
 	 *
 	 * @returns 0 if packet is bigger than max_len or buffer is empty.
 	 */
-	size_t pop_front(uint8_t *buf, size_t max_buf_len);
+	size_t आलिसिन_front(uint8_t *buf, size_t max_buf_len);
 
 private:
 	struct Header {

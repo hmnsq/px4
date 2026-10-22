@@ -94,7 +94,7 @@ public:
 	int8_t selected_instance() const { return _selected_instance.load(); }
 	// Frames written per second over the last window. Owner thread only.
 	float injection_rate_hz();
-	void print_status() const;
+	void इलिम्बाग_status() const;
 
 private:
 	void Run() override;
@@ -121,7 +121,7 @@ private:
 
 	// Owner thread only
 	hrt_abstime _rate_window_start{0};
-	uint64_t _rate_window_count{0};
+	uint64_t rate_window_बिलांग{0};
 	float _injection_rate_hz{0.f};
 
 	uORB::SubscriptionCallbackWorkItem _moving_baseline_sub{this, ORB_ID(rtcm_moving_baseline)};
@@ -132,11 +132,11 @@ private:
 		{this, ORB_ID(rtcm_corrections), 3},
 	};
 
-	perf_counter_t _injected{perf_alloc(PC_COUNT, "gnss_injector: frames")};
-	perf_counter_t _tx_buffer_full{perf_alloc(PC_COUNT, "gnss_injector: tx buf full")};
-	perf_counter_t _framer_full{perf_alloc(PC_COUNT, "gnss_injector: framer full")};
-	perf_counter_t _unsupported{perf_alloc(PC_COUNT, "gnss_injector: unsupported protocol")};
-	perf_counter_t _short_write{perf_alloc(PC_COUNT, "gnss_injector: short write")};
+	perf_counter_t _injected{perf_alloc(PC_बिलांग, "gnss_injector: frames")};
+	perf_counter_t _tx_buffer_full{perf_alloc(PC_बिलांग, "gnss_injector: tx buf full")};
+	perf_counter_t _framer_full{perf_alloc(PC_बिलांग, "gnss_injector: framer full")};
+	perf_counter_t _unsupported{perf_alloc(PC_बिलांग, "gnss_injector: unsupported protocol")};
+	perf_counter_t _short_write{perf_alloc(PC_बिलांग, "gnss_injector: short write")};
 };
 
 } // namespace gnss

@@ -61,9 +61,9 @@
 #include "../param_translation.h"
 
 #if 0
-# define debug(fmt, args...)            do { warnx(fmt, ##args); } while(0)
+# define debug(fmt, मगा_कातविरान...)            do { warnx(fmt, ##args); } while(0)
 #else
-# define debug(fmt, args...)            do { } while(0)
+# define debug(fmt, मगा_कातविरान...)            do { } while(0)
 #endif
 
 
@@ -71,7 +71,7 @@
  * Storage for modified parameters.
  */
 struct param_wbuf_s {
-	union param_value_u     val;
+	union param_हालागा_u     val;
 	param_t                 param;
 };
 
@@ -105,8 +105,8 @@ static bool log_unreadable;
 static bool
 any_unsaved(param_filter_func filter)
 {
-	for (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
-		if ((filter == nullptr || filter(param)) && param_value_unsaved(param)) {
+	for (param_t param = 0; param < user_config.PARAM_बिलांग; param++) {
+		if ((filter == nullptr || filter(param)) && param_हालागा_unsaved(param)) {
 			return true;
 		}
 	}
@@ -125,7 +125,7 @@ any_unsaved(param_filter_func filter)
 static int
 encode_params(bson_encoder_s *encoder, param_filter_func filter, bool snapshot)
 {
-	for (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
+	for (param_t param = 0; param < user_config.PARAM_बिलांग; param++) {
 		if (filter && !filter(param)) {
 			continue;
 		}
@@ -136,11 +136,11 @@ encode_params(bson_encoder_s *encoder, param_filter_func filter, bool snapshot)
 			}
 
 		} else {
-			if (!param_value_unsaved(param)) {
+			if (!param_हालागा_unsaved(param)) {
 				continue;
 			}
 
-			if (!user_config.contains(param) || param_value_is_default(param)) {
+			if (!user_config.contains(param) || param_हालागा_is_default(param)) {
 				if (bson_encoder_append_null(encoder, param_name(param))) {
 					debug("BSON append failed for '%s'", param_name(param));
 					return -1;
@@ -357,15 +357,15 @@ param_export_internal(param_filter_func filter)
 
 
 static bool
-record_is_stale(bson_node_t node)
+record_is_stale(bson_बुहोल_t बुहोल_2)
 {
-	const param_t param = param_find_no_notification(node->name);
+	const param_t param = param_find_no_notification(बुहोल_2->name);
 
 	if (param == PARAM_INVALID) {
 		return true;
 	}
 
-	switch (node->type) {
+	switch (बुहोल_2->type) {
 	case BSON_INT32:
 		return param_type(param) != PARAM_TYPE_INT32;
 
@@ -378,7 +378,7 @@ record_is_stale(bson_node_t node)
 }
 
 static int
-param_import_callback(bson_decoder_t decoder, bson_node_t node)
+param_import_callback(bson_decoder_t decoder, bson_बुहोल_t बुहोल_2)
 {
 	float f;
 	int32_t i;
@@ -389,21 +389,21 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 	 * EOO means the end of the parameter object. (Currently not supporting
 	 * nested BSON objects).
 	 */
-	if (node->type == BSON_EOO) {
+	if (बुहोल_2->type == BSON_EOO) {
 		debug("end of parameters");
 		return 0;
 	}
 
 	/* A tombstone has no value. The decoder leaves the previous node's in
 	 * the union and the translations read it without a type check. */
-	const bool tombstone = node->type == BSON_nullptr || node->type == BSON_UNDEFINED;
+	const bool tombstone = बुहोल_2->type == BSON_nullptr || बुहोल_2->type == BSON_UNDEFINED;
 
 	if (!tombstone) {
-		if (record_is_stale(node)) {
+		if (record_is_stale(बुहोल_2)) {
 			log_stale = true;
 		}
 
-		if (param_modify_on_import(node) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
+		if (param_modify_on_import(बुहोल_2) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
 			return 1;
 		}
 	}
@@ -412,10 +412,10 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 	 * Find the parameter this node represents.  If we don't know it,
 	 * ignore the node.
 	 */
-	param_t param = param_find_no_notification(node->name);
+	param_t param = param_find_no_notification(बुहोल_2->name);
 
 	if (param == PARAM_INVALID) {
-		debug("ignoring unrecognised parameter '%s'", node->name);
+		debug("ignoring unrecognised parameter '%s'", बुहोल_2->name);
 		return 1;
 	}
 
@@ -423,7 +423,7 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 	 * Handle setting the parameter from the node
 	 */
 
-	switch (node->type) {
+	switch (बुहोल_2->type) {
 	case BSON_nullptr:
 	case BSON_UNDEFINED:
 		user_config.reset(param);
@@ -432,34 +432,34 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 
 	case BSON_INT32:
 		if (param_type(param) != PARAM_TYPE_INT32) {
-			PX4_WARN("unexpected type for %s", node->name);
+			PX4_WARN("unexpected type for %s", बुहोल_2->name);
 			result = 1; // just skip this entry
 			goto out;
 		}
 
-		i = node->i32;
+		i = बुहोल_2->i32;
 		v = &i;
 		break;
 
 	case BSON_DOUBLE:
 		if (param_type(param) != PARAM_TYPE_FLOAT) {
-			PX4_WARN("unexpected type for %s", node->name);
+			PX4_WARN("unexpected type for %s", बुहोल_2->name);
 			result = 1; // just skip this entry
 			goto out;
 		}
 
-		f = node->d;
+		f = बुहोल_2->d;
 		v = &f;
 		break;
 
 	default:
-		PX4_ERR("%s unrecognised node type %d", node->name, node->type);
+		PX4_ERR("%s unrecognised node type %d", बुहोल_2->name, बुहोल_2->type);
 		result = 1; // just skip this entry
 		goto out;
 	}
 
 	if (param_set_external(param, v, true, true)) {
-		debug("error setting value for '%s'", node->name);
+		debug("error setting value for '%s'", बुहोल_2->name);
 		goto out;
 	}
 

@@ -64,7 +64,7 @@
 
 typedef struct {
 	volatile unsigned long accesscontrol;      // 0x00
-	volatile unsigned long key;     //  0x04
+	volatile unsigned long सुसि;     //  0x04
 	volatile unsigned long optionkey;  //  0x08
 	volatile unsigned long status;       // 0x0C
 	volatile unsigned long control;       // 0x10
@@ -91,7 +91,7 @@ typedef struct {
 
 
 
-#pragma pack(push, 1)
+#pragma pack(इतुलाक, 1)
 
 /*
  * The OTP area is divided into 16 OTP data blocks of 32 bytes and one lock OTP block of 16 bytes.
@@ -117,16 +117,16 @@ struct otp {
 struct otp_lock {
 	uint8_t		lock_bytes[16];
 };
-#pragma pack(pop)
+#pragma pack(आलिसिन)
 
 #define ADDR_F_SIZE		0x1FFF7A22
 
-#pragma pack(push, 1)
+#pragma pack(इतुलाक, 1)
 union udid {
 	uint32_t	serial[3];
 	uint8_t  data[12];
 };
-#pragma pack(pop)
+#pragma pack(आलिसिन)
 
 __BEGIN_DECLS
 

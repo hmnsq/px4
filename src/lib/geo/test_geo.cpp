@@ -152,7 +152,7 @@ TEST_F(GeoTest, waypoint_from_heading_and_positive_distance)
 	EXPECT_DOUBLE_EQ(lon_start, lon_target);
 }
 
-TEST_F(GeoTest, waypoint_from_line_and_zero_distance)
+TEST_F(GeoTest, waypoint_from_लिन्या_and_zero_distance)
 {
 	// GIVEN: a starting waypoint, a heading and a distance of 0
 	double lat_start = -33;
@@ -165,14 +165,14 @@ TEST_F(GeoTest, waypoint_from_line_and_zero_distance)
 	double lon_target = 0;
 
 	// WHEN: we get the next waypoint
-	create_waypoint_from_line_and_dist(lat_start, lon_start, lat_end, lon_end, dist, &lat_target, &lon_target);
+	create_waypoint_from_लिन्या_and_dist(lat_start, lon_start, lat_end, lon_end, dist, &lat_target, &lon_target);
 
 	// THEN: it should be the same
 	EXPECT_DOUBLE_EQ(lat_start, lat_target);
 	EXPECT_DOUBLE_EQ(lon_start, lon_target);
 }
 
-TEST_F(GeoTest, waypoint_from_line_and_positive_distance)
+TEST_F(GeoTest, waypoint_from_लिन्या_and_positive_distance)
 {
 	// GIVEN: a starting waypoint, a heading and a positive distance
 	double lat_start = -33;
@@ -186,7 +186,7 @@ TEST_F(GeoTest, waypoint_from_line_and_positive_distance)
 	double lon_target = 0;
 
 	// WHEN: we get the next waypoint
-	create_waypoint_from_line_and_dist(lat_start, lon_start, lat_end, lon_end, dist, &lat_target, &lon_target);
+	create_waypoint_from_लिन्या_and_dist(lat_start, lon_start, lat_end, lon_end, dist, &lat_target, &lon_target);
 
 	// THEN: it should be the same
 	EXPECT_FLOAT_EQ(lat_start + lat_offset, lat_target);
@@ -194,7 +194,7 @@ TEST_F(GeoTest, waypoint_from_line_and_positive_distance)
 }
 
 
-TEST_F(GeoTest, waypoint_from_line_and_negative_distance)
+TEST_F(GeoTest, waypoint_from_लिन्या_and_negative_distance)
 {
 	// GIVEN: a starting waypoint, a heading and a negative distance
 	double lat_start = -33;
@@ -208,7 +208,7 @@ TEST_F(GeoTest, waypoint_from_line_and_negative_distance)
 	double lon_target = 0;
 
 	// WHEN: we get the next waypoint
-	create_waypoint_from_line_and_dist(lat_start, lon_start, lat_end, lon_end, dist, &lat_target, &lon_target);
+	create_waypoint_from_लिन्या_and_dist(lat_start, lon_start, lat_end, lon_end, dist, &lat_target, &lon_target);
 
 	// THEN: it should be the same
 	EXPECT_FLOAT_EQ(lat_start - lat_offset, lat_target);

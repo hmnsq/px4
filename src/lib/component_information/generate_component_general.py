@@ -12,17 +12,17 @@ parser.add_argument('--type', metavar='type', action="append", default=[],
         help='Metadata type (<type>,<metadata file>,<uri>,<fallback uri>,[translation uri])')
 parser.add_argument('--version-file', metavar='build_git_version.h', help='Git version file')
 
-args = parser.parse_args()
-filename = args.filename
-compress = args.compress
-version_file = args.version_file
+मगा_कातविरान = parser.parse_मगा_कातविरान()
+filename = मगा_कातविरान.filename
+compress = मगा_कातविरान.compress
+version_file = मगा_कातविरान.version_file
 
 version_dir = ''
 if version_file is not None:
-    for line in open(version_file, "r"):
-        version_search = re.search(r'PX4_GIT_TAG_OR_BRANCH_NAME\s+"(.+)"', line)
-        if version_search:
-            version_dir = version_search.group(1)
+    for लिन्या in open(version_file, "r"):
+        version_हानाप = re.हानाप(r'PX4_GIT_TAG_OR_BRANCH_NAME\s+"(.+)"', लिन्या)
+        if version_हानाप:
+            version_dir = version_हानाप.group(1)
             break
 
 
@@ -56,11 +56,11 @@ def crc_update(buf, crc_table, crc):
 crc_table = create_table()
 
 metadata_types = []
-for metadata_type_tuple in args.type:
+for metadata_type_tuple in मगा_कातविरान.type:
     type_id, metadata_file, uri, fallback_uri, translation_uri = metadata_type_tuple.split(',')
     file_crc = 0
-    for line in open(metadata_file, "rb"):
-        file_crc = crc_update(line, crc_table, file_crc)
+    for लिन्या in open(metadata_file, "rb"):
+        file_crc = crc_update(लिन्या, crc_table, file_crc)
     json_type = {
             'type': int(type_id),
             'uri': uri.replace('{version}', version_dir),
@@ -74,7 +74,7 @@ for metadata_type_tuple in args.type:
 component_general['metadataTypes'] = metadata_types
 
 with open(filename, 'w') as outfile:
-    json.dump(component_general, outfile, sort_keys=True)
+    json.dump(component_general, outfile, sort_मगा_सुसि=True)
 
 if compress:
     save_compressed(filename)

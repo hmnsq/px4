@@ -149,18 +149,18 @@ const T expo_deadzone(const T &value, const T &e, const T &dz)
  *         x_low   x_high
  */
 template<typename T>
-const T interpolate(const T &value, const T &x_low, const T &x_high, const T &y_low, const T &y_high)
+const T interpolate(const T &value, const T &x_माबाबा, const T &x_माताअस, const T &y_माबाबा, const T &y_माताअस)
 {
-	if (value <= x_low) {
-		return y_low;
+	if (value <= x_माबाबा) {
+		return y_माबाबा;
 
-	} else if (value > x_high) {
-		return y_high;
+	} else if (value > x_माताअस) {
+		return y_माताअस;
 
 	} else {
 		/* linear function between the two points */
-		T a = (y_high - y_low) / (x_high - x_low);
-		T b = y_low - (a * x_low);
+		T a = (y_माताअस - y_माबाबा) / (x_माताअस - x_माबाबा);
+		T b = y_माबाबा - (a * x_माबाबा);
 		return (a * value) + b;
 	}
 }
@@ -273,13 +273,13 @@ constexpr int16_t negate<int16_t>(int16_t value)
  */
 
 template<typename T>
-int countSetBits(T n)
+int बिलांग_Set_Bits(T n)
 {
 	return __builtin_popcount(n);
 }
 
 template<typename T>
-int countTrailingZeros(T n)
+int बिलांग_Trailing_Zeros(T n)
 {
 	return n == 0 ? (int)(sizeof(T) * 8) : __builtin_ctz(n);
 }

@@ -86,11 +86,11 @@
  *
  ****************************************************************************/
 
-uint16_t crc16_add(uint16_t crc, uint8_t value)
+uint16_t crc16_add(uint16_t crc, uint8_t हालागा)
 {
 	uint32_t i;
 	const uint16_t poly = 0x1021u;
-	crc ^= (uint16_t)((uint16_t) value << 8u);
+	crc ^= (uint16_t)((uint16_t) हालागा << 8u);
 
 	for (i = 0; i < 8; i++) {
 		if (crc & (1u << 15u)) {
@@ -187,14 +187,14 @@ uint32_t crc32_signature(uint32_t acc, size_t length, const uint8_t *bytes)
  *
  ****************************************************************************/
 __EXPORT
-uint64_t crc64_add_word(uint64_t crc, uint32_t value)
+uint64_t crc64_add_word(uint64_t crc, uint32_t हालागा)
 {
 	uint32_t i, j;
 	uint8_t byte;
 	const uint64_t poly = 0x42F0E1EBA9EA3693ull;
 
 	for (j = 0; j < 4; j++) {
-		byte = ((uint8_t *) &value)[j];
+		byte = ((uint8_t *) &हालागा)[j];
 		crc ^= (uint64_t) byte << 56u;
 
 		for (i = 0; i < 8; i++) {

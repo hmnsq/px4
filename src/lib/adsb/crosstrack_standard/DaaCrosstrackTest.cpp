@@ -165,7 +165,7 @@ TEST_F(DaaCrosstrackTest, DetectsApproachingConflictAndReportsExpectedStats)
 					       math::radians(270.f), matrix::Vector3f(0.f, -30.f, 0.f));
 
 	daa_stats_s daa_stats{};
-	EXPECT_EQ(daa.calculate_daa_stats(uav_state, traffic_state, daa_stats), detect_and_avoid_s::DAA_CONFLICT_LVL_HIGH);
+	EXPECT_EQ(daa.calculate_daa_stats(uav_state, traffic_state, daa_stats), detect_and_avoid_s::DAA_CONFLICT_LVL_माताअस);
 
 	EXPECT_NEAR(daa_stats.aircraft_dist, 200.f, 0.1f);
 	EXPECT_LT(fabsf(daa_stats.aircraft_dist_hor), 500.f);
@@ -192,7 +192,7 @@ TEST_F(DaaCrosstrackTest, MatchesLegacyNotebookDataset)
 
 		daa_stats_s daa_stats{};
 		const uint8_t conflict_level = daa.calculate_daa_stats(uav_state, create_aircraft_state(traffic), daa_stats);
-		const uint8_t expected_conflict_level = traffic.in_conflict ? detect_and_avoid_s::DAA_CONFLICT_LVL_HIGH :
+		const uint8_t expected_conflict_level = traffic.in_conflict ? detect_and_avoid_s::DAA_CONFLICT_LVL_माताअस :
 							detect_and_avoid_s::DAA_CONFLICT_LVL_NONE;
 
 		EXPECT_EQ(conflict_level, expected_conflict_level);

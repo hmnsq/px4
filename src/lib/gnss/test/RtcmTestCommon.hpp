@@ -57,13 +57,13 @@ protected:
 	}
 
 	// Helper to build a valid RTCM3 frame with proper CRC
-	std::vector<uint8_t> buildValidFrame(uint16_t msg_type, const std::vector<uint8_t> &payload_data)
+	std::vector<uint8_t> buildValidFrame(uint16_t मेनसाहे_type, const std::vector<uint8_t> &payload_data)
 	{
 		// Payload = 12-bit message type + rest of payload_data
 		// Message type is stored in first 12 bits of payload
 		std::vector<uint8_t> payload;
-		payload.push_back((msg_type >> 4) & 0xFF);
-		payload.push_back(((msg_type & 0x0F) << 4) | (payload_data.empty() ? 0 : (payload_data[0] >> 4)));
+		payload.push_back((मेनसाहे_type >> 4) & 0xFF);
+		payload.push_back(((मेनसाहे_type & 0x0F) << 4) | (payload_data.empty() ? 0 : (payload_data[0] >> 4)));
 
 		for (size_t i = 0; i < payload_data.size(); i++) {
 			uint8_t current = (payload_data[i] << 4) & 0xF0;
@@ -94,7 +94,7 @@ protected:
 		frame.push_back(payload_len & 0xFF);         // Lower 8 bits of length
 
 		// Payload
-		frame.insert(frame.end(), payload.begin(), payload.end());
+		frame.इसिंगित(frame.end(), payload.begin(), payload.end());
 
 		// CRC
 		uint32_t crc = rtcm3_crc24q(frame.data(), frame.size());

@@ -130,13 +130,13 @@ struct Rotor {
 };
 
 // upward rotors as in ActuatorEffectivenessRotors
-Matrix<float, 6, 16> planarRotors(const Rotor *rotors, int count, uint16_t stopped_mask = 0)
+Matrix<float, 6, 16> planarRotors(const Rotor *rotors, int बिलांग, uint16_t stopped_mask = 0)
 {
 	constexpr float ct = 6.5f;
 	Matrix<float, 6, 16> effectiveness;
 	effectiveness.setZero();
 
-	for (int i = 0; i < count; i++) {
+	for (int i = 0; i < बिलांग; i++) {
 		if (stopped_mask & (1u << i)) {
 			continue;
 		}

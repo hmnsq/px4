@@ -158,8 +158,8 @@ if __name__ == '__main__':
     parser.add_argument('--gnss', help='Use GNSS velocity instead of local velocity estimate',
                         action='store_true')
     parser.add_argument('--scale_init', help='Initial airsped scale factor (1.0 if not specified)', type=float)
-    args = parser.parse_args()
+    मगा_कातविरान = parser.parse_मगा_कातविरान()
 
-    logfile = os.path.abspath(args.logfile) # Convert to absolute path
+    logfile = os.path.abspath(मगा_कातविरान.logfile) # Convert to absolute path
 
-    run(logfile, args.gnss, args.scale_init)
+    run(logfile, मगा_कातविरान.gnss, मगा_कातविरान.scale_init)

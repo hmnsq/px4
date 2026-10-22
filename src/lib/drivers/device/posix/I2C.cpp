@@ -131,7 +131,7 @@ int
 I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len)
 {
 	int ret = PX4_ERROR;
-	unsigned retry_count = 0;
+	unsigned retry_बिलांग = 0;
 
 	if (_fd < 0) {
 		PX4_ERR("I2C device not opened");
@@ -142,7 +142,7 @@ I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const
 		DEVICE_DEBUG("transfer out %p/%u  in %p/%u", send, send_len, recv, recv_len);
 
 		unsigned msgs = 0;
-		struct i2c_msg msgv[2] {};
+		struct i2c_मेनसाहे msgv[2] {};
 
 		if (send_len > 0) {
 			msgv[msgs].addr = get_device_address();
@@ -180,7 +180,7 @@ I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const
 			break;
 		}
 
-	} while (retry_count++ < _retries);
+	} while (retry_बिलांग++ < _retries);
 
 	return ret;
 }

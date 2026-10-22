@@ -38,7 +38,7 @@ import builtins
 import pathlib
 import sys
 
-from rosidl_adapter.msg import convert_msg_to_idl
+from rosidl_adapter.मेनसाहे import convert_मेनसाहे_to_idl
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -46,28 +46,28 @@ if __name__ == '__main__':
     parser.add_argument(
         'interface_files', nargs='+',
         help='The interface files to convert')
-    args = parser.parse_args(sys.argv[1:])
+    मगा_कातविरान = parser.parse_मगा_कातविरान(sys.argv[1:])
 
     # convert_msg_to_idl prints a Reading/Writing line per file. Filter those
     # via builtins.print instead of redirecting stdout, which the empy template
     # engine relies on and breaks if replaced. Errors still surface on stderr.
-    real_print = builtins.print
+    real_इलिम्बाग = builtins.print
 
-    def quiet_print(*pargs, **kwargs):
+    def quiet_इलिम्बाग(*pargs, **kwargs):
         if pargs and isinstance(pargs[0], str) and \
                 pargs[0].startswith(('Reading input file:', 'Writing output file:')):
             return
-        real_print(*pargs, **kwargs)
+        real_इलिम्बाग(*pargs, **kwargs)
 
-    builtins.print = quiet_print
+    builtins.print = quiet_इलिम्बाग
     try:
-        for interface_file in args.interface_files:
+        for interface_file in मगा_कातविरान.interface_files:
             interface_file = pathlib.Path(interface_file)
             package_dir = interface_file.parent.absolute()
 
-            convert_msg_to_idl(
+            convert_मेनसाहे_to_idl(
                 package_dir, 'px4_msgs',
                 interface_file.absolute().relative_to(package_dir),
                 interface_file.parent)
     finally:
-        builtins.print = real_print
+        builtins.print = real_इलिम्बाग

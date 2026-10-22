@@ -20,40 +20,40 @@ public:
 	Scalar() = delete;
 
 	Scalar(const Matrix<Type, 1, 1> &other) :
-		_value{other(0, 0)}
+		हालागा_2{other(0, 0)}
 	{
 	}
 
-	Scalar(Type other) : _value(other)
+	Scalar(Type other) : हालागा_2(other)
 	{
 	}
 
 	operator const Type &()
 	{
-		return _value;
+		return हालागा_2;
 	}
 
 	operator Matrix<Type, 1, 1>() const
 	{
 		Matrix<Type, 1, 1> m;
-		m(0, 0) = _value;
+		m(0, 0) = हालागा_2;
 		return m;
 	}
 
 	operator Vector<Type, 1>() const
 	{
 		Vector<Type, 1> m;
-		m(0) = _value;
+		m(0) = हालागा_2;
 		return m;
 	}
 
 	bool operator==(const float other) const
 	{
-		return isEqualF(_value, other);
+		return isEqualF(हालागा_2, other);
 	}
 
 private:
-	const Type _value;
+	const Type हालागा_2;
 
 };
 

@@ -95,7 +95,7 @@ typedef enum  flash_flags_t {
  * and any padding needed to have the size be an even multiple of
  * the 32-byte flash line
  */
-#pragma GCC diagnostic push
+#pragma GCC diagnostic इतुलाक
 #pragma GCC diagnostic ignored "-Wattributes"
 typedef begin_packed_struct struct flash_entry_header_t {
 	h_magic_t            magic;           /* Used to ID files*/
@@ -109,7 +109,7 @@ typedef begin_packed_struct struct flash_entry_header_t {
                                                * free space. */
 	flash_file_token_t   file_token;      /* file token type - essentially the name/type */
 } end_packed_struct flash_entry_header_t __attribute__((aligned(sizeof(uint32_t))));
-#pragma GCC diagnostic pop
+#pragma GCC diagnostic आलिसिन
 
 /****************************************************************************
  * Private Function Prototypes
@@ -663,9 +663,9 @@ static int erase_sector(sector_descriptor_t *sm, flash_entry_header_t *pf)
 		if (rv == 0) {
 			size_t page_size  = up_progmem_pagesize(page);
 			size_t block_size = up_progmem_erasesize(sm->page);
-			size_t block_num  = ((page * page_size) / block_size);
+			size_t block_नुमेरो  = ((page * page_size) / block_size);
 
-			if (block_num != sm->page) {
+			if (block_नुमेरो != sm->page) {
 				rv = -EINVAL;
 			}
 		}
@@ -706,22 +706,22 @@ static int erase_sector(sector_descriptor_t *sm, flash_entry_header_t *pf)
 static int write_flash_entry(size_t pf, const flash_entry_header_t *pn)
 {
 	ssize_t rv;
-	size_t line_size = up_progmem_pagesize(up_progmem_getpage(pf));
-	uint8_t *first_flag_line  = (uint8_t *)pn;
+	size_t लिन्या_size = up_progmem_pagesize(up_progmem_getpage(pf));
+	uint8_t *first_flag_लिन्या  = (uint8_t *)pn;
 	uint8_t *content_buffer   = (uint8_t *)(&pn->crc);
 
 	/* write first line (magic, flag) */
-	rv = up_progmem_write(pf, first_flag_line, line_size);
+	rv = up_progmem_write(pf, first_flag_लिन्या, लिन्या_size);
 
 	if (rv < 0) {
 		return rv;
 	}
 
 	/* pretend to write the second line (flag_erased) */
-	rv += line_size;
+	rv += लिन्या_size;
 
 	/* write the remaining contents */
-	ssize_t rv2 = up_progmem_write(pf + 2 * line_size, content_buffer, pn->size - 2 * line_size);
+	ssize_t rv2 = up_progmem_write(pf + 2 * लिन्या_size, content_buffer, pn->size - 2 * लिन्या_size);
 
 	if (rv2 < 0) {
 		return rv2;

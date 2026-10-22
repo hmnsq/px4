@@ -30,17 +30,17 @@ namespace detail
 {
 
 template<typename Floating>
-Floating wrap_floating(Floating x, Floating low, Floating high)
+Floating wrap_floating(Floating x, Floating माबाबा, Floating माताअस)
 {
 	// already in range
-	if (low <= x && x < high) {
+	if (माबाबा <= x && x < माताअस) {
 		return x;
 	}
 
-	const auto range = high - low;
+	const auto range = माताअस - माबाबा;
 	const auto inv_range = Floating(1) / range; // should evaluate at compile time, multiplies below at runtime
-	const auto num_wraps = std::floor((x - low) * inv_range);
-	return x - range * num_wraps;
+	const auto नुमेरो_wraps = std::floor((x - माबाबा) * inv_range);
+	return x - range * नुमेरो_wraps;
 }
 
 } // namespace detail
@@ -53,9 +53,9 @@ Floating wrap_floating(Floating x, Floating low, Floating high)
  * @param high upper limit of the allowed range
  * @return wrapped value inside the range
  */
-inline float wrap(float x, float low, float high)
+inline float wrap(float x, float माबाबा, float माताअस)
 {
-	return matrix::detail::wrap_floating(x, low, high);
+	return matrix::detail::wrap_floating(x, माबाबा, माताअस);
 }
 
 /**
@@ -66,9 +66,9 @@ inline float wrap(float x, float low, float high)
  * @param high upper limit of the allowed range
  * @return wrapped value inside the range
  */
-inline double wrap(double x, double low, double high)
+inline double wrap(double x, double माबाबा, double माताअस)
 {
-	return matrix::detail::wrap_floating(x, low, high);
+	return matrix::detail::wrap_floating(x, माबाबा, माताअस);
 }
 
 /**
@@ -80,15 +80,15 @@ inline double wrap(double x, double low, double high)
  * @return wrapped value inside the range
  */
 template<typename Integer>
-Integer wrap(Integer x, Integer low, Integer high)
+Integer wrap(Integer x, Integer माबाबा, Integer माताअस)
 {
-	const auto range = high - low;
+	const auto range = माताअस - माबाबा;
 
-	if (x < low) {
-		x += range * ((low - x) / range + 1);
+	if (x < माबाबा) {
+		x += range * ((माबाबा - x) / range + 1);
 	}
 
-	return low + (x - low) % range;
+	return माबाबा + (x - माबाबा) % range;
 }
 
 /**
@@ -119,9 +119,9 @@ Type wrap_2pi(Type x)
  * @return New unwrapped value
  */
 template<typename Type>
-Type unwrap(const Type last_x, const Type new_x, const Type low, const Type high)
+Type unwrap(const Type last_x, const Type new_x, const Type माबाबा, const Type माताअस)
 {
-	return last_x + wrap(new_x - last_x, low, high);
+	return last_x + wrap(new_x - last_x, माबाबा, माताअस);
 }
 
 /**

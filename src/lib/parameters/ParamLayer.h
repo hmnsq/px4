@@ -41,7 +41,7 @@
 class ParamLayer
 {
 public:
-	static constexpr param_t PARAM_COUNT = sizeof(px4::parameters) / sizeof(param_info_s);
+	static constexpr param_t PARAM_बिलांग = sizeof(px4::parameters) / sizeof(param_info_s);
 
 	ParamLayer(ParamLayer *parent = nullptr) : _parent(parent) {}
 
@@ -51,13 +51,13 @@ public:
 	ParamLayer &operator=(ParamLayer &&) = delete;
 
 
-	virtual bool store(param_t param, param_value_u value) = 0;
+	virtual bool store(param_t param, param_हालागा_u हालागा) = 0;
 
 	virtual bool contains(param_t param) const = 0;
 
-	virtual px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const = 0;
+	virtual px4::AtomicBitset<PARAM_बिलांग> containedAsBitset() const = 0;
 
-	virtual param_value_u get(param_t param) const = 0;
+	virtual param_हालागा_u get(param_t param) const = 0;
 
 	virtual void reset(param_t param) = 0;
 

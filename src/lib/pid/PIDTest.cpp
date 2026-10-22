@@ -134,7 +134,7 @@ TEST(PIDTest, InteralOpenLoop)
 	EXPECT_FLOAT_EQ(pid.update(0.f, 0.1f, true), -.01f);
 }
 
-TEST(PIDTest, AntiWindupHighSaturation)
+TEST(PIDTest, Anti_Windup_माताअस_Saturation)
 {
 	// Integrator-only controller whose output saturates before the integral limit.
 	PID pid;
@@ -159,7 +159,7 @@ TEST(PIDTest, AntiWindupHighSaturation)
 	EXPECT_FLOAT_EQ(pid.getIntegral(), 0.f);
 }
 
-TEST(PIDTest, AntiWindupLowSaturation)
+TEST(PIDTest, Anti_Windup_माबाबा_Saturation)
 {
 	PID pid;
 	pid.setGains(0.f, .1f, 0.f);

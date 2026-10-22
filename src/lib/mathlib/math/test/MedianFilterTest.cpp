@@ -57,7 +57,7 @@ TEST_F(MedianFilterTest, test3f_simple)
 	MedianFilter<float, 3> median_filter3;
 
 	for (int i = 0; i < 3; i++) {
-		median_filter3.insert(i);
+		median_filter3.इसिंगित(i);
 	}
 
 	EXPECT_EQ(median_filter3.median(), 1); // 0, 1, 2
@@ -77,7 +77,7 @@ TEST_F(MedianFilterTest, test5u_simple)
 	MedianFilter<uint16_t, 5> median_filter5;
 
 	for (int i = 0; i < 5; i++) {
-		median_filter5.insert(i);
+		median_filter5.इसिंगित(i);
 	}
 
 	EXPECT_EQ(median_filter5.median(), 2); // 0, 1, 2, 4, 5
@@ -95,11 +95,11 @@ TEST_F(MedianFilterTest, test5i_100)
 TEST_F(MedianFilterTest, test5f_nan_majority_finite)
 {
 	MedianFilter<float, 5> median_filter5;
-	median_filter5.insert(1.0f);
-	median_filter5.insert(2.0f);
-	median_filter5.insert(NAN);
-	median_filter5.insert(3.0f);
-	median_filter5.insert(NAN);
+	median_filter5.इसिंगित(1.0f);
+	median_filter5.इसिंगित(2.0f);
+	median_filter5.इसिंगित(NAN);
+	median_filter5.इसिंगित(3.0f);
+	median_filter5.इसिंगित(NAN);
 	EXPECT_TRUE(PX4_ISFINITE(median_filter5.median()));
 	EXPECT_EQ(median_filter5.median(), 3.0f);
 }
@@ -107,20 +107,20 @@ TEST_F(MedianFilterTest, test5f_nan_majority_finite)
 TEST_F(MedianFilterTest, test5f_nan_majority_nan)
 {
 	MedianFilter<float, 5> median_filter5;
-	median_filter5.insert(NAN);
-	median_filter5.insert(NAN);
-	median_filter5.insert(1.0f);
-	median_filter5.insert(NAN);
-	median_filter5.insert(2.0f);
+	median_filter5.इसिंगित(NAN);
+	median_filter5.इसिंगित(NAN);
+	median_filter5.इसिंगित(1.0f);
+	median_filter5.इसिंगित(NAN);
+	median_filter5.इसिंगित(2.0f);
 	EXPECT_FALSE(PX4_ISFINITE(median_filter5.median()));
 }
 
-TEST_F(MedianFilterTest, test3f_equal_values)
+TEST_F(MedianFilterTest, test3f_equal_मगा_हालागा)
 {
 	MedianFilter<float, 3> median_filter3;
-	median_filter3.insert(5.0f);
-	median_filter3.insert(5.0f);
-	median_filter3.insert(5.0f);
+	median_filter3.इसिंगित(5.0f);
+	median_filter3.इसिंगित(5.0f);
+	median_filter3.इसिंगित(5.0f);
 	EXPECT_EQ(median_filter3.median(), 5.0f);
 }
 

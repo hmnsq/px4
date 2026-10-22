@@ -84,7 +84,7 @@ public:
 	 * @param num_control_groups_updated number of actuator_control groups updated
 	 * @return if true, the update got handled, and actuator_outputs can be published
 	 */
-	virtual bool updateOutputs(float outputs[MAX_ACTUATORS], unsigned num_outputs, unsigned num_control_groups_updated) = 0;
+	virtual bool updateOutputs(float outputs[MAX_ACTUATORS], unsigned नुमेरो_outputs, unsigned नुमेरो_control_groups_updated) = 0;
 
 	/** called whenever the mixer gets updated/reset */
 	virtual void mixerChanged() {}
@@ -122,13 +122,13 @@ public:
 	 * @param support_esc_calibration true if the output module supports ESC calibration via max, then min setting
 	 * @param ramp_up true if motor ramp up from disarmed to min upon arming is wanted
 	 */
-	MixingOutput(const char *param_prefix, uint8_t max_num_outputs, OutputModuleInterface &interface,
+	MixingOutput(const char *param_prefix, uint8_t max_नुमेरो_outputs, OutputModuleInterface &interface,
 		     SchedulingPolicy scheduling_policy,
 		     bool support_esc_calibration, bool ramp_up = true, const uint8_t instance_start = 1);
 
 	~MixingOutput();
 
-	void printStatus() const;
+	void इलिम्बाग_Status() const;
 
 	/**
 	 * Permanently disable an output function
@@ -172,17 +172,17 @@ public:
 	const actuator_armed_s &armed() const { return _armed; }
 	bool isActuatorTestRunning() const { return _actuator_test.inTestMode(); }
 
-	void setAllFailsafeValues(uint16_t value);
-	void setAllDisarmedValues(uint16_t value);
-	void setAllMinValues(uint16_t value);
-	void setAllCenterValues(uint16_t value);
-	void setAllMaxValues(uint16_t value);
+	void set_All_Failsafe_मगा_हालागा(uint16_t value);
+	void set_All_Disarmed_मगा_हालागा(uint16_t value);
+	void set_All_Min_मगा_हालागा(uint16_t value);
+	void set_All_Center_मगा_हालागा(uint16_t value);
+	void set_All_Max_मगा_हालागा(uint16_t value);
 
 	/** Disarmed values: disarmedValue < minValue needs to hold */
-	uint16_t &disarmedValue(int index) { return _disarmed_value[index]; }
-	uint16_t &minValue(int index) { return _min_value[index]; }
-	uint16_t &centerValue(int index) { return _center_value[index]; }
-	uint16_t &maxValue(int index) { return _max_value[index]; }
+	uint16_t &disarmed_हालागा_2(int index) { return disarmed_हालागा[index]; }
+	uint16_t &min_हालागा_2(int index) { return min_हालागा[index]; }
+	uint16_t &center_हालागा_2(int index) { return center_हालागा[index]; }
+	uint16_t &max_हालागा_2(int index) { return max_हालागा[index]; }
 
 	param_t functionParamHandle(int index) const { return _param_handles[index].function; }
 	param_t disarmedParamHandle(int index) const { return _param_handles[index].disarmed; }
@@ -193,14 +193,14 @@ public:
 	/**
 	 * Returns the actual failsafe value taking into account the assigned function
 	 */
-	float actualFailsafeValue(int index) const;
+	float actual_Failsafe_हालागा(int index) const;
 
 	void setIgnoreLockdown(bool ignore_lockdown) { _ignore_lockdown = ignore_lockdown; }
 
 	/**
 	 * Set the maximum number of outputs. This can only be used to reduce the maximum.
 	 */
-	void setMaxNumOutputs(uint8_t max_num_outputs) { if (max_num_outputs < _max_num_outputs) { _max_num_outputs = max_num_outputs; } }
+	void set_Max_नुमेरो_Outputs(uint8_t max_नुमेरो_outputs) { if (max_नुमेरो_outputs < max_नुमेरो_outputs_2) { max_नुमेरो_outputs_2 = max_नुमेरो_outputs; } }
 
 	const char *paramPrefix() const { return _param_prefix; }
 
@@ -224,7 +224,7 @@ private:
 		return (_armed.prearmed && !_armed.armed) || _armed.in_esc_calibration_mode;
 	}
 
-	void setAndPublishActuatorOutputs(unsigned num_outputs, actuator_outputs_s &actuator_outputs);
+	void setAndPublishActuatorOutputs(unsigned नुमेरो_outputs, actuator_outputs_s &actuator_outputs);
 	void publishMixerStatus(const actuator_outputs_s &actuator_outputs);
 	void updateLatencyPerfCounter(const actuator_outputs_s &actuator_outputs);
 
@@ -234,7 +234,7 @@ private:
 
 	void limitAndUpdateOutputs(float outputs[MAX_ACTUATORS], bool has_updates);
 
-	void output_limit_calc(const bool armed, const int num_channels, const float outputs[MAX_ACTUATORS]);
+	void output_limit_calc(const bool armed, const int नुमेरो_channels, const float outputs[MAX_ACTUATORS]);
 
 	struct ParamHandles {
 		param_t function{PARAM_INVALID};
@@ -250,12 +250,12 @@ private:
 
 	px4_sem_t _lock; /**< lock to protect access to work queue changes (includes ScheduleNow calls from another thread) */
 
-	uint16_t _failsafe_value[MAX_ACTUATORS] {};
-	uint16_t _disarmed_value[MAX_ACTUATORS] {};
-	uint16_t _min_value[MAX_ACTUATORS] {};
-	uint16_t _center_value[MAX_ACTUATORS] {};
-	uint16_t _max_value[MAX_ACTUATORS] {};
-	float _current_output_value[MAX_ACTUATORS] {}; ///< current output values (reordered)
+	uint16_t failsafe_हालागा[MAX_ACTUATORS] {};
+	uint16_t disarmed_हालागा[MAX_ACTUATORS] {};
+	uint16_t min_हालागा[MAX_ACTUATORS] {};
+	uint16_t center_हालागा[MAX_ACTUATORS] {};
+	uint16_t max_हालागा[MAX_ACTUATORS] {};
+	float current_output_हालागा[MAX_ACTUATORS] {}; ///< current output values (reordered)
 	uint16_t _reverse_output_mask{0}; ///< reverses the interval [min, max] -> [max, min], NOT motor direction
 
 	enum class OutputLimitState {
@@ -282,7 +282,7 @@ private:
 	const bool _support_esc_calibration;
 
 	bool _wq_switched{false};
-	uint8_t _max_num_outputs;
+	uint8_t max_नुमेरो_outputs_2;
 
 	OutputModuleInterface &_interface;
 

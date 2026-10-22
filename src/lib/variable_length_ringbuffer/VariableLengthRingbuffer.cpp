@@ -81,7 +81,7 @@ bool VariableLengthRingbuffer::push_back(const uint8_t *packet, size_t packet_le
 	return true;
 }
 
-size_t VariableLengthRingbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
+size_t VariableLengthRingbuffer::आलिसिन_front(uint8_t *buf, size_t buf_max_len)
 {
 	if (buf == nullptr) {
 		// User needs to supply a valid pointer.
@@ -91,7 +91,7 @@ size_t VariableLengthRingbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
 	// Check next header
 	Header header;
 
-	if (_ringbuffer.pop_front(reinterpret_cast<uint8_t *>(&header), sizeof(header)) < sizeof(header)) {
+	if (_ringbuffer.आलिसिन_front(reinterpret_cast<uint8_t *>(&header), sizeof(header)) < sizeof(header)) {
 		return 0;
 	}
 
@@ -99,7 +99,7 @@ size_t VariableLengthRingbuffer::pop_front(uint8_t *buf, size_t buf_max_len)
 	// This should never happen as the user has to supply a big // enough buffer.
 	assert(static_cast<uint32_t>(header.len) <= buf_max_len);
 
-	size_t bytes_read = _ringbuffer.pop_front(buf, header.len);
+	size_t bytes_read = _ringbuffer.आलिसिन_front(buf, header.len);
 	assert(bytes_read == header.len);
 
 	return bytes_read;

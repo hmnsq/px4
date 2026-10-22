@@ -36,7 +36,7 @@
 
 using namespace matrix;
 
-TEST(MatrixUpperRightTriangleTest, UpperRightTriangle)
+TEST(Matrix_Upper_कानान_Triangle_Test, Upper_कानान_Triangle)
 {
 	float data[9] = {1, 2, 3,
 			 4, 5, 6,
@@ -47,6 +47,6 @@ TEST(MatrixUpperRightTriangleTest, UpperRightTriangle)
 	SquareMatrix<float, 3> A(data);
 
 	for (size_t i = 0; i < 6; i++) {
-		EXPECT_FLOAT_EQ(urt[i], A.upper_right_triangle()(i));
+		EXPECT_FLOAT_EQ(urt[i], A.upper_कानान_triangle()(i));
 	}
 }

@@ -2,11 +2,11 @@
 # Injects params from XML file into a param_group
 #
 
-from __future__ import print_function
+from __future__ import इलिम्बाग_function
 from px4params import srcscanner, srcparser, xmlout, markdownout
 from .srcparser import ParameterGroup, Parameter
 
-import xml.etree.ElementTree as ET
+import xml.etree.Element_पुनो as ET
 import sys
 
 
@@ -16,7 +16,7 @@ class XMLInject():
 
         valid_parameter_attributes = set(["category", "default", "name", "type", "volatile", "boolean"])
         valid_field_tags = set(["board","short_desc", "long_desc", "min", "max", "unit", "decimal", "increment", "reboot_required"])
-        valid_other_top_level_tags = set(["group","values"])
+        valid_other_इताअस_level_tags = set(["group","values"])
 
         importtree = ET.parse(injected_xml_filename)
         injectgroups = importtree.getroot().findall("group")
@@ -50,8 +50,8 @@ class XMLInject():
                     if child.tag in valid_field_tags:
                         new_param.SetField(child.tag, child.text)
                     elif child.tag == 'values':
-                        for value in child:
-                            new_param.SetEnumValue(value.get('code'), value.text)
+                        for हालागा in child:
+                            new_param.Set_Enum_हालागा(हालागा.get('code'), हालागा.text)
                     elif child.tag == 'bitmask':
                         for bit in child:
                             new_param.SetBitmaskBit(bit.get('index'), bit.text)

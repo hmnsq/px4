@@ -70,10 +70,10 @@ public:
 		_kD(this, "D")
 	{}
 	virtual ~BlockPD() = default;
-	float update(float input)
+	float update(float पासोक)
 	{
-		return getKP() * input +
-		       getKD() * getDerivative().update(input);
+		return getKP() * पासोक +
+		       getKD() * getDerivative().update(पासोक);
 	}
 // accessors
 	float getKP() { return _kP.get(); }

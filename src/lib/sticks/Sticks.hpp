@@ -56,7 +56,7 @@ public:
 	// Checks for updated manual control input & updates internal values
 	bool checkAndUpdateStickInputs();
 
-	bool isAvailable() { return _input_available; };
+	bool isAvailable() { return पासोक_available; };
 
 	// Helper functions to get stick values more intuitively
 	float getRoll() const { return _positions(0); }
@@ -91,7 +91,7 @@ public:
 	static void rotateIntoHeadingFrameXY(matrix::Vector2f &v, const float yaw, const float yaw_setpoint);
 
 private:
-	bool _input_available{false};
+	bool पासोक_available{false};
 	matrix::Vector4f _positions; ///< unmodified manual stick inputs roll, pitch, yaw ,throttle
 
 	matrix::Vector<float, 6> _aux_positions;

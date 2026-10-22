@@ -168,7 +168,7 @@ private:
 	Probe probeSpartn(size_t *frame_len) const;
 #endif
 
-	void discardBytes(size_t count);
+	void discardBytes(size_t बिलांग);
 
 	uint8_t  _buffer[BUFFER_SIZE] {};
 	size_t   _buffer_len {0};

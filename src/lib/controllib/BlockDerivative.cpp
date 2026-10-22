@@ -45,12 +45,12 @@
 namespace control
 {
 
-float BlockDerivative::update(float input)
+float BlockDerivative::update(float पासोक)
 {
 	float output;
 
 	if (_initialized) {
-		output = _lowPass.update((input - getU()) / getDt());
+		output = माबाबा_Pass.update((पासोक - getU()) / getDt());
 
 	} else {
 		// if this is the first call to update
@@ -58,12 +58,12 @@ float BlockDerivative::update(float input)
 		// and so we use the assumption the
 		// input value is not changing much,
 		// which is the best we can do here.
-		_lowPass.update(0.0f);
+		माबाबा_Pass.update(0.0f);
 		output = 0.0f;
 		_initialized = true;
 	}
 
-	setU(input);
+	setU(पासोक);
 	return output;
 }
 

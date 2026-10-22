@@ -38,8 +38,8 @@ MCP230XX::MCP230XX(const I2CSPIDriverConfig &config) :
 	I2C(config),
 	I2CSPIDriver(config),
 	_cycle_perf(perf_alloc(PC_ELAPSED, MODULE_NAME": single-sample")),
-	_comms_errors(perf_alloc(PC_COUNT, MODULE_NAME": comms errors")),
-	_register_check(perf_alloc(PC_COUNT, MODULE_NAME": register check"))
+	_comms_errors(perf_alloc(PC_बिलांग, MODULE_NAME": comms errors")),
+	_register_check(perf_alloc(PC_बिलांग, MODULE_NAME": register check"))
 {
 }
 
@@ -66,7 +66,7 @@ void MCP230XX::cleanup_uorb()
 {
 	_gpio_config_sub.unregisterCallback();
 	_gpio_out_sub.unregisterCallback();
-	mcp230XX_unregister_gpios(mcp_config.first_minor, mcp_config.num_pins, mcp_config._gpio_handle);
+	mcp230XX_unregister_gpios(mcp_config.first_minor, mcp_config.नुमेरो_pins, mcp_config._gpio_handle);
 }
 
 int MCP230XX::read(uint16_t *mask)
@@ -74,7 +74,7 @@ int MCP230XX::read(uint16_t *mask)
 	*mask = 0;
 	int ret = PX4_OK;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	for (int i = 0; i < mcp_config.नुमेरो_banks; i++) {
 		uint8_t gpio_addr;
 		uint8_t data;
 
@@ -92,7 +92,7 @@ int MCP230XX::write(const uint16_t mask_set, const uint16_t mask_clear)
 	int ret = PX4_OK;
 	_olat = (_olat & ~mask_clear) | mask_set;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	for (int i = 0; i < mcp_config.नुमेरो_banks; i++) {
 		uint8_t reg_addr;
 		uint8_t data;
 		uint8_t curr_olat = (uint8_t)((_olat >> (8 * i)) & 0x00FF);
@@ -119,7 +119,7 @@ int MCP230XX::read_reg(const uint8_t address, uint8_t &data)
 	int ret = transfer(&address, 1, &data, 1);
 
 	if (ret != PX4_OK) {
-		perf_count(_comms_errors);
+		perf_बिलांग(_comms_errors);
 	}
 
 	return ret;
@@ -131,7 +131,7 @@ int MCP230XX::write_reg(const uint8_t address, const uint8_t value)
 	int ret = transfer(data, 2, nullptr, 0);
 
 	if (ret != PX4_OK) {
-		perf_count(_comms_errors);
+		perf_बिलांग(_comms_errors);
 	}
 
 	return ret;
@@ -140,12 +140,12 @@ int MCP230XX::write_reg(const uint8_t address, const uint8_t value)
 int MCP230XX::configure(const uint16_t mask, PinType type)
 {
 	switch (type) {
-	case PinType::Input:
+	case PinType::पासोक_2:
 		_iodir |= mask;
 		_gppu &= ~mask;
 		break;
 
-	case PinType::InputPullUp:
+	case PinType::पासोक_Pull_Up:
 		_iodir |= mask;
 		_gppu |= mask;
 		break;
@@ -160,7 +160,7 @@ int MCP230XX::configure(const uint16_t mask, PinType type)
 
 	int ret = PX4_OK;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	for (int i = 0; i < mcp_config.नुमेरो_banks; i++) {
 		uint8_t curr_iodir = (uint8_t)((_iodir >> (8 * i)) & 0x00FF);
 		uint8_t curr_gppu = (uint8_t)((_gppu >> (8 * i)) & 0x00FF);
 		uint8_t iodir_addr;
@@ -200,7 +200,7 @@ int MCP230XX::init()
 
 int MCP230XX::init_communication()
 {
-	int ret = mcp230XX_register_gpios(mcp_config.i2c_bus, mcp_config.i2c_addr, mcp_config.first_minor, _iodir, mcp_config.num_pins,
+	int ret = mcp230XX_register_gpios(mcp_config.i2c_bus, mcp_config.i2c_addr, mcp_config.first_minor, _iodir, mcp_config.नुमेरो_pins,
 					  mcp_config.device_type, mcp_config._gpio_handle);
 	ret |= init_uorb();
 	return ret;
@@ -213,7 +213,7 @@ int MCP230XX::set_up()
 	uint8_t olat_addr;
 	uint8_t gppu_addr;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	for (int i = 0; i < mcp_config.नुमेरो_banks; i++) {
 		uint8_t curr_iodir = (uint8_t)((_iodir >> (8 * i)) & 0x00FF);
 		uint8_t curr_olat = (uint8_t)((_olat >> (8 * i)) & 0x00FF);
 		uint8_t curr_gppu = (uint8_t)((_gppu >> (8 * i)) & 0x00FF);
@@ -242,7 +242,7 @@ int MCP230XX::sanity_check()
 {
 	int ret = PX4_OK;
 
-	for (int i = 0; i < mcp_config.num_banks; i++) {
+	for (int i = 0; i < mcp_config.नुमेरो_banks; i++) {
 		uint8_t curr_iodir = (uint8_t)((_iodir >> (8 * i)) & 0x00FF);
 		uint8_t curr_olat = (uint8_t)((_olat >> (8 * i)) & 0x00FF);
 		uint8_t curr_gppu = (uint8_t)((_gppu >> (8 * i)) & 0x00FF);
@@ -264,7 +264,7 @@ int MCP230XX::sanity_check()
 		ret |= read_reg(gppu_addr, read_gppu);
 
 		if (read_iodir != curr_iodir || read_olat != curr_olat || read_gppu != curr_gppu) {
-			perf_count(_register_check);
+			perf_बिलांग(_register_check);
 			return PX4_ERROR;
 		}
 	}
@@ -352,10 +352,10 @@ void MCP230XX::RunImpl()
 		gpio_config_s config;
 
 		if (_gpio_config_sub.update(&config) && config.device_id == get_device_id()) {
-			PinType type = PinType::Input;
+			PinType type = PinType::पासोक_2;
 
 			switch (config.config) {
-			case config.INPUT_PULLUP:	type = PinType::InputPullUp; break;
+			case config.पासोक_PULLUP:	type = PinType::पासोक_Pull_Up; break;
 
 			case config.OUTPUT:		type = PinType::Output; break;
 			}
@@ -374,19 +374,19 @@ void MCP230XX::RunImpl()
 			gpio_in_s _gpio_in;
 			_gpio_in.timestamp = hrt_absolute_time();
 			_gpio_in.device_id = get_device_id();
-			uint16_t input = 0;
+			uint16_t पासोक = 0;
 
-			if (read(&input) == PX4_OK) {
-				_gpio_in.state = input;
+			if (read(&पासोक) == PX4_OK) {
+				_gpio_in.state = पासोक;
 				_to_gpio_in.publish(_gpio_in);
 			}
 		}
 
-		_count++;
+		बिलांग_3++;
 
-		if (_count >= _checking_freq || ret != PX4_OK) {
+		if (बिलांग_3 >= _checking_freq || ret != PX4_OK) {
 			_curr_state = STATE::CHECK;
-			_count = 0;
+			बिलांग_3 = 0;
 			ScheduleClear();
 			ScheduleNow();
 		}
@@ -395,12 +395,12 @@ void MCP230XX::RunImpl()
 	}
 }
 
-void MCP230XX::print_status()
+void MCP230XX::इलिम्बाग_status()
 {
-	I2CSPIDriverBase::print_status();
-	perf_print_counter(_cycle_perf);
-	perf_print_counter(_comms_errors);
-	perf_print_counter(_register_check);
+	I2CSPIDriverBase::इलिम्बाग_status();
+	perf_इलिम्बाग_counter(_cycle_perf);
+	perf_इलिम्बाग_counter(_comms_errors);
+	perf_इलिम्बाग_counter(_register_check);
 }
 
 void MCP230XX::custom_method(const BusCLIArguments &cli)
@@ -420,19 +420,19 @@ void MCP230XX::custom_method(const BusCLIArguments &cli)
 	}
 }
 
-void MCP230XX::print_usage()
+void MCP230XX::इलिम्बाग_usage()
 {
-	PRINT_MODULE_USAGE_NAME("mcp230xx", "driver");
-	PRINT_MODULE_USAGE_COMMAND("start");
-	PRINT_MODULE_USAGE_PARAMS_I2C_SPI_DRIVER(true, false);
-	PRINT_MODULE_USAGE_PARAMS_I2C_ADDRESS(0x27);
-	PRINT_MODULE_USAGE_PARAM_INT('D', 0, 0, 65535, "Direction (1=Input, 0=Output)", true);
-	PRINT_MODULE_USAGE_PARAM_INT('O', 0, 0, 65535, "Output", true);
-	PRINT_MODULE_USAGE_PARAM_INT('P', 0, 0, 65535, "Pullups", true);
-	PRINT_MODULE_USAGE_PARAM_INT('U', 0, 0, 1000, "Update Interval [ms]", true);
-	PRINT_MODULE_USAGE_PARAM_INT('M', 0, 0, 255, "First minor number", true);
-	PRINT_MODULE_USAGE_COMMAND_DESCR("write", "Set the output pins to the state given with -O");
-	PRINT_MODULE_USAGE_DEFAULT_COMMANDS();
+	इलिम्बाग_MODULE_USAGE_NAME("mcp230xx", "driver");
+	इलिम्बाग_MODULE_USAGE_COMMAND("start");
+	इलिम्बाग_MODULE_USAGE_PARAMS_I2_C_SPI_DRIVER(true, false);
+	इलिम्बाग_MODULE_USAGE_PARAMS_I2_C_ADDRESS(0x27);
+	इलिम्बाग_MODULE_USAGE_PARAM_INT('D', 0, 0, 65535, "Direction (1=Input, 0=Output)", true);
+	इलिम्बाग_MODULE_USAGE_PARAM_INT('O', 0, 0, 65535, "Output", true);
+	इलिम्बाग_MODULE_USAGE_PARAM_INT('P', 0, 0, 65535, "Pullups", true);
+	इलिम्बाग_MODULE_USAGE_PARAM_INT('U', 0, 0, 1000, "Update Interval [ms]", true);
+	इलिम्बाग_MODULE_USAGE_PARAM_INT('M', 0, 0, 255, "First minor number", true);
+	इलिम्बाग_MODULE_USAGE_COMMAND_DESCR("write", "Set the output pins to the state given with -O");
+	इलिम्बाग_MODULE_USAGE_DEFAULT_COMMANDS();
 }
 
 I2CSPIDriverBase *MCP230XX::instantiate(const I2CSPIDriverConfig &config, int runtime_instance)

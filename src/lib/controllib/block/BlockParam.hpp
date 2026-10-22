@@ -49,7 +49,7 @@ namespace control
 class Block;
 
 // A base class for block params that enables traversing linked list.
-class BlockParamBase : public ListNode<BlockParamBase *>
+class BlockParamBase : public List_बुहोल<BlockParamBase *>
 {
 public:
 	/**

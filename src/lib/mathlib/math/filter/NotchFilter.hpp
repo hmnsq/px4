@@ -75,14 +75,14 @@ public:
 	}
 
 	// Filter array of samples in place using the direct form I
-	inline void applyArray(T samples[], int num_samples)
+	inline void applyArray(T samples[], int नुमेरो_samples)
 	{
 		if (!_initialized) {
 			reset(samples[0]);
 			_initialized = true;
 		}
 
-		for (int n = 0; n < num_samples; n++) {
+		for (int n = 0; n < नुमेरो_samples; n++) {
 			samples[n] = applyInternal(samples[n]);
 		}
 	}
@@ -134,10 +134,10 @@ public:
 
 	void reset(const T &sample)
 	{
-		const T input = isFinite(sample) ? sample : T{};
+		const T पासोक = isFinite(sample) ? sample : T{};
 
-		_delay_element_1 = _delay_element_2 = input;
-		_delay_element_output_1 = _delay_element_output_2 = input * (_b0 + _b1 + _b2) / (1 + _a1 + _a2);
+		_delay_element_1 = _delay_element_2 = पासोक;
+		_delay_element_output_1 = _delay_element_output_2 = पासोक * (_b0 + _b1 + _b2) / (1 + _a1 + _a2);
 
 		if (!isFinite(_delay_element_1) || !isFinite(_delay_element_2)) {
 			_delay_element_output_1 = _delay_element_output_2 = {};

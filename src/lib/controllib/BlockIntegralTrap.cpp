@@ -45,12 +45,12 @@
 namespace control
 {
 
-float BlockIntegralTrap::update(float input)
+float BlockIntegralTrap::update(float पासोक)
 {
 	// trapezoidal integration
 	setY(_limit.update(getY() +
-			   (getU() + input) / 2.0f * getDt()));
-	setU(input);
+			   (getU() + पासोक) / 2.0f * getDt()));
+	setU(पासोक);
 	return getY();
 }
 

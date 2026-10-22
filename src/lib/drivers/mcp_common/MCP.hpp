@@ -50,8 +50,8 @@ static constexpr uint8_t I2C_ADDRESS_MCP23017 = 0x27;
 enum class
 PinType : uint8_t {
 	Output,
-	Input,
-	InputPullUp,
+	पासोक_2,
+	पासोक_Pull_Up,
 };
 
 struct MCP230XX_config_t {
@@ -59,8 +59,8 @@ struct MCP230XX_config_t {
 	uint8_t i2c_addr = 0;
 	uint8_t i2c_bus = 0;
 	uint8_t first_minor = 0;
-	uint8_t num_pins = 8;
-	int num_banks = 1;
+	uint8_t नुमेरो_pins = 8;
+	int नुमेरो_banks = 1;
 	uint16_t interval = 10;
 	mcp_gpio_dev_s _gpio_handle[16];
 	CallbackHandler *_callback_handler = nullptr;
@@ -76,10 +76,10 @@ public:
 	MCP230XX(const I2CSPIDriverConfig &config);
 	virtual ~MCP230XX();
 	static I2CSPIDriverBase *instantiate(const I2CSPIDriverConfig &config, int runtime_instance);
-	static void print_usage();
+	static void इलिम्बाग_usage();
 
 	void RunImpl();
-	void print_status() override;
+	void इलिम्बाग_status() override;
 	void custom_method(const BusCLIArguments &cli) override;
 	int probe();
 	virtual int init();
@@ -118,7 +118,7 @@ private:
 	uint16_t _gppu;
 
 	uint16_t _checking_freq = 10;
-	int _count = 0;
+	int बिलांग_3 = 0;
 
 	enum class STATE : uint8_t {
 		INIT_COMMUNICATION,

@@ -45,17 +45,17 @@
 namespace control
 {
 
-float BlockLowPass2::update(float input)
+float Block_माबाबा_Pass2::update(float पासोक)
 {
 	if (!PX4_ISFINITE(getState())) {
-		setState(input);
+		setState(पासोक);
 	}
 
 	if (fabsf(_lp.get_cutoff_freq() - getFCutParam()) > FLT_EPSILON) {
 		_lp.set_cutoff_frequency(_fs, getFCutParam());
 	}
 
-	_state = _lp.apply(input);
+	_state = _lp.apply(पासोक);
 	return _state;
 }
 

@@ -65,7 +65,7 @@ namespace pid_design
 * T.Yamatoto, K.Fujii and M.Kaneda, Design and implementation of a self-tuning pid controller, 1998
 */
 
-inline matrix::Vector3f computePidGmvc(const matrix::Vector3f &num, const matrix::Vector3f &den, float dt,
+inline matrix::Vector3f computePidGmvc(const matrix::Vector3f &नुमेरो, const matrix::Vector3f &den, float dt,
 				       float sigma = 0.1f, float delta = 1.f, float lbda = 0.5f)
 {
 	sigma = math::constrain(sigma, 0.01f, 1.f);
@@ -74,9 +74,9 @@ inline matrix::Vector3f computePidGmvc(const matrix::Vector3f &num, const matrix
 
 	const float a1 = den(1);
 	const float a2 = den(2);
-	const float b0 = num(0);
-	const float b1 = num(1);
-	const float b2 = num(2);
+	const float b0 = नुमेरो(0);
+	const float b1 = नुमेरो(1);
+	const float b2 = नुमेरो(2);
 
 	// Solve GMVC law (see derivation in pid_synthesis_symbolic.py)
 	const float rho = dt / sigma;

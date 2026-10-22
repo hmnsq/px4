@@ -79,10 +79,10 @@ public:
 	ControlAllocation();
 	virtual ~ControlAllocation() = default;
 
-	static constexpr uint8_t NUM_ACTUATORS = ActuatorEffectiveness::NUM_ACTUATORS;
-	static constexpr uint8_t NUM_AXES = ActuatorEffectiveness::NUM_AXES;
+	static constexpr uint8_t नुमेरो_ACTUATORS = ActuatorEffectiveness::नुमेरो_ACTUATORS;
+	static constexpr uint8_t नुमेरो_AXES = ActuatorEffectiveness::नुमेरो_AXES;
 
-	using ActuatorVector = matrix::Vector<float, NUM_ACTUATORS>;
+	using ActuatorVector = matrix::Vector<float, नुमेरो_ACTUATORS>;
 	using ActuatorBitmask = ActuatorEffectiveness::ActuatorBitmask;
 
 	enum ControlAxis {
@@ -113,8 +113,8 @@ public:
 	 *
 	 * @param B Effectiveness matrix
 	 */
-	virtual void setEffectivenessMatrix(const matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> &effectiveness,
-					    const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, int num_actuators,
+	virtual void setEffectivenessMatrix(const matrix::Matrix<float, नुमेरो_AXES, नुमेरो_ACTUATORS> &effectiveness,
+					    const ActuatorVector &actuator_trim, const ActuatorVector &linearization_point, int नुमेरो_actuators,
 					    bool update_normalization_scale);
 
 	/**
@@ -129,21 +129,21 @@ public:
 	 *
 	 * @param Control vector
 	 */
-	void setControlSetpoint(const matrix::Vector<float, NUM_AXES> &control) { _control_sp = control; }
+	void setControlSetpoint(const matrix::Vector<float, नुमेरो_AXES> &control) { _control_sp = control; }
 
 	/**
 	 * Get the desired control vector
 	 *
 	 * @return Control vector
 	 */
-	const matrix::Vector<float, NUM_AXES> &getControlSetpoint() const { return _control_sp; }
+	const matrix::Vector<float, नुमेरो_AXES> &getControlSetpoint() const { return _control_sp; }
 
 	/**
 	 * Get the allocated control vector
 	 *
 	 * @return Control vector
 	 */
-	matrix::Vector<float, NUM_AXES> getAllocatedControl() const
+	matrix::Vector<float, नुमेरो_AXES> getAllocatedControl() const
 	{
 		// _actuator_sp contains NaN to indicate stopped motors.
 		// Covert back to zero to represent physical thrust.
@@ -157,7 +157,7 @@ public:
 	 *
 	 * @return Effectiveness matrix
 	 */
-	const matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> &getEffectivenessMatrix() const { return _effectiveness; }
+	const matrix::Matrix<float, नुमेरो_AXES, नुमेरो_ACTUATORS> &getEffectivenessMatrix() const { return _effectiveness; }
 
 	/**
 	 * Set the minimum actuator values
@@ -240,7 +240,7 @@ public:
 	 */
 	void applyNanToActuators(ActuatorBitmask nan_actuators_mask)
 	{
-		for (int i = 0; i < _num_actuators; i++) {
+		for (int i = 0; i < नुमेरो_actuators_2; i++) {
 			if (nan_actuators_mask & (1u << i)) {
 				_actuator_sp(i) = NAN;
 			}
@@ -249,7 +249,7 @@ public:
 
 	virtual void updateParameters() {}
 
-	int numConfiguredActuators() const { return _num_actuators; }
+	int नुमेरो_Configured_Actuators() const { return नुमेरो_actuators_2; }
 
 	void setNormalizeRPY(bool normalize_rpy) { _normalize_rpy = normalize_rpy; }
 
@@ -260,17 +260,17 @@ public:
 protected:
 	friend class ControlAllocator; // for _actuator_sp
 
-	matrix::Matrix<float, NUM_AXES, NUM_ACTUATORS> _effectiveness;  ///< Effectiveness matrix
-	matrix::Vector<float, NUM_AXES> _control_allocation_scale;  	///< Scaling applied during allocation
+	matrix::Matrix<float, नुमेरो_AXES, नुमेरो_ACTUATORS> _effectiveness;  ///< Effectiveness matrix
+	matrix::Vector<float, नुमेरो_AXES> _control_allocation_scale;  	///< Scaling applied during allocation
 	ActuatorVector _actuator_trim; 	///< Neutral actuator values
 	ActuatorVector _actuator_min; 	///< Minimum actuator values
 	ActuatorVector _actuator_max; 	///< Maximum actuator values
 	ActuatorVector _actuator_slew_rate_limit; 	///< Slew rate limit
 	ActuatorVector _prev_actuator_sp;  	///< Previous actuator setpoint
 	ActuatorVector _actuator_sp;  	///< Actuator setpoint
-	matrix::Vector<float, NUM_AXES> _control_sp;   		///< Control setpoint
-	matrix::Vector<float, NUM_AXES> _control_trim; 		///< Control at trim actuator values
-	int _num_actuators{0};
+	matrix::Vector<float, नुमेरो_AXES> _control_sp;   		///< Control setpoint
+	matrix::Vector<float, नुमेरो_AXES> _control_trim; 		///< Control at trim actuator values
+	int नुमेरो_actuators_2{0};
 	bool _normalize_rpy{false};				///< if true, normalize roll, pitch and yaw columns
 	bool _had_actuator_failure{false};
 	uint8_t _dropped_axes{0};				///< bitmask over ControlAxis

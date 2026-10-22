@@ -30,12 +30,12 @@ struct Dual {
 
 	Dual() = default;
 
-	explicit Dual(Scalar v, size_t inputDimension = 65535)
+	explicit Dual(Scalar v, size_t पासोक_Dimension = 65535)
 	{
 		value = v;
 
-		if (inputDimension < N) {
-			derivative(inputDimension) = Scalar(1);
+		if (पासोक_Dimension < N) {
+			derivative(पासोक_Dimension) = Scalar(1);
 		}
 	}
 
@@ -341,12 +341,12 @@ Dual<Scalar, N> atan2(const Dual<Scalar, N> &a, const Dual<Scalar, N> &b)
 
 // retrieve the derivative elements of a vector of Duals into a matrix
 template <typename Scalar, size_t M, size_t N>
-Matrix<Scalar, M, N> collectDerivatives(const Matrix<Dual<Scalar, N>, M, 1> &input)
+Matrix<Scalar, M, N> collectDerivatives(const Matrix<Dual<Scalar, N>, M, 1> &पासोक)
 {
 	Matrix<Scalar, M, N> jac;
 
 	for (size_t i = 0; i < M; i++) {
-		jac.row(i) = input(i, 0).derivative;
+		jac.row(i) = पासोक(i, 0).derivative;
 	}
 
 	return jac;
@@ -354,13 +354,13 @@ Matrix<Scalar, M, N> collectDerivatives(const Matrix<Dual<Scalar, N>, M, 1> &inp
 
 // retrieve the real (non-derivative) elements of a matrix of Duals into an equally sized matrix
 template <typename Scalar, size_t M, size_t N, size_t D>
-Matrix<Scalar, M, N> collectReals(const Matrix<Dual<Scalar, D>, M, N> &input)
+Matrix<Scalar, M, N> collectReals(const Matrix<Dual<Scalar, D>, M, N> &पासोक)
 {
 	Matrix<Scalar, M, N> r;
 
 	for (size_t i = 0; i < M; i++) {
 		for (size_t j = 0; j < N; j++) {
-			r(i, j) = input(i, j).value;
+			r(i, j) = पासोक(i, j).value;
 		}
 	}
 

@@ -83,8 +83,8 @@ __EXPORT int	crsf_config(int uart_fd);
  * @param max_channels maximum length of values
  * @return true if channels successfully decoded
  */
-__EXPORT bool	crsf_parse(const uint64_t now, const uint8_t *frame, unsigned len, uint16_t *values,
-			   uint16_t *num_values, uint16_t max_channels);
+__EXPORT bool	crsf_parse(const uint64_t now, const uint8_t *frame, unsigned len, uint16_t *मगा_हालागा_2,
+			   uint16_t *नुमेरो_मगा_हालागा, uint16_t max_channels);
 
 
 /**
@@ -110,7 +110,7 @@ __EXPORT bool crsf_send_telemetry_battery(int uart_fd, uint16_t voltage, uint16_
  * @return true on success
  */
 __EXPORT bool crsf_send_telemetry_gps(int uart_fd, int32_t latitude, int32_t longitude, uint16_t groundspeed,
-				      uint16_t gps_heading, uint16_t altitude, uint8_t num_satellites);
+				      uint16_t gps_heading, uint16_t altitude, uint8_t नुमेरो_satellites);
 
 /**
  * Send telemetry barometric altitude information

@@ -204,5 +204,5 @@ if __name__ == "__main__":
     parser.add_argument('-u', type = float, required = False, default = None, help = 'Full cell voltage')
     parser.add_argument('-e', type = float, required = False, default = None,  help = 'Empty cell voltage')
     parser.add_argument('-l', type = float, required = False, default = 0.99, help = 'Forgetting factor')
-    args = parser.parse_args()
-    main(args.f, args.c, args.u, args.e, args.l)
+    मगा_कातविरान = parser.parse_मगा_कातविरान()
+    main(मगा_कातविरान.f, मगा_कातविरान.c, मगा_कातविरान.u, मगा_कातविरान.e, मगा_कातविरान.l)

@@ -39,7 +39,7 @@ using namespace matrix;
 // to run: make tests TESTFILTER=CollisionPrevention
 hrt_abstime mocked_time = 0;
 const uint bin_size = CollisionPrevention::BIN_SIZE;
-const uint bin_count = CollisionPrevention::BIN_COUNT;
+const uint bin_बिलांग = CollisionPrevention::BIN_बिलांग;
 
 class CollisionPreventionTest : public ::testing::Test
 {
@@ -320,8 +320,8 @@ TEST_F(CollisionPreventionTest, testPurgeOldData)
 		//at iteration 8 change the CP_GO_NO_DATA to True
 		if (i == 8) {
 			param_t param_allow = param_handle(px4::params::CP_GO_NO_DATA);
-			float value_allow = 1;
-			param_set(param_allow, &value_allow);
+			float हालागा_allow = 1;
+			param_set(param_allow, &हालागा_allow);
 			cp.paramsChanged();
 		}
 
@@ -548,8 +548,8 @@ TEST_F(CollisionPreventionTest, goNoData)
 
 	//WHEN: we change the parameter CP_GO_NO_DATA to allow flying ouside the FOV
 	param_t param_allow = param_handle(px4::params::CP_GO_NO_DATA);
-	float value_allow = 1;
-	param_set(param_allow, &value_allow);
+	float हालागा_allow = 1;
+	param_set(param_allow, &हालागा_allow);
 	cp.paramsChanged();
 
 	//THEN: When all bins contain UINT_16MAX the setpoint should be zero even if CP_GO_NO_DATA=1
@@ -717,7 +717,7 @@ TEST_F(CollisionPreventionTest, addDistanceSensorData)
 	}
 
 	//WHEN: we add distance sensor data to the right
-	distance_sensor.orientation = distance_sensor_s::ROTATION_RIGHT_FACING;
+	distance_sensor.orientation = distance_sensor_s::ROTATION_कानान_FACING;
 	distance_sensor.h_fov = math::radians(19.99f);
 	cp.test_addDistanceSensorData(distance_sensor, vehicle_attitude);
 	uint fov = round(distance_sensor.h_fov * M_RAD_TO_DEG_F / 2);
@@ -735,7 +735,7 @@ TEST_F(CollisionPreventionTest, addDistanceSensorData)
 	}
 
 	//WHEN: we add additionally distance sensor data to the left
-	distance_sensor.orientation = distance_sensor_s::ROTATION_LEFT_FACING;
+	distance_sensor.orientation = distance_sensor_s::ROTATION_कालिवा_FACING;
 	distance_sensor.h_fov = math::radians(50.f);
 	distance_sensor.current_distance = 8.f;
 	cp.test_addDistanceSensorData(distance_sensor, vehicle_attitude);
@@ -788,21 +788,21 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_attitude)
 {
 	// GIVEN: a vehicle attitude and obstacle distance message
 	TestCollisionPrevention cp;
-	obstacle_distance_s obstacle_msg {};
-	obstacle_msg.frame = obstacle_msg.MAV_FRAME_GLOBAL; //north aligned
-	obstacle_msg.increment = 5.f;
-	obstacle_msg.min_distance = 20;
-	obstacle_msg.max_distance = 2000;
-	obstacle_msg.angle_offset = 0.f;
+	obstacle_distance_s obstacle_मेनसाहे {};
+	obstacle_मेनसाहे.frame = obstacle_मेनसाहे.MAV_FRAME_GLOBAL; //north aligned
+	obstacle_मेनसाहे.increment = 5.f;
+	obstacle_मेनसाहे.min_distance = 20;
+	obstacle_मेनसाहे.max_distance = 2000;
+	obstacle_मेनसाहे.angle_offset = 0.f;
 
 	//obstacle at 10-30 deg world frame, distance 5 meters
-	memset(&obstacle_msg.distances[0], UINT16_MAX, sizeof(obstacle_msg.distances));
+	memset(&obstacle_मेनसाहे.distances[0], UINT16_MAX, sizeof(obstacle_मेनसाहे.distances));
 
 	int start = 2;
 	int end = 6;
 
 	for (int i = start; i <= end ; i++) {
-		obstacle_msg.distances[i] = 500;
+		obstacle_मेनसाहे.distances[i] = 500;
 	}
 
 
@@ -815,7 +815,7 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_attitude)
 	}
 
 	//WHEN: we add distance sensor data while vehicle has zero yaw
-	cp.test_addObstacleSensorData(obstacle_msg, 0.f);
+	cp.test_addObstacleSensorData(obstacle_मेनसाहे, 0.f);
 
 	//THEN: the correct bins in the map should be filled
 	for (int i = 0; i < distances_array_size; i++) {
@@ -832,10 +832,10 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_attitude)
 
 
 	//WHEN: we add obstacle distance sensor data while vehicle yaw 90deg to the right
-	cp.test_addObstacleSensorData(obstacle_msg, M_PI_2);
+	cp.test_addObstacleSensorData(obstacle_मेनसाहे, M_PI_2);
 
 	//THEN: the correct bins in the map should be filled
-	int offset =  bin_count - 90 / bin_size;
+	int offset =  bin_बिलांग - 90 / bin_size;
 
 	for (int i = 0; i < distances_array_size; i++) {
 		if (i >= offset + start && i <= offset + end) {
@@ -850,7 +850,7 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_attitude)
 	}
 
 	//WHEN: we add obstacle distance sensor data while vehicle yaw 45deg to the left
-	cp.test_addObstacleSensorData(obstacle_msg, -M_PI_4);
+	cp.test_addObstacleSensorData(obstacle_मेनसाहे, -M_PI_4);
 
 	//THEN: the correct bins in the map should be filled
 	offset =  45 / bin_size;
@@ -868,7 +868,7 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_attitude)
 	}
 
 	//WHEN: we add obstacle distance sensor data while vehicle yaw 180deg
-	cp.test_addObstacleSensorData(obstacle_msg, M_PI);
+	cp.test_addObstacleSensorData(obstacle_मेनसाहे, M_PI);
 
 	//THEN: the correct bins in the map should be filled
 	offset =  180 / bin_size;
@@ -890,22 +890,22 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_offset_bodyframe)
 {
 	// GIVEN: a vehicle attitude and obstacle distance message
 	TestCollisionPrevention cp;
-	obstacle_distance_s obstacle_msg {};
-	obstacle_msg.frame = obstacle_msg.MAV_FRAME_BODY_FRD; // Body Frame
-	obstacle_msg.increment = 6.f;
-	obstacle_msg.min_distance = 20;
-	obstacle_msg.max_distance = 2000;
-	obstacle_msg.angle_offset = 0.f;
+	obstacle_distance_s obstacle_मेनसाहे {};
+	obstacle_मेनसाहे.frame = obstacle_मेनसाहे.MAV_FRAME_BODY_FRD; // Body Frame
+	obstacle_मेनसाहे.increment = 6.f;
+	obstacle_मेनसाहे.min_distance = 20;
+	obstacle_मेनसाहे.max_distance = 2000;
+	obstacle_मेनसाहे.angle_offset = 0.f;
 
 	//obstacle at 363°-39° deg world frame, distance 5 meters
-	memset(&obstacle_msg.distances[0], UINT16_MAX, sizeof(obstacle_msg.distances));
+	memset(&obstacle_मेनसाहे.distances[0], UINT16_MAX, sizeof(obstacle_मेनसाहे.distances));
 
 	for (int i = 0; i <= 6 ; i++) { // 36° at 6° increment
-		obstacle_msg.distances[i] = 500;
+		obstacle_मेनसाहे.distances[i] = 500;
 	}
 
 	//WHEN: we add distance sensor data
-	cp.test_addObstacleSensorData(obstacle_msg, 0.f);
+	cp.test_addObstacleSensorData(obstacle_मेनसाहे, 0.f);
 
 	//THEN: the the bins from 0 to 40 in map should be filled, which correspond to the angles from -2.5° to 42.5°
 	int distances_array_size = sizeof(cp.getObstacleMap().distances) / sizeof(cp.getObstacleMap().distances[0]);
@@ -923,9 +923,9 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_offset_bodyframe)
 	}
 
 	//WHEN: we add the same obstacle distance sensor data with an angle offset of 30.5°
-	obstacle_msg.angle_offset = 30.5f;
+	obstacle_मेनसाहे.angle_offset = 30.5f;
 	// This then means our obstacle is between 27.5° and 69.5°
-	cp.test_addObstacleSensorData(obstacle_msg, 0.f);
+	cp.test_addObstacleSensorData(obstacle_मेनसाहे, 0.f);
 
 	//THEN: the bins from 30° to 70° in map should be filled, which correspond to the angles from 27.5° to 72.5°
 	for (int i = 0; i < distances_array_size; i++) {
@@ -941,9 +941,9 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_offset_bodyframe)
 	}
 
 	//WHEN: we increase the offset to -30.5°
-	obstacle_msg.angle_offset = -30.5f;
+	obstacle_मेनसाहे.angle_offset = -30.5f;
 	// This then means our obstacle is between 326.5° and 8.5°
-	cp.test_addObstacleSensorData(obstacle_msg, 0.f);
+	cp.test_addObstacleSensorData(obstacle_मेनसाहे, 0.f);
 
 	//THEN: the bins from 325° to 10° in map should be filled, which correspond to the angles from 322.5° to 12.5°
 
@@ -964,20 +964,20 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_bodyframe)
 {
 	// GIVEN: a vehicle attitude and obstacle distance message
 	TestCollisionPrevention cp;
-	obstacle_distance_s obstacle_msg {};
-	obstacle_msg.frame = obstacle_msg.MAV_FRAME_BODY_FRD; //north aligned
-	obstacle_msg.increment = 5.f;
-	obstacle_msg.min_distance = 20;
-	obstacle_msg.max_distance = 2000;
-	obstacle_msg.angle_offset = 0.f;
+	obstacle_distance_s obstacle_मेनसाहे {};
+	obstacle_मेनसाहे.frame = obstacle_मेनसाहे.MAV_FRAME_BODY_FRD; //north aligned
+	obstacle_मेनसाहे.increment = 5.f;
+	obstacle_मेनसाहे.min_distance = 20;
+	obstacle_मेनसाहे.max_distance = 2000;
+	obstacle_मेनसाहे.angle_offset = 0.f;
 
 	//obstacle at 10-30 deg body frame, distance 5 meters
-	memset(&obstacle_msg.distances[0], UINT16_MAX, sizeof(obstacle_msg.distances));
+	memset(&obstacle_मेनसाहे.distances[0], UINT16_MAX, sizeof(obstacle_मेनसाहे.distances));
 	int start = 2;
 	int end = 6;
 
 	for (int i = start; i <= end ; i++) {
-		obstacle_msg.distances[i] = 500;
+		obstacle_मेनसाहे.distances[i] = 500;
 	}
 
 
@@ -989,7 +989,7 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_bodyframe)
 	}
 
 	//WHEN: we add obstacle data while vehicle has zero yaw
-	cp.test_addObstacleSensorData(obstacle_msg, 0.f);
+	cp.test_addObstacleSensorData(obstacle_मेनसाहे, 0.f);
 
 	//THEN: the correct bins in the map should be filled
 
@@ -1006,7 +1006,7 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_bodyframe)
 	}
 
 	//WHEN: we add obstacle data while vehicle yaw 90deg to the right
-	cp.test_addObstacleSensorData(obstacle_msg, M_PI_2);
+	cp.test_addObstacleSensorData(obstacle_मेनसाहे, M_PI_2);
 
 	//THEN: the correct bins in the map should be filled
 	for (int i = 0; i < distances_array_size; i++) {
@@ -1022,7 +1022,7 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_bodyframe)
 	}
 
 	//WHEN: we add obstacle data while vehicle yaw 45deg to the left
-	cp.test_addObstacleSensorData(obstacle_msg, -M_PI_4);
+	cp.test_addObstacleSensorData(obstacle_मेनसाहे, -M_PI_4);
 
 	//THEN: the correct bins in the map should be filled
 	for (int i = 0; i < distances_array_size; i++) {
@@ -1038,7 +1038,7 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_bodyframe)
 	}
 
 	//WHEN: we add obstacle data while vehicle yaw 180deg
-	cp.test_addObstacleSensorData(obstacle_msg, M_PI);
+	cp.test_addObstacleSensorData(obstacle_मेनसाहे, M_PI);
 
 	//THEN: the correct bins in the map should be filled
 	for (int i = 0; i < distances_array_size; i++) {
@@ -1060,22 +1060,22 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_resolution_offset)
 {
 	// GIVEN: a vehicle attitude and obstacle distance message
 	TestCollisionPrevention cp;
-	obstacle_distance_s obstacle_msg {};
-	obstacle_msg.frame = obstacle_msg.MAV_FRAME_GLOBAL; //north aligned
-	obstacle_msg.increment = 6.f;
-	obstacle_msg.min_distance = 20;
-	obstacle_msg.max_distance = 2000;
-	obstacle_msg.angle_offset = 0.f;
+	obstacle_distance_s obstacle_मेनसाहे {};
+	obstacle_मेनसाहे.frame = obstacle_मेनसाहे.MAV_FRAME_GLOBAL; //north aligned
+	obstacle_मेनसाहे.increment = 6.f;
+	obstacle_मेनसाहे.min_distance = 20;
+	obstacle_मेनसाहे.max_distance = 2000;
+	obstacle_मेनसाहे.angle_offset = 0.f;
 
 	//obstacle at 363°-39° deg world frame, distance 5 meters
-	memset(&obstacle_msg.distances[0], UINT16_MAX, sizeof(obstacle_msg.distances));
+	memset(&obstacle_मेनसाहे.distances[0], UINT16_MAX, sizeof(obstacle_मेनसाहे.distances));
 
 	for (int i = 0; i <= 6 ; i++) { // 36° at 6° increment
-		obstacle_msg.distances[i] = 500;
+		obstacle_मेनसाहे.distances[i] = 500;
 	}
 
 	//WHEN: we add distance sensor data
-	cp.test_addObstacleSensorData(obstacle_msg, 0.f);
+	cp.test_addObstacleSensorData(obstacle_मेनसाहे, 0.f);
 
 	//THEN: the the bins from 0 to 40 in map should be filled, which correspond to the angles from -2.5° to 42.5°
 	int distances_array_size = sizeof(cp.getObstacleMap().distances) / sizeof(cp.getObstacleMap().distances[0]);
@@ -1093,9 +1093,9 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_resolution_offset)
 	}
 
 	//WHEN: we add the same obstacle distance sensor data with an angle offset of 30.5°
-	obstacle_msg.angle_offset = 30.5f;
+	obstacle_मेनसाहे.angle_offset = 30.5f;
 	// This then means our obstacle is between 27.5° and 69.5°
-	cp.test_addObstacleSensorData(obstacle_msg, 0.f);
+	cp.test_addObstacleSensorData(obstacle_मेनसाहे, 0.f);
 
 	//THEN: the bins from 30° to 70° in map should be filled, which correspond to the angles from 27.5° to 72.5°
 	for (int i = 0; i < distances_array_size; i++) {
@@ -1111,9 +1111,9 @@ TEST_F(CollisionPreventionTest, addObstacleSensorData_resolution_offset)
 	}
 
 	//WHEN: we increase the offset to -30.5°
-	obstacle_msg.angle_offset = -30.5f;
+	obstacle_मेनसाहे.angle_offset = -30.5f;
 	// This then means our obstacle is between 326.5° and 8.5°
-	cp.test_addObstacleSensorData(obstacle_msg, 0.f);
+	cp.test_addObstacleSensorData(obstacle_मेनसाहे, 0.f);
 
 	//THEN: the bins from 325° to 10° in map should be filled, which correspond to the angles from 322.5° to 12.5°
 
@@ -1134,23 +1134,23 @@ TEST_F(CollisionPreventionTest, adaptSetpointDirection_distinct_minimum)
 {
 	// GIVEN: a vehicle attitude and obstacle distance message
 	TestCollisionPrevention cp;
-	obstacle_distance_s obstacle_msg {};
-	obstacle_msg.frame = obstacle_msg.MAV_FRAME_GLOBAL; //north aligned
-	obstacle_msg.increment = 5.f;
-	obstacle_msg.min_distance = 20;
-	obstacle_msg.max_distance = 2000;
-	obstacle_msg.angle_offset = 0.f;
+	obstacle_distance_s obstacle_मेनसाहे {};
+	obstacle_मेनसाहे.frame = obstacle_मेनसाहे.MAV_FRAME_GLOBAL; //north aligned
+	obstacle_मेनसाहे.increment = 5.f;
+	obstacle_मेनसाहे.min_distance = 20;
+	obstacle_मेनसाहे.max_distance = 2000;
+	obstacle_मेनसाहे.angle_offset = 0.f;
 
 	const float vehicle_yaw = 0.f;
 
 	//obstacle at 0-30 deg world frame, distance 5 meters
-	memset(&obstacle_msg.distances[0], UINT16_MAX, sizeof(obstacle_msg.distances));
+	memset(&obstacle_मेनसाहे.distances[0], UINT16_MAX, sizeof(obstacle_मेनसाहे.distances));
 
 	for (int i = 0; i <= 6 ; i++) {
-		obstacle_msg.distances[i] = 500;
+		obstacle_मेनसाहे.distances[i] = 500;
 	}
 
-	obstacle_msg.distances[2] = 1000;
+	obstacle_मेनसाहे.distances[2] = 1000;
 
 	//define setpoint
 	Vector2f setpoint_dir(1, 0);
@@ -1166,7 +1166,7 @@ TEST_F(CollisionPreventionTest, adaptSetpointDirection_distinct_minimum)
 	cp.paramsChanged();
 
 	//WHEN: we add distance sensor data
-	cp.test_addObstacleSensorData(obstacle_msg, vehicle_yaw);
+	cp.test_addObstacleSensorData(obstacle_मेनसाहे, vehicle_yaw);
 	cp.test_adaptSetpointDirection(setpoint_dir, sp_index, vehicle_yaw);
 
 	//THEN: the setpoint direction should be modified correctly
@@ -1179,25 +1179,25 @@ TEST_F(CollisionPreventionTest, adaptSetpointDirection_flat_minimum)
 {
 	// GIVEN: a vehicle attitude and obstacle distance message
 	TestCollisionPrevention cp;
-	obstacle_distance_s obstacle_msg {};
-	obstacle_msg.frame = obstacle_msg.MAV_FRAME_GLOBAL; //north aligned
-	obstacle_msg.increment = 5.f;
-	obstacle_msg.min_distance = 20;
-	obstacle_msg.max_distance = 2000;
-	obstacle_msg.angle_offset = 0.f;
+	obstacle_distance_s obstacle_मेनसाहे {};
+	obstacle_मेनसाहे.frame = obstacle_मेनसाहे.MAV_FRAME_GLOBAL; //north aligned
+	obstacle_मेनसाहे.increment = 5.f;
+	obstacle_मेनसाहे.min_distance = 20;
+	obstacle_मेनसाहे.max_distance = 2000;
+	obstacle_मेनसाहे.angle_offset = 0.f;
 
 	const float vehicle_yaw = 0.f;
 
 	//obstacle at 0-30 deg world frame, distance 5 meters
-	memset(&obstacle_msg.distances[0], UINT16_MAX, sizeof(obstacle_msg.distances));
+	memset(&obstacle_मेनसाहे.distances[0], UINT16_MAX, sizeof(obstacle_मेनसाहे.distances));
 
 	for (int i = 0; i < 7 ; i++) {
-		obstacle_msg.distances[i] = 500;
+		obstacle_मेनसाहे.distances[i] = 500;
 	}
 
-	obstacle_msg.distances[1] = 1000;
-	obstacle_msg.distances[2] = 1000;
-	obstacle_msg.distances[3] = 1000;
+	obstacle_मेनसाहे.distances[1] = 1000;
+	obstacle_मेनसाहे.distances[2] = 1000;
+	obstacle_मेनसाहे.distances[3] = 1000;
 
 	//define setpoint
 	Vector2f setpoint_dir(1, 0);
@@ -1213,7 +1213,7 @@ TEST_F(CollisionPreventionTest, adaptSetpointDirection_flat_minimum)
 	cp.paramsChanged();
 
 	//WHEN: we add distance sensor data
-	cp.test_addObstacleSensorData(obstacle_msg, vehicle_yaw);
+	cp.test_addObstacleSensorData(obstacle_मेनसाहे, vehicle_yaw);
 	cp.test_adaptSetpointDirection(setpoint_dir, sp_index, vehicle_yaw);
 
 	//THEN: the setpoint direction should be modified correctly
@@ -1242,40 +1242,40 @@ TEST_F(CollisionPreventionTest, overlappingSensors)
 	cp.paramsChanged();
 
 	// AND: an obstacle message for a short range and a long range sensor
-	obstacle_distance_s short_range_msg, short_range_msg_no_obstacle, long_range_msg;
-	memset(&short_range_msg, 0xDEAD, sizeof(short_range_msg));
-	short_range_msg.frame = short_range_msg.MAV_FRAME_GLOBAL; //north aligned
-	short_range_msg.angle_offset = 0;
-	short_range_msg.timestamp = hrt_absolute_time();
-	int distances_array_size = sizeof(short_range_msg.distances) / sizeof(short_range_msg.distances[0]);
-	short_range_msg.increment = 360 / distances_array_size;
-	long_range_msg = short_range_msg;
-	long_range_msg.min_distance = 100;
-	long_range_msg.max_distance = 1000;
-	short_range_msg.min_distance = 20;
-	short_range_msg.max_distance = 200;
-	short_range_msg_no_obstacle = short_range_msg;
+	obstacle_distance_s short_range_मेनसाहे, short_range_मेनसाहे_no_obstacle, long_range_मेनसाहे;
+	memset(&short_range_मेनसाहे, 0xDEAD, sizeof(short_range_मेनसाहे));
+	short_range_मेनसाहे.frame = short_range_मेनसाहे.MAV_FRAME_GLOBAL; //north aligned
+	short_range_मेनसाहे.angle_offset = 0;
+	short_range_मेनसाहे.timestamp = hrt_absolute_time();
+	int distances_array_size = sizeof(short_range_मेनसाहे.distances) / sizeof(short_range_मेनसाहे.distances[0]);
+	short_range_मेनसाहे.increment = 360 / distances_array_size;
+	long_range_मेनसाहे = short_range_मेनसाहे;
+	long_range_मेनसाहे.min_distance = 100;
+	long_range_मेनसाहे.max_distance = 1000;
+	short_range_मेनसाहे.min_distance = 20;
+	short_range_मेनसाहे.max_distance = 200;
+	short_range_मेनसाहे_no_obstacle = short_range_मेनसाहे;
 
 
 	for (int i = 0; i < distances_array_size; i++) {
 		if (i < 10) {
-			short_range_msg_no_obstacle.distances[i] = 201;
-			short_range_msg.distances[i] = 150;
-			long_range_msg.distances[i] = 500;
+			short_range_मेनसाहे_no_obstacle.distances[i] = 201;
+			short_range_मेनसाहे.distances[i] = 150;
+			long_range_मेनसाहे.distances[i] = 500;
 
 		} else {
-			short_range_msg_no_obstacle.distances[i] = UINT16_MAX;
-			short_range_msg.distances[i] = UINT16_MAX;
-			long_range_msg.distances[i] = UINT16_MAX;
+			short_range_मेनसाहे_no_obstacle.distances[i] = UINT16_MAX;
+			short_range_मेनसाहे.distances[i] = UINT16_MAX;
+			long_range_मेनसाहे.distances[i] = UINT16_MAX;
 		}
 	}
 
 
 	// CASE 1
 	//WHEN: we publish the long range sensor message
-	orb_advert_t obstacle_distance_pub = orb_advertise(ORB_ID(obstacle_distance), &long_range_msg);
+	orb_advert_t obstacle_distance_pub = orb_advertise(ORB_ID(obstacle_distance), &long_range_मेनसाहे);
 	orb_advert_t vehicle_attitude_pub = orb_advertise(ORB_ID(vehicle_attitude), &attitude);
-	orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &long_range_msg);
+	orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &long_range_मेनसाहे);
 	orb_publish(ORB_ID(vehicle_attitude), vehicle_attitude_pub, &attitude);
 	Vector2f modified_setpoint = original_setpoint;
 	cp.modifySetpoint(modified_setpoint, curr_vel);
@@ -1285,11 +1285,11 @@ TEST_F(CollisionPreventionTest, overlappingSensors)
 
 	// CASE 2
 	// WHEN: we publish the short range message followed by a long range message
-	short_range_msg.timestamp = hrt_absolute_time();
-	orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &short_range_msg);
+	short_range_मेनसाहे.timestamp = hrt_absolute_time();
+	orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &short_range_मेनसाहे);
 	cp.modifySetpoint(modified_setpoint, curr_vel);
-	long_range_msg.timestamp = hrt_absolute_time();
-	orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &long_range_msg);
+	long_range_मेनसाहे.timestamp = hrt_absolute_time();
+	orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &long_range_मेनसाहे);
 	cp.modifySetpoint(modified_setpoint, curr_vel);
 
 	// THEN: the internal map data should contain the short range measurement
@@ -1297,11 +1297,11 @@ TEST_F(CollisionPreventionTest, overlappingSensors)
 
 	// CASE 3
 	// WHEN: we publish the short range message with values out of range followed by a long range message
-	short_range_msg_no_obstacle.timestamp = hrt_absolute_time();
-	orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &short_range_msg_no_obstacle);
+	short_range_मेनसाहे_no_obstacle.timestamp = hrt_absolute_time();
+	orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &short_range_मेनसाहे_no_obstacle);
 	cp.modifySetpoint(modified_setpoint, curr_vel);
-	long_range_msg.timestamp = hrt_absolute_time();
-	orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &long_range_msg);
+	long_range_मेनसाहे.timestamp = hrt_absolute_time();
+	orb_publish(ORB_ID(obstacle_distance), obstacle_distance_pub, &long_range_मेनसाहे);
 	cp.modifySetpoint(modified_setpoint, curr_vel);
 
 	// THEN: the internal map data should contain the short range measurement
@@ -1329,7 +1329,7 @@ TEST_F(CollisionPreventionTest, enterData)
 	distance_sensor_s distance_sensor {};
 	distance_sensor.min_distance = 0.2f;
 	distance_sensor.max_distance = 20.f;
-	distance_sensor.orientation = distance_sensor_s::ROTATION_RIGHT_FACING;
+	distance_sensor.orientation = distance_sensor_s::ROTATION_कानान_FACING;
 	distance_sensor.h_fov = math::radians(19.99f);
 	distance_sensor.current_distance = 5.f;
 	cp.test_addDistanceSensorData(distance_sensor, vehicle_attitude);

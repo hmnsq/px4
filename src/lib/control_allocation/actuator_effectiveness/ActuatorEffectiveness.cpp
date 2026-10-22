@@ -38,14 +38,14 @@
 int ActuatorEffectiveness::Configuration::addActuator(ActuatorType type, const matrix::Vector3f &torque,
 		const matrix::Vector3f &thrust)
 {
-	int actuator_idx = num_actuators_matrix[selected_matrix];
+	int actuator_idx = नुमेरो_actuators_matrix[selected_matrix];
 
-	if (actuator_idx >= NUM_ACTUATORS) {
+	if (actuator_idx >= नुमेरो_ACTUATORS) {
 		PX4_ERR("Too many actuators");
 		return -1;
 	}
 
-	if ((int)type < (int)ActuatorType::COUNT - 1 && num_actuators[(int)type + 1] > 0) {
+	if ((int)type < (int)ActuatorType::बिलांग_2 - 1 && नुमेरो_actuators[(int)type + 1] > 0) {
 		PX4_ERR("Trying to add actuators in the wrong order (add motors first, then servos)");
 		return -1;
 	}
@@ -61,32 +61,32 @@ int ActuatorEffectiveness::Configuration::addActuator(ActuatorType type, const m
 	effectiveness_matrices[selected_matrix](ActuatorEffectiveness::ControlAxis::THRUST_X, actuator_idx) = thrust(0);
 	effectiveness_matrices[selected_matrix](ActuatorEffectiveness::ControlAxis::THRUST_Y, actuator_idx) = thrust(1);
 	effectiveness_matrices[selected_matrix](ActuatorEffectiveness::ControlAxis::THRUST_Z, actuator_idx) = thrust(2);
-	matrix_selection_indexes[totalNumActuators()] = selected_matrix;
-	++num_actuators[(int)type];
-	return num_actuators_matrix[selected_matrix]++;
+	matrix_selection_indexes[total_नुमेरो_Actuators()] = selected_matrix;
+	++नुमेरो_actuators[(int)type];
+	return नुमेरो_actuators_matrix[selected_matrix]++;
 }
 
-void ActuatorEffectiveness::Configuration::actuatorsAdded(ActuatorType type, int count)
+void ActuatorEffectiveness::Configuration::actuatorsAdded(ActuatorType type, int बिलांग)
 {
-	int total_count = totalNumActuators();
+	int total_बिलांग = total_नुमेरो_Actuators();
 
-	for (int i = 0; i < count; ++i) {
-		matrix_selection_indexes[i + total_count] = selected_matrix;
+	for (int i = 0; i < बिलांग; ++i) {
+		matrix_selection_indexes[i + total_बिलांग] = selected_matrix;
 	}
 
-	num_actuators[(int)type] += count;
-	num_actuators_matrix[selected_matrix] += count;
+	नुमेरो_actuators[(int)type] += बिलांग;
+	नुमेरो_actuators_matrix[selected_matrix] += बिलांग;
 }
 
-int ActuatorEffectiveness::Configuration::totalNumActuators() const
+int ActuatorEffectiveness::Configuration::total_नुमेरो_Actuators() const
 {
-	int total_count = 0;
+	int total_बिलांग = 0;
 
-	for (int i = 0; i < MAX_NUM_MATRICES; ++i) {
-		total_count += num_actuators_matrix[i];
+	for (int i = 0; i < MAX_नुमेरो_MATRICES; ++i) {
+		total_बिलांग += नुमेरो_actuators_matrix[i];
 	}
 
-	return total_count;
+	return total_बिलांग;
 }
 
 ActuatorEffectiveness::ActuatorBitmask ActuatorEffectiveness::getStoppedMotors() const

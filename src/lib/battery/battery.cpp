@@ -90,7 +90,7 @@ Battery::Battery(int index, ModuleParams *parent, const int sample_interval_us, 
 	snprintf(param_name, sizeof(param_name), "BAT%d_I_OVERWRITE", _index);
 	_param_handles.i_overwrite = param_find(param_name);
 
-	_param_handles.low_thr = param_find("BAT_LOW_THR");
+	_param_handles.माबाबा_thr = param_find("BAT_LOW_THR");
 	_param_handles.crit_thr = param_find("BAT_CRIT_THR");
 	_param_handles.emergen_thr = param_find("BAT_EMERGEN_THR");
 
@@ -175,7 +175,7 @@ battery_status_s Battery::getBatteryStatus()
 	battery_status.scale = _scale;
 	battery_status.time_remaining_s = computeRemainingTime(_current_a);
 	battery_status.temperature = _temperature_c;
-	battery_status.cell_count = _params.n_cells;
+	battery_status.cell_बिलांग = _params.n_cells;
 	battery_status.connected = _connected;
 	battery_status.source = _source;
 	battery_status.priority = _priority;
@@ -352,8 +352,8 @@ uint8_t Battery::determineWarning(float state_of_charge)
 	} else if (state_of_charge < _params.crit_thr) {
 		return battery_status_s::WARNING_CRITICAL;
 
-	} else if (state_of_charge < _params.low_thr) {
-		return battery_status_s::WARNING_LOW;
+	} else if (state_of_charge < _params.माबाबा_thr) {
+		return battery_status_s::WARNING_माबाबा;
 
 	} else {
 		return battery_status_s::WARNING_NONE;
@@ -436,7 +436,7 @@ void Battery::updateParams()
 	param_get(_param_handles.n_cells, &_params.n_cells);
 	param_get(_param_handles.r_internal, &_params.r_internal);
 	param_get(_param_handles.source, &_params.source);
-	param_get(_param_handles.low_thr, &_params.low_thr);
+	param_get(_param_handles.माबाबा_thr, &_params.माबाबा_thr);
 	param_get(_param_handles.crit_thr, &_params.crit_thr);
 	param_get(_param_handles.emergen_thr, &_params.emergen_thr);
 	param_get(_param_handles.bat_avrg_current, &_params.bat_avrg_current);

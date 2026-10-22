@@ -63,9 +63,9 @@ public:
 		_compression_gain = 1.f;
 		_hpf = 0.f;
 		_lpf.reset(0.f);
-		_input_initialized = false;
+		पासोक_initialized = false;
 	}
-	float update(float input, float dt);
+	float update(float पासोक, float dt);
 
 	void setLpfCutoffFrequency(float sample_freq, float cutoff)
 	{
@@ -84,8 +84,8 @@ private:
 	float _alpha_hpf{0.f};
 	float _hpf{0.f};
 
-	float _input_prev{0.f};
-	bool _input_initialized{false};
+	float पासोक_prev{0.f};
+	bool पासोक_initialized{false};
 
 	AlphaFilter<float> _lpf;
 
@@ -101,7 +101,7 @@ public:
 	~GainCompression3d() = default;
 
 	void reset();
-	void update(const matrix::Vector3f &input, float dt);
+	void update(const matrix::Vector3f &पासोक, float dt);
 	const matrix::Vector3f &getGains() const { return _gains; };
 
 	void setEnabled(bool enabled) { _enabled = enabled; }

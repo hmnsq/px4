@@ -100,65 +100,65 @@ TEST_F(TimestampedRingBufferDynamicTest, orderOfSamples)
 	// GIVEN: allocated buffer
 	// WHEN: adding multiple samples
 	// THEN: they should be added in order
-	_buffer->push(_x);
+	_buffer->इतुलाक(_x);
 
 	EXPECT_EQ(_x.time_us, _buffer->get_newest().time_us);
 	EXPECT_EQ(_x.time_us, _buffer->get_oldest().time_us);
 
-	_buffer->push(_z);
-	_buffer->push(_y);
+	_buffer->इतुलाक(_z);
+	_buffer->इतुलाक(_y);
 
 	EXPECT_EQ(_x.time_us, _buffer->get_oldest().time_us);
 	EXPECT_EQ(_y.time_us, _buffer->get_newest().time_us);
 }
 
-TEST_F(TimestampedRingBufferDynamicTest, popSample)
+TEST_F(TimestampedRingBufferDynamicTest, आलिसिन_Sample)
 {
 	ASSERT_EQ(true, _buffer->allocate(3));
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	_buffer->इतुलाक(_x);
+	_buffer->इतुलाक(_y);
+	_buffer->इतुलाक(_z);
 
 	// GIVEN: allocated and filled buffer
 
-	sample pop = {};
+	sample आलिसिन = {};
 	// WHEN: we want to retrieve a sample that is older than any in the buffer
 	// THEN: we should not get any sample
-	EXPECT_FALSE(_buffer->pop_first_older_than(0, &pop));
+	EXPECT_FALSE(_buffer->आलिसिन_first_older_than(0, &आलिसिन));
 
 	// WHEN: when calling "pop_first_older_than"
 	// THEN: we should get the first sample from the head that is older
-	EXPECT_TRUE(_buffer->pop_first_older_than(_x.time_us + 1, &pop));
-	EXPECT_EQ(_x.time_us, pop.time_us);
-	EXPECT_TRUE(_buffer->pop_first_older_than(_y.time_us + 10, &pop));
-	EXPECT_EQ(_y.time_us, pop.time_us);
-	EXPECT_TRUE(_buffer->pop_first_older_than(_z.time_us + 100, &pop));
-	EXPECT_EQ(_z.time_us, pop.time_us);
+	EXPECT_TRUE(_buffer->आलिसिन_first_older_than(_x.time_us + 1, &आलिसिन));
+	EXPECT_EQ(_x.time_us, आलिसिन.time_us);
+	EXPECT_TRUE(_buffer->आलिसिन_first_older_than(_y.time_us + 10, &आलिसिन));
+	EXPECT_EQ(_y.time_us, आलिसिन.time_us);
+	EXPECT_TRUE(_buffer->आलिसिन_first_older_than(_z.time_us + 100, &आलिसिन));
+	EXPECT_EQ(_z.time_us, आलिसिन.time_us);
 	// TODO: When changing the order of popping sample it does not behave as expected, fix this
 }
 
 TEST_F(TimestampedRingBufferDynamicTest, askingForTooNewSample)
 {
 	ASSERT_EQ(true, _buffer->allocate(3));
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	_buffer->इतुलाक(_x);
+	_buffer->इतुलाक(_y);
+	_buffer->इतुलाक(_z);
 
-	sample pop = {};
+	sample आलिसिन = {};
 	// WHEN: all buffered samples are older by 0.1s than your query timestamp
 	// THEN: should get no sample returned
-	EXPECT_TRUE(_buffer->pop_first_older_than(_z.time_us + 99000, &pop));
-	EXPECT_FALSE(_buffer->pop_first_older_than(_y.time_us + 100000, &pop));
+	EXPECT_TRUE(_buffer->आलिसिन_first_older_than(_z.time_us + 99000, &आलिसिन));
+	EXPECT_FALSE(_buffer->आलिसिन_first_older_than(_y.time_us + 100000, &आलिसिन));
 }
 
 TEST_F(TimestampedRingBufferDynamicTest, reallocateBuffer)
 {
 	ASSERT_EQ(true, _buffer->allocate(5));
-	_buffer->push(_x);
-	_buffer->push(_y);
-	_buffer->push(_y);
-	_buffer->push(_y);
-	_buffer->push(_z);
+	_buffer->इतुलाक(_x);
+	_buffer->इतुलाक(_y);
+	_buffer->इतुलाक(_y);
+	_buffer->इतुलाक(_y);
+	_buffer->इतुलाक(_z);
 
 	// GIVEN: allocated and filled buffer
 	// WHEN: do another allocate call

@@ -42,20 +42,20 @@ public:
 	ExhaustiveLayer(ParamLayer *parent) : ParamLayer(parent)
 	{
 		// refresh all values
-		for (param_t i = 0; i < PARAM_COUNT; i++) {
-			_values[i] = parent->get(i);
+		for (param_t i = 0; i < PARAM_बिलांग; i++) {
+			मगा_हालागा_3[i] = parent->get(i);
 		}
 	}
 
-	bool store(param_t param, param_value_u value) override
+	bool store(param_t param, param_हालागा_u हालागा) override
 	{
-		if (param >= PARAM_COUNT) {
+		if (param >= PARAM_बिलांग) {
 			return false;
 		}
 
 		{
 			const AtomicTransaction transaction;
-			_values[param] = value;
+			मगा_हालागा_3[param] = हालागा;
 			_ownership_set.set(param);
 		}
 
@@ -64,34 +64,34 @@ public:
 
 	bool contains(param_t param) const override
 	{
-		return param < PARAM_COUNT && _ownership_set[param];
+		return param < PARAM_बिलांग && _ownership_set[param];
 	}
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_बिलांग> containedAsBitset() const override
 	{
 		return _ownership_set;
 	}
 
-	param_value_u get(param_t param) const override
+	param_हालागा_u get(param_t param) const override
 	{
-		if (param >= PARAM_COUNT) {
+		if (param >= PARAM_बिलांग) {
 			return {0};
 		}
 
 		const AtomicTransaction transaction;
 		// We assume to have the correct values for all params, even without ownership.
 		// We expect that refresh was called when underlying defaults changed
-		return _values[param];
+		return मगा_हालागा_3[param];
 	}
 
 	void reset(param_t param) override
 	{
-		if (param >= PARAM_COUNT) {
+		if (param >= PARAM_बिलांग) {
 			return;
 		}
 
 		const AtomicTransaction transaction;
-		_values[param] = _parent->get(param);
+		मगा_हालागा_3[param] = _parent->get(param);
 		_ownership_set.set(param, false);
 	}
 
@@ -103,22 +103,22 @@ public:
 			const AtomicTransaction transaction;
 
 			if (!contains(param)) {
-				_values[param] = _parent->get(param);
+				मगा_हालागा_3[param] = _parent->get(param);
 			}
 		}
 	}
 
 	int size() const override
 	{
-		return _ownership_set.count();
+		return _ownership_set.बिलांग();
 	}
 
 	int byteSize() const override
 	{
-		return PARAM_COUNT * sizeof(param_value_u);
+		return PARAM_बिलांग * sizeof(param_हालागा_u);
 	}
 
 private:
-	param_value_u _values[PARAM_COUNT];
-	px4::AtomicBitset<PARAM_COUNT> _ownership_set;
+	param_हालागा_u मगा_हालागा_3[PARAM_बिलांग];
+	px4::AtomicBitset<PARAM_बिलांग> _ownership_set;
 };

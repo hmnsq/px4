@@ -41,30 +41,30 @@ public:
 
 	ConstLayer() = default;
 
-	bool store(param_t param, param_value_u value) override
+	bool store(param_t param, param_हालागा_u हालागा) override
 	{
 		return false;
 	}
 
 	bool contains(param_t param) const override
 	{
-		return param < PARAM_COUNT;
+		return param < PARAM_बिलांग;
 	}
 
-	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
+	px4::AtomicBitset<PARAM_बिलांग> containedAsBitset() const override
 	{
-		px4::AtomicBitset<PARAM_COUNT> set;
+		px4::AtomicBitset<PARAM_बिलांग> set;
 
-		for (int i = 0; i < PARAM_COUNT; i++) {
+		for (int i = 0; i < PARAM_बिलांग; i++) {
 			set.set(i);
 		}
 
 		return set;
 	}
 
-	param_value_u get(param_t param) const override
+	param_हालागा_u get(param_t param) const override
 	{
-		if (param >= PARAM_COUNT) {
+		if (param >= PARAM_बिलांग) {
 			return {0};
 		}
 
@@ -83,11 +83,11 @@ public:
 
 	int size() const override
 	{
-		return PARAM_COUNT;
+		return PARAM_बिलांग;
 	}
 
 	int byteSize() const override
 	{
-		return PARAM_COUNT * sizeof(param_info_s);
+		return PARAM_बिलांग * sizeof(param_info_s);
 	}
 };

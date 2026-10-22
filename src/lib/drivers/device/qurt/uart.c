@@ -30,14 +30,14 @@ int qurt_uart_get_port(const char *dev)
 	if (dev != NULL) {
 		// Convert device string into a uart port number
 		char *endptr = NULL;
-		int port_number = strtol(dev, &endptr, 10);
+		int port_नुमेरो = strtol(dev, &endptr, 10);
 
-		if ((port_number == 0) && (endptr == dev)) {
+		if ((port_नुमेरो == 0) && (endptr == dev)) {
 			PX4_ERR("Could not convert %s into a valid uart port number", dev);
 			return -1;
 
 		} else {
-			return port_number;
+			return port_नुमेरो;
 		}
 	}
 
@@ -46,11 +46,11 @@ int qurt_uart_get_port(const char *dev)
 
 int qurt_uart_open(const char *dev, speed_t speed)
 {
-	int port_number = qurt_uart_get_port(dev);
+	int port_नुमेरो = qurt_uart_get_port(dev);
 
-	if (_callbacks_configured && (port_number >= 0)) {
+	if (_callbacks_configured && (port_नुमेरो >= 0)) {
 
-		return _open_uart((uint8_t) port_number, speed);
+		return _open_uart((uint8_t) port_नुमेरो, speed);
 
 	} else {
 		PX4_ERR("Cannot open uart until callbacks have been configured");

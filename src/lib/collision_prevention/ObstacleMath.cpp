@@ -117,9 +117,9 @@ float sensor_orientation_to_yaw_offset(const SensorOrientation orientation, cons
 	return offset;
 }
 
-int wrap_bin(int bin, int bin_count)
+int wrap_bin(int bin, int bin_बिलांग)
 {
-	return (bin + bin_count) % bin_count;
+	return (bin + bin_बिलांग) % bin_बिलांग;
 }
 
 float wrap_360(const float angle)

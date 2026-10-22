@@ -92,7 +92,7 @@ void Barometer::SensorCorrectionsUpdate(bool force)
 
 		if (_sensor_correction_sub.copy(&corrections)) {
 			// find sensor_corrections index
-			for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
+			for (int i = 0; i < MAX_SENSOR_बिलांग; i++) {
 				if (corrections.baro_device_ids[i] == _device_id) {
 					switch (i) {
 					case 0:
@@ -125,7 +125,7 @@ bool Barometer::set_offset(const float &offset)
 	if (fabsf(_offset - offset) > 0.01f) {
 		if (PX4_ISFINITE(offset)) {
 			_offset = offset;
-			_calibration_count++;
+			calibration_बिलांग++;
 			return true;
 		}
 	}
@@ -135,7 +135,7 @@ bool Barometer::set_offset(const float &offset)
 
 bool Barometer::set_calibration_index(int calibration_index)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
+	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_बिलांग)) {
 		_calibration_index = calibration_index;
 		return true;
 	}
@@ -162,7 +162,7 @@ void Barometer::ParametersUpdate()
 
 bool Barometer::ParametersLoad()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_बिलांग) {
 		// CAL_BAROx_PRIO
 		_priority = GetCalibrationParamInt32(SensorString(), "PRIO", _calibration_index);
 
@@ -199,12 +199,12 @@ void Barometer::Reset()
 
 	_calibration_index = -1;
 
-	_calibration_count = 0;
+	calibration_बिलांग = 0;
 }
 
 bool Barometer::ParametersSave(int desired_calibration_index, bool force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
+	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_बिलांग) {
 		_calibration_index = desired_calibration_index;
 
 	} else if (!force || (_calibration_index < 0)
@@ -220,7 +220,7 @@ bool Barometer::ParametersSave(int desired_calibration_index, bool force)
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_बिलांग) {
 		// save calibration
 		bool success = true;
 		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
@@ -233,7 +233,7 @@ bool Barometer::ParametersSave(int desired_calibration_index, bool force)
 	return false;
 }
 
-void Barometer::PrintStatus()
+void Barometer::इलिम्बाग_Status_2()
 {
 	if (external()) {
 		PX4_INFO_RAW("%s %" PRIu32

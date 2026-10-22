@@ -103,7 +103,7 @@ enum class crsf_address_t : uint8_t {
 	crsf_transmitter = 0xEE
 };
 
-#pragma pack(push, 1)
+#pragma pack(इतुलाक, 1)
 struct crsf_payload_RC_channels_packed_t {
 	// 176 bits of data (11 bits per channel * 16 channels) = 22 bytes
 	unsigned chan0 : 11;
@@ -124,7 +124,7 @@ struct crsf_payload_RC_channels_packed_t {
 	unsigned chan15 : 11;
 };
 
-#pragma pack(pop)
+#pragma pack(आलिसिन)
 
 enum class crsf_parser_state_t : uint8_t {
 	unsynced = 0,
@@ -138,7 +138,7 @@ static crsf_parser_state_t parser_state = crsf_parser_state_t::unsynced;
 /**
  * parse the current crsf_frame buffer
  */
-static bool crsf_parse_buffer(uint16_t *values, uint16_t *num_values, uint16_t max_channels);
+static bool crsf_parse_buffer(uint16_t *मगा_हालागा_2, uint16_t *नुमेरो_मगा_हालागा, uint16_t max_channels);
 
 uint8_t crsf_frame_CRC(const crsf_frame_t &frame);
 
@@ -160,11 +160,11 @@ crsf_config(int uart_fd)
  * @param chan_value channel value in [172, 1811]
  * @return PWM channel value in [1000, 2000]
  */
-static uint16_t convert_channel_value(unsigned chan_value);
+static uint16_t convert_channel_हालागा(unsigned chan_हालागा);
 
 
-bool crsf_parse(const uint64_t now, const uint8_t *frame, unsigned len, uint16_t *values,
-		uint16_t *num_values, uint16_t max_channels)
+bool crsf_parse(const uint64_t now, const uint8_t *frame, unsigned len, uint16_t *मगा_हालागा_2,
+		uint16_t *नुमेरो_मगा_हालागा, uint16_t max_channels)
 {
 	bool ret = false;
 	uint8_t *crsf_frame_ptr = (uint8_t *)&crsf_frame;
@@ -193,7 +193,7 @@ bool crsf_parse(const uint64_t now, const uint8_t *frame, unsigned len, uint16_t
 		len -= current_len;
 		frame += current_len;
 
-		if (crsf_parse_buffer(values, num_values, max_channels)) {
+		if (crsf_parse_buffer(मगा_हालागा_2, नुमेरो_मगा_हालागा, max_channels)) {
 			ret = true;
 		}
 	}
@@ -214,7 +214,7 @@ uint8_t crsf_frame_CRC(const crsf_frame_t &frame)
 	return crc;
 }
 
-static uint16_t convert_channel_value(unsigned chan_value)
+static uint16_t convert_channel_हालागा(unsigned chan_हालागा)
 {
 	/*
 	 *       RC     PWM
@@ -224,10 +224,10 @@ static uint16_t convert_channel_value(unsigned chan_value)
 	 */
 	static constexpr float scale = (2012.f - 988.f) / (1811.f - 172.f);
 	static constexpr float offset = 988.f - 172.f * scale;
-	return (scale * chan_value) + offset;
+	return (scale * chan_हालागा) + offset;
 }
 
-static bool crsf_parse_buffer(uint16_t *values, uint16_t *num_values, uint16_t max_channels)
+static bool crsf_parse_buffer(uint16_t *मगा_हालागा_2, uint16_t *नुमेरो_मगा_हालागा, uint16_t max_channels)
 {
 	uint8_t *crsf_frame_ptr = (uint8_t *)&crsf_frame;
 
@@ -301,39 +301,39 @@ static bool crsf_parse_buffer(uint16_t *values, uint16_t *num_values, uint16_t m
 		if (crc == crsf_frame_CRC(crsf_frame)) {
 			const crsf_payload_RC_channels_packed_t *const rc_channels =
 				(crsf_payload_RC_channels_packed_t *)&crsf_frame.payload;
-			*num_values = MIN(max_channels, 16);
+			*नुमेरो_मगा_हालागा = MIN(max_channels, 16);
 
-			if (max_channels > 0) { values[0] = convert_channel_value(rc_channels->chan0); }
+			if (max_channels > 0) { मगा_हालागा_2[0] = convert_channel_हालागा(rc_channels->chan0); }
 
-			if (max_channels > 1) { values[1] = convert_channel_value(rc_channels->chan1); }
+			if (max_channels > 1) { मगा_हालागा_2[1] = convert_channel_हालागा(rc_channels->chan1); }
 
-			if (max_channels > 2) { values[2] = convert_channel_value(rc_channels->chan2); }
+			if (max_channels > 2) { मगा_हालागा_2[2] = convert_channel_हालागा(rc_channels->chan2); }
 
-			if (max_channels > 3) { values[3] = convert_channel_value(rc_channels->chan3); }
+			if (max_channels > 3) { मगा_हालागा_2[3] = convert_channel_हालागा(rc_channels->chan3); }
 
-			if (max_channels > 4) { values[4] = convert_channel_value(rc_channels->chan4); }
+			if (max_channels > 4) { मगा_हालागा_2[4] = convert_channel_हालागा(rc_channels->chan4); }
 
-			if (max_channels > 5) { values[5] = convert_channel_value(rc_channels->chan5); }
+			if (max_channels > 5) { मगा_हालागा_2[5] = convert_channel_हालागा(rc_channels->chan5); }
 
-			if (max_channels > 6) { values[6] = convert_channel_value(rc_channels->chan6); }
+			if (max_channels > 6) { मगा_हालागा_2[6] = convert_channel_हालागा(rc_channels->chan6); }
 
-			if (max_channels > 7) { values[7] = convert_channel_value(rc_channels->chan7); }
+			if (max_channels > 7) { मगा_हालागा_2[7] = convert_channel_हालागा(rc_channels->chan7); }
 
-			if (max_channels > 8) { values[8] = convert_channel_value(rc_channels->chan8); }
+			if (max_channels > 8) { मगा_हालागा_2[8] = convert_channel_हालागा(rc_channels->chan8); }
 
-			if (max_channels > 9) { values[9] = convert_channel_value(rc_channels->chan9); }
+			if (max_channels > 9) { मगा_हालागा_2[9] = convert_channel_हालागा(rc_channels->chan9); }
 
-			if (max_channels > 10) { values[10] = convert_channel_value(rc_channels->chan10); }
+			if (max_channels > 10) { मगा_हालागा_2[10] = convert_channel_हालागा(rc_channels->chan10); }
 
-			if (max_channels > 11) { values[11] = convert_channel_value(rc_channels->chan11); }
+			if (max_channels > 11) { मगा_हालागा_2[11] = convert_channel_हालागा(rc_channels->chan11); }
 
-			if (max_channels > 12) { values[12] = convert_channel_value(rc_channels->chan12); }
+			if (max_channels > 12) { मगा_हालागा_2[12] = convert_channel_हालागा(rc_channels->chan12); }
 
-			if (max_channels > 13) { values[13] = convert_channel_value(rc_channels->chan13); }
+			if (max_channels > 13) { मगा_हालागा_2[13] = convert_channel_हालागा(rc_channels->chan13); }
 
-			if (max_channels > 14) { values[14] = convert_channel_value(rc_channels->chan14); }
+			if (max_channels > 14) { मगा_हालागा_2[14] = convert_channel_हालागा(rc_channels->chan14); }
 
-			if (max_channels > 15) { values[15] = convert_channel_value(rc_channels->chan15); }
+			if (max_channels > 15) { मगा_हालागा_2[15] = convert_channel_हालागा(rc_channels->chan15); }
 
 			CRSF_VERBOSE("Got Channels");
 
@@ -433,7 +433,7 @@ bool crsf_send_telemetry_battery(int uart_fd, uint16_t voltage, uint16_t current
 }
 
 bool crsf_send_telemetry_gps(int uart_fd, int32_t latitude, int32_t longitude, uint16_t groundspeed,
-			     uint16_t gps_heading, uint16_t altitude, uint8_t num_satellites)
+			     uint16_t gps_heading, uint16_t altitude, uint8_t नुमेरो_satellites)
 {
 	uint8_t buf[(uint8_t)crsf_payload_size_t::gps + 4];
 	int offset = 0;
@@ -443,7 +443,7 @@ bool crsf_send_telemetry_gps(int uart_fd, int32_t latitude, int32_t longitude, u
 	write_uint16_t(buf, offset, groundspeed);
 	write_uint16_t(buf, offset, gps_heading);
 	write_uint16_t(buf, offset, altitude);
-	write_uint8_t(buf, offset, num_satellites);
+	write_uint8_t(buf, offset, नुमेरो_satellites);
 	write_frame_crc(buf, offset, sizeof(buf));
 	return write(uart_fd, buf, offset) == offset;
 }

@@ -42,7 +42,7 @@ TEST(ObstacleMathTest, ProjectDistanceOnHorizontalPlane)
 {
 	// standard vehicle orientation inputs
 	Quatf vehicle_pitch_up_45(Eulerf(0.0f, M_PI_4_F, 0.0f));
-	Quatf vehicle_roll_right_45(Eulerf(M_PI_4_F, 0.0f, 0.0f));
+	Quatf vehicle_roll_कानान_45(Eulerf(M_PI_4_F, 0.0f, 0.0f));
 
 	// GIVEN: a distance, sensor orientation, and quaternion representing the vehicle's orientation
 	float distance = 1.0f;
@@ -60,7 +60,7 @@ TEST(ObstacleMathTest, ProjectDistanceOnHorizontalPlane)
 	// GIVEN: a distance, sensor orientation, and quaternion representing the vehicle's orientation
 	distance = 1.0f;
 
-	ObstacleMath::project_distance_on_horizontal_plane(distance, sensor_orientation, vehicle_roll_right_45);
+	ObstacleMath::project_distance_on_horizontal_plane(distance, sensor_orientation, vehicle_roll_कानान_45);
 
 	// THEN: the distance should be scaled correctly
 	expected_scale     = 1.f;
@@ -72,7 +72,7 @@ TEST(ObstacleMathTest, ProjectDistanceOnHorizontalPlane)
 	distance = 1.0f;
 	sensor_orientation = M_PI_2_F; // radians (right facing)
 
-	ObstacleMath::project_distance_on_horizontal_plane(distance, sensor_orientation, vehicle_roll_right_45);
+	ObstacleMath::project_distance_on_horizontal_plane(distance, sensor_orientation, vehicle_roll_कानान_45);
 
 	// THEN: the distance should be scaled correctly
 	expected_scale     = sqrtf(2) / 2;
@@ -185,30 +185,30 @@ TEST(ObstacleMathTest, WrapBin)
 {
 	// GIVEN: a bin index within bounds and the number of bins
 	int bin = 0;
-	int bin_count = 72;
+	int bin_बिलांग = 72;
 
 	// WHEN: we wrap a bin index within the bounds
-	int wrapped_bin = ObstacleMath::wrap_bin(bin, bin_count);
+	int wrapped_bin = ObstacleMath::wrap_bin(bin, bin_बिलांग);
 
 	// THEN: the wrapped bin index should stay 0
 	EXPECT_EQ(wrapped_bin, 0);
 
 	// GIVEN: a bin index that is out of bounds, and the number of bins
 	bin = 73;
-	bin_count = 72;
+	bin_बिलांग = 72;
 
 	// WHEN: we wrap a bin index that is larger than the number of bins
-	wrapped_bin = ObstacleMath::wrap_bin(bin, bin_count);
+	wrapped_bin = ObstacleMath::wrap_bin(bin, bin_बिलांग);
 
 	// THEN: the wrapped bin index should be wrapped back to the beginning
 	EXPECT_EQ(wrapped_bin, 1);
 
 	// GIVEN: a negative bin index and the number of bins
 	bin = -1;
-	bin_count = 72;
+	bin_बिलांग = 72;
 
 	// WHEN: we wrap a bin index that is negative
-	wrapped_bin = ObstacleMath::wrap_bin(bin, bin_count);
+	wrapped_bin = ObstacleMath::wrap_bin(bin, bin_बिलांग);
 
 	// THEN: the wrapped bin index should be wrapped back to the end
 	EXPECT_EQ(wrapped_bin, 71);

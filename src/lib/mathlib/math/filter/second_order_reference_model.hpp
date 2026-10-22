@@ -270,14 +270,14 @@ private:
 		// Bc = [0  0 ]
 		//      [Kx Kv]
 		// Bd = Bc * T
-		matrix::SquareMatrix<float, 2> input_matrix;
-		input_matrix(0, 0) = 0.0f;
-		input_matrix(0, 1) = 0.0f;
-		input_matrix(1, 0) = spring_constant_ * time_step;
-		input_matrix(1, 1) = damping_coefficient_ * time_step;
+		matrix::SquareMatrix<float, 2> पासोक_matrix;
+		पासोक_matrix(0, 0) = 0.0f;
+		पासोक_matrix(0, 1) = 0.0f;
+		पासोक_matrix(1, 0) = spring_constant_ * time_step;
+		पासोक_matrix(1, 1) = damping_coefficient_ * time_step;
 
 		// discrete state transition
-		transitionStates(state_matrix, input_matrix, state_sample, rate_sample);
+		transitionStates(state_matrix, पासोक_matrix, state_sample, rate_sample);
 	}
 
 	/**
@@ -315,15 +315,15 @@ private:
 		// Bc = [0  0 ]
 		//      [Kx Kv]
 		// Bd = Ac^-1 * (Ad - I) * Bc
-		matrix::SquareMatrix<float, 2> input_matrix;
-		input_matrix(0, 0) = 0.5f * spring_constant_ * time_step_squared;
-		input_matrix(0, 1) = 0.5f * damping_coefficient_ * time_step_squared;
-		input_matrix(1, 0) = spring_constant_ * time_step;
-		input_matrix(1, 1) = damping_coefficient_ * time_step;
-		input_matrix *= inv_denominator;
+		matrix::SquareMatrix<float, 2> पासोक_matrix;
+		पासोक_matrix(0, 0) = 0.5f * spring_constant_ * time_step_squared;
+		पासोक_matrix(0, 1) = 0.5f * damping_coefficient_ * time_step_squared;
+		पासोक_matrix(1, 0) = spring_constant_ * time_step;
+		पासोक_matrix(1, 1) = damping_coefficient_ * time_step;
+		पासोक_matrix *= inv_denominator;
 
 		// discrete state transition
-		transitionStates(state_matrix, input_matrix, state_sample, rate_sample);
+		transitionStates(state_matrix, पासोक_matrix, state_sample, rate_sample);
 	}
 
 	/**
@@ -335,12 +335,12 @@ private:
 	 * @param[in] rate_sample [units/s]
 	 */
 	void transitionStates(const matrix::SquareMatrix<float, 2> &state_matrix,
-			      const matrix::SquareMatrix<float, 2> &input_matrix, const T &state_sample, const T &rate_sample)
+			      const matrix::SquareMatrix<float, 2> &पासोक_matrix, const T &state_sample, const T &rate_sample)
 	{
-		const T new_state = state_matrix(0, 0) * filter_state_ + state_matrix(0, 1) * filter_rate_ + input_matrix(0,
-				    0) * state_sample + input_matrix(0, 1) * rate_sample;
-		const T new_rate = state_matrix(1, 0) * filter_state_ + state_matrix(1, 1) * filter_rate_ + input_matrix(1,
-				   0) * state_sample + input_matrix(1, 1) * rate_sample;
+		const T new_state = state_matrix(0, 0) * filter_state_ + state_matrix(0, 1) * filter_rate_ + पासोक_matrix(0,
+				    0) * state_sample + पासोक_matrix(0, 1) * rate_sample;
+		const T new_rate = state_matrix(1, 0) * filter_state_ + state_matrix(1, 1) * filter_rate_ + पासोक_matrix(1,
+				   0) * state_sample + पासोक_matrix(1, 1) * rate_sample;
 		filter_state_ = new_state;
 		filter_rate_ = new_rate;
 	}

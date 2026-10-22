@@ -60,19 +60,19 @@ __EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, con
 		return;
 	}
 
-	mavlink_log_s log_msg;
-	log_msg.severity = severity;
-	log_msg.timestamp = hrt_absolute_time();
+	mavlink_log_s log_मेनसाहे;
+	log_मेनसाहे.severity = severity;
+	log_मेनसाहे.timestamp = hrt_absolute_time();
 
 	va_list ap;
 	va_start(ap, fmt);
-	vsnprintf((char *)log_msg.text, sizeof(log_msg.text), fmt, ap);
+	vsnprintf((char *)log_मेनसाहे.text, sizeof(log_मेनसाहे.text), fmt, ap);
 	va_end(ap);
 
 	if (*mavlink_log_pub != nullptr) {
-		orb_publish(ORB_ID(mavlink_log), *mavlink_log_pub, &log_msg);
+		orb_publish(ORB_ID(mavlink_log), *mavlink_log_pub, &log_मेनसाहे);
 
 	} else {
-		*mavlink_log_pub = orb_advertise(ORB_ID(mavlink_log), &log_msg);
+		*mavlink_log_pub = orb_advertise(ORB_ID(mavlink_log), &log_मेनसाहे);
 	}
 }

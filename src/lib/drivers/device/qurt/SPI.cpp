@@ -150,7 +150,7 @@ int
 SPI::transfer(uint8_t *send, uint8_t *recv, unsigned len)
 {
 	int ret = PX4_ERROR;
-	unsigned retry_count = 1;
+	unsigned retry_बिलांग = 1;
 
 	if ((_fd != PX4_ERROR) && (_spi_transfer != NULL)) {
 		do {
@@ -171,7 +171,7 @@ SPI::transfer(uint8_t *send, uint8_t *recv, unsigned len)
 
 			if (ret != PX4_ERROR) { break; }
 
-		} while (retry_count++ < _retries);
+		} while (retry_बिलांग++ < _retries);
 	}
 
 	return ret;

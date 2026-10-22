@@ -47,7 +47,7 @@
 #include <uORB/topics/detect_and_avoid.h>
 #include <uORB/topics/transponder_report.h>
 
-struct daa_input_s {
+struct daa_पासोक_s {
 	matrix::Vector2d uav_lat_lon{};
 	float uav_alt{0.f};
 	matrix::Vector3f uav_vel_ned{};
@@ -64,7 +64,7 @@ public:
 	 * @brief Validate ownship + transponder inputs and compute the DAA output.
 	 * Returns false on non-finite inputs or when the built standard needs a heading the report does not provide.
 	*/
-	bool calculate_daa_output(const daa_input_s &daa_input, detect_and_avoid_s &daa_output);
+	bool calculate_daa_output(const daa_पासोक_s &daa_पासोक, detect_and_avoid_s &daa_output);
 
 	bool try_updating_params();
 

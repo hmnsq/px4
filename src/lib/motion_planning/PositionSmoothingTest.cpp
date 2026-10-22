@@ -292,8 +292,8 @@ public:
 		for (int i = 0; i < 5000 && (TARGET - position).norm() > 0.1f; i++) {
 			_position_smoothing.generateSetpoints(position, waypoints, Vector3f{0.f, 0.f, 0.f}, 0.02f, false, out);
 			position = out.position;
-			const float z_on_line = START(2) + slope * (position - START).xy().norm();
-			max_error = fmaxf(max_error, fabsf(position(2) - z_on_line));
+			const float z_on_लिन्या = START(2) + slope * (position - START).xy().norm();
+			max_error = fmaxf(max_error, fabsf(position(2) - z_on_लिन्या));
 		}
 
 		EXPECT_LT((TARGET - position).norm(), 0.1f) << "Did not reach the target\n";

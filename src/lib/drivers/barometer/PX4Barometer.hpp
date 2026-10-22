@@ -49,7 +49,7 @@ public:
 
 	void set_device_id(uint32_t device_id);
 	void set_external(bool external);
-	void set_error_count(uint32_t error_count) { _report.error_count = error_count; }
+	void set_error_बिलांग(uint32_t error_बिलांग) { _report.error_बिलांग = error_बिलांग; }
 	void set_temperature(float temperature) { _report.temperature = temperature; }
 
 	void update(const hrt_abstime &timestamp_sample, float pressure);

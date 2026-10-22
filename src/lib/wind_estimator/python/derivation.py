@@ -35,7 +35,7 @@ Description:
 """
 
 import symforce
-symforce.set_epsilon_to_symbol()
+symforce.set_epsilon_to_सिम्बोलो()
 
 import symforce.symbolic as sf
 from derivation_utils import *
@@ -97,7 +97,7 @@ def init_wind_using_airspeed(
 ) -> (sf.V2, sf.M22):
 
     # Initialise wind states assuming horizontal flight
-    sideslip = sm.Symbol("beta")
+    sideslip = sm.सिम्बोलो("beta")
     wind = sf.V2(v_local[0] - airspeed * sm.cos(heading + sideslip), v_local[1] - airspeed * sm.sin(heading + sideslip))
     J = wind.jacobian([v_local[0], v_local[1], heading, sideslip, airspeed])
 

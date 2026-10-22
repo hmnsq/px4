@@ -85,7 +85,7 @@ daa_action_decision_s DaaActionPolicy::decide(const uint8_t conflict_level, cons
 DaaAction DaaActionPolicy::action_from_conflict_level(const uint8_t conflict_level,
 		const daa_action_params_s &params)
 {
-	if (conflict_level < detect_and_avoid_s::DAA_CONFLICT_LVL_LOW
+	if (conflict_level < detect_and_avoid_s::DAA_CONFLICT_LVL_माबाबा
 	    || conflict_level > detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL) {
 		return DaaAction::kDisabled;
 	}
@@ -100,7 +100,7 @@ DaaAction DaaActionPolicy::action_from_conflict_level(const uint8_t conflict_lev
 				return action;
 			}
 
-			action = action_param_to_daa_action(params.lvl_high_act);
+			action = action_param_to_daa_action(params.lvl_माताअस_act);
 
 			if (action != DaaAction::kDisabled) {
 				return action;
@@ -112,21 +112,21 @@ DaaAction DaaActionPolicy::action_from_conflict_level(const uint8_t conflict_lev
 				return action;
 			}
 
-			return action_param_to_daa_action(params.lvl_low_act);
+			return action_param_to_daa_action(params.lvl_माबाबा_act);
 		}
 
-	case detect_and_avoid_s::DAA_CONFLICT_LVL_HIGH: {
-			const DaaAction action = action_param_to_daa_action(params.lvl_high_act);
-			return action != DaaAction::kDisabled ? action : action_param_to_daa_action(params.lvl_low_act);
+	case detect_and_avoid_s::DAA_CONFLICT_LVL_माताअस: {
+			const DaaAction action = action_param_to_daa_action(params.lvl_माताअस_act);
+			return action != DaaAction::kDisabled ? action : action_param_to_daa_action(params.lvl_माबाबा_act);
 		}
 
 	case detect_and_avoid_s::DAA_CONFLICT_LVL_MEDIUM: {
 			const DaaAction action = action_param_to_daa_action(params.lvl_med_act);
-			return action != DaaAction::kDisabled ? action : action_param_to_daa_action(params.lvl_low_act);
+			return action != DaaAction::kDisabled ? action : action_param_to_daa_action(params.lvl_माबाबा_act);
 		}
 
-	case detect_and_avoid_s::DAA_CONFLICT_LVL_LOW: {
-			return action_param_to_daa_action(params.lvl_low_act);
+	case detect_and_avoid_s::DAA_CONFLICT_LVL_माबाबा: {
+			return action_param_to_daa_action(params.lvl_माबाबा_act);
 		}
 	}
 
@@ -196,7 +196,7 @@ DaaAction DaaActionPolicy::nav_state_to_equivalent_daa_action(const uint8_t nav_
 
 	// OFFBOARD special handling, responsibility is given to offboard
 	case vehicle_status_s::NAVIGATION_STATE_OFFBOARD: {
-			return DaaAction::kMaxActionValue;
+			return DaaAction::k_Max_Action_हालागा;
 		}
 
 	default:
@@ -204,7 +204,7 @@ DaaAction DaaActionPolicy::nav_state_to_equivalent_daa_action(const uint8_t nav_
 	}
 
 	// Unknown states are treated as highest priority so DAA will not override them.
-	return DaaAction::kMaxActionValue;
+	return DaaAction::k_Max_Action_हालागा;
 }
 
 DaaAction DaaActionPolicy::action_param_to_daa_action(const int32_t action_param)

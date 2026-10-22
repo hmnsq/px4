@@ -45,7 +45,7 @@ using matrix::Vector3f;
 namespace calibration
 {
 
-static constexpr int MAX_SENSOR_COUNT = 4; // TODO: per sensor?
+static constexpr int MAX_SENSOR_बिलांग = 4; // TODO: per sensor?
 
 int8_t FindCurrentCalibrationIndex(const char *sensor_type, uint32_t device_id)
 {
@@ -53,7 +53,7 @@ int8_t FindCurrentCalibrationIndex(const char *sensor_type, uint32_t device_id)
 		return -1;
 	}
 
-	for (unsigned i = 0; i < MAX_SENSOR_COUNT; ++i) {
+	for (unsigned i = 0; i < MAX_SENSOR_बिलांग; ++i) {
 		char str[20] {};
 		snprintf(str, sizeof(str), "CAL_%s%u_ID", sensor_type, i);
 
@@ -90,9 +90,9 @@ int8_t FindAvailableCalibrationIndex(const char *sensor_type, uint32_t device_id
 
 	// device isn't currently using a calibration slot, select user preference (preferred_index)
 	//  if available, otherwise use the first available slot
-	uint32_t cal_device_ids[MAX_SENSOR_COUNT] {};
+	uint32_t cal_device_ids[MAX_SENSOR_बिलांग] {};
 
-	for (unsigned i = 0; i < MAX_SENSOR_COUNT; ++i) {
+	for (unsigned i = 0; i < MAX_SENSOR_बिलांग; ++i) {
 		char str[20] {};
 		snprintf(str, sizeof(str), "CAL_%s%u_ID", sensor_type, i);
 		int32_t device_id_val = 0;
@@ -103,14 +103,14 @@ int8_t FindAvailableCalibrationIndex(const char *sensor_type, uint32_t device_id
 	}
 
 	// use preferred_index if it's available
-	if ((preferred_index >= 0) && (preferred_index < MAX_SENSOR_COUNT)
+	if ((preferred_index >= 0) && (preferred_index < MAX_SENSOR_बिलांग)
 	    && (cal_device_ids[preferred_index] == 0)) {
 
 		calibration_index = preferred_index;
 
 	} else {
 		// otherwise select first available slot
-		for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
+		for (int i = 0; i < MAX_SENSOR_बिलांग; i++) {
 			if (cal_device_ids[i] == 0) {
 				calibration_index = i;
 				break;
@@ -157,7 +157,7 @@ float GetCalibrationParamFloat(const char *sensor_type, const char *cal_type, ui
 
 Vector3f GetCalibrationParamsVector3f(const char *sensor_type, const char *cal_type, uint8_t instance)
 {
-	Vector3f values{0.f, 0.f, 0.f};
+	Vector3f मगा_हालागा_2{0.f, 0.f, 0.f};
 
 	char str[20] {};
 
@@ -167,15 +167,15 @@ Vector3f GetCalibrationParamsVector3f(const char *sensor_type, const char *cal_t
 		// eg CAL_MAGn_{X,Y,Z}OFF
 		snprintf(str, sizeof(str), "CAL_%s%" PRIu8 "_%c%s", sensor_type, instance, axis_char, cal_type);
 
-		if (param_get(param_find(str), &values(axis)) != 0) {
+		if (param_get(param_find(str), &मगा_हालागा_2(axis)) != 0) {
 			PX4_ERR("failed to get %s", str);
 		}
 	}
 
-	return values;
+	return मगा_हालागा_2;
 }
 
-bool SetCalibrationParamsVector3f(const char *sensor_type, const char *cal_type, uint8_t instance, Vector3f values)
+bool SetCalibrationParamsVector3f(const char *sensor_type, const char *cal_type, uint8_t instance, Vector3f मगा_हालागा_2)
 {
 	int ret = PX4_OK;
 	char str[20] {};
@@ -186,8 +186,8 @@ bool SetCalibrationParamsVector3f(const char *sensor_type, const char *cal_type,
 		// eg CAL_MAGn_{X,Y,Z}OFF
 		snprintf(str, sizeof(str), "CAL_%s%" PRIu8 "_%c%s", sensor_type, instance, axis_char, cal_type);
 
-		if (param_set_no_notification(param_find(str), &values(axis)) != 0) {
-			PX4_ERR("failed to set %s = %.4f", str, (double)values(axis));
+		if (param_set_no_notification(param_find(str), &मगा_हालागा_2(axis)) != 0) {
+			PX4_ERR("failed to set %s = %.4f", str, (double)मगा_हालागा_2(axis));
 			ret = PX4_ERROR;
 		}
 	}

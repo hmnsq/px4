@@ -72,11 +72,11 @@ public:
 		_kD(this, "D")
 	{}
 	virtual ~BlockPID() = default;
-	float update(float input)
+	float update(float पासोक)
 	{
-		return getKP() * input +
-		       getKI() * getIntegral().update(input) +
-		       getKD() * getDerivative().update(input);
+		return getKP() * पासोक +
+		       getKI() * getIntegral().update(पासोक) +
+		       getKD() * getDerivative().update(पासोक);
 	}
 // accessors
 	float getKP() { return _kP.get(); }

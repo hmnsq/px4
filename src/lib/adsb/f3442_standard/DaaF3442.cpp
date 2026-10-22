@@ -58,9 +58,9 @@ bool DaaF3442::try_setting_params()
 	updateParams();
 
 	const matrix::Vector2f nmac_bounds{_param_daa_lvl_critical_rad.get(), _param_daa_lvl_critical_hgt.get()};
-	const matrix::Vector2f wc_bounds{_param_daa_lvl_high_rad.get(), _param_daa_lvl_high_hgt.get()};
+	const matrix::Vector2f wc_bounds{param_daa_lvl_माताअस_rad.get(), param_daa_lvl_माताअस_hgt.get()};
 	const int32_t nmac_latency = _param_daa_lvl_medium_time.get();
-	const int32_t wc_latency = _param_daa_lvl_low_time.get();
+	const int32_t wc_latency = param_daa_lvl_माबाबा_time.get();
 
 	const bool nmac_ok = nmac_bounds.isAllFinite() && nmac_bounds.min() > 0.f;
 	const bool wc_ok = wc_bounds.isAllFinite() && wc_bounds.min() > 0.f;
@@ -130,7 +130,7 @@ uint8_t DaaF3442::calculate_conflict_level(const matrix::Vector2f &distance,
 	// Multiply by two because both aircraft have their respective WC bounds
 	if (is_in_bounds(distance, 2.f * _wc_bounds_m)) {
 		PX4_DEBUG("F3442: WC breach");
-		return detect_and_avoid_s::DAA_CONFLICT_LVL_HIGH;
+		return detect_and_avoid_s::DAA_CONFLICT_LVL_माताअस;
 	}
 
 	matrix::Vector2f aug_nmac_bounds{};
@@ -146,7 +146,7 @@ uint8_t DaaF3442::calculate_conflict_level(const matrix::Vector2f &distance,
 
 	if (is_in_bounds(distance, aug_wc_bounds)) {
 		PX4_DEBUG("F3442: AUG_WC breach");
-		return detect_and_avoid_s::DAA_CONFLICT_LVL_LOW;
+		return detect_and_avoid_s::DAA_CONFLICT_LVL_माबाबा;
 	}
 
 	return detect_and_avoid_s::DAA_CONFLICT_LVL_NONE;

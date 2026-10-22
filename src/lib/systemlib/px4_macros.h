@@ -98,9 +98,9 @@
 #if defined(static_assert)
 #		define CCASSERT(predicate) static_assert(predicate, STRINGIFY(predicate))
 #	else
-#		define CCASSERT(predicate) _x_CCASSERT_LINE(predicate, __LINE__)
-#		if !defined(_x_CCASSERT_LINE)
-#			define _x_CCASSERT_LINE(predicate, line) typedef char CAT(constraint_violated_on_line_,line)[2*((predicate)!=0)-1] __attribute__ ((unused)) ;
+#		define CCASSERT(predicate) x_CCASSERT_लिन्या(predicate, __LINE__)
+#		if !defined(x_CCASSERT_लिन्या)
+#			define x_CCASSERT_लिन्या(predicate, लिन्या) typedef char CAT(constraint_violated_on_लिन्या,लिन्या)[2*((predicate)!=0)-1] __attribute__ ((unused)) ;
 #		endif
 #	endif
 #endif

@@ -52,9 +52,9 @@ daa_action_params_s params_for_all_levels(const int32_t action_param)
 {
 	daa_action_params_s params{};
 #if defined(CONFIG_NAVIGATOR_ADSB_F3442) && CONFIG_NAVIGATOR_ADSB_F3442
-	params.lvl_low_act = action_param;
+	params.lvl_माबाबा_act = action_param;
 	params.lvl_med_act = action_param;
-	params.lvl_high_act = action_param;
+	params.lvl_माताअस_act = action_param;
 	params.lvl_crit_act = action_param;
 #else
 	params.traff_avoid = action_param;
@@ -195,7 +195,7 @@ TEST(DaaActionPolicyTest, ActionParamMappingUsesParameterNumbering)
 	// out-of-range -> Disabled
 	EXPECT_EQ(DaaActionPolicy::action_param_to_daa_action(-1), DaaAction::kDisabled);
 	EXPECT_EQ(DaaActionPolicy::action_param_to_daa_action(6), DaaAction::kDisabled);
-	EXPECT_EQ(DaaActionPolicy::daa_action_to_action_param(DaaAction::kMaxActionValue), 0);
+	EXPECT_EQ(DaaActionPolicy::daa_action_to_action_param(DaaAction::k_Max_Action_हालागा), 0);
 }
 
 // An action escalates only when stronger than the current navigator state (protects manual/offboard).
@@ -224,16 +224,16 @@ TEST(DaaActionPolicyTest, NoActionForInvalidLevels)
 TEST(DaaActionPolicyTest, F3442FallbackUsesGuaranteedBreachedZones)
 {
 	daa_action_params_s params{};
-	params.lvl_low_act = 1;		// Warn only
+	params.lvl_माबाबा_act = 1;		// Warn only
 	params.lvl_med_act = 4;		// Hold
-	params.lvl_high_act = 0;	// Disabled
+	params.lvl_माताअस_act = 0;	// Disabled
 	params.lvl_crit_act = 5;	// Terminate
 
-	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_LOW, params),
+	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_माबाबा, params),
 		  DaaAction::kWarnOnly);
 	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_MEDIUM, params),
 		  DaaAction::kPositionHoldMode);
-	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_HIGH, params),
+	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_माताअस, params),
 		  DaaAction::kWarnOnly);
 	EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL, params),
 		  DaaAction::kTerminate);
@@ -253,7 +253,7 @@ TEST(DaaActionPolicyTest, CrosstrackSingleActionMapping)
 {
 	const daa_action_params_s params = params_for_all_levels(3); // Land
 
-	for (uint8_t level = detect_and_avoid_s::DAA_CONFLICT_LVL_LOW;
+	for (uint8_t level = detect_and_avoid_s::DAA_CONFLICT_LVL_माबाबा;
 	     level <= detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL; ++level) {
 		EXPECT_EQ(DaaActionPolicy::action_from_conflict_level(level, params), DaaAction::kLandMode);
 	}
@@ -301,17 +301,17 @@ TEST(DaaActionPolicyTest, DecideWarnsOnGroundInsteadOfActing)
 TEST(DaaActionPolicyTest, DecideRequestsCommandOnAirborneEscalationOnly)
 {
 	const uint8_t critical = detect_and_avoid_s::DAA_CONFLICT_LVL_CRITICAL;
-	const uint8_t low = detect_and_avoid_s::DAA_CONFLICT_LVL_LOW;
+	const uint8_t माबाबा = detect_and_avoid_s::DAA_CONFLICT_LVL_माबाबा;
 	const daa_action_params_s land_params = params_for_all_levels(3); // Land
 
 	// escalation -> Land command, announced
-	daa_action_decision_s decision = DaaActionPolicy::decide(critical, low,
+	daa_action_decision_s decision = DaaActionPolicy::decide(critical, माबाबा,
 					 vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION, false, true,
 					 DaaAction::kDisabled, land_params);
 	expect_command(decision, DaaAction::kLandMode, true);
 
 	// A later level escalation that maps to the same action is not re-announced.
-	decision = DaaActionPolicy::decide(critical, low, vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION,
+	decision = DaaActionPolicy::decide(critical, माबाबा, vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION,
 					   false, true, DaaAction::kLandMode, land_params);
 	expect_command(decision, DaaAction::kLandMode, false);
 
@@ -322,12 +322,12 @@ TEST(DaaActionPolicyTest, DecideRequestsCommandOnAirborneEscalationOnly)
 	expect_command(decision, DaaAction::kLandMode, true);
 
 	// already in a stronger mode -> nothing
-	decision = DaaActionPolicy::decide(critical, low, vehicle_status_s::NAVIGATION_STATE_TERMINATION,
+	decision = DaaActionPolicy::decide(critical, माबाबा, vehicle_status_s::NAVIGATION_STATE_TERMINATION,
 					   false, true, DaaAction::kDisabled, land_params);
 	expect_no_response(decision);
 
 	// de-escalation -> nothing
-	decision = DaaActionPolicy::decide(low, critical, vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION,
+	decision = DaaActionPolicy::decide(माबाबा, critical, vehicle_status_s::NAVIGATION_STATE_AUTO_MISSION,
 					   false, true, DaaAction::kLandMode, land_params);
 	expect_no_response(decision);
 }

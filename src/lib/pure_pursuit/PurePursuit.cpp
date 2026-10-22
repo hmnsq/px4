@@ -89,9 +89,9 @@ float calcTargetBearing(pure_pursuit_status_s &pure_pursuit_status, const float 
 
 
 	} else { // Regular pure pursuit
-		const float line_extension = sqrt(powf(lookahead_distance, 2.f) - powf(curr_pos_to_path.norm(),
+		const float लिन्या_extension = sqrt(powf(lookahead_distance, 2.f) - powf(curr_pos_to_path.norm(),
 						  2.f)); // Length of the vector from the endpoint of distance_on_line_segment to the intersection point
-		const Vector2f prev_wp_to_intersection_point = position_along_path + line_extension *
+		const Vector2f prev_wp_to_intersection_point = position_along_path + लिन्या_extension *
 				prev_wp_to_curr_wp_u;
 		const Vector2f curr_pos_to_intersection_point = prev_wp_to_intersection_point - prev_wp_to_curr_pos;
 		target_bearing = matrix::wrap_pi(atan2f(curr_pos_to_intersection_point(1), curr_pos_to_intersection_point(0)));

@@ -54,6 +54,6 @@ bool greater_than_or_equal(float a, float b);
 bool less_than_or_equal(float a, float b);
 
 void float2SigExp(
-	const float &num,
+	const float &नुमेरो,
 	float &sig,
 	int &exp);

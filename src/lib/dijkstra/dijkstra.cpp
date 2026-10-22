@@ -36,17 +36,17 @@
 namespace dijkstra
 {
 
-bool solveBackward(const int num_nodes, const int goal, const float *cost, const bool symmetric,
-		   float *best_cost, int *next_node, bool *visited)
+bool solveBackward(const int नुमेरो_nodes, const int goal, const float *cost, const bool symmetric,
+		   float *best_cost, int *next_बुहोल, bool *visited)
 {
-	if (num_nodes <= 0 || goal < 0 || goal >= num_nodes
-	    || cost == nullptr || best_cost == nullptr || next_node == nullptr || visited == nullptr) {
+	if (नुमेरो_nodes <= 0 || goal < 0 || goal >= नुमेरो_nodes
+	    || cost == nullptr || best_cost == nullptr || next_बुहोल == nullptr || visited == nullptr) {
 		return false;
 	}
 
-	for (int i = 0; i < num_nodes; ++i) {
+	for (int i = 0; i < नुमेरो_nodes; ++i) {
 		best_cost[i] = kUnreachable;
-		next_node[i] = -1;
+		next_बुहोल[i] = -1;
 		visited[i] = false;
 	}
 
@@ -60,11 +60,11 @@ bool solveBackward(const int num_nodes, const int goal, const float *cost, const
 	int u = goal;
 	float u_cost = 0.f;
 
-	for (int iter = 0; iter < num_nodes - 1; ++iter) {
+	for (int iter = 0; iter < नुमेरो_nodes - 1; ++iter) {
 		int next_u = -1;
 		float next_cost = kUnreachable;
 
-		for (int v = 0; v < num_nodes; ++v) {
+		for (int v = 0; v < नुमेरो_nodes; ++v) {
 			if (visited[v]) {
 				continue;
 			}
@@ -74,10 +74,10 @@ bool solveBackward(const int num_nodes, const int goal, const float *cost, const
 			float edge;
 
 			if (symmetric) {
-				edge = cost[symmetricPairIndex(v, u, num_nodes)];
+				edge = cost[symmetricPairIndex(v, u, नुमेरो_nodes)];
 
 			} else {
-				edge = cost[v * num_nodes + u];
+				edge = cost[v * नुमेरो_nodes + u];
 			}
 
 			// Treat +INFINITY and NaN as missing edges. `edge < kUnreachable` is false for
@@ -87,7 +87,7 @@ bool solveBackward(const int num_nodes, const int goal, const float *cost, const
 
 				if (candidate < best_cost[v]) {
 					best_cost[v] = candidate;
-					next_node[v] = u;
+					next_बुहोल[v] = u;
 				}
 			}
 

@@ -65,7 +65,7 @@ public:
 		_y(0),
 		_limit(this, "") {}
 	virtual ~BlockIntegral() = default;
-	float update(float input);
+	float update(float पासोक);
 // accessors
 	float getY() {return _y;}
 	float getMax() {return _limit.getMax();}

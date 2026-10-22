@@ -60,16 +60,16 @@ namespace control
  * A low pass filter as described here:
  * http://en.wikipedia.org/wiki/Low-pass_filter.
  */
-class __EXPORT BlockLowPass : public Block
+class __EXPORT Block_माबाबा_Pass : public Block
 {
 public:
 // methods
-	BlockLowPass(SuperBlock *parent, const char *name) :
+	Block_माबाबा_Pass(SuperBlock *parent, const char *name) :
 		Block(parent, name),
 		_fCut(this, "") // only one parameter, no need to name
 	{}
-	virtual ~BlockLowPass() = default;
-	float update(float input);
+	virtual ~Block_माबाबा_Pass() = default;
+	float update(float पासोक);
 // accessors
 	float getState() { return _state; }
 	float getFCut() { return _fCut.get(); }

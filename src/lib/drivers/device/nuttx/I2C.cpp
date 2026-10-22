@@ -54,7 +54,7 @@ namespace device
  *  All calls to init() will NOT set the buss frequency
  */
 
-unsigned int I2C::_bus_clocks[PX4_NUMBER_I2C_BUSES] = PX4_I2C_BUS_CLOCK_INIT;
+unsigned int I2C::_bus_clocks[PX4_नुमेरो_I2_C_BUSES] = PX4_I2C_BUS_CLOCK_INIT;
 
 I2C::I2C(uint8_t device_type, const char *name, const int bus, const uint16_t address, const uint32_t frequency) :
 	CDev(name, nullptr),
@@ -183,7 +183,7 @@ int
 I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const unsigned recv_len)
 {
 	int ret = PX4_ERROR;
-	unsigned retry_count = 0;
+	unsigned retry_बिलांग = 0;
 
 	if (_dev == nullptr) {
 		PX4_ERR("I2C device not opened");
@@ -193,7 +193,7 @@ I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const
 	do {
 		DEVICE_DEBUG("transfer out %p/%u  in %p/%u", send, send_len, recv, recv_len);
 
-		i2c_msg_s msgv[2] {};
+		i2c_मेनसाहे_s msgv[2] {};
 		unsigned msgs = 0;
 
 		if (send_len > 0) {
@@ -231,15 +231,15 @@ I2C::transfer(const uint8_t *send, const unsigned send_len, uint8_t *recv, const
 		}
 
 		// if we have already retried once, and we aren't going to give up, then reset the bus
-		if ((_retries > 0) && (retry_count < _retries)) {
+		if ((_retries > 0) && (retry_बिलांग < _retries)) {
 #if defined(CONFIG_I2C_RESET)
 			DEVICE_DEBUG("I2C bus: %d, Addr: %X, I2C_RESET %d/%d",
-				     get_device_bus(), get_device_address(), retry_count + 1, _retries);
+				     get_device_bus(), get_device_address(), retry_बिलांग + 1, _retries);
 			I2C_RESET(_dev);
 #endif // CONFIG_I2C_RESET
 		}
 
-	} while (retry_count++ < _retries);
+	} while (retry_बिलांग++ < _retries);
 
 	return ret;
 }

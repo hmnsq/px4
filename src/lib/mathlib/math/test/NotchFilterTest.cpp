@@ -77,7 +77,7 @@ TEST_F(NotchFilterTest, simple)
 	}
 }
 
-TEST_F(NotchFilterTest, filteringLowSide)
+TEST_F(NotchFilterTest, filtering_माबाबा_Side)
 {
 	// Send a 25Hz sinusoidal signal into a 50Hz notch filter
 	_notch_float.reset(0.0f);
@@ -90,9 +90,9 @@ TEST_F(NotchFilterTest, filteringLowSide)
 	float out = 0.f;
 
 	for (int i = 0; i < 1000; i++) {
-		float input = sinf(omega * t);
+		float पासोक = sinf(omega * t);
 		float output_expected = sinf(omega * t - phase_delay);
-		out = _notch_float.apply(input);
+		out = _notch_float.apply(पासोक);
 		t = i * dt;
 
 		// Let some time for the filter to settle
@@ -102,7 +102,7 @@ TEST_F(NotchFilterTest, filteringLowSide)
 	}
 }
 
-TEST_F(NotchFilterTest, filteringLowSideDF1)
+TEST_F(NotchFilterTest, filtering_माबाबा_Side_DF1)
 {
 	// Send a 25Hz sinusoidal signal into a 50Hz notch filter
 	_notch_float.reset(0.0f);
@@ -115,9 +115,9 @@ TEST_F(NotchFilterTest, filteringLowSideDF1)
 	float out = 0.f;
 
 	for (int i = 0; i < 1000; i++) {
-		float input = sinf(omega * t);
+		float पासोक = sinf(omega * t);
 		float output_expected = sinf(omega * t - phase_delay);
-		out = _notch_float.apply(input);
+		out = _notch_float.apply(पासोक);
 		t = i * dt;
 
 		// Let some time for the filter to settle
@@ -127,7 +127,7 @@ TEST_F(NotchFilterTest, filteringLowSideDF1)
 	}
 }
 
-TEST_F(NotchFilterTest, filteringHighSide)
+TEST_F(NotchFilterTest, filtering_माताअस_Side)
 {
 	// Send a 98 sinusoidal signal into a 50Hz notch filter
 	_notch_float.reset(0.0f);
@@ -140,9 +140,9 @@ TEST_F(NotchFilterTest, filteringHighSide)
 	float out = 0.f;
 
 	for (int i = 0; i < 1000; i++) {
-		float input = sinf(omega * t);
+		float पासोक = sinf(omega * t);
 		float output_expected = sinf(omega * t + phase_delay);
-		out = _notch_float.apply(input);
+		out = _notch_float.apply(पासोक);
 		t = i * dt;
 
 		// Let some time for the filter to settle
@@ -152,7 +152,7 @@ TEST_F(NotchFilterTest, filteringHighSide)
 	}
 }
 
-TEST_F(NotchFilterTest, filteringHighSideDF1)
+TEST_F(NotchFilterTest, filtering_माताअस_Side_DF1)
 {
 	// Send a 98 sinusoidal signal into a 50Hz notch filter
 	_notch_float.reset(0.0f);
@@ -165,9 +165,9 @@ TEST_F(NotchFilterTest, filteringHighSideDF1)
 	float out = 0.f;
 
 	for (int i = 0; i < 1000; i++) {
-		float input = sinf(omega * t);
+		float पासोक = sinf(omega * t);
 		float output_expected = sinf(omega * t + phase_delay);
-		out = _notch_float.apply(input);
+		out = _notch_float.apply(पासोक);
 		t = i * dt;
 
 		// Let some time for the filter to settle
@@ -189,8 +189,8 @@ TEST_F(NotchFilterTest, filterOnNotch)
 	float out = 0.f;
 
 	for (int i = 0; i < 1000; i++) {
-		float input = sinf(omega * t);
-		out = _notch_float.apply(input);
+		float पासोक = sinf(omega * t);
+		out = _notch_float.apply(पासोक);
 		t = i * dt;
 
 		// Let some time for the filter to settle
@@ -212,8 +212,8 @@ TEST_F(NotchFilterTest, filterOnNotchDF1)
 	float out = 0.f;
 
 	for (int i = 0; i < 1000; i++) {
-		float input = sinf(omega * t);
-		out = _notch_float.apply(input);
+		float पासोक = sinf(omega * t);
+		out = _notch_float.apply(पासोक);
 		t = i * dt;
 
 		// Let some time for the filter to settle
@@ -250,10 +250,10 @@ TEST_F(NotchFilterTest, filterVector3f)
 	Vector3f out{};
 
 	for (int i = 0; i < 1000; i++) {
-		const Vector3f input(sinf(omega(0) * t), sinf(omega(1) * t), sinf(omega(2) * t));
+		const Vector3f पासोक(sinf(omega(0) * t), sinf(omega(1) * t), sinf(omega(2) * t));
 		const Vector3f arg = omega * t + phase_delay;
 		const Vector3f output_expected(sinf(arg(0)), 0.f, sinf(arg(2)));
-		out = _notch_vector3f.apply(input);
+		out = _notch_vector3f.apply(पासोक);
 		t = i * dt;
 
 		// Let some time for the filter to settle
@@ -279,10 +279,10 @@ TEST_F(NotchFilterTest, filterVector3fDF1)
 	Vector3f out{};
 
 	for (int i = 0; i < 1000; i++) {
-		const Vector3f input(sinf(omega(0) * t), sinf(omega(1) * t), sinf(omega(2) * t));
+		const Vector3f पासोक(sinf(omega(0) * t), sinf(omega(1) * t), sinf(omega(2) * t));
 		const Vector3f arg = omega * t + phase_delay;
 		const Vector3f output_expected(sinf(arg(0)), 0.f, sinf(arg(2)));
-		out = _notch_vector3f.apply(input);
+		out = _notch_vector3f.apply(पासोक);
 		t = i * dt;
 
 		// Let some time for the filter to settle
@@ -321,12 +321,12 @@ TEST_F(NotchFilterTest, disabled)
 	float out = 0.f;
 
 	for (int i = 0; i < 10; i++) {
-		float input = sinf(omega * t);
-		out = _notch_float.apply(input);
+		float पासोक = sinf(omega * t);
+		out = _notch_float.apply(पासोक);
 		t = i * dt;
 
 		// The filter should not do anything to the input
-		EXPECT_EQ(out, input);
+		EXPECT_EQ(out, पासोक);
 	}
 }
 

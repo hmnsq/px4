@@ -57,33 +57,33 @@ bool wait_until(const std::atomic<bool> &condition)
 
 } // namespace
 
-TEST(PerfCounter, IterateLineContent)
+TEST(PerfCounter, Iterate_लिन्या_Content)
 {
-	perf_counter_t counter = perf_alloc(PC_COUNT, "test_perf_line_content");
+	perf_counter_t counter = perf_alloc(PC_बिलांग, "test_perf_line_content");
 	ASSERT_NE(counter, nullptr);
 
-	perf_count(counter);
-	perf_count(counter);
-	perf_count(counter);
+	perf_बिलांग(counter);
+	perf_बिलांग(counter);
+	perf_बिलांग(counter);
 
 	struct Context {
-		std::string line;
+		std::string लिन्या;
 	} context;
 
-	perf_iterate_all([](const char *counter_line, void *user) {
-		if (strstr(counter_line, "test_perf_line_content") != nullptr) {
-			static_cast<Context *>(user)->line = counter_line;
+	perf_iterate_all([](const char *counter_लिन्या, void *user) {
+		if (strstr(counter_लिन्या, "test_perf_line_content") != nullptr) {
+			static_cast<Context *>(user)->लिन्या = counter_लिन्या;
 		}
 	}, &context);
 
-	EXPECT_EQ(context.line, "test_perf_line_content: 3 events");
+	EXPECT_EQ(context.लिन्या, "test_perf_line_content: 3 events");
 
 	perf_free(counter);
 }
 
 TEST(PerfCounter, ConcurrentAllocDoesNotBlockOnSlowCallback)
 {
-	perf_counter_t counter = perf_alloc(PC_COUNT, "test_perf_slow_callback");
+	perf_counter_t counter = perf_alloc(PC_बिलांग, "test_perf_slow_callback");
 	ASSERT_NE(counter, nullptr);
 
 	// while the first callback is running, another thread must be able to
@@ -100,7 +100,7 @@ TEST(PerfCounter, ConcurrentAllocDoesNotBlockOnSlowCallback)
 
 		if (ctx->first.exchange(false)) {
 			ctx->alloc_thread = std::thread([ctx]() {
-				perf_counter_t other = perf_alloc(PC_COUNT, "test_perf_concurrent_alloc");
+				perf_counter_t other = perf_alloc(PC_बिलांग, "test_perf_concurrent_alloc");
 				ctx->alloc_succeeded.store(other != nullptr);
 				perf_free(other);
 				ctx->alloc_done.store(true);
@@ -122,7 +122,7 @@ TEST(PerfCounter, ConcurrentAllocDoesNotBlockOnSlowCallback)
 
 TEST(PerfCounter, AllocFromCallbackDoesNotDeadlock)
 {
-	perf_counter_t counter = perf_alloc(PC_COUNT, "test_perf_callback_alloc");
+	perf_counter_t counter = perf_alloc(PC_बिलांग, "test_perf_callback_alloc");
 	ASSERT_NE(counter, nullptr);
 
 	// calling perf_alloc() from inside the callback self-deadlocked when the
@@ -139,7 +139,7 @@ TEST(PerfCounter, AllocFromCallbackDoesNotDeadlock)
 			Context *ctx = static_cast<Context *>(user);
 
 			if (ctx->first.exchange(false)) {
-				ctx->allocated = perf_alloc(PC_COUNT, "test_perf_callback_alloc_inner");
+				ctx->allocated = perf_alloc(PC_बिलांग, "test_perf_callback_alloc_inner");
 			}
 		}, &context);
 
@@ -161,8 +161,8 @@ TEST(PerfCounter, AllocFromCallbackDoesNotDeadlock)
 TEST(PerfCounter, FreeDuringIterationIsDeferred)
 {
 	// allocation order puts counter_b at the list head, so it is visited first
-	perf_counter_t counter_a = perf_alloc(PC_COUNT, "test_perf_free_defer_a");
-	perf_counter_t counter_b = perf_alloc(PC_COUNT, "test_perf_free_defer_b");
+	perf_counter_t counter_a = perf_alloc(PC_बिलांग, "test_perf_free_defer_a");
+	perf_counter_t counter_b = perf_alloc(PC_बिलांग, "test_perf_free_defer_b");
 	ASSERT_NE(counter_a, nullptr);
 	ASSERT_NE(counter_b, nullptr);
 
@@ -170,13 +170,13 @@ TEST(PerfCounter, FreeDuringIterationIsDeferred)
 		perf_counter_t counter_a;
 		std::atomic<bool> free_done{false};
 		std::thread free_thread;
-		int lines_a{0};
+		int मगा_लिन्या_a{0};
 	} context{counter_a};
 
-	perf_iterate_all([](const char *counter_line, void *user) {
+	perf_iterate_all([](const char *counter_लिन्या, void *user) {
 		Context *ctx = static_cast<Context *>(user);
 
-		if (!ctx->free_thread.joinable() && strstr(counter_line, "test_perf_free_defer_b") != nullptr) {
+		if (!ctx->free_thread.joinable() && strstr(counter_लिन्या, "test_perf_free_defer_b") != nullptr) {
 			// free a not-yet-visited counter while the iteration is running
 			ctx->free_thread = std::thread([ctx]() {
 				perf_free(ctx->counter_a);
@@ -186,8 +186,8 @@ TEST(PerfCounter, FreeDuringIterationIsDeferred)
 			EXPECT_TRUE(wait_until(ctx->free_done));
 		}
 
-		if (strstr(counter_line, "test_perf_free_defer_a") != nullptr) {
-			ctx->lines_a++;
+		if (strstr(counter_लिन्या, "test_perf_free_defer_a") != nullptr) {
+			ctx->मगा_लिन्या_a++;
 		}
 	}, &context);
 
@@ -196,20 +196,20 @@ TEST(PerfCounter, FreeDuringIterationIsDeferred)
 	}
 
 	EXPECT_TRUE(context.free_done.load());
-	EXPECT_EQ(context.lines_a, 0);
+	EXPECT_EQ(context.मगा_लिन्या_a, 0);
 
 	// the freed entry must not reappear after deferred cleanup
-	struct CountContext {
-		int lines_a{0};
-	} count_context;
+	struct बिलांग_Context {
+		int मगा_लिन्या_a{0};
+	} बिलांग_context;
 
-	perf_iterate_all([](const char *counter_line, void *user) {
-		if (strstr(counter_line, "test_perf_free_defer_a") != nullptr) {
-			static_cast<CountContext *>(user)->lines_a++;
+	perf_iterate_all([](const char *counter_लिन्या, void *user) {
+		if (strstr(counter_लिन्या, "test_perf_free_defer_a") != nullptr) {
+			static_cast<बिलांग_Context *>(user)->मगा_लिन्या_a++;
 		}
-	}, &count_context);
+	}, &बिलांग_context);
 
-	EXPECT_EQ(count_context.lines_a, 0);
+	EXPECT_EQ(बिलांग_context.मगा_लिन्या_a, 0);
 
 	perf_free(counter_b);
 }
@@ -217,8 +217,8 @@ TEST(PerfCounter, FreeDuringIterationIsDeferred)
 TEST(PerfCounter, FreeIsDeferredUntilLastOverlappingIterationEnds)
 {
 	// Both iterators stop on counter_b with counter_a cached as their next entry.
-	perf_counter_t counter_a = perf_alloc(PC_COUNT, "test_perf_overlap_a");
-	perf_counter_t counter_b = perf_alloc(PC_COUNT, "test_perf_overlap_b");
+	perf_counter_t counter_a = perf_alloc(PC_बिलांग, "test_perf_overlap_a");
+	perf_counter_t counter_b = perf_alloc(PC_बिलांग, "test_perf_overlap_b");
 	ASSERT_NE(counter_a, nullptr);
 	ASSERT_NE(counter_b, nullptr);
 
@@ -226,14 +226,14 @@ TEST(PerfCounter, FreeIsDeferredUntilLastOverlappingIterationEnds)
 		std::atomic<bool> entered{false};
 		std::atomic<bool> release{false};
 		std::atomic<bool> timed_out{false};
-		int lines_a{0};
-		int replacement_lines{0};
+		int मगा_लिन्या_a{0};
+		int replacement_मगा_लिन्या{0};
 	} first_context, second_context;
 
-	perf_callback callback = [](const char *counter_line, void *user) {
+	perf_callback callback = [](const char *counter_लिन्या, void *user) {
 		IterateContext *ctx = static_cast<IterateContext *>(user);
 
-		if (strstr(counter_line, "test_perf_overlap_b") != nullptr) {
+		if (strstr(counter_लिन्या, "test_perf_overlap_b") != nullptr) {
 			ctx->entered.store(true);
 
 			if (!wait_until(ctx->release)) {
@@ -241,12 +241,12 @@ TEST(PerfCounter, FreeIsDeferredUntilLastOverlappingIterationEnds)
 			}
 		}
 
-		if (strstr(counter_line, "test_perf_overlap_a") != nullptr) {
-			ctx->lines_a++;
+		if (strstr(counter_लिन्या, "test_perf_overlap_a") != nullptr) {
+			ctx->मगा_लिन्या_a++;
 		}
 
-		if (strstr(counter_line, "test_perf_overlap_replacement") != nullptr) {
-			ctx->replacement_lines++;
+		if (strstr(counter_लिन्या, "test_perf_overlap_replacement") != nullptr) {
+			ctx->replacement_मगा_लिन्या++;
 		}
 	};
 
@@ -294,7 +294,7 @@ TEST(PerfCounter, FreeIsDeferredUntilLastOverlappingIterationEnds)
 
 	// If the first iterator incorrectly reclaimed counter_a, a same-sized
 	// allocation is likely to reuse the entry cached by the second iterator.
-	perf_counter_t replacement = perf_alloc(PC_COUNT, "test_perf_overlap_replacement");
+	perf_counter_t replacement = perf_alloc(PC_बिलांग, "test_perf_overlap_replacement");
 
 	if (replacement == nullptr) {
 		second_context.release.store(true);
@@ -308,9 +308,9 @@ TEST(PerfCounter, FreeIsDeferredUntilLastOverlappingIterationEnds)
 
 	EXPECT_FALSE(first_context.timed_out.load());
 	EXPECT_FALSE(second_context.timed_out.load());
-	EXPECT_EQ(first_context.lines_a, 0);
-	EXPECT_EQ(second_context.lines_a, 0);
-	EXPECT_EQ(second_context.replacement_lines, 0);
+	EXPECT_EQ(first_context.मगा_लिन्या_a, 0);
+	EXPECT_EQ(second_context.मगा_लिन्या_a, 0);
+	EXPECT_EQ(second_context.replacement_मगा_लिन्या, 0);
 
 	perf_free(replacement);
 	perf_free(counter_b);

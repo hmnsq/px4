@@ -66,7 +66,7 @@ param_t param_find_no_notification(const char *name)
 	return data.ret;
 }
 
-unsigned param_count_used()
+unsigned param_बिलांग_used()
 {
 	paramioccountused_t data = {0};
 	boardctl(PARAMIOCCOUNTUSED, reinterpret_cast<unsigned long>(&data));
@@ -88,7 +88,7 @@ int param_get_used_index(param_t param)
 }
 
 bool
-param_value_unsaved(param_t param)
+param_हालागा_unsaved(param_t param)
 {
 	paramiocunsaved_t data = {param, false};
 	boardctl(PARAMIOCUNSAVED, reinterpret_cast<unsigned long>(&data));
@@ -104,7 +104,7 @@ param_get(param_t param, void *val)
 }
 
 int
-param_get_default_value(param_t param, void *default_val)
+param_get_default_हालागा(param_t param, void *default_val)
 {
 	paramiocget_t data = {param, true, default_val, PX4_ERROR};
 	boardctl(PARAMIOCGET, reinterpret_cast<unsigned long>(&data));
@@ -145,7 +145,7 @@ void param_set_used(param_t param)
 	boardctl(PARAMIOCSETUSED, reinterpret_cast<unsigned long>(&data));
 }
 
-int param_set_default_value(param_t param, const void *val)
+int param_set_default_हालागा(param_t param, const void *val)
 {
 	paramiocsetdefault_t data = {param, val, PX4_ERROR};
 	boardctl(PARAMIOCSETDEFAULT, reinterpret_cast<unsigned long>(&data));
@@ -174,16 +174,16 @@ param_reset_all()
 }
 
 void
-param_reset_excludes(const char *excludes[], int num_excludes)
+param_reset_excludes(const char *excludes[], int नुमेरो_excludes)
 {
-	paramiocresetgroup_t data = {PARAM_RESET_EXCLUDES, excludes, num_excludes};
+	paramiocresetgroup_t data = {PARAM_RESET_EXCLUDES, excludes, नुमेरो_excludes};
 	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<unsigned long>(&data));
 }
 
 void
-param_reset_specific(const char *resets[], int num_resets)
+param_reset_specific(const char *resets[], int नुमेरो_resets)
 {
-	paramiocresetgroup_t data = {PARAM_RESET_SPECIFIC, resets, num_resets};
+	paramiocresetgroup_t data = {PARAM_RESET_SPECIFIC, resets, नुमेरो_resets};
 	boardctl(PARAMIOCRESETGROUP, reinterpret_cast<unsigned long>(&data));
 }
 

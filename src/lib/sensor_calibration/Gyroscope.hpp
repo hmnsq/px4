@@ -45,7 +45,7 @@ namespace calibration
 class Gyroscope
 {
 public:
-	static constexpr int MAX_SENSOR_COUNT = 4;
+	static constexpr int MAX_SENSOR_बिलांग = 4;
 
 	static constexpr uint8_t DEFAULT_PRIORITY = 50;
 
@@ -62,7 +62,7 @@ public:
 
 	~Gyroscope() = default;
 
-	void PrintStatus();
+	void इलिम्बाग_Status_2();
 
 	bool set_calibration_index(int calibration_index);
 	void set_device_id(uint32_t device_id); ///< classification falls back to the device id's bus
@@ -71,7 +71,7 @@ public:
 	void set_rotation(Rotation rotation);
 
 	bool calibrated() const { return (_device_id != 0) && (_calibration_index >= 0); }
-	uint8_t calibration_count() const { return _calibration_count; }
+	uint8_t calibration_बिलांग_2() const { return calibration_बिलांग; }
 	int8_t calibration_index() const { return _calibration_index; }
 	uint32_t device_id() const { return _device_id; }
 	bool enabled() const { return (_priority > 0); }
@@ -124,6 +124,6 @@ private:
 
 	bool _external{false};
 
-	uint8_t _calibration_count{0};
+	uint8_t calibration_बिलांग{0};
 };
 } // namespace calibration

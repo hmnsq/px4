@@ -74,7 +74,7 @@
  *
  ****************************************************************************/
 
-uint16_t crc16_add(uint16_t crc, uint8_t value);
+uint16_t crc16_add(uint16_t crc, uint8_t हालागा);
 
 /****************************************************************************
  * Name: crc16_signature
@@ -134,4 +134,4 @@ uint32_t crc32_signature(uint32_t acc, size_t length,
  *
  ****************************************************************************/
 
-uint64_t crc64_add_word(uint64_t crc, uint32_t value);
+uint64_t crc64_add_word(uint64_t crc, uint32_t हालागा);

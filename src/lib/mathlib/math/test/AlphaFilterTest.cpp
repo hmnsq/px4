@@ -53,36 +53,36 @@ TEST(AlphaFilterTest, initializeToZero)
 	ASSERT_EQ(filter_float.getState(), 0.f);
 }
 
-TEST(AlphaFilterTest, resetToValue)
+TEST(AlphaFilterTest, reset_To_हालागा)
 {
 	AlphaFilter<float> filter_float{};
-	const float reset_value = 42.42f;
-	filter_float.reset(reset_value);
-	ASSERT_EQ(filter_float.getState(), reset_value);
+	const float reset_हालागा = 42.42f;
+	filter_float.reset(reset_हालागा);
+	ASSERT_EQ(filter_float.getState(), reset_हालागा);
 }
 
 TEST(AlphaFilterTest, runZero)
 {
 	AlphaFilter<float> filter_float{};
-	const float input = 0.f;
+	const float पासोक = 0.f;
 
 	for (int i = 0; i < 10; i++) {
-		filter_float.update(input);
+		filter_float.update(पासोक);
 	}
 
-	ASSERT_EQ(filter_float.getState(), input);
+	ASSERT_EQ(filter_float.getState(), पासोक);
 }
 
 TEST(AlphaFilterTest, runPositive)
 {
 	// GIVEN an input of 1 in a filter with a default time constant of 9 (alpha = 0.1)
 	AlphaFilter<float> filter_float{};
-	const float input = 1.f;
+	const float पासोक = 1.f;
 	filter_float.setAlpha(.1f);
 
 	// WHEN we run the filter 9 times
 	for (int i = 0; i < 9; i++) {
-		filter_float.update(input);
+		filter_float.update(पासोक);
 	}
 
 	// THEN the state of the filter should have reached 63%
@@ -93,12 +93,12 @@ TEST(AlphaFilterTest, runNegative)
 {
 	// GIVEN an input of 1 in a filter with a default time constant of 9 (alpha = 0.1)
 	AlphaFilter<float> filter_float{};
-	const float input = -1.f;
+	const float पासोक = -1.f;
 	filter_float.setAlpha(.1f);
 
 	// WHEN we run the filter 9 times
 	for (int i = 0; i < 9; i++) {
-		filter_float.update(input);
+		filter_float.update(पासोक);
 	}
 
 	// THEN the state of the filter should have reached 63%
@@ -109,12 +109,12 @@ TEST(AlphaFilterTest, riseTime)
 {
 	// GIVEN an input of 1 in a filter with a default time constant of 9 (alpha = 0.1)
 	AlphaFilter<float> filter_float{};
-	const float input = 1.f;
+	const float पासोक = 1.f;
 	filter_float.setAlpha(.1f);
 
 	// WHEN we run the filter 27 times (3 * time constant)
 	for (int i = 0; i < 3 * 9; i++) {
-		filter_float.update(input);
+		filter_float.update(पासोक);
 	}
 
 	// THEN the state of the filter should have reached 95%
@@ -125,12 +125,12 @@ TEST(AlphaFilterTest, convergence)
 {
 	// GIVEN an input of 1 in a filter with a default time constant of 9 (alpha = 0.1)
 	AlphaFilter<float> filter_float{};
-	const float input = 1.f;
+	const float पासोक = 1.f;
 	filter_float.setAlpha(.1f);
 
 	// WHEN we run the filter 45 times (5 * time constant)
 	for (int i = 0; i < 5 * 9; i++) {
-		filter_float.update(input);
+		filter_float.update(पासोक);
 	}
 
 	// THEN the state of the filter should have converged to the input
@@ -141,19 +141,19 @@ TEST(AlphaFilterTest, convergenceVector3f)
 {
 	// GIVEN an Vector3f input in a filter with a default time constant of 9 (alpha = 0.1)
 	AlphaFilter<Vector3f> filter_v3{};
-	const Vector3f input = {3.f, 7.f, -11.f};
+	const Vector3f पासोक = {3.f, 7.f, -11.f};
 	filter_v3.setAlpha(.1f);
 
 	// WHEN we run the filter 45 times (5 * time constant)
 	for (int i = 0; i < 5 * 9; i++) {
-		filter_v3.update(input);
+		filter_v3.update(पासोक);
 	}
 
 	// THEN the state of the filter should have converged to the input (1% error allowed)
 	Vector3f output = filter_v3.getState();
 
 	for (int i = 0; i < 3; i++) {
-		ASSERT_NEAR(output(i), input(i), fabsf(0.01f * input(i)));
+		ASSERT_NEAR(output(i), पासोक(i), fabsf(0.01f * पासोक(i)));
 	}
 }
 
@@ -161,21 +161,21 @@ TEST(AlphaFilterTest, convergenceVector3fAlpha)
 {
 	// GIVEN a Vector3f input in a filter with a defined time constant and the default sampling time
 	AlphaFilter<Vector3f> filter_v3{};
-	const Vector3f input = {3.f, 7.f, -11.f};
+	const Vector3f पासोक = {3.f, 7.f, -11.f};
 	const float tau = 18.f;
 	const float dt = 1.f;
 	filter_v3.setParameters(dt, tau);
 
 	// WHEN we run the filter 18 times (1 * time constant)
 	for (int i = 0; i < 18; i++) {
-		filter_v3.update(input); // dt is assumed equal to 1
+		filter_v3.update(पासोक); // dt is assumed equal to 1
 	}
 
 	// THEN the state of the filter should have reached 65% (2% error allowed)
 	Vector3f output = filter_v3.getState();
 
 	for (int i = 0; i < 3; i++) {
-		ASSERT_NEAR(output(i), 0.63f * input(i), fabsf(0.02f * input(i)));
+		ASSERT_NEAR(output(i), 0.63f * पासोक(i), fabsf(0.02f * पासोक(i)));
 	}
 }
 
@@ -183,7 +183,7 @@ TEST(AlphaFilterTest, convergenceVector3fTauDt)
 {
 	// GIVEN a Vector3f input in a filter with a defined time constant and sampling time
 	AlphaFilter<Vector3f> filter_v3{};
-	const Vector3f input = {51.f, 7.f, -11.f};
+	const Vector3f पासोक = {51.f, 7.f, -11.f};
 	const float tau = 2.f;
 	const float dt = 0.1f;
 	filter_v3.setParameters(dt, tau);
@@ -192,14 +192,14 @@ TEST(AlphaFilterTest, convergenceVector3fTauDt)
 	const float n = tau / dt;
 
 	for (int i = 0; i < n; i++) {
-		filter_v3.update(input);
+		filter_v3.update(पासोक);
 	}
 
 	// THEN the state of the filter should have reached 65% (2% error allowed)
 	Vector3f output = filter_v3.getState();
 
 	for (int i = 0; i < 3; i++) {
-		ASSERT_NEAR(output(i), 0.63f * input(i), fabsf(0.02f * input(i)));
+		ASSERT_NEAR(output(i), 0.63f * पासोक(i), fabsf(0.02f * पासोक(i)));
 	}
 
 	// ALSO when the filter is reset to a specified value
@@ -264,30 +264,30 @@ TEST(AlphaFilterTest, ConvergenceTest)
 	AlphaFilter<float> _alpha_filter;
 	_alpha_filter.setParameters(.1f, 1.f);
 
-	float last_value{0.f};
+	float last_हालागा{0.f};
 
 	for (int i = 0; i < 100; i++) {
 		_alpha_filter.update(1.f);
-		EXPECT_GE(_alpha_filter.getState(), last_value);
-		last_value = _alpha_filter.getState();
+		EXPECT_GE(_alpha_filter.getState(), last_हालागा);
+		last_हालागा = _alpha_filter.getState();
 	}
 
-	EXPECT_NEAR(last_value, 1.f, 1e-4f);
+	EXPECT_NEAR(last_हालागा, 1.f, 1e-4f);
 
 	for (int i = 0; i < 1000; i++) {
 		_alpha_filter.update(-100.f);
-		EXPECT_LE(_alpha_filter.getState(), last_value);
-		last_value = _alpha_filter.getState();
+		EXPECT_LE(_alpha_filter.getState(), last_हालागा);
+		last_हालागा = _alpha_filter.getState();
 	}
 
-	EXPECT_NEAR(last_value, -100.f, 1e-4f);
+	EXPECT_NEAR(last_हालागा, -100.f, 1e-4f);
 }
 
 TEST(AlphaFilterTest, runPositiveRot3)
 {
 	// GIVEN a filter with a default time constant of 9 (alpha = 0.1)
 	const Quatf q_init(Eulerf(0.f, 0.f, -0.01f));
-	const Quatf input(Eulerf(0.f, 0.f, M_PI_F / 2.f));
+	const Quatf पासोक(Eulerf(0.f, 0.f, M_PI_F / 2.f));
 
 	AlphaFilter<Quatf> filter{};
 	filter.setAlpha(.1f);
@@ -295,7 +295,7 @@ TEST(AlphaFilterTest, runPositiveRot3)
 
 	// WHEN we run the filter 9 times
 	for (int i = 0; i < 9; i++) {
-		filter.update(input);
+		filter.update(पासोक);
 	}
 
 	// THEN the state of the filter should have reached 63%
@@ -311,9 +311,9 @@ TEST(AlphaFilterTest, runNecgativeRot3)
 	const float roll = -M_PI_F;
 	const float pitch = 0.f;
 	const float yaw_init = 0.01f;
-	const float yaw_input = -M_PI_F / 2.f;
+	const float yaw_पासोक = -M_PI_F / 2.f;
 	const Quatf q_init(Eulerf(roll, pitch, yaw_init));
-	const Quatf input(Eulerf(roll, pitch, yaw_input));
+	const Quatf पासोक(Eulerf(roll, pitch, yaw_पासोक));
 
 	AlphaFilter<Quatf> filter{};
 	filter.setAlpha(.1f);
@@ -321,11 +321,11 @@ TEST(AlphaFilterTest, runNecgativeRot3)
 
 	// WHEN we run the filter 9 times
 	for (int i = 0; i < 9; i++) {
-		filter.update(input);
+		filter.update(पासोक);
 	}
 
 	// THEN the state of the filter should have reached 63%
-	EXPECT_NEAR(Eulerf(filter.getState()).psi(), 0.63f * (yaw_input + yaw_init), 0.03);
+	EXPECT_NEAR(Eulerf(filter.getState()).psi(), 0.63f * (yaw_पासोक + yaw_init), 0.03);
 
 	EXPECT_TRUE(matrix::wrap_pi(Eulerf(filter.getState()).phi() - roll) < FLT_EPSILON);
 	EXPECT_TRUE(matrix::wrap_pi(Eulerf(filter.getState()).theta() - pitch) < FLT_EPSILON);

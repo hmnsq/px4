@@ -41,12 +41,12 @@
 
 #include <px4_platform_common/app.h>
 
-class CDevNode;
+class CDev_बुहोल;
 
 class CDevExample
 {
 public:
-	CDevExample() : _node(0) {}
+	CDevExample() : बुहोल(0) {}
 
 	~CDevExample();
 
@@ -57,5 +57,5 @@ public:
 private:
 	int do_poll(int fd, int timeout, int iterations, int delayms_after_poll);
 
-	CDevNode *_node;
+	CDev_बुहोल *बुहोल;
 };
