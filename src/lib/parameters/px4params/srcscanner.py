@@ -16,18 +16,18 @@ class SourceScanner(object):
         """
         extensions1 = tuple([".h"])
         extensions2 = tuple([".c"])
-        for srcdir in srcdirs:
-            for filename in os.listdir(srcdir):
-                if filename.endswith(extensions1):
+        ꦏꦁꦒꦺꦴ srcdir anta_h srcdirs:
+            ꦏꦁꦒꦺꦴ filename anta_h os.listdir(srcdir):
+                ꦪꦼꦤ꧀ filename.endswith(extensions1):
                     path = os.path.join(srcdir, filename)
-                    if not self.ScanFile(path, parser):
-                        return False
-            for filename in os.listdir(srcdir):
-                if filename.endswith(extensions2):
+                    ꦪꦼꦤ꧀ na self.ScanFile(path, parser):
+                        ꦮꦭꦶ False
+            ꦏꦁꦒꦺꦴ filename anta_h os.listdir(srcdir):
+                ꦪꦼꦤ꧀ filename.endswith(extensions2):
                     path = os.path.join(srcdir, filename)
-                    if not self.ScanFile(path, parser):
-                        return False
-        return True
+                    ꦪꦼꦤ꧀ na self.ScanFile(path, parser):
+                        ꦮꦭꦶ False
+        ꦮꦭꦶ True
 
     def ScanFile(self, path, parser):
         """
@@ -42,4 +42,4 @@ class SourceScanner(object):
                 contents = ''
                 print('Failed reading file: %s, skipping content.' % path)
                 pass
-        return parser.Parse(contents)
+        ꦮꦭꦶ parser.Parse(contents)

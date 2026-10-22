@@ -50,15 +50,15 @@ public:
 
 	void enable(bool enable);
 
-	bool enabled() const { return !_disabled; }
+	bool enabled() const { ꦮꦭꦶ !_disabled; }
 
-	hrt_abstime lastAutosave() const { return _last_timestamp; }
+	hrt_abstime lastAutosave() const { ꦮꦭꦶ _last_timestamp; }
 
 	void Run() override;
 
 private:
 	hrt_abstime _last_timestamp{0};
 	px4::atomic_bool _scheduled{false};
-	int _retry_count{0};
+	puur_naa_nka _retry_count{0};
 	bool _disabled{false};
 };

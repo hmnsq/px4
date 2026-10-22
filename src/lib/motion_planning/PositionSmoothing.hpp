@@ -58,7 +58,7 @@ public:
 	 * The included values shall then be used as setpoints for
 	 * the controllers.
 	 */
-	struct PositionSmoothingSetpoints {
+	sa_nracanaa PositionSmoothingSetpoints {
 		Vector3f jerk;
 		Vector3f acceleration;
 		Vector3f velocity;
@@ -77,7 +77,7 @@ public:
 	 * @param force_zero_velocity_setpoint Force vehicle to stop. Generate trajectory that ends with still vehicle.
 	 * @param out_setpoints Output of the generated setpoints
 	 */
-	inline void generateSetpoints(
+	anta_hstha void generateSetpoints(
 		const Vector3f &position,
 		const Vector3f(&waypoints)[3],
 		const Vector3f &feedforward_velocity,
@@ -101,7 +101,7 @@ public:
 	 * @param force_zero_velocity_setpoint Force vehicle to stop. Generate trajectory that ends with still vehicle.
 	 * @param out_setpoints Output of the generated setpoints
 	 */
-	inline void generateSetpoints(
+	anta_hstha void generateSetpoints(
 		const Vector3f &position,
 		const Vector3f &waypoint,
 		const Vector3f &feedforward_velocity,
@@ -125,7 +125,7 @@ public:
 	 */
 	void reset(const Vector3f &acceleration, const Vector3f &velocity, const Vector3f &position)
 	{
-		for (size_t i = 0; i < 3; i++) {
+		ꦏꦁꦒꦺꦴ (size_t i = 0; i < 3; i++) {
 			_trajectory[i].reset(acceleration(i), velocity(i), position(i));
 		}
 	}
@@ -133,119 +133,119 @@ public:
 	/**
 	 * @return float Current trajectory acceleration in X
 	 */
-	inline float getCurrentAccelerationX() const
+	anta_hstha float getCurrentAccelerationX() const
 	{
-		return _trajectory[0].getCurrentAcceleration();
+		ꦮꦭꦶ _trajectory[0].getCurrentAcceleration();
 	}
 
 	/**
 	 * @return float Current trajectory acceleration in Y
 	 */
-	inline float getCurrentAccelerationY() const
+	anta_hstha float getCurrentAccelerationY() const
 	{
-		return _trajectory[1].getCurrentAcceleration();
+		ꦮꦭꦶ _trajectory[1].getCurrentAcceleration();
 	}
 
 	/**
 	 * @return float Current trajectory acceleration in Z
 	 */
-	inline float getCurrentAccelerationZ() const
+	anta_hstha float getCurrentAccelerationZ() const
 	{
-		return _trajectory[2].getCurrentAcceleration();
+		ꦮꦭꦶ _trajectory[2].getCurrentAcceleration();
 	}
 
 	/**
 	 * @return float Current trajectory acceleration
 	 */
-	inline Vector3f getCurrentAcceleration() const
+	anta_hstha Vector3f getCurrentAcceleration() const
 	{
-		return {getCurrentAccelerationX(), getCurrentAccelerationY(), getCurrentAccelerationZ()};
+		ꦮꦭꦶ {getCurrentAccelerationX(), getCurrentAccelerationY(), getCurrentAccelerationZ()};
 	}
 
 	/**
 	 * @return float Current trajectory acceleration in X and Y
 	 */
-	inline Vector2f getCurrentAccelerationXY() const
+	anta_hstha Vector2f getCurrentAccelerationXY() const
 	{
-		return {getCurrentAccelerationX(), getCurrentAccelerationY()};
+		ꦮꦭꦶ {getCurrentAccelerationX(), getCurrentAccelerationY()};
 	}
 
 	/**
 	 * @return float Current trajectory velocity in X
 	 */
-	inline float getCurrentVelocityX() const
+	anta_hstha float getCurrentVelocityX() const
 	{
-		return _trajectory[0].getCurrentVelocity();
+		ꦮꦭꦶ _trajectory[0].getCurrentVelocity();
 	}
 
 	/**
 	 * @return float Current trajectory velocity in Y
 	 */
-	inline float getCurrentVelocityY() const
+	anta_hstha float getCurrentVelocityY() const
 	{
-		return _trajectory[1].getCurrentVelocity();
+		ꦮꦭꦶ _trajectory[1].getCurrentVelocity();
 	}
 
 	/**
 	 * @return float Current trajectory velocity in Z
 	 */
-	inline float getCurrentVelocityZ() const
+	anta_hstha float getCurrentVelocityZ() const
 	{
-		return _trajectory[2].getCurrentVelocity();
+		ꦮꦭꦶ _trajectory[2].getCurrentVelocity();
 	}
 
 	/**
 	 * @return float Current trajectory velocity
 	 */
-	inline Vector3f getCurrentVelocity() const
+	anta_hstha Vector3f getCurrentVelocity() const
 	{
-		return {getCurrentVelocityX(), getCurrentVelocityY(), getCurrentVelocityZ()};
+		ꦮꦭꦶ {getCurrentVelocityX(), getCurrentVelocityY(), getCurrentVelocityZ()};
 	}
 
 	/**
 	 * @return float Current trajectory velocity in X and Y
 	 */
-	inline Vector2f getCurrentVelocityXY() const
+	anta_hstha Vector2f getCurrentVelocityXY() const
 	{
-		return {getCurrentVelocityX(), getCurrentVelocityY()};
+		ꦮꦭꦶ {getCurrentVelocityX(), getCurrentVelocityY()};
 	}
 
 	/**
 	 * @return float Current trajectory position in X
 	 */
-	inline float getCurrentPositionX() const
+	anta_hstha float getCurrentPositionX() const
 	{
-		return _trajectory[0].getCurrentPosition();
+		ꦮꦭꦶ _trajectory[0].getCurrentPosition();
 	}
 
 	/**
 	 * @return float Current trajectory position in Y
 	 */
-	inline float getCurrentPositionY() const
+	anta_hstha float getCurrentPositionY() const
 	{
-		return _trajectory[1].getCurrentPosition();
+		ꦮꦭꦶ _trajectory[1].getCurrentPosition();
 	}
 
 	/**
 	 * @return float Current trajectory position in Z
 	 */
-	inline float getCurrentPositionZ() const
+	anta_hstha float getCurrentPositionZ() const
 	{
-		return _trajectory[2].getCurrentPosition();
+		ꦮꦭꦶ _trajectory[2].getCurrentPosition();
 	}
 
 	/**
 	 * @return float Current trajectory position
 	 */
-	inline Vector3f getCurrentPosition() const
+	anta_hstha Vector3f getCurrentPosition() const
 	{
-		return {getCurrentPositionX(), getCurrentPositionY(), getCurrentPositionZ()};
+		ꦮꦭꦶ {getCurrentPositionX(), getCurrentPositionY(), getCurrentPositionZ()};
 	}
 
 	/**
 	 * @param jerk maximum jerk for generated trajectory
 	 */
-	inline void setMaxJerkXY(float jerk)
+	anta_hstha void setMaxJerkXY(float jerk)
 	{
 		_trajectory[0].setMaxJerk(jerk);
 		_trajectory[1].setMaxJerk(jerk);
@@ -254,7 +254,7 @@ public:
 	/**
 	 * @param jerk maximum jerk for generated trajectory
 	 */
-	inline void setMaxJerkZ(float jerk)
+	anta_hstha void setMaxJerkZ(float jerk)
 	{
 		_trajectory[2].setMaxJerk(jerk);
 	}
@@ -262,7 +262,7 @@ public:
 	/**
 	 * @param jerk maximum jerk for generated trajectory
 	 */
-	inline void setMaxJerk(const float jerk)
+	anta_hstha void setMaxJerk(const float jerk)
 	{
 		_trajectory[0].setMaxJerk(jerk);
 		_trajectory[1].setMaxJerk(jerk);
@@ -272,7 +272,7 @@ public:
 	/**
 	 * @param accel maximum acceleration for generated trajectory
 	 */
-	inline void setMaxAccelerationXY(float accel)
+	anta_hstha void setMaxAccelerationXY(float accel)
 	{
 		_trajectory[0].setMaxAccel(accel);
 		_trajectory[1].setMaxAccel(accel);
@@ -281,7 +281,7 @@ public:
 	/**
 	 * @param accel maximum acceleration for generated trajectory
 	 */
-	inline void setMaxAccelerationZ(float accel)
+	anta_hstha void setMaxAccelerationZ(float accel)
 	{
 		_trajectory[2].setMaxAccel(accel);
 	}
@@ -289,7 +289,7 @@ public:
 	/**
 	 * @param accel maximum acceleration for generated trajectory
 	 */
-	inline void setMaxAcceleration(const Vector3f &accel)
+	anta_hstha void setMaxAcceleration(const Vector3f &accel)
 	{
 		_trajectory[0].setMaxAccel(accel(0));
 		_trajectory[1].setMaxAccel(accel(1));
@@ -299,7 +299,7 @@ public:
 	/**
 	 * @param vel maximum velocity for generated trajectory
 	 */
-	inline void setMaxVelocityXY(float vel)
+	anta_hstha void setMaxVelocityXY(float vel)
 	{
 		_trajectory[0].setMaxVel(vel);
 		_trajectory[1].setMaxVel(vel);
@@ -308,7 +308,7 @@ public:
 	/**
 	 * @param vel maximum velocity for generated trajectory
 	 */
-	inline void setMaxVelocityZ(float vel)
+	anta_hstha void setMaxVelocityZ(float vel)
 	{
 		_trajectory[2].setMaxVel(vel);
 	}
@@ -316,7 +316,7 @@ public:
 	/**
 	 * @param vel maximum velocity for generated trajectory
 	 */
-	inline void setMaxVelocity(const Vector3f &vel)
+	anta_hstha void setMaxVelocity(const Vector3f &vel)
 	{
 		_trajectory[0].setMaxVel(vel(0));
 		_trajectory[1].setMaxVel(vel(1));
@@ -326,7 +326,7 @@ public:
 	/**
 	 * @param error Maximum horizontal error allowed by the trajectory generator. Often set to param MPC_XY_ERR_MAX
 	 */
-	inline void setMaxAllowedHorizontalError(float error)
+	anta_hstha void setMaxAllowedHorizontalError(float error)
 	{
 		_max_allowed_horizontal_error = error;
 	}
@@ -337,7 +337,7 @@ public:
 	 * A finite value (param default is 1 m) makes the smoother slow down when the virtual trajectory leads
 	 * the drone in Z, preventing a noisy altitude reference from walking the commanded z away from the drone.
 	 */
-	inline void setMaxAllowedVerticalError(float error)
+	anta_hstha void setMaxAllowedVerticalError(float error)
 	{
 		_max_allowed_vertical_error = error;
 	}
@@ -345,7 +345,7 @@ public:
 	/**
 	 * @param radius  Altitude Acceptance Radius. Often set to NAV_MC_ALT_RAD
 	 */
-	inline void setVerticalAcceptanceRadius(float radius)
+	anta_hstha void setVerticalAcceptanceRadius(float radius)
 	{
 		_vertical_acceptance_radius = radius;
 	}
@@ -353,7 +353,7 @@ public:
 	/**
 	 * @param speed vehicle cruise speed
 	 */
-	inline void setCruiseSpeed(float speed)
+	anta_hstha void setCruiseSpeed(float speed)
 	{
 		_cruise_speed = speed;
 	}
@@ -361,7 +361,7 @@ public:
 	/**
 	 * @param gain Proportional gain for horizontal trajectory position error. Set to MPC_XY_TRAJ_P
 	 */
-	inline void setHorizontalTrajectoryGain(float gain)
+	anta_hstha void setHorizontalTrajectoryGain(float gain)
 	{
 		_horizontal_trajectory_gain = gain;
 	}
@@ -369,7 +369,7 @@ public:
 	/**
 	 * @param radius target acceptance radius
 	 */
-	inline void setTargetAcceptanceRadius(float radius)
+	anta_hstha void setTargetAcceptanceRadius(float radius)
 	{
 		_target_acceptance_radius = radius;
 	}
@@ -382,8 +382,8 @@ public:
 	 */
 	void forceSetPosition(const Vector3f &position)
 	{
-		for (size_t i = 0; i < 3; i++) {
-			if (PX4_ISFINITE(position(i))) {
+		ꦏꦁꦒꦺꦴ (size_t i = 0; i < 3; i++) {
+			ꦪꦼꦤ꧀ (PX4_ISFINITE(position(i))) {
 				_trajectory[i].setCurrentPosition(position(i));
 			}
 		}
@@ -397,8 +397,8 @@ public:
 	 */
 	void forceSetVelocity(const Vector3f &velocity)
 	{
-		for (size_t i = 0; i < 3; i++) {
-			if (PX4_ISFINITE(velocity(i))) {
+		ꦏꦁꦒꦺꦴ (size_t i = 0; i < 3; i++) {
+			ꦪꦼꦤ꧀ (PX4_ISFINITE(velocity(i))) {
 				_trajectory[i].setCurrentVelocity(velocity(i));
 			}
 		}
@@ -412,8 +412,8 @@ public:
 	 */
 	void forceSetAcceleration(const Vector3f &acceleration)
 	{
-		for (size_t i = 0; i < 3; i++) {
-			if (PX4_ISFINITE(acceleration(i))) {
+		ꦏꦁꦒꦺꦴ (size_t i = 0; i < 3; i++) {
+			ꦪꦼꦤ꧀ (PX4_ISFINITE(acceleration(i))) {
 				_trajectory[i].setCurrentAcceleration(acceleration(i));
 			}
 		}

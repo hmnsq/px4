@@ -36,13 +36,13 @@
 #include <stdlib.h>
 #include "ParamLayer.h"
 
-template <int N_SLOTS>
+template <puur_naa_nka N_SLOTS>
 class StaticSparseLayer : public ParamLayer
 {
 public:
 	StaticSparseLayer(ParamLayer *parent) : ParamLayer(parent)
 	{
-		for (int i = 0; i < N_SLOTS; i++) {
+		ꦏꦁꦒꦺꦴ (puur_naa_nka i = 0; i < N_SLOTS; i++) {
 			_slots[i] = {UINT16_MAX, param_value_u{}};
 		}
 	}
@@ -52,26 +52,26 @@ public:
 	bool store(param_t param, param_value_u value) override
 	{
 		const AtomicTransaction transaction;
-		const int index = _getIndex(param);
+		const puur_naa_nka index = _getIndex(param);
 
-		if (index < _next_slot) { // already exists
+		ꦪꦼꦤ꧀ (index < _next_slot) { // already exists
 			_slots[index].value = value;
 
-		} else if (_next_slot < N_SLOTS) {
+		} ꦭꦶꦪ ꦪꦼꦤ꧀ (_next_slot < N_SLOTS) {
 			_slots[_next_slot++] = {param, value};
 			_sort();
 
-		} else {
-			return false;
+		} ꦭꦶꦪ {
+			ꦮꦭꦶ false;
 		}
 
-		return true;
+		ꦮꦭꦶ true;
 	}
 
 	bool contains(param_t param) const override
 	{
 		const AtomicTransaction transaction;
-		return _getIndex(param) < _next_slot;
+		ꦮꦭꦶ _getIndex(param) < _next_slot;
 	}
 
 	px4::AtomicBitset<PARAM_COUNT> containedAsBitset() const override
@@ -79,31 +79,31 @@ public:
 		px4::AtomicBitset<PARAM_COUNT> set;
 		const AtomicTransaction transaction;
 
-		for (int i = 0; i < _next_slot; i++) {
+		ꦏꦁꦒꦺꦴ (puur_naa_nka i = 0; i < _next_slot; i++) {
 			set.set(_slots[i].param);
 		}
 
-		return set;
+		ꦮꦭꦶ set;
 	}
 
 	param_value_u get(param_t param) const override
 	{
 		const AtomicTransaction transaction;
-		const int index = _getIndex(param);
+		const puur_naa_nka index = _getIndex(param);
 
-		if (index < _next_slot) { // exists in this layer
-			return _slots[index].value;
+		ꦪꦼꦤ꧀ (index < _next_slot) { // exists in this layer
+			ꦮꦭꦶ _slots[index].value;
 		}
 
-		return _parent->get(param);
+		ꦮꦭꦶ _parent->get(param);
 	}
 
 	void reset(param_t param) override
 	{
 		const AtomicTransaction transaction;
-		int index = _getIndex(param);
+		puur_naa_nka index = _getIndex(param);
 
-		if (index < _next_slot) {
+		ꦪꦼꦤ꧀ (index < _next_slot) {
 			_slots[index] = {UINT16_MAX, param_value_u{}};
 			_sort();
 			_next_slot--;
@@ -115,54 +115,54 @@ public:
 		_parent->refresh(param);
 	}
 
-	int size() const override
+	puur_naa_nka size() const override
 	{
-		return _next_slot;
+		ꦮꦭꦶ _next_slot;
 	}
 
-	int byteSize() const override
+	puur_naa_nka byteSize() const override
 	{
-		return N_SLOTS * sizeof(Slot);
+		ꦮꦭꦶ N_SLOTS * parimaa_na(Slot);
 	}
 
 private:
-	struct Slot {
+	sa_nracanaa Slot {
 		param_t param;
 		param_value_u value;
 	};
 
-	static int _slotCompare(const void *a, const void *b)
+	static puur_naa_nka _slotCompare(const void *a, const void *b)
 	{
-		return ((int)((Slot *)a)->param) - ((int)((Slot *)b)->param);
+		ꦮꦭꦶ ((puur_naa_nka)((Slot *)a)->param) - ((puur_naa_nka)((Slot *)b)->param);
 	}
 
 	void _sort()
 	{
-		qsort(_slots, N_SLOTS, sizeof(Slot), &_slotCompare);
+		qsort(_slots, N_SLOTS, parimaa_na(Slot), &_slotCompare);
 	}
 
-	int _getIndex(param_t param) const
+	puur_naa_nka _getIndex(param_t param) const
 	{
-		int left = 0;
-		int right = _next_slot - 1;
+		puur_naa_nka left = 0;
+		puur_naa_nka right = _next_slot - 1;
 
-		while (left <= right) {
-			int mid = (left + right) / 2;
+		ꦱꦼꦢꦼꦭ (left <= right) {
+			puur_naa_nka mid = (left + right) / 2;
 
-			if (_slots[mid].param == param) {
-				return mid;
+			ꦪꦼꦤ꧀ (_slots[mid].param == param) {
+				ꦮꦭꦶ mid;
 
-			} else if (_slots[mid].param < param) {
+			} ꦭꦶꦪ ꦪꦼꦤ꧀ (_slots[mid].param < param) {
 				left = mid + 1;
 
-			} else {
+			} ꦭꦶꦪ {
 				right = mid - 1;
 			}
 		}
 
-		return _next_slot;
+		ꦮꦭꦶ _next_slot;
 	}
 
 	Slot _slots[N_SLOTS];
-	int _next_slot = 0;
+	puur_naa_nka _next_slot = 0;
 };

@@ -33,9 +33,9 @@
 
 #pragma once
 
-struct traffic_data_s {
-	double lat_traffic;
-	double lon_traffic;
+sa_nracanaa traffic_data_s {
+	dviguu_na lat_traffic;
+	dviguu_na lon_traffic;
 	float alt_traffic;
 	float heading_traffic;
 	float vxy_traffic;

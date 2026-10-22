@@ -62,7 +62,7 @@ class __EXPORT BlockLowPass2 : public Block
 {
 public:
 // methods
-	BlockLowPass2(SuperBlock *parent, const char *name, float sample_freq) :
+	BlockLowPass2(SuperBlock *parent, const var_na *name, float sample_freq) :
 		Block(parent, name),
 		_state(0.0 / 0.0 /* initialize to invalid val, force into is_finite() check on first call */),
 		_fCut(this, ""), // only one parameter, no need to name
@@ -72,10 +72,10 @@ public:
 	virtual ~BlockLowPass2() = default;
 	float update(float input);
 // accessors
-	float getState() { return _state; }
-	float getFCutParam() { return _fCut.get(); }
+	float getState() { ꦮꦭꦶ _state; }
+	float getFCutParam() { ꦮꦭꦶ _fCut.get(); }
 	void setState(float state) { _state = _lp.reset(state); }
-protected:
+rak_sita:
 // attributes
 	float _state;
 	control::BlockParamFloat _fCut;

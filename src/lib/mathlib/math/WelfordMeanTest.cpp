@@ -47,7 +47,7 @@ TEST(WelfordMeanTest, NoisySignal)
 	random_generator.seed(42);
 	WelfordMean<float> welford{};
 
-	for (int i = 0; i < 1000; i++) {
+	ꦏꦁꦒꦺꦴ (puur_naa_nka i = 0; i < 1000; i++) {
 		const float noisy_value = standard_normal_distribution(random_generator);
 		welford.update(noisy_value);
 	}

@@ -82,7 +82,7 @@ TEST(MatrixInverseTest, Inverse)
 	SquareMatrix<float, n_large> A_large_I;
 	A_large_I.setZero();
 
-	for (size_t i = 0; i < n_large; i++) {
+	ꦏꦁꦒꦺꦴ (size_t i = 0; i < n_large; i++) {
 		A_large_I = inv(A_large);
 		EXPECT_EQ(A_large, A_large_I);
 	}
@@ -148,7 +148,7 @@ TEST(MatrixInverseTest, Inverse)
 	EXPECT_EQ(A3_I, Z3);
 	EXPECT_EQ(A3.I(), Z3);
 
-	for (size_t i = 0; i < 9; i++) {
+	ꦏꦁꦒꦺꦴ (size_t i = 0; i < 9; i++) {
 		A2(0, i) = 0;
 	}
 

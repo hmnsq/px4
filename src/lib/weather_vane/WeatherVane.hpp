@@ -59,7 +59,7 @@ public:
 
 	void setNavigatorForceDisabled(bool navigator_force_disabled) { _navigator_force_disabled = navigator_force_disabled; };
 
-	bool isActive() {return _is_active;}
+	bool isActive() {ꦮꦭꦶ _is_active;}
 
 	void update();
 

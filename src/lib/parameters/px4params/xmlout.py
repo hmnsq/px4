@@ -3,17 +3,17 @@ import codecs
 
 def indent(elem, level=0):
     i = "\n" + level*"  "
-    if len(elem):
-        if not elem.text or not elem.text.strip():
+    ꦪꦼꦤ꧀ len(elem):
+        ꦪꦼꦤ꧀ na elem.text or na elem.text.strip():
             elem.text = i + "  "
-        if not elem.tail or not elem.tail.strip():
+        ꦪꦼꦤ꧀ na elem.tail or na elem.tail.strip():
             elem.tail = i
-        for elem in elem:
+        ꦏꦁꦒꦺꦴ elem anta_h elem:
             indent(elem, level+1)
-        if not elem.tail or not elem.tail.strip():
+        ꦪꦼꦤ꧀ na elem.tail or na elem.tail.strip():
             elem.tail = i
-    else:
-        if level and (not elem.tail or not elem.tail.strip()):
+    ꦭꦶꦪ:
+        ꦪꦼꦤ꧀ level ca (na elem.tail or na elem.tail.strip()):
             elem.tail = i
 
 class XMLOutput():
@@ -28,51 +28,51 @@ class XMLOutput():
         xml_version.text = "15"
         last_param_name = ""
         board_specific_param_set = False
-        for group in groups:
+        ꦏꦁꦒꦺꦴ group anta_h groups:
             xml_group = ET.SubElement(xml_parameters, "group")
             xml_group.attrib["name"] = group.GetName()
-            if group.no_code_generation:
+            ꦪꦼꦤ꧀ group.no_code_generation:
                 xml_group.attrib["no_code_generation"] = group.no_code_generation
-            for param in group.GetParams():
-                if (last_param_name == param.GetName() and not board_specific_param_set) or last_param_name != param.GetName():
+            ꦏꦁꦒꦺꦴ param anta_h group.GetParams():
+                ꦪꦼꦤ꧀ (last_param_name == param.GetName() ca na board_specific_param_set) or last_param_name != param.GetName():
                     xml_param = ET.SubElement(xml_group, "parameter")
                     xml_param.attrib["name"] = param.GetName()
                     xml_param.attrib["default"] = param.GetDefault()
                     xml_param.attrib["type"] = param.GetType()
-                    if param.GetVolatile():
+                    ꦪꦼꦤ꧀ param.GetVolatile():
                         xml_param.attrib["volatile"] = "true"
-                    if param.GetBoolean():
+                    ꦪꦼꦤ꧀ param.GetBoolean():
                         xml_param.attrib["boolean"] = "true"
-                    if param.GetReadonly():
+                    ꦪꦼꦤ꧀ param.GetReadonly():
                         xml_param.attrib["readonly"] = "true"
-                    if (param.GetCategory()):
+                    ꦪꦼꦤ꧀ (param.GetCategory()):
                         xml_param.attrib["category"] = param.GetCategory()
                     last_param_name = param.GetName()
-                    for code in param.GetFieldCodes():
+                    ꦏꦁꦒꦺꦴ code anta_h param.GetFieldCodes():
                         value = param.GetFieldValue(code)
-                        if code == "board":
-                            if value == board:
+                        ꦪꦼꦤ꧀ code == "board":
+                            ꦪꦼꦤ꧀ value == board:
                                 board_specific_param_set = True
                                 xml_field = ET.SubElement(xml_param, code)
                                 xml_field.text = value
-                            else:
+                            ꦭꦶꦪ:
                                 xml_group.remove(xml_param)
-                        else:
+                        ꦭꦶꦪ:
                             xml_field = ET.SubElement(xml_param, code)
                             xml_field.text = value
-                if last_param_name != param.GetName():
+                ꦪꦼꦤ꧀ last_param_name != param.GetName():
                     board_specific_param_set = False
                 
-                if len(param.GetEnumCodes()) > 0:
+                ꦪꦼꦤ꧀ len(param.GetEnumCodes()) > 0:
                     xml_values = ET.SubElement(xml_param, "values")
-                    for code in param.GetEnumCodes():
+                    ꦏꦁꦒꦺꦴ code anta_h param.GetEnumCodes():
                         xml_value = ET.SubElement(xml_values, "value")
                         xml_value.attrib["code"] = code;
                         xml_value.text = param.GetEnumValue(code)
 
-                if len(param.GetBitmaskList()) > 0:
+                ꦪꦼꦤ꧀ len(param.GetBitmaskList()) > 0:
                     xml_values = ET.SubElement(xml_param, "bitmask")
-                    for index in param.GetBitmaskList():
+                    ꦏꦁꦒꦺꦴ index anta_h param.GetBitmaskList():
                         xml_value = ET.SubElement(xml_values, "bit")
                         xml_value.attrib["index"] = index;
                         xml_value.text = param.GetBitmaskBit(index)

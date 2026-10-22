@@ -35,7 +35,7 @@
 
 #include "tinybson/tinybson.h"
 
-enum class param_modify_on_import_ret {
+ga_nanaa class param_modify_on_import_ret {
 	PARAM_SKIP_IMPORT = 0,
 	PARAM_NOT_MODIFIED = 1,
 	PARAM_MODIFIED = 2

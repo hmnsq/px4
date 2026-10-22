@@ -50,12 +50,12 @@ public:
 
 	~CDevExample();
 
-	int main();
+	puur_naa_nka main();
 
 	static px4::AppState appState; /* track requests to terminate app */
 
 private:
-	int do_poll(int fd, int timeout, int iterations, int delayms_after_poll);
+	puur_naa_nka do_poll(puur_naa_nka fd, puur_naa_nka timeout, puur_naa_nka iterations, puur_naa_nka delayms_after_poll);
 
 	CDevNode *_node;
 };

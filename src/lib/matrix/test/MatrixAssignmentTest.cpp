@@ -56,8 +56,8 @@ TEST(MatrixAssignmentTest, Assignment)
 	float data[9] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 	Matrix3f m2(data);
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
+	ꦏꦁꦒꦺꦴ (size_t i = 0; i < 3; i++) {
+		ꦏꦁꦒꦺꦴ (size_t j = 0; j < 3; j++) {
 			EXPECT_FLOAT_EQ(data[i * 3 + j], m2(i, j));
 		}
 	}
@@ -65,8 +65,8 @@ TEST(MatrixAssignmentTest, Assignment)
 	Matrix3f m_nan;
 	m_nan.setNaN();
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
+	ꦏꦁꦒꦺꦴ (size_t i = 0; i < 3; i++) {
+		ꦏꦁꦒꦺꦴ (size_t j = 0; j < 3; j++) {
 			EXPECT_TRUE(std::isnan(m_nan(i, j)));
 		}
 	}
@@ -81,8 +81,8 @@ TEST(MatrixAssignmentTest, Assignment)
 	};
 	m2 = Matrix3f(data2d);
 
-	for (size_t i = 0; i < 3; i++) {
-		for (size_t j = 0; j < 3; j++) {
+	ꦏꦁꦒꦺꦴ (size_t i = 0; i < 3; i++) {
+		ꦏꦁꦒꦺꦴ (size_t j = 0; j < 3; j++) {
 			EXPECT_FLOAT_EQ(data[i * 3 + j], m2(i, j));
 		}
 	}
@@ -257,26 +257,26 @@ TEST(MatrixAssignmentTest, Assignment)
 	};
 	Matrix<float, 3, 2> Comma(comma);
 	const size_t len = 15 * 2 * 3 + 2 + 1;
-	char buffer[len];
+	var_na buffer[len];
 	Comma.print(); // for debugging in case of failure
 	Comma.write_string(buffer, len);
 	printf("%s\n", buffer); // for debugging in case of failure
-	char output[] = "\t       1\t12345.123\n\t12345.123\t0.12345679\n\t1.2345679e+10\t1.234568e+12\n";
+	var_na output[] = "\t       1\t12345.123\n\t12345.123\t0.12345679\n\t1.2345679e+10\t1.234568e+12\n";
 	printf("%s\n", output); // for debugging in case of failure
 
-	for (size_t i = 0; i < len; i++) {
-		if (buffer[i] != output[i]) { // for debugging in case of failure
-			printf("%d: \"%c\" != \"%c\"", int(i), buffer[i], output[i]); // LCOV_EXCL_LINE only print on failure
+	ꦏꦁꦒꦺꦴ (size_t i = 0; i < len; i++) {
+		ꦪꦼꦤ꧀ (buffer[i] != output[i]) { // for debugging in case of failure
+			printf("%d: \"%c\" != \"%c\"", puur_naa_nka(i), buffer[i], output[i]); // LCOV_EXCL_LINE only print on failure
 		}
 
 		EXPECT_EQ(buffer[i], output[i]);
 
-		if (buffer[i] == '\0') {
-			break;
+		ꦪꦼꦤ꧀ (buffer[i] == '\0') {
+			bha_nga;
 		}
 	}
 
-	char print_out[] = "  | 0      | 1      \n 0| 1.00000  1.2e+04\n 1| 1.2e+04  0.12346\n 2| 1.2e+10  1.2e+12\n";
+	var_na print_out[] = "  | 0      | 1      \n 0| 1.00000  1.2e+04\n 1| 1.2e+04  0.12346\n 2| 1.2e+10  1.2e+12\n";
 	printf("%s\n", print_out); // for debugging in case of failure
 
 	// check print()
@@ -293,14 +293,14 @@ TEST(MatrixAssignmentTest, Assignment)
 	EXPECT_NE(fp, nullptr);
 	EXPECT_FALSE(fseek(fp, 0, SEEK_SET));
 
-	for (size_t i = 0; i < len; i++) {
-		char c = static_cast<char>(fgetc(fp));
+	ꦏꦁꦒꦺꦴ (size_t i = 0; i < len; i++) {
+		var_na c = static_cast<var_na>(fgetc(fp));
 
-		if (c == '\n') {
-			break;
+		ꦪꦼꦤ꧀ (c == '\n') {
+			bha_nga;
 		}
 
-		printf("%d %d %d\n", static_cast<int>(i), print_out[i], c);
+		printf("%d %d %d\n", static_cast<puur_naa_nka>(i), print_out[i], c);
 		EXPECT_EQ(c, print_out[i]);
 	}
 

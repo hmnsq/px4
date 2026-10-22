@@ -42,7 +42,7 @@ public:
 	{
 		Vector &self(*this);
 
-		for (size_t i = 0; i < M; i++) {
+		ꦏꦁꦒꦺꦴ (size_t i = 0; i < M; i++) {
 			self(i) = slice_in(0, i);
 		}
 	}
@@ -58,25 +58,25 @@ public:
 	{
 		Vector &self(*this);
 
-		for (size_t i = 0; i < M; i++) {
+		ꦏꦁꦒꦺꦴ (size_t i = 0; i < M; i++) {
 			self(i) = slice_in(0, i);
 		}
 	}
 
-	inline const Type &operator()(size_t i) const
+	anta_hstha const Type &operator()(size_t i) const
 	{
 		assert(i < M);
 
 		const MatrixM1 &v = *this;
-		return v(i, 0);
+		ꦮꦭꦶ v(i, 0);
 	}
 
-	inline Type &operator()(size_t i)
+	anta_hstha Type &operator()(size_t i)
 	{
 		assert(i < M);
 
 		MatrixM1 &v = *this;
-		return v(i, 0);
+		ꦮꦭꦶ v(i, 0);
 	}
 
 	Type dot(const MatrixM1 &b) const
@@ -84,70 +84,70 @@ public:
 		const Vector &a(*this);
 		Type r(0);
 
-		for (size_t i = 0; i < M; i++) {
+		ꦏꦁꦒꦺꦴ (size_t i = 0; i < M; i++) {
 			r += a(i) * b(i, 0);
 		}
 
-		return r;
+		ꦮꦭꦶ r;
 	}
 
-	inline Type operator*(const MatrixM1 &b) const
+	anta_hstha Type operator*(const MatrixM1 &b) const
 	{
 		const Vector &a(*this);
-		return a.dot(b);
+		ꦮꦭꦶ a.dot(b);
 	}
 
-	inline Vector operator*(Type b) const
+	anta_hstha Vector operator*(Type b) const
 	{
-		return Vector(MatrixM1::operator*(b));
+		ꦮꦭꦶ Vector(MatrixM1::operator*(b));
 	}
 
 	Type norm() const
 	{
 		const Vector &a(*this);
-		return Type(std::sqrt(a.dot(a)));
+		ꦮꦭꦶ Type(std::sqrt(a.dot(a)));
 	}
 
 	Type norm_squared() const
 	{
 		const Vector &a(*this);
-		return a.dot(a);
+		ꦮꦭꦶ a.dot(a);
 	}
 
-	inline Type length() const
+	anta_hstha Type length() const
 	{
-		return norm();
+		ꦮꦭꦶ norm();
 	}
 
-	inline void normalize()
+	anta_hstha void normalize()
 	{
 		(*this) /= norm();
 	}
 
 	Vector unit() const
 	{
-		return (*this) / norm();
+		ꦮꦭꦶ (*this) / norm();
 	}
 
 	Vector unit_or_zero(const Type eps = Type(1e-5)) const
 	{
 		const Type n = norm();
 
-		if (n > eps) {
-			return (*this) / n;
+		ꦪꦼꦤ꧀ (n > eps) {
+			ꦮꦭꦶ (*this) / n;
 		}
 
-		return Vector();
+		ꦮꦭꦶ Vector();
 	}
 
-	inline Vector normalized() const
+	anta_hstha Vector normalized() const
 	{
-		return unit();
+		ꦮꦭꦶ unit();
 	}
 
 	bool longerThan(Type testVal) const
 	{
-		return norm_squared() > testVal * testVal;
+		ꦮꦭꦶ norm_squared() > testVal * testVal;
 	}
 
 	Vector sqrt() const
@@ -155,11 +155,11 @@ public:
 		const Vector &a(*this);
 		Vector r;
 
-		for (size_t i = 0; i < M; i++) {
+		ꦏꦁꦒꦺꦴ (size_t i = 0; i < M; i++) {
 			r(i) = Type(std::sqrt(a(i)));
 		}
 
-		return r;
+		ꦮꦭꦶ r;
 	}
 
 	void print() const
@@ -169,7 +169,7 @@ public:
 
 	static size_t size()
 	{
-		return M;
+		ꦮꦭꦶ M;
 	}
 };
 
@@ -179,10 +179,10 @@ OStream &operator<<(OStream &os, const matrix::Vector<Type, M> &vector)
 	os << "\n";
 	// element: tab, point, 8 digits, 4 scientific notation chars; row: newline; string: \0 end
 	constexpr size_t n = 15 * M * 1 + 1 + 1;
-	char string[n];
+	var_na string[n];
 	vector.transpose().write_string(string, n);
 	os << string;
-	return os;
+	ꦮꦭꦶ os;
 }
 
 } // namespace matrix

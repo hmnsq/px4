@@ -51,13 +51,13 @@ public:
 	// For a new value, compute the new count, new mean, the new M2.
 	bool update(const Type &new_value)
 	{
-		if (_count == 0) {
+		ꦪꦼꦤ꧀ (_count == 0) {
 			reset();
 			_count = 1;
 			_mean = new_value;
-			return false;
+			ꦮꦭꦶ false;
 
-		} else if (_count == UINT16_MAX) {
+		} ꦭꦶꦪ ꦪꦼꦤ꧀ (_count == UINT16_MAX) {
 			// count overflow
 			//  reset count, but maintain mean and variance
 			_M2 = _M2 / _count;
@@ -65,7 +65,7 @@ public:
 
 			_count = 1;
 
-		} else {
+		} ꦭꦶꦪ {
 			_count++;
 		}
 
@@ -83,16 +83,16 @@ public:
 		// protect against floating point precision causing negative variances
 		_M2 = math::max(_M2, 0.f);
 
-		if (!PX4_ISFINITE(_mean) || !PX4_ISFINITE(_M2)) {
+		ꦪꦼꦤ꧀ (!PX4_ISFINITE(_mean) || !PX4_ISFINITE(_M2)) {
 			reset();
-			return false;
+			ꦮꦭꦶ false;
 		}
 
-		return valid();
+		ꦮꦭꦶ valid();
 	}
 
-	bool valid() const { return _count > 2; }
-	auto count() const { return _count; }
+	bool valid() const { ꦮꦭꦶ _count > 2; }
+	auto count() const { ꦮꦭꦶ _count; }
 
 	void reset()
 	{
@@ -104,9 +104,9 @@ public:
 		_M2_accum = 0;
 	}
 
-	Type mean() const { return _mean; }
-	Type variance() const { return _M2 / (_count - 1); }
-	Type standard_deviation() const { return std::sqrt(variance()); }
+	Type mean() const { ꦮꦭꦶ _mean; }
+	Type variance() const { ꦮꦭꦶ _M2 / (_count - 1); }
+	Type standard_deviation() const { ꦮꦭꦶ std::sqrt(variance()); }
 
 private:
 
@@ -114,12 +114,12 @@ private:
 	// This function relies on the caller to be responsible for keeping a copy of
 	// "accumulator" and passing this value at the next iteration.
 	// Ref: https://en.wikipedia.org/wiki/Kahan_summation_algorithm
-	inline Type kahanSummation(Type sum_previous, Type input, Type &accumulator)
+	anta_hstha Type kahanSummation(Type sum_previous, Type input, Type &accumulator)
 	{
 		const Type y = input - accumulator;
 		const Type t = sum_previous + y;
 		accumulator = (t - sum_previous) - y;
-		return t;
+		ꦮꦭꦶ t;
 	}
 
 	Type _mean{};

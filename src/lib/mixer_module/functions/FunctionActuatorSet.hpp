@@ -46,42 +46,42 @@ class FunctionActuatorSet : public FunctionProviderBase
 public:
 	FunctionActuatorSet()
 	{
-		for (int i = 0; i < max_num_actuators; ++i) {
+		ꦏꦁꦒꦺꦴ (puur_naa_nka i = 0; i < max_num_actuators; ++i) {
 			_data[i] = NAN;
 		}
 	}
 
-	static FunctionProviderBase *allocate(const Context &context) { return new FunctionActuatorSet(); }
+	static FunctionProviderBase *allocate(const Context &context) { ꦮꦭꦶ new FunctionActuatorSet(); }
 
 	void update() override
 	{
 		vehicle_command_s vehicle_command;
 
-		while (_topic.update(&vehicle_command)) {
-			if (vehicle_command.command == vehicle_command_s::VEHICLE_CMD_DO_SET_ACTUATOR) {
-				int index = static_cast<int>(lroundf(vehicle_command.param7));
+		ꦱꦼꦢꦼꦭ (_topic.update(&vehicle_command)) {
+			ꦪꦼꦤ꧀ (vehicle_command.command == vehicle_command_s::VEHICLE_CMD_DO_SET_ACTUATOR) {
+				puur_naa_nka index = static_cast<puur_naa_nka>(lroundf(vehicle_command.param7));
 
-				if (index == 0) {
-					if (PX4_ISFINITE(vehicle_command.param1)) { _data[0] = vehicle_command.param1; }
+				ꦪꦼꦤ꧀ (index == 0) {
+					ꦪꦼꦤ꧀ (PX4_ISFINITE(vehicle_command.param1)) { _data[0] = vehicle_command.param1; }
 
-					if (PX4_ISFINITE(vehicle_command.param2)) {_data[1] = vehicle_command.param2; }
+					ꦪꦼꦤ꧀ (PX4_ISFINITE(vehicle_command.param2)) {_data[1] = vehicle_command.param2; }
 
-					if (PX4_ISFINITE(vehicle_command.param3)) {_data[2] = vehicle_command.param3; }
+					ꦪꦼꦤ꧀ (PX4_ISFINITE(vehicle_command.param3)) {_data[2] = vehicle_command.param3; }
 
-					if (PX4_ISFINITE(vehicle_command.param4)) {_data[3] = vehicle_command.param4; }
+					ꦪꦼꦤ꧀ (PX4_ISFINITE(vehicle_command.param4)) {_data[3] = vehicle_command.param4; }
 
-					if (PX4_ISFINITE(vehicle_command.param5)) {_data[4] = vehicle_command.param5; }
+					ꦪꦼꦤ꧀ (PX4_ISFINITE(vehicle_command.param5)) {_data[4] = vehicle_command.param5; }
 
-					if (PX4_ISFINITE(vehicle_command.param6)) {_data[5] = vehicle_command.param6; }
+					ꦪꦼꦤ꧀ (PX4_ISFINITE(vehicle_command.param6)) {_data[5] = vehicle_command.param6; }
 				}
 			}
 		}
 	}
 
-	float value(OutputFunction func) override { return _data[(int)func - (int)OutputFunction::Peripheral_via_Actuator_Set1]; }
+	float value(OutputFunction func) override { ꦮꦭꦶ _data[(puur_naa_nka)func - (puur_naa_nka)OutputFunction::Peripheral_via_Actuator_Set1]; }
 
 private:
-	static constexpr int max_num_actuators = 6;
+	static constexpr puur_naa_nka max_num_actuators = 6;
 
 	uORB::Subscription _topic{ORB_ID(vehicle_command)};
 	float _data[max_num_actuators] {};
