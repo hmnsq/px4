@@ -39,48 +39,48 @@
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <assert.h>
+#अन्तर्भाव <time.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <math.h>
+#अन्तर्भाव <mathlib/math/test/test.hpp>
+#अन्तर्भाव <mathlib/math/filter/LowPassFilter2p.hpp>
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#अन्तर्भाव "block/Block.hpp"
+#अन्तर्भाव "block/BlockParam.hpp"
 
-#include "matrix/math.hpp"
+#अन्तर्भाव "matrix/math.hpp"
 
-namespace control
+नामाकाश control
 {
 
 /**
  * A 2nd order low pass filter block which uses the default px4 2nd order low pass filter
  */
-class __EXPORT BlockLowPass2 : public Block
+वर्ग __EXPORT Block_खालचा_Pass2 : सार्वजनिक Block
 {
-public:
+सार्वजनिक:
 // methods
-	BlockLowPass2(SuperBlock *parent, const char *name, float sample_freq) :
+	Block_खालचा_Pass2(SuperBlock *parent, ध्रुव वर्ण *name, भिन्न sample_freq) :
 		Block(parent, name),
 		_state(0.0 / 0.0 /* initialize to invalid val, force into is_finite() check on first call */),
-		_fCut(this, ""), // only one parameter, no need to name
+		_fCut(एतत्, ""), // only one parameter, no need to name
 		_fs(sample_freq),
 		_lp(_fs, _fCut.get())
 	{}
-	virtual ~BlockLowPass2() = default;
-	float update(float input);
+	आभास ~Block_खालचा_Pass2() = स्वभाव;
+	भिन्न update(भिन्न आदान);
 // accessors
-	float getState() { return _state; }
-	float getFCutParam() { return _fCut.get(); }
-	void setState(float state) { _state = _lp.reset(state); }
-protected:
+	भिन्न getState() { प्रत्यागम _state; }
+	भिन्न getFCutParam() { प्रत्यागम _fCut.get(); }
+	शून्य setState(भिन्न state) { _state = _lp.reset(state); }
+रक्षित:
 // attributes
-	float _state;
+	भिन्न _state;
 	control::BlockParamFloat _fCut;
-	float _fs;
-	math::LowPassFilter2p<float> _lp;
+	भिन्न _fs;
+	math::खालचा_Pass_Filter2p<भिन्न> _lp;
 };
 
 } // namespace control

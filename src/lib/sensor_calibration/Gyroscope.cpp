@@ -31,17 +31,17 @@
  *
  ****************************************************************************/
 
-#include "Gyroscope.hpp"
+#अन्तर्भाव "Gyroscope.hpp"
 
-#include "Utilities.hpp"
+#अन्तर्भाव "Utilities.hpp"
 
-#include <lib/drivers/device/Device.hpp>
-#include <lib/parameters/param.h>
+#अन्तर्भाव <lib/drivers/device/Device.hpp>
+#अन्तर्भाव <lib/parameters/param.h>
 
-using namespace matrix;
-using namespace time_literals;
+using नामाकाश matrix;
+using नामाकाश time_literals;
 
-namespace calibration
+नामाकाश calibration
 {
 
 Gyroscope::Gyroscope()
@@ -54,19 +54,19 @@ Gyroscope::Gyroscope(uint32_t device_id)
 	set_device_id(device_id);
 }
 
-Gyroscope::Gyroscope(uint32_t device_id, bool external)
+Gyroscope::Gyroscope(uint32_t device_id, तार्किक external)
 {
 	set_device_id(device_id, external);
 }
 
-void Gyroscope::set_device_id(uint32_t device_id)
+शून्य Gyroscope::set_device_id(uint32_t device_id)
 {
 	set_device_id(device_id, device::device_is_external(device_id));
 }
 
-void Gyroscope::set_device_id(uint32_t device_id, bool external)
+शून्य Gyroscope::set_device_id(uint32_t device_id, तार्किक external)
 {
-	if (_device_id != device_id || _external != external) {
+	यदि (_device_id != device_id || _external != external) {
 
 		_device_id = device_id;
 		_external = external;
@@ -74,39 +74,39 @@ void Gyroscope::set_device_id(uint32_t device_id, bool external)
 		Reset();
 
 		ParametersUpdate();
-		SensorCorrectionsUpdate(true);
+		SensorCorrectionsUpdate(सत्य);
 	}
 }
 
-void Gyroscope::SensorCorrectionsUpdate(bool force)
+शून्य Gyroscope::SensorCorrectionsUpdate(तार्किक force)
 {
 	// check if the selected sensor has updated
-	if (_sensor_correction_sub.updated() || force) {
+	यदि (_sensor_correction_sub.updated() || force) {
 
 		// valid device id required
-		if (_device_id == 0) {
-			return;
+		यदि (_device_id == 0) {
+			प्रत्यागम;
 		}
 
 		sensor_correction_s corrections;
 
-		if (_sensor_correction_sub.copy(&corrections)) {
+		यदि (_sensor_correction_sub.copy(&corrections)) {
 			// find sensor_corrections index
-			for (int i = 0; i < MAX_SENSOR_COUNT; i++) {
-				if (corrections.gyro_device_ids[i] == _device_id) {
-					switch (i) {
-					case 0:
+			प्रति (पूर्णाङ्क i = 0; i < MAX_SENSOR_मोजणी; i++) {
+				यदि (corrections.gyro_device_ids[i] == _device_id) {
+					विकल्प (i) {
+					पक्ष 0:
 						_thermal_offset = Vector3f{corrections.gyro_offset_0};
-						return;
-					case 1:
+						प्रत्यागम;
+					पक्ष 1:
 						_thermal_offset = Vector3f{corrections.gyro_offset_1};
-						return;
-					case 2:
+						प्रत्यागम;
+					पक्ष 2:
 						_thermal_offset = Vector3f{corrections.gyro_offset_2};
-						return;
-					case 3:
+						प्रत्यागम;
+					पक्ष 3:
 						_thermal_offset = Vector3f{corrections.gyro_offset_3};
-						return;
+						प्रत्यागम;
 					}
 				}
 			}
@@ -117,20 +117,20 @@ void Gyroscope::SensorCorrectionsUpdate(bool force)
 	}
 }
 
-bool Gyroscope::set_offset(const Vector3f &offset)
+तार्किक Gyroscope::set_offset(ध्रुव Vector3f &offset)
 {
-	if (Vector3f(_offset - offset).longerThan(0.01f) || (_calibration_count == 0)) {
-		if (offset.isAllFinite()) {
+	यदि (Vector3f(_offset - offset).longerThan(0.01f) || (calibration_मोजणी == 0)) {
+		यदि (offset.isAllFinite()) {
 			_offset = offset;
-			_calibration_count++;
-			return true;
+			calibration_मोजणी++;
+			प्रत्यागम सत्य;
 		}
 	}
 
-	return false;
+	प्रत्यागम असत्य;
 }
 
-void Gyroscope::set_rotation(Rotation rotation)
+शून्य Gyroscope::set_rotation(Rotation rotation)
 {
 	_rotation_enum = rotation;
 
@@ -138,48 +138,48 @@ void Gyroscope::set_rotation(Rotation rotation)
 	_rotation = Dcmf(GetSensorLevelAdjustment()) * get_rot_matrix(rotation);
 }
 
-bool Gyroscope::set_calibration_index(int calibration_index)
+तार्किक Gyroscope::set_calibration_index(पूर्णाङ्क calibration_index)
 {
-	if ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_COUNT)) {
+	यदि ((calibration_index >= 0) && (calibration_index < MAX_SENSOR_मोजणी)) {
 		_calibration_index = calibration_index;
-		return true;
+		प्रत्यागम सत्य;
 	}
 
-	return false;
+	प्रत्यागम असत्य;
 }
 
-void Gyroscope::ParametersUpdate()
+शून्य Gyroscope::ParametersUpdate()
 {
-	if (_device_id == 0) {
-		return;
+	यदि (_device_id == 0) {
+		प्रत्यागम;
 	}
 
 	_calibration_index = FindCurrentCalibrationIndex(SensorString(), _device_id);
 
-	if (_calibration_index == -1) {
+	यदि (_calibration_index == -1) {
 		// no saved calibration available
 		Reset();
 
-	} else {
+	} अन्यथा {
 		ParametersLoad();
 	}
 }
 
-bool Gyroscope::ParametersLoad()
+तार्किक Gyroscope::ParametersLoad()
 {
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	यदि (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_मोजणी) {
 		// CAL_GYROx_ROT
-		int32_t rotation_value = GetCalibrationParamInt32(SensorString(), "ROT", _calibration_index);
+		int32_t rotation_मूल्य = GetCalibrationParamInt32(SensorString(), "ROT", _calibration_index);
 
-		if (_external) {
-			if ((rotation_value >= ROTATION_MAX) || (rotation_value < 0)) {
+		यदि (_external) {
+			यदि ((rotation_मूल्य >= ROTATION_MAX) || (rotation_मूल्य < 0)) {
 				// invalid rotation, resetting
-				rotation_value = ROTATION_NONE;
+				rotation_मूल्य = ROTATION_NONE;
 			}
 
-			set_rotation(static_cast<Rotation>(rotation_value));
+			set_rotation(static_cast<Rotation>(rotation_मूल्य));
 
-		} else {
+		} अन्यथा {
 			// internal sensors follow board rotation
 			set_rotation(GetBoardRotation());
 		}
@@ -187,11 +187,11 @@ bool Gyroscope::ParametersLoad()
 		// CAL_GYROx_PRIO
 		_priority = GetCalibrationParamInt32(SensorString(), "PRIO", _calibration_index);
 
-		if ((_priority < 0) || (_priority > 100)) {
+		यदि ((_priority < 0) || (_priority > 100)) {
 			// reset to default, -1 is the uninitialized parameter value
-			static constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
+			स्थिर constexpr int32_t CAL_PRIO_UNINITIALIZED = -1;
 
-			if (_priority != CAL_PRIO_UNINITIALIZED) {
+			यदि (_priority != CAL_PRIO_UNINITIALIZED) {
 				PX4_ERR("%s %" PRIu32 " (%" PRId8 ") invalid priority %" PRId32 ", resetting", SensorString(), _device_id,
 					_calibration_index, _priority);
 
@@ -204,18 +204,18 @@ bool Gyroscope::ParametersLoad()
 		// CAL_GYROx_OFF{X,Y,Z}
 		set_offset(GetCalibrationParamsVector3f(SensorString(), "OFF", _calibration_index));
 
-		return true;
+		प्रत्यागम सत्य;
 	}
 
-	return false;
+	प्रत्यागम असत्य;
 }
 
-void Gyroscope::Reset()
+शून्य Gyroscope::Reset()
 {
-	if (_external) {
+	यदि (_external) {
 		set_rotation(ROTATION_NONE);
 
-	} else {
+	} अन्यथा {
 		// internal sensors follow board rotation
 		set_rotation(GetBoardRotation());
 	}
@@ -228,65 +228,65 @@ void Gyroscope::Reset()
 
 	_calibration_index = -1;
 
-	_calibration_count = 0;
+	calibration_मोजणी = 0;
 }
 
-bool Gyroscope::ParametersSave(int desired_calibration_index, bool force)
+तार्किक Gyroscope::ParametersSave(पूर्णाङ्क desired_calibration_index, तार्किक force)
 {
-	if (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_COUNT) {
+	यदि (force && desired_calibration_index >= 0 && desired_calibration_index < MAX_SENSOR_मोजणी) {
 		_calibration_index = desired_calibration_index;
 
-	} else if (!force || (_calibration_index < 0)
+	} अन्यथा यदि (!force || (_calibration_index < 0)
 		   || (desired_calibration_index != -1 && desired_calibration_index != _calibration_index)) {
 
 		// ensure we have a valid calibration slot (matching existing or first available slot)
 		int8_t calibration_index_prev = _calibration_index;
 		_calibration_index = FindAvailableCalibrationIndex(SensorString(), _device_id, desired_calibration_index);
 
-		if (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
+		यदि (calibration_index_prev >= 0 && (calibration_index_prev != _calibration_index)) {
 			PX4_WARN("%s %" PRIu32 " calibration index changed %" PRIi8 " -> %" PRIi8, SensorString(), _device_id,
 				 calibration_index_prev, _calibration_index);
 		}
 	}
 
-	if (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_COUNT) {
+	यदि (_calibration_index >= 0 && _calibration_index < MAX_SENSOR_मोजणी) {
 		// save calibration
-		bool success = true;
+		तार्किक success = सत्य;
 		success &= SetCalibrationParam(SensorString(), "ID", _calibration_index, _device_id);
 		success &= SetCalibrationParam(SensorString(), "PRIO", _calibration_index, _priority);
 		success &= SetCalibrationParamsVector3f(SensorString(), "OFF", _calibration_index, _offset);
 
-		if (_external) {
+		यदि (_external) {
 			success &= SetCalibrationParam(SensorString(), "ROT", _calibration_index, (int32_t)_rotation_enum);
 
-		} else {
+		} अन्यथा {
 			success &= SetCalibrationParam(SensorString(), "ROT", _calibration_index, -1); // internal
 		}
 
-		return success;
+		प्रत्यागम success;
 	}
 
-	return false;
+	प्रत्यागम असत्य;
 }
 
-void Gyroscope::PrintStatus()
+शून्य Gyroscope::PrintStatus()
 {
-	if (external()) {
+	यदि (external()) {
 		PX4_INFO_RAW("%s %" PRIu32
 			     " EN: %d, offset: [%05.3f %05.3f %05.3f], Ext ROT: %d\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset(0), (double)_offset(1), (double)_offset(2),
+			     (द्विगुण)_offset(0), (द्विगुण)_offset(1), (द्विगुण)_offset(2),
 			     rotation_enum());
 
-	} else {
+	} अन्यथा {
 		PX4_INFO_RAW("%s %" PRIu32 " EN: %d, offset: [%05.3f %05.3f %05.3f], Internal\n",
 			     SensorString(), device_id(), enabled(),
-			     (double)_offset(0), (double)_offset(1), (double)_offset(2));
+			     (द्विगुण)_offset(0), (द्विगुण)_offset(1), (द्विगुण)_offset(2));
 	}
 
-	if (_thermal_offset.norm() > 0.f) {
+	यदि (_thermal_offset.norm() > 0.f) {
 		PX4_INFO_RAW("%s %" PRIu32 " temperature offset: [%.4f %.4f %.4f]\n", SensorString(), _device_id,
-			     (double)_thermal_offset(0), (double)_thermal_offset(1), (double)_thermal_offset(2));
+			     (द्विगुण)_thermal_offset(0), (द्विगुण)_thermal_offset(1), (द्विगुण)_thermal_offset(2));
 	}
 }
 

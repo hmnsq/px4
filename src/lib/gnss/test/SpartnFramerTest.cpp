@@ -38,31 +38,31 @@
  * cross-protocol resync behaviour that motivates sharing one buffer.
  */
 
-#include <gtest/gtest.h>
-#include "correction_framer.h"
+#अन्तर्भाव <gtest/gtest.h>
+#अन्तर्भाव "correction_framer.h"
 
-#include <vector>
-#include <cstring>
-#include <random>
+#अन्तर्भाव <vector>
+#अन्तर्भाव <cstring>
+#अन्तर्भाव <random>
 
-using namespace gnss;
+using नामाकाश gnss;
 
-class SpartnTest : public ::testing::Test
+वर्ग SpartnTest : सार्वजनिक ::testing::Test
 {
-protected:
+रक्षित:
 	CorrectionFramer parser;
 
 	// Build unencrypted frame with 16-bit time tag and given CRC type.
-	std::vector<uint8_t> buildFrame(uint8_t msg_type, uint8_t msg_subtype,
-					const std::vector<uint8_t> &payload,
+	std::vector<uint8_t> buildFrame(uint8_t संदेश_type, uint8_t संदेश_subtype,
+					ध्रुव std::vector<uint8_t> &payload,
 					uint8_t crc_type = 0)
 	{
-		const size_t payload_len = payload.size();
+		ध्रुव size_t payload_len = payload.size();
 		std::vector<uint8_t> frame;
 		frame.push_back(SPARTN_PREAMBLE);
 
 		// TF002-TF006 (frame CRC nibble left 0; not checked by the framer)
-		uint8_t b1 = static_cast<uint8_t>(((msg_type & 0x7F) << 1) | ((payload_len >> 9) & 0x01));
+		uint8_t b1 = static_cast<uint8_t>(((संदेश_type & 0x7F) << 1) | ((payload_len >> 9) & 0x01));
 		uint8_t b2 = static_cast<uint8_t>((payload_len >> 1) & 0xFF);
 		uint8_t b3 = static_cast<uint8_t>(((payload_len & 0x01) << 7) | ((crc_type & 0x03) << 4));
 		frame.push_back(b1);
@@ -70,22 +70,22 @@ protected:
 		frame.push_back(b3);
 
 		// 4-byte description, 16-bit time tag
-		frame.push_back(static_cast<uint8_t>((msg_subtype & 0x0F) << 4));
+		frame.push_back(static_cast<uint8_t>((संदेश_subtype & 0x0F) << 4));
 		frame.push_back(0x00);
 		frame.push_back(0x00);
 		frame.push_back(0x00);
 
-		frame.insert(frame.end(), payload.begin(), payload.end());
+		frame.घाला(frame.end(), payload.begin(), payload.end());
 
 		// Message CRC over TF002..end of payload
-		const uint32_t crc = spartn_message_crc(&frame[1], frame.size() - 1, crc_type);
-		const size_t crc_bytes = static_cast<size_t>(crc_type) + 1;
+		ध्रुव uint32_t crc = spartn_message_crc(&frame[1], frame.size() - 1, crc_type);
+		ध्रुव size_t crc_bytes = static_cast<size_t>(crc_type) + 1;
 
-		for (int i = static_cast<int>(crc_bytes) - 1; i >= 0; i--) {
+		प्रति (पूर्णाङ्क i = static_cast<पूर्णाङ्क>(crc_bytes) - 1; i >= 0; i--) {
 			frame.push_back(static_cast<uint8_t>((crc >>(8 * i)) & 0xFF));
 		}
 
-		return frame;
+		प्रत्यागम frame;
 	}
 
 	// Build a well-formed RTCM3 frame with a deterministic pseudo-random payload.
@@ -96,17 +96,17 @@ protected:
 		frame.push_back(static_cast<uint8_t>((payload_len >> 8) & 0x03));
 		frame.push_back(static_cast<uint8_t>(payload_len & 0xFF));
 
-		std::uniform_int_distribution<int> byte(0, 255);
+		std::uniform_int_distribution<पूर्णाङ्क> byte(0, 255);
 
-		for (size_t i = 0; i < payload_len; i++) {
+		प्रति (size_t i = 0; i < payload_len; i++) {
 			frame.push_back(static_cast<uint8_t>(byte(rng)));
 		}
 
-		const uint32_t crc = rtcm3_crc24q(frame.data(), frame.size());
+		ध्रुव uint32_t crc = rtcm3_crc24q(frame.data(), frame.size());
 		frame.push_back((crc >> 16) & 0xFF);
 		frame.push_back((crc >> 8) & 0xFF);
 		frame.push_back(crc & 0xFF);
-		return frame;
+		प्रत्यागम frame;
 	}
 };
 
@@ -119,12 +119,12 @@ protected:
 // TF018 CRCs independently of this code.
 TEST_F(SpartnTest, MessageCrcMatchesReferenceVectors)
 {
-	const uint8_t msg[] = {'H', 'i', '!'};
+	ध्रुव uint8_t संदेश[] = {'H', 'i', '!'};
 
-	EXPECT_EQ(spartn_message_crc(msg, sizeof(msg), 0), 0x78u);
-	EXPECT_EQ(spartn_message_crc(msg, sizeof(msg), 1), 0x31FDu);
-	EXPECT_EQ(spartn_message_crc(msg, sizeof(msg), 2), 0x33220Fu);
-	EXPECT_EQ(spartn_message_crc(msg, sizeof(msg), 3), 0x9523B4B4u);
+	EXPECT_EQ(spartn_message_crc(संदेश, परिमाण(संदेश), 0), 0x78u);
+	EXPECT_EQ(spartn_message_crc(संदेश, परिमाण(संदेश), 1), 0x31FDu);
+	EXPECT_EQ(spartn_message_crc(संदेश, परिमाण(संदेश), 2), 0x33220Fu);
+	EXPECT_EQ(spartn_message_crc(संदेश, परिमाण(संदेश), 3), 0x9523B4B4u);
 }
 
 // =============================================================================
@@ -138,11 +138,11 @@ TEST_F(SpartnTest, SingleMinimalFrame)
 
 	size_t len = 0;
 	CorrectionProtocol protocol = CorrectionProtocol::Rtcm3;
-	const uint8_t *msg = parser.getNextMessage(&len, &protocol);
-	ASSERT_NE(msg, nullptr);
+	ध्रुव uint8_t *संदेश = parser.getNextMessage(&len, &protocol);
+	ASSERT_NE(संदेश, nullptr);
 	EXPECT_EQ(protocol, CorrectionProtocol::Spartn);
 	EXPECT_EQ(len, frame.size());
-	EXPECT_EQ(0, memcmp(msg, frame.data(), frame.size()));
+	EXPECT_EQ(0, memcmp(संदेश, frame.data(), frame.size()));
 	parser.consumeMessage(len);
 	EXPECT_EQ(parser.getStats().messages_parsed, 1u);
 	EXPECT_EQ(parser.getStats().spartn_messages, 1u);
@@ -154,19 +154,19 @@ TEST_F(SpartnTest, MultipleFrames)
 	auto f1 = buildFrame(0, 0, {0x01});
 	auto f2 = buildFrame(1, 0, {0x02, 0x03});
 	std::vector<uint8_t> stream;
-	stream.insert(stream.end(), f1.begin(), f1.end());
-	stream.insert(stream.end(), f2.begin(), f2.end());
+	stream.घाला(stream.end(), f1.begin(), f1.end());
+	stream.घाला(stream.end(), f2.begin(), f2.end());
 	parser.addData(stream.data(), stream.size());
 
-	int count = 0;
+	पूर्णाङ्क मोजणी = 0;
 	size_t len = 0;
 
-	while (parser.getNextMessage(&len) != nullptr) {
+	यावत् (parser.getNextMessage(&len) != nullptr) {
 		parser.consumeMessage(len);
-		count++;
+		मोजणी++;
 	}
 
-	EXPECT_EQ(count, 2);
+	EXPECT_EQ(मोजणी, 2);
 	EXPECT_EQ(parser.getStats().spartn_messages, 2u);
 }
 
@@ -174,7 +174,7 @@ TEST_F(SpartnTest, ChunkedArrival)
 {
 	auto frame = buildFrame(0, 1, {0x10, 0x20, 0x30});
 
-	for (size_t i = 0; i < frame.size(); i++) {
+	प्रति (size_t i = 0; i < frame.size(); i++) {
 		parser.addData(&frame[i], 1);
 	}
 
@@ -187,7 +187,7 @@ TEST_F(SpartnTest, NoiseBeforeFrame)
 {
 	auto frame = buildFrame(0, 0, {0x55});
 	std::vector<uint8_t> stream = {0x00, 0xFF, 0x01};
-	stream.insert(stream.end(), frame.begin(), frame.end());
+	stream.घाला(stream.end(), frame.begin(), frame.end());
 	parser.addData(stream.data(), stream.size());
 
 	size_t len = 0;
@@ -249,7 +249,7 @@ TEST_F(SpartnTest, RejectsReservedMessageType)
 TEST_F(SpartnTest, RtcmStreamIsNeverFramedAsSpartn)
 {
 	std::mt19937 rng(1);
-	std::uniform_int_distribution<int> payload_len(60, 500);
+	std::uniform_int_distribution<पूर्णाङ्क> payload_len(60, 500);
 
 	size_t frames_in = 0;
 	size_t frames_out = 0;
@@ -257,20 +257,20 @@ TEST_F(SpartnTest, RtcmStreamIsNeverFramedAsSpartn)
 	std::vector<uint8_t> stream;
 
 	// ~1 MB of RTCM3, about 17 min of a 1 kB/s RTK correction stream
-	while (generated < 1000000) {
+	यावत् (generated < 1000000) {
 		auto frame = buildRtcmFrame(rng, payload_len(rng));
 		generated += frame.size();
 		frames_in++;
-		stream.insert(stream.end(), frame.begin(), frame.end());
+		stream.घाला(stream.end(), frame.begin(), frame.end());
 
 		// Feed in MAVLink GPS_RTCM_DATA sized chunks
-		while (stream.size() >= 180) {
+		यावत् (stream.size() >= 180) {
 			parser.addData(stream.data(), 180);
 
 			size_t len = 0;
 			CorrectionProtocol protocol = CorrectionProtocol::Spartn;
 
-			while (parser.getNextMessage(&len, &protocol) != nullptr) {
+			यावत् (parser.getNextMessage(&len, &protocol) != nullptr) {
 				EXPECT_EQ(protocol, CorrectionProtocol::Rtcm3);
 				parser.consumeMessage(len);
 				frames_out++;

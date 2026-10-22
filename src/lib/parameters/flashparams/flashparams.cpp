@@ -42,36 +42,36 @@
  * foot print device.
  */
 
-#include <px4_platform_common/defines.h>
-#include <px4_platform_common/log.h>
-#include <px4_platform_common/posix.h>
-#include <px4_platform_common/shutdown.h>
-#include <parameters/px4_parameters.hpp>
+#अन्तर्भाव <px4_platform_common/defines.h>
+#अन्तर्भाव <px4_platform_common/log.h>
+#अन्तर्भाव <px4_platform_common/posix.h>
+#अन्तर्भाव <px4_platform_common/shutdown.h>
+#अन्तर्भाव <parameters/px4_parameters.hpp>
 
-#include <string.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <errno.h>
+#अन्तर्भाव <string.h>
+#अन्तर्भाव <stdbool.h>
+#अन्तर्भाव <stdint.h>
+#अन्तर्भाव <errno.h>
 
-#include <parameters/param.h>
+#अन्तर्भाव <parameters/param.h>
 
-#include <lib/tinybson/tinybson.h>
-#include "flashparams.h"
-#include "flashfs.h"
-#include "../param_translation.h"
+#अन्तर्भाव <lib/tinybson/tinybson.h>
+#अन्तर्भाव "flashparams.h"
+#अन्तर्भाव "flashfs.h"
+#अन्तर्भाव "../param_translation.h"
 
-#if 0
-# define debug(fmt, args...)            do { warnx(fmt, ##args); } while(0)
-#else
-# define debug(fmt, args...)            do { } while(0)
+#यदि 0
+# define debug(fmt, args...)            कुरु { warnx(fmt, ##args); } यावत्(0)
+#अन्यथा
+# define debug(fmt, args...)            कुरु { } यावत्(0)
 #endif
 
 
 /**
  * Storage for modified parameters.
  */
-struct param_wbuf_s {
-	union param_value_u     val;
+संरचना param_wbuf_s {
+	सङ्घ param_मूल्य_u     val;
 	param_t                 param;
 };
 
@@ -96,22 +96,22 @@ struct param_wbuf_s {
  * drops those on its next save; here they stay until a compaction, and a
  * translation is only kept for a few releases. A snapshot cannot hold such a
  * record, so compacting for it does not repeat. */
-static bool log_stale;
+स्थिर तार्किक log_stale;
 
 /* Replay failed inside a CRC-valid record. A delta appended behind it would
  * never be reached, so the next save rewrites the store. */
-static bool log_unreadable;
+स्थिर तार्किक log_unreadable;
 
-static bool
+स्थिर तार्किक
 any_unsaved(param_filter_func filter)
 {
-	for (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
-		if ((filter == nullptr || filter(param)) && param_value_unsaved(param)) {
-			return true;
+	प्रति (param_t param = 0; param < user_config.PARAM_मोजणी; param++) {
+		यदि ((filter == nullptr || filter(param)) && param_मूल्य_unsaved(param)) {
+			प्रत्यागम सत्य;
 		}
 	}
 
-	return false;
+	प्रत्यागम असत्य;
 }
 
 /*
@@ -122,289 +122,289 @@ any_unsaved(param_filter_func filter)
  * default in force, is written as a BSON null so replay drops it, which is
  * what the file backend's "don't export defaults" gives after a reload.
  */
-static int
-encode_params(bson_encoder_s *encoder, param_filter_func filter, bool snapshot)
+स्थिर पूर्णाङ्क
+encode_params(bson_encoder_s *encoder, param_filter_func filter, तार्किक snapshot)
 {
-	for (param_t param = 0; param < user_config.PARAM_COUNT; param++) {
-		if (filter && !filter(param)) {
-			continue;
+	प्रति (param_t param = 0; param < user_config.PARAM_मोजणी; param++) {
+		यदि (filter && !filter(param)) {
+			अनुवर्त;
 		}
 
-		if (snapshot) {
-			if (!user_config.contains(param)) {
-				continue;
+		यदि (snapshot) {
+			यदि (!user_config.contains(param)) {
+				अनुवर्त;
 			}
 
-		} else {
-			if (!param_value_unsaved(param)) {
-				continue;
+		} अन्यथा {
+			यदि (!param_मूल्य_unsaved(param)) {
+				अनुवर्त;
 			}
 
-			if (!user_config.contains(param) || param_value_is_default(param)) {
-				if (bson_encoder_append_null(encoder, param_name(param))) {
+			यदि (!user_config.contains(param) || param_मूल्य_is_default(param)) {
+				यदि (bson_encoder_append_null(encoder, param_name(param))) {
 					debug("BSON append failed for '%s'", param_name(param));
-					return -1;
+					प्रत्यागम -1;
 				}
 
-				continue;
+				अनुवर्त;
 			}
 		}
 
-		switch (param_type(param)) {
-		case PARAM_TYPE_INT32:
-			if (bson_encoder_append_int32(encoder, param_name(param), user_config.get(param).i)) {
+		विकल्प (param_type(param)) {
+		पक्ष PARAM_TYPE_INT32:
+			यदि (bson_encoder_append_int32(encoder, param_name(param), user_config.get(param).i)) {
 				debug("BSON append failed for '%s'", param_name(param));
-				return -1;
+				प्रत्यागम -1;
 			}
 
-			break;
+			भङ्ग;
 
-		case PARAM_TYPE_FLOAT:
-			if (bson_encoder_append_double(encoder, param_name(param), (double)user_config.get(param).f)) {
+		पक्ष PARAM_TYPE_FLOAT:
+			यदि (bson_encoder_append_double(encoder, param_name(param), (द्विगुण)user_config.get(param).f)) {
 				debug("BSON append failed for '%s'", param_name(param));
-				return -1;
+				प्रत्यागम -1;
 			}
 
-			break;
+			भङ्ग;
 
-		default:
+		स्वभाव:
 			debug("unrecognized parameter type");
-			return -1;
+			प्रत्यागम -1;
 		}
 	}
 
-	return 0;
+	प्रत्यागम 0;
 }
 
 /* The caller frees bson_encoder_buf_data() whatever the result. */
-static int
-encode_document(bson_encoder_s *encoder, param_filter_func filter, bool snapshot)
+स्थिर पूर्णाङ्क
+encode_document(bson_encoder_s *encoder, param_filter_func filter, तार्किक snapshot)
 {
 	bson_encoder_init_buf(encoder, nullptr, 0);
 
-	int result = encode_params(encoder, filter, snapshot);
+	पूर्णाङ्क result = encode_params(encoder, filter, snapshot);
 
-	if (result == 0) {
+	यदि (result == 0) {
 		result = bson_encoder_fini(encoder);
 	}
 
-	return result;
+	प्रत्यागम result;
 }
 
-static int
+स्थिर पूर्णाङ्क
 stage_write_buffer(bson_encoder_s *encoder, uint8_t **buffer, size_t *enc_size)
 {
-	void *enc_buff = bson_encoder_buf_data(encoder);
+	शून्य *enc_buff = bson_encoder_buf_data(encoder);
 	*enc_size = bson_encoder_buf_size(encoder);
 
-	if (enc_buff == nullptr) {
-		return -ENOMEM;
+	यदि (enc_buff == nullptr) {
+		प्रत्यागम -ENOMEM;
 	}
 
 	size_t alloc_size = *enc_size;
-	int result = parameter_flashfs_alloc(parameters_token, buffer, &alloc_size);
+	पूर्णाङ्क result = parameter_flashfs_alloc(parameters_token, buffer, &alloc_size);
 
-	if (result != OK) {
-		return result;
+	यदि (result != OK) {
+		प्रत्यागम result;
 	}
 
-	if (alloc_size < *enc_size) {
+	यदि (alloc_size < *enc_size) {
 		parameter_flashfs_free();
-		return -ENOMEM;
+		प्रत्यागम -ENOMEM;
 	}
 
 	memcpy(*buffer, enc_buff, *enc_size);
-	return OK;
+	प्रत्यागम OK;
 }
 
-static int
+स्थिर पूर्णाङ्क
 commit_append(uint8_t *buffer, size_t enc_size)
 {
-	int result = parameter_flashfs_write(parameters_token, buffer, enc_size);
+	पूर्णाङ्क result = parameter_flashfs_write(parameters_token, buffer, enc_size);
 	parameter_flashfs_free();
 
-	if (result == (int)enc_size) {
-		return OK;
+	यदि (result == (पूर्णाङ्क)enc_size) {
+		प्रत्यागम OK;
 	}
 
-	return result < 0 ? result : -EFBIG;
+	प्रत्यागम result < 0 ? result : -EFBIG;
 }
 
-static int
+स्थिर पूर्णाङ्क
 export_delta(param_filter_func filter)
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, filter, false);
+	पूर्णाङ्क result = encode_document(&encoder, filter, असत्य);
 
-	if (result == 0) {
+	यदि (result == 0) {
 		uint8_t *buffer;
 		size_t enc_size;
 		result = stage_write_buffer(&encoder, &buffer, &enc_size);
 
-		if (result == OK) {
+		यदि (result == OK) {
 			result = commit_append(buffer, enc_size);
 		}
 	}
 
-	free(bson_encoder_buf_data(&encoder));
-	return result;
+	मुक्त(bson_encoder_buf_data(&encoder));
+	प्रत्यागम result;
 }
 
 /* Everything that can fail before the erase, so a failure here leaves the
  * log untouched and still loadable. */
-static int
+स्थिर पूर्णाङ्क
 stage_snapshot(bson_encoder_s *encoder, uint8_t **buffer, size_t *enc_size)
 {
-	int result = stage_write_buffer(encoder, buffer, enc_size);
+	पूर्णाङ्क result = stage_write_buffer(encoder, buffer, enc_size);
 
-	if (result != OK) {
-		return result;
+	यदि (result != OK) {
+		प्रत्यागम result;
 	}
 
-	if (*enc_size > parameter_flashfs_max_payload()) {
+	यदि (*enc_size > parameter_flashfs_max_payload()) {
 		parameter_flashfs_free();
-		return -ENOSPC;
+		प्रत्यागम -ENOSPC;
 	}
 
-	return OK;
+	प्रत्यागम OK;
 }
 
-static int
+स्थिर पूर्णाङ्क
 commit_snapshot(uint8_t *buffer, size_t enc_size)
 {
-	if (parameter_flashfs_blank() != 1) {
-		int rv = parameter_flashfs_erase();
+	यदि (parameter_flashfs_blank() != 1) {
+		पूर्णाङ्क rv = parameter_flashfs_erase();
 
-		if (rv < 0) {
+		यदि (rv < 0) {
 			parameter_flashfs_free();
-			return rv;
+			प्रत्यागम rv;
 		}
 	}
 
-	int result = parameter_flashfs_write(parameters_token, buffer, enc_size);
+	पूर्णाङ्क result = parameter_flashfs_write(parameters_token, buffer, enc_size);
 
-	if (result != (int)enc_size && parameter_flashfs_blank() == 1) {
+	यदि (result != (पूर्णाङ्क)enc_size && parameter_flashfs_blank() == 1) {
 		result = parameter_flashfs_write(parameters_token, buffer, enc_size);
 	}
 
 	parameter_flashfs_free();
 
-	if (result == (int)enc_size) {
-		return OK;
+	यदि (result == (पूर्णाङ्क)enc_size) {
+		प्रत्यागम OK;
 	}
 
-	return result < 0 ? result : -EFBIG;
+	प्रत्यागम result < 0 ? result : -EFBIG;
 }
 
-static int
+स्थिर पूर्णाङ्क
 compact_to_snapshot()
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, nullptr, true);
+	पूर्णाङ्क result = encode_document(&encoder, nullptr, सत्य);
 
-	if (result == 0) {
+	यदि (result == 0) {
 		uint8_t *buffer;
 		size_t enc_size;
 		result = stage_snapshot(&encoder, &buffer, &enc_size);
 
-		if (result == OK) {
+		यदि (result == OK) {
 			result = commit_snapshot(buffer, enc_size);
 		}
 	}
 
-	if (result == OK) {
-		log_unreadable = false;
+	यदि (result == OK) {
+		log_unreadable = असत्य;
 	}
 
-	free(bson_encoder_buf_data(&encoder));
-	return result;
+	मुक्त(bson_encoder_buf_data(&encoder));
+	प्रत्यागम result;
 }
 
-static bool
+स्थिर तार्किक
 has_record(flash_file_token_t token)
 {
 	uint8_t *buffer = nullptr;
 	size_t buf_size = 0;
-	return parameter_flashfs_read(token, &buffer, &buf_size) >= 0;
+	प्रत्यागम parameter_flashfs_read(token, &buffer, &buf_size) >= 0;
 }
 
-static int
+स्थिर पूर्णाङ्क
 param_export_internal(param_filter_func filter)
 {
 	/* A delta only means something behind a snapshot that replays. A legacy
 	 * record still present means the boot migration did not run; replay
 	 * would take it over any delta appended behind it. */
-	if (log_unreadable || has_record(parameters_legacy_token) || !has_record(parameters_token)) {
-		return compact_to_snapshot();
+	यदि (log_unreadable || has_record(parameters_legacy_token) || !has_record(parameters_token)) {
+		प्रत्यागम compact_to_snapshot();
 	}
 
-	if (!any_unsaved(filter)) {
-		return 0;
+	यदि (!any_unsaved(filter)) {
+		प्रत्यागम 0;
 	}
 
-	int result = export_delta(filter);
+	पूर्णाङ्क result = export_delta(filter);
 
-	if (result != -ENOSPC) {
-		return result;
+	यदि (result != -ENOSPC) {
+		प्रत्यागम result;
 	}
 
 	/* Same-bank erase stalls the CPU for ~1 s; last resort when a single
 	 * save does not fit the tail. Compact writes the full RAM snapshot so a
 	 * filtered save cannot drop params not in the delta. */
 	PX4_WARN("flashparams: param sector full, compacting");
-	return compact_to_snapshot();
+	प्रत्यागम compact_to_snapshot();
 }
 
 
-static bool
-record_is_stale(bson_node_t node)
+स्थिर तार्किक
+record_is_stale(bson_गाठ_t गाठ_2)
 {
-	const param_t param = param_find_no_notification(node->name);
+	ध्रुव param_t param = param_find_no_notification(गाठ_2->name);
 
-	if (param == PARAM_INVALID) {
-		return true;
+	यदि (param == PARAM_INVALID) {
+		प्रत्यागम सत्य;
 	}
 
-	switch (node->type) {
-	case BSON_INT32:
-		return param_type(param) != PARAM_TYPE_INT32;
+	विकल्प (गाठ_2->type) {
+	पक्ष BSON_INT32:
+		प्रत्यागम param_type(param) != PARAM_TYPE_INT32;
 
-	case BSON_DOUBLE:
-		return param_type(param) != PARAM_TYPE_FLOAT;
+	पक्ष BSON_DOUBLE:
+		प्रत्यागम param_type(param) != PARAM_TYPE_FLOAT;
 
-	default:
-		return false;
+	स्वभाव:
+		प्रत्यागम असत्य;
 	}
 }
 
-static int
-param_import_callback(bson_decoder_t decoder, bson_node_t node)
+स्थिर पूर्णाङ्क
+param_import_callback(bson_decoder_t decoder, bson_गाठ_t गाठ_2)
 {
-	float f;
+	भिन्न f;
 	int32_t i;
-	void *v = nullptr;
-	int result = -1;
+	शून्य *v = nullptr;
+	पूर्णाङ्क result = -1;
 
 	/*
 	 * EOO means the end of the parameter object. (Currently not supporting
 	 * nested BSON objects).
 	 */
-	if (node->type == BSON_EOO) {
+	यदि (गाठ_2->type == BSON_EOO) {
 		debug("end of parameters");
-		return 0;
+		प्रत्यागम 0;
 	}
 
 	/* A tombstone has no value. The decoder leaves the previous node's in
 	 * the union and the translations read it without a type check. */
-	const bool tombstone = node->type == BSON_nullptr || node->type == BSON_UNDEFINED;
+	ध्रुव तार्किक tombstone = गाठ_2->type == BSON_nullptr || गाठ_2->type == BSON_UNDEFINED;
 
-	if (!tombstone) {
-		if (record_is_stale(node)) {
-			log_stale = true;
+	यदि (!tombstone) {
+		यदि (record_is_stale(गाठ_2)) {
+			log_stale = सत्य;
 		}
 
-		if (param_modify_on_import(node) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
-			return 1;
+		यदि (param_modify_on_import(गाठ_2) == param_modify_on_import_ret::PARAM_SKIP_IMPORT) {
+			प्रत्यागम 1;
 		}
 	}
 
@@ -412,122 +412,122 @@ param_import_callback(bson_decoder_t decoder, bson_node_t node)
 	 * Find the parameter this node represents.  If we don't know it,
 	 * ignore the node.
 	 */
-	param_t param = param_find_no_notification(node->name);
+	param_t param = param_find_no_notification(गाठ_2->name);
 
-	if (param == PARAM_INVALID) {
-		debug("ignoring unrecognised parameter '%s'", node->name);
-		return 1;
+	यदि (param == PARAM_INVALID) {
+		debug("ignoring unrecognised parameter '%s'", गाठ_2->name);
+		प्रत्यागम 1;
 	}
 
 	/*
 	 * Handle setting the parameter from the node
 	 */
 
-	switch (node->type) {
-	case BSON_nullptr:
-	case BSON_UNDEFINED:
+	विकल्प (गाठ_2->type) {
+	पक्ष BSON_nullptr:
+	पक्ष BSON_UNDEFINED:
 		user_config.reset(param);
 		result = 1;
-		goto out;
+		गच्छ out;
 
-	case BSON_INT32:
-		if (param_type(param) != PARAM_TYPE_INT32) {
-			PX4_WARN("unexpected type for %s", node->name);
+	पक्ष BSON_INT32:
+		यदि (param_type(param) != PARAM_TYPE_INT32) {
+			PX4_WARN("unexpected type for %s", गाठ_2->name);
 			result = 1; // just skip this entry
-			goto out;
+			गच्छ out;
 		}
 
-		i = node->i32;
+		i = गाठ_2->i32;
 		v = &i;
-		break;
+		भङ्ग;
 
-	case BSON_DOUBLE:
-		if (param_type(param) != PARAM_TYPE_FLOAT) {
-			PX4_WARN("unexpected type for %s", node->name);
+	पक्ष BSON_DOUBLE:
+		यदि (param_type(param) != PARAM_TYPE_FLOAT) {
+			PX4_WARN("unexpected type for %s", गाठ_2->name);
 			result = 1; // just skip this entry
-			goto out;
+			गच्छ out;
 		}
 
-		f = node->d;
+		f = गाठ_2->d;
 		v = &f;
-		break;
+		भङ्ग;
 
-	default:
-		PX4_ERR("%s unrecognised node type %d", node->name, node->type);
+	स्वभाव:
+		PX4_ERR("%s unrecognised node type %d", गाठ_2->name, गाठ_2->type);
 		result = 1; // just skip this entry
-		goto out;
+		गच्छ out;
 	}
 
-	if (param_set_external(param, v, true, true)) {
-		debug("error setting value for '%s'", node->name);
-		goto out;
+	यदि (param_set_external(param, v, सत्य, सत्य)) {
+		debug("error setting value for '%s'", गाठ_2->name);
+		गच्छ out;
 	}
 
 	/* don't return zero, that means EOF */
 	result = 1;
 
 out:
-	return result;
+	प्रत्यागम result;
 }
 
-static int
-import_one_entry(uint8_t *buffer, size_t buf_size, void *arg)
+स्थिर पूर्णाङ्क
+import_one_entry(uint8_t *buffer, size_t buf_size, शून्य *arg)
 {
-	int *result = static_cast<int *>(arg);
+	पूर्णाङ्क *result = static_cast<पूर्णाङ्क *>(arg);
 	bson_decoder_s decoder{};
 
-	if (bson_decoder_init_buf(&decoder, buffer, buf_size, param_import_callback)) {
+	यदि (bson_decoder_init_buf(&decoder, buffer, buf_size, param_import_callback)) {
 		debug("decoder init failed");
 		*result = -1;
-		return -1;
+		प्रत्यागम -1;
 	}
 
-	do {
+	कुरु {
 		*result = bson_decoder_next(&decoder);
 
-	} while (*result > 0);
+	} यावत् (*result > 0);
 
-	return *result < 0 ? *result : 0;
+	प्रत्यागम *result < 0 ? *result : 0;
 }
 
-static int
-param_import_internal(bool *legacy)
+स्थिर पूर्णाङ्क
+param_import_internal(तार्किक *legacy)
 {
-	int result = 0;
-	log_stale = false;
-	int n = parameter_flashfs_walk(parameters_legacy_token, import_one_entry, &result);
+	पूर्णाङ्क result = 0;
+	log_stale = असत्य;
+	पूर्णाङ्क n = parameter_flashfs_walk(parameters_legacy_token, import_one_entry, &result);
 	*legacy = n > 0;
 
-	if (n == 0) {
+	यदि (n == 0) {
 		n = parameter_flashfs_walk(parameters_token, import_one_entry, &result);
 	}
 
-	if (n < 0) {
+	यदि (n < 0) {
 		debug("flash walk failed (%d)", n);
-		log_unreadable = true;
-		return n;
+		log_unreadable = सत्य;
+		प्रत्यागम n;
 	}
 
-	if (n == 0) {
+	यदि (n == 0) {
 		/* No valid entry found. A fully erased store is blank (first boot, or
 		 * after switching firmware): report "not yet stored" (1), matching the
 		 * convention used by param_load_default(). A store that holds data but
 		 * no valid entry (torn write, bit-rot, or foreign data) is corrupt and
 		 * must not be silently reseeded - report it so the boot recovery runs. */
-		if (parameter_flashfs_blank() == 1) {
-			return 1;
+		यदि (parameter_flashfs_blank() == 1) {
+			प्रत्यागम 1;
 		}
 
 		debug("flash holds data but no valid entry");
-		return -EILSEQ;
+		प्रत्यागम -EILSEQ;
 	}
 
-	if (result < 0) {
+	यदि (result < 0) {
 		debug("BSON error decoding parameters");
-		return result;
+		प्रत्यागम result;
 	}
 
-	return 0;
+	प्रत्यागम 0;
 }
 
 /*
@@ -538,58 +538,58 @@ param_import_internal(bool *legacy)
  * the erase is an error: until then the log is intact and RAM holds what it
  * said, so the boot must not be reported as a corrupt store.
  */
-static int
-compact_after_import(bool legacy)
+स्थिर पूर्णाङ्क
+compact_after_import(तार्किक legacy)
 {
 	bson_encoder_s encoder{};
-	int result = encode_document(&encoder, nullptr, true);
+	पूर्णाङ्क result = encode_document(&encoder, nullptr, सत्य);
 
-	if (result != 0) {
+	यदि (result != 0) {
 		PX4_ERR("flashparams: snapshot encode failed (%d), log kept", result);
-		free(bson_encoder_buf_data(&encoder));
-		return 0;
+		मुक्त(bson_encoder_buf_data(&encoder));
+		प्रत्यागम 0;
 	}
 
-	const size_t enc_size = bson_encoder_buf_size(&encoder);
-	int need = (legacy || log_stale) ? 1 : parameter_flashfs_needs_compact(parameters_token, enc_size);
+	ध्रुव size_t enc_size = bson_encoder_buf_size(&encoder);
+	पूर्णाङ्क need = (legacy || log_stale) ? 1 : parameter_flashfs_needs_compact(parameters_token, enc_size);
 	result = 0;
 
-	if (need > 0) {
+	यदि (need > 0) {
 		uint8_t *buffer;
 		size_t staged_size;
 		result = stage_snapshot(&encoder, &buffer, &staged_size);
 
-		if (result != OK) {
+		यदि (result != OK) {
 			PX4_ERR("flashparams: cannot stage snapshot (%d), log kept", result);
 			result = 0;
 
-		} else {
+		} अन्यथा {
 			PX4_INFO("flashparams: compacting param sector%s", legacy ? " (legacy layout)" : "");
 			result = commit_snapshot(buffer, staged_size);
 
-			if (result != OK) {
+			यदि (result != OK) {
 				PX4_ERR("flashparams: compact failed (%d)", result);
 			}
 		}
 	}
 
-	free(bson_encoder_buf_data(&encoder));
-	return result;
+	मुक्त(bson_encoder_buf_data(&encoder));
+	प्रत्यागम result;
 }
 
-int flash_param_save(param_filter_func filter)
+पूर्णाङ्क flash_param_save(param_filter_func filter)
 {
-	return param_export_internal(filter);
+	प्रत्यागम param_export_internal(filter);
 }
 
-int flash_param_import()
+पूर्णाङ्क flash_param_import()
 {
-	bool legacy = false;
-	int result = param_import_internal(&legacy);
+	तार्किक legacy = असत्य;
+	पूर्णाङ्क result = param_import_internal(&legacy);
 
-	if (result != 0) {
-		return result;
+	यदि (result != 0) {
+		प्रत्यागम result;
 	}
 
-	return compact_after_import(legacy);
+	प्रत्यागम compact_after_import(legacy);
 }

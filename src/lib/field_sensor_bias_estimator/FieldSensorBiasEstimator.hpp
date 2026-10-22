@@ -48,18 +48,18 @@
 
 #pragma once
 
-#include <matrix/matrix/math.hpp>
+#अन्तर्भाव <matrix/matrix/math.hpp>
 
-class FieldSensorBiasEstimator
+वर्ग FieldSensorBiasEstimator
 {
-public:
-	FieldSensorBiasEstimator() = default;
-	~FieldSensorBiasEstimator() = default;
+सार्वजनिक:
+	FieldSensorBiasEstimator() = स्वभाव;
+	~FieldSensorBiasEstimator() = स्वभाव;
 
 	// Set initial states
-	void setField(const matrix::Vector3f &field) { _field_prev = field; }
-	void setBias(const matrix::Vector3f &bias) { _state_bias = bias; }
-	void setLearningGain(float learning_gain) { _learning_gain = learning_gain; }
+	शून्य setField(ध्रुव matrix::Vector3f &field) { _field_prev = field; }
+	शून्य setBias(ध्रुव matrix::Vector3f &bias) { _state_bias = bias; }
+	शून्य setLearningGain(भिन्न learning_gain) { _learning_gain = learning_gain; }
 
 	/**
 	 * Update the estimator and extract updated biases.
@@ -67,20 +67,20 @@ public:
 	 * @param field biased field sensor data
 	 * @param dt time in seconds since the last update
 	 */
-	void updateEstimate(const matrix::Vector3f &gyro, const matrix::Vector3f &field, const float dt)
+	शून्य updateEstimate(ध्रुव matrix::Vector3f &gyro, ध्रुव matrix::Vector3f &field, ध्रुव भिन्न dt)
 	{
-		const matrix::Vector3f field_pred = _field_prev + (-gyro % (_field_prev - _state_bias)) * dt;
-		const matrix::Vector3f field_innov = field - field_pred;
+		ध्रुव matrix::Vector3f field_pred = _field_prev + (-gyro % (_field_prev - _state_bias)) * dt;
+		ध्रुव matrix::Vector3f field_innov = field - field_pred;
 		_state_bias += _learning_gain * (-gyro % field_innov) * dt;
 		_field_prev = field;
 	}
 
-	const matrix::Vector3f &getField() { return _field_prev; }
-	const matrix::Vector3f &getBias() { return _state_bias; }
+	ध्रुव matrix::Vector3f &getField() { प्रत्यागम _field_prev; }
+	ध्रुव matrix::Vector3f &getBias() { प्रत्यागम _state_bias; }
 
-private:
+गुप्त:
 	// states
 	matrix::Vector3f _field_prev{};
 	matrix::Vector3f _state_bias{};
-	float _learning_gain{20.f};
+	भिन्न _learning_gain{20.f};
 };

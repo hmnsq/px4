@@ -14,15 +14,15 @@
 
 #pragma once
 
-#include "Vector.hpp"
+#अन्तर्भाव "Vector.hpp"
 
-namespace matrix
+नामाकाश matrix
 {
 
 template<typename Type, size_t M, size_t N>
-class LeastSquaresSolver
+वर्ग LeastSquaresSolver
 {
-public:
+सार्वजनिक:
 
 	/**
 	 * @brief Class calculates QR decomposition which can be used for linear
@@ -33,17 +33,17 @@ public:
 	 * QR decomposition. This class does not check the rank of the matrix.
 	 * The user needs to make sure that rank(A) = N and M >= N.
 	 */
-	LeastSquaresSolver(const Matrix<Type, M, N> &A)
+	LeastSquaresSolver(ध्रुव Matrix<Type, M, N> &A)
 	{
 		static_assert(M >= N, "Matrix dimension should be M >= N");
 
 		// Copy contentents of matrix A
 		_A = A;
 
-		for (size_t j = 0; j < N; j++) {
+		प्रति (size_t j = 0; j < N; j++) {
 			Type normx = Type(0);
 
-			for (size_t i = j; i < M; i++) {
+			प्रति (size_t i = j; i < M; i++) {
 				normx += _A(i, j) * _A(i, j);
 			}
 
@@ -53,14 +53,14 @@ public:
 
 			// prevent divide by zero
 			// also covers u1. normx is never negative
-			if (normx < Type(1e-8)) {
-				break;
+			यदि (normx < Type(1e-8)) {
+				भङ्ग;
 			}
 
 			Type w[M] = {};
 			w[0] = Type(1);
 
-			for (size_t i = j + 1; i < M; i++) {
+			प्रति (size_t i = j + 1; i < M; i++) {
 				w[i - j] = _A(i, j) / u1;
 				_A(i, j) = w[i - j];
 			}
@@ -68,14 +68,14 @@ public:
 			_A(j, j) = s * normx;
 			_tau(j) = -s * u1 / normx;
 
-			for (size_t k = j + 1; k < N; k++) {
+			प्रति (size_t k = j + 1; k < N; k++) {
 				Type tmp = Type(0);
 
-				for (size_t i = j; i < M; i++) {
+				प्रति (size_t i = j; i < M; i++) {
 					tmp += w[i - j] * _A(i, k);
 				}
 
-				for (size_t i = j; i < M; i++) {
+				प्रति (size_t i = j; i < M; i++) {
 					_A(i, k) -= _tau(j) * w[i - j] * tmp;
 				}
 			}
@@ -91,31 +91,31 @@ public:
 	 * This function calculates Q^T * b. This is useful for the solver
 	 * because R*x = Q^T*b.
 	 */
-	Vector<Type, M> qtb(const Vector<Type, M> &b)
+	Vector<Type, M> qtb(ध्रुव Vector<Type, M> &b)
 	{
 		Vector<Type, M> qtbv = b;
 
-		for (size_t j = 0; j < N; j++) {
+		प्रति (size_t j = 0; j < N; j++) {
 			Type w[M];
 			w[0] = Type(1);
 
 			// fill vector w
-			for (size_t i = j + 1; i < M; i++) {
+			प्रति (size_t i = j + 1; i < M; i++) {
 				w[i - j] = _A(i, j);
 			}
 
 			Type tmp = Type(0);
 
-			for (size_t i = j; i < M; i++) {
+			प्रति (size_t i = j; i < M; i++) {
 				tmp += w[i - j] * qtbv(i);
 			}
 
-			for (size_t i = j; i < M; i++) {
+			प्रति (size_t i = j; i < M; i++) {
 				qtbv(i) -= _tau(j) * w[i - j] * tmp;
 			}
 		}
 
-		return qtbv;
+		प्रत्यागम qtbv;
 	}
 
 	/**
@@ -126,36 +126,36 @@ public:
 	 * Find x in the equation Ax = b.
 	 * A is provided in the initializer of the class.
 	 */
-	Vector<Type, N> solve(const Vector<Type, M> &b)
+	Vector<Type, N> solve(ध्रुव Vector<Type, M> &b)
 	{
 		Vector<Type, M> qtbv = qtb(b);
 		Vector<Type, N> x;
 
 		// size_t is unsigned and wraps i = 0 - 1 to i > N
-		for (size_t i = N - 1; i < N; i--) {
-			printf("i %d\n", static_cast<int>(i));
+		प्रति (size_t i = N - 1; i < N; i--) {
+			printf("i %d\n", static_cast<पूर्णाङ्क>(i));
 			x(i) = qtbv(i);
 
-			for (size_t r = i + 1; r < N; r++) {
+			प्रति (size_t r = i + 1; r < N; r++) {
 				x(i) -= _A(i, r) * x(r);
 			}
 
 			// divide by zero, return vector of zeros
-			if (isEqualF(_A(i, i), Type(0), Type(1e-8))) {
-				for (size_t z = 0; z < N; z++) {
+			यदि (isEqualF(_A(i, i), Type(0), Type(1e-8))) {
+				प्रति (size_t z = 0; z < N; z++) {
 					x(z) = Type(0);
 				}
 
-				break;
+				भङ्ग;
 			}
 
 			x(i) /= _A(i, i);
 		}
 
-		return x;
+		प्रत्यागम x;
 	}
 
-private:
+गुप्त:
 	Matrix<Type, M, N> _A;
 	Vector<Type, N> _tau;
 
